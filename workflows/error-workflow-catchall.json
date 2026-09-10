@@ -1,0 +1,219 @@
+{
+  "updatedAt": "2026-09-10T13:19:21.590Z",
+  "createdAt": "2026-09-07T14:40:21.862Z",
+  "id": "Dh2lAQTzyoZBpXie",
+  "name": "CCB - Error Workflow (catch-all)",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        0
+      ],
+      "id": "8dd8f062-a559-4669-a994-04effaeb0e4b",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "const execution = $json.execution || {};\nconst workflow = $json.workflow || {};\n\nconst workflowName = workflow.name || '(desconocido)';\nconst workflowId = workflow.id || '';\nconst executionId = execution.id || '';\nconst executionUrl = execution.url || '';\nconst lastNode = execution.lastNodeExecuted || '(desconocido)';\nconst errorMessage = execution.error?.message || 'Sin mensaje de error';\nconst timestamp = execution.error?.timestamp\n  ? DateTime.fromMillis(execution.error.timestamp).setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss')\n  : DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">🔴 Falló una ejecución (catch-all)</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">Un workflow tuvo un fallo que no fue capturado por su manejo de errores interno. Detalles:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle del error</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Workflow:</strong> ${workflowName} (ID: ${workflowId})</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo donde falló:</strong> ${lastNode}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${errorMessage}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Ejecución:</strong> <a href=\"${executionUrl}\" style=\"color:#3482FE;\">${executionId}</a></p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${timestamp}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    workflowName,\n    workflowId,\n    lastNode,\n    errorMessage,\n    executionId,\n    executionUrl,\n    timestamp,\n    alertHtml\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        0
+      ],
+      "id": "0f0280a2-e6da-4b2b-bacb-ca39bfc91a27",
+      "name": "Preparar alerta de fallo"
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '🔴 Falló ejecución - ' + $json.workflowName }}",
+        "bodyContent": "={{ $json.alertHtml }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "05b7a334-0539-442b-bccf-79d2ceb57623",
+      "name": "Enviar alerta de fallo",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "webhookId": "0891f510-a742-4845-85f4-7ad9246119b1",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "=N/A (catch-all)",
+            "workflow_origen": "={{ $json.workflowName }}",
+            "nodo_fallido": "={{ $json.lastNode }}",
+            "mensaje_error": "={{ $json.errorMessage }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "workflow_origen",
+              "displayName": "workflow_origen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nodo_fallido",
+              "displayName": "nodo_fallido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mensaje_error",
+              "displayName": "mensaje_error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        0
+      ],
+      "id": "3c6e15af-db41-48b9-bc0a-369c9123a155",
+      "name": "Registrar fallo en Data Table"
+    },
+    {
+      "id": "27a6438e-3b2f-4f61-8d49-7a29834b6d10",
+      "name": "Nota - Error Workflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        -240
+      ],
+      "parameters": {
+        "content": "## Error Workflow (catch-all)\nAsignado como errorWorkflow centralizado de W1, W2 y W3. Captura cualquier fallo no manejado explícitamente por una rama propia del flujo de origen, lo registra en Data Table y envía alerta por Outlook.",
+        "width": 700,
+        "height": 200,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Preparar alerta de fallo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar alerta de fallo": {
+      "main": [
+        [
+          {
+            "node": "Registrar fallo en Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar fallo en Data Table": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta de fallo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "fae795dc-7c03-4edb-bef3-4b6dcefd3422",
+  "activeVersionId": "fae795dc-7c03-4edb-bef3-4b6dcefd3422",
+  "versionCounter": 17,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-09-07T14:40:21.862Z",
+      "createdAt": "2026-09-07T14:40:21.862Z",
+      "role": "workflow:owner",
+      "workflowId": "Dh2lAQTzyoZBpXie",
+      "projectId": "dxSG9ciMXpzUN2g4",
+      "project": {
+        "updatedAt": "2026-06-09T21:13:37.348Z",
+        "createdAt": "2026-06-09T21:11:56.500Z",
+        "id": "dxSG9ciMXpzUN2g4",
+        "name": "Adrian Gutierrez <iaconsultor1@camarabaq.org.co>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    }
+  ],
+  "tags": []
+}
