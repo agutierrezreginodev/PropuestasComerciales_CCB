@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-10T13:22:16.263Z",
+  "updatedAt": "2026-09-10T15:28:19.389Z",
   "createdAt": "2026-09-04T20:17:52.538Z",
   "id": "lIcdT6nGd0w1G2i0",
   "name": "CCB - Workflow 2 - Formulario de Solicitud",
@@ -3711,6 +3711,231 @@
         "height": 300,
         "color": 4
       }
+    },
+    {
+      "id": "88ec6e97-2165-4446-bca8-f204002dd4e3",
+      "name": "Validar motor - Información Georreferenciada",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2504,
+        272
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "3bed852e-7d1d-45c5-aaed-7c4e296edcf5"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "b2520d30-3785-49af-8cad-716e46fa9955",
+      "name": "Validar motor - Zonificación y Rutero",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2104,
+        544
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "c0e30a98-429b-4016-9110-d322af18247e"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "ce0903ea-7f98-4c48-a249-925e265509be",
+      "name": "Validar motor - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2104,
+        832
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "9711c7dd-3c41-4e60-950c-08abebc96a15"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1ef15b40-606a-48a4-9128-af678065eac5",
+      "name": "Validar motor - Información en Línea",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2104,
+        1104
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "f31129de-99ac-4c3a-b4b3-bd6152cba41c"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "8739bc0c-5616-4242-83c0-2c592b9c2943",
+      "name": "Preparar error - Motor rechazó la propuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        1400
+      ],
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst servicio = $json.servicio || '(sin servicio)';\nconst nodoFallido = 'Motor Criterios y Precio';\nconst mensajeError = $json.error || JSON.stringify($json.error || {}) || 'El motor rechazó el cálculo sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Motor rechazó el cálculo</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">El motor de criterios y precio rechazó el cálculo de esta propuesta (Workflow 3). No se generó cotización.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ${servicio}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: idSolicitud, workflow_origen: 'workflow-formulario', nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, emailBody } };"
+      }
+    },
+    {
+      "id": "acf1143d-fbfd-451e-a8ed-29d43fb22e9b",
+      "name": "Guardar incidencia motor - Data Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2864,
+        1600
+      ],
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "fecha_error": "={{ $json.fecha_error }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "9703caf3-4ec3-447f-9353-2b632ca974b8",
+      "name": "Enviar alerta motor",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        1760
+      ],
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '⚠️ Motor rechazó el cálculo - nodo: ' + $json.nodo_fallido }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "webhookId": "1fa88f8b-9ce7-4ccf-98fb-2c1ed5af5cbb"
+    },
+    {
+      "id": "bf3b2b26-dbf2-4798-af56-780aee34a3d9",
+      "name": "Aviso - Propuesta no generada",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        2864,
+        1920
+      ],
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "No pudimos generar tu propuesta",
+        "completionMessage": "Hubo un detalle al calcular tu cotización. Un asesor de la Cámara de Comercio de Barranquilla se pondrá en contacto contigo muy pronto.",
+        "options": {}
+      },
+      "webhookId": "9eb5630d-764b-4117-b91c-97aafc2aaace"
     }
   ],
   "connections": {
@@ -4085,17 +4310,6 @@
         ]
       ]
     },
-    "Ejecutar motor - Información Georreferenciada": {
-      "main": [
-        [
-          {
-            "node": "Guardar cotización - Información Georreferenciada",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Guardar cotización - Información Georreferenciada": {
       "main": [
         [],
@@ -4113,17 +4327,6 @@
         [
           {
             "node": "Ejecutar motor - Zonificación y Rutero",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Ejecutar motor - Zonificación y Rutero": {
-      "main": [
-        [
-          {
-            "node": "Guardar cotización - Zonificación y Rutero",
             "type": "main",
             "index": 0
           }
@@ -4153,17 +4356,6 @@
         ]
       ]
     },
-    "Ejecutar motor - Ubicación de Nuevo Negocio": {
-      "main": [
-        [
-          {
-            "node": "Guardar cotización - Ubicación de Nuevo Negocio",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Guardar cotización - Ubicación de Nuevo Negocio": {
       "main": [
         [],
@@ -4187,7 +4379,117 @@
         ]
       ]
     },
+    "Guardar cotización - Información en Línea": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Validar motor - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Validar motor - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Validar motor - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Ejecutar motor - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Validar motor - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Guardar cotización - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Guardar cotización - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Guardar cotización - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor - Información en Línea": {
       "main": [
         [
           {
@@ -4195,15 +4497,43 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
-    "Guardar cotización - Información en Línea": {
+    "Preparar error - Motor rechazó la propuesta": {
       "main": [
-        [],
         [
           {
-            "node": "Preparar error - Guardado de criterios",
+            "node": "Guardar incidencia motor - Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar incidencia motor - Data Table": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar alerta motor": {
+      "main": [
+        [
+          {
+            "node": "Aviso - Propuesta no generada",
             "type": "main",
             "index": 0
           }
@@ -4222,9 +4552,9 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "64205886-2805-4e42-9396-57e9da79aa0d",
-  "activeVersionId": "64205886-2805-4e42-9396-57e9da79aa0d",
-  "versionCounter": 241,
+  "versionId": "4b150427-7555-463a-a825-b28231a1df7f",
+  "activeVersionId": "4b150427-7555-463a-a825-b28231a1df7f",
+  "versionCounter": 244,
   "triggerCount": 1,
   "shared": [
     {
