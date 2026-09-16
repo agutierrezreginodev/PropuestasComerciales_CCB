@@ -1,0 +1,4560 @@
+{
+  "updatedAt": "2026-09-10T15:28:19.389Z",
+  "createdAt": "2026-09-04T20:17:52.538Z",
+  "id": "lIcdT6nGd0w1G2i0",
+  "name": "CCB - Workflow 2 - Formulario de Solicitud",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Solicitud de Cotización — Cámara de Comercio de Barranquilla",
+        "formDescription": "Completá tus datos para comenzar tu solicitud de cotización de bases de datos.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Razón Social / Nombre",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "NIT / C.C.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Dirección",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Teléfono",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Ciudad",
+              "requiredField": true
+            },
+            {
+              "fieldName": "id_solicitud",
+              "fieldType": "hiddenField"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        832
+      ],
+      "id": "07139ea4-ac8f-43d8-a7fa-914c9f58798d",
+      "name": "Página 1 - Datos de la empresa",
+      "webhookId": "30cdcbfc-4a62-4929-ab57-3c956781528c"
+    },
+    {
+      "parameters": {
+        "jsCode": "// El id_solicitud viaja como query param en el link que Workflow 1 le manda al cliente.\n// El Form Trigger pre-llena este campo oculto con el query param ?id_solicitud= (solo en modo producción).\nconst idSolicitud = $json.id_solicitud || null;\n\nreturn {\n  json: {\n    ...$json,\n    id_solicitud: idSolicitud\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        832
+      ],
+      "id": "0f5eddcb-a0e0-49ec-8753-dcbfa424df20",
+      "name": "Capturar ID de solicitud"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nombre del solicitante",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "C.C.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Teléfono de contacto",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Dirección",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "¿Viene en representación de una empresa?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Sí"
+                  },
+                  {
+                    "option": "No"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "En caso de responder Sí, ¿cuál?"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Cargo",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Nivel del cargo"
+            },
+            {
+              "fieldLabel": "Área del cargo"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        272,
+        832
+      ],
+      "id": "6236176c-e8a1-4784-80f7-c7925a4c70e7",
+      "name": "Página 2 - Datos del solicitante",
+      "webhookId": "6b2eb016-aae6-4941-bc75-7c917328d498"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "html",
+              "html": "<div style=\"line-height:1.6;\"><p><strong>Información Georreferenciada:</strong> consultá nuestra base de datos empresarial filtrando por ubicación, actividad económica, tamaño y otros criterios, para conocer cuántos registros coinciden con tu búsqueda.</p><p><strong>Zonificación y Rutero:</strong> visualizá, segmentá y planificá estratégicamente tu cobertura comercial a partir del análisis georreferenciado de tu red de clientes, potenciales o competencia.</p><p><strong>Ubicación de Nuevo Negocio:</strong> identificá y analizá las zonas más adecuadas para establecer una nueva sede, punto de venta o centro de operaciones.</p><p><strong>Información en Línea:</strong> accedé a consultas actualizadas del registro mercantil e información estratégica de negocios, bajo un modelo de suscripción anual.</p></div>"
+            },
+            {
+              "fieldLabel": "¿Qué servicio te interesa?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Información Georreferenciada"
+                  },
+                  {
+                    "option": "Zonificación y Rutero"
+                  },
+                  {
+                    "option": "Ubicación de Nuevo Negocio"
+                  },
+                  {
+                    "option": "Información en Línea"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        480,
+        832
+      ],
+      "id": "7c265186-38d1-41e3-a68a-24585df4593a",
+      "name": "Página 3 - Selector de servicio",
+      "webhookId": "c87dbaf1-b833-4084-9dc4-6b91d7d44bdf"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['¿Qué servicio te interesa?'] }}",
+                    "rightValue": "Información Georreferenciada",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Información Georreferenciada"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['¿Qué servicio te interesa?'] }}",
+                    "rightValue": "Zonificación y Rutero",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Zonificación y Rutero"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['¿Qué servicio te interesa?'] }}",
+                    "rightValue": "Ubicación de Nuevo Negocio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Ubicación de Nuevo Negocio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['¿Qué servicio te interesa?'] }}",
+                    "rightValue": "Información en Línea",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Información en Línea"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        672,
+        784
+      ],
+      "id": "32ff854d-c077-4be1-963e-0560b1a663d2",
+      "name": "Enrutar por servicio"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Organización jurídica",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Personas Jurídicas"
+                  },
+                  {
+                    "option": "Personas Naturales"
+                  },
+                  {
+                    "option": "Personas Establecimientos"
+                  },
+                  {
+                    "option": "Entidades sin ánimo de lucro"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Ubicación geográfica",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Barranquilla"
+                  },
+                  {
+                    "option": "Área Metropolitana (Barranquilla, Galapa, Malambo, Puerto Colombia, Soledad)"
+                  },
+                  {
+                    "option": "Todo el Departamento del Atlántico"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Ciudades / municipios específicos del Atlántico (solo si aplica)"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        272
+      ],
+      "id": "cb83ea40-4ab0-40d5-b52a-8db15f5653cb",
+      "name": "Página 4 - Organización jurídica y ubicación",
+      "webhookId": "f3b5b55e-6ca3-4d0e-8ada-2371bc0d0888"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Actividad económica",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Agropecuario"
+                  },
+                  {
+                    "option": "Minero"
+                  },
+                  {
+                    "option": "Industria"
+                  },
+                  {
+                    "option": "Electricidad, gas, vapor y aire acondicionado"
+                  },
+                  {
+                    "option": "Servicios administrativos y de apoyo"
+                  },
+                  {
+                    "option": "Administración pública y defensa"
+                  },
+                  {
+                    "option": "Educación"
+                  },
+                  {
+                    "option": "Profesionales, científicas y técnicas"
+                  },
+                  {
+                    "option": "Artísticas, de entretenimiento y recreación"
+                  },
+                  {
+                    "option": "Otras actividades de servicios"
+                  },
+                  {
+                    "option": "Actividades de los hogares individuales en calidad de empleadores"
+                  },
+                  {
+                    "option": "Alojamiento y restaurantes"
+                  },
+                  {
+                    "option": "Información y comunicaciones"
+                  },
+                  {
+                    "option": "Financiero"
+                  },
+                  {
+                    "option": "Inmobiliarias"
+                  },
+                  {
+                    "option": "Agua"
+                  },
+                  {
+                    "option": "Construcción"
+                  },
+                  {
+                    "option": "Comercio al por mayor y al por menor"
+                  },
+                  {
+                    "option": "Transporte"
+                  },
+                  {
+                    "option": "Salud"
+                  },
+                  {
+                    "option": "Todas las actividades económicas"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Actividades específicas requeridas (opcional)"
+            },
+            {
+              "fieldLabel": "Categorías de entidades sin ánimo de lucro (solo si seleccionó ESAL en la página anterior)",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Fondo de empleados"
+                  },
+                  {
+                    "option": "Cooperativas"
+                  },
+                  {
+                    "option": "Fundaciones"
+                  }
+                ]
+              },
+              "multiselect": true
+            },
+            {
+              "fieldLabel": "Categorías ESAL específicas requeridas (opcional)"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        272
+      ],
+      "id": "0c769655-261b-4156-9d3f-590f88794829",
+      "name": "Página 5 - Actividad económica y ESAL",
+      "webhookId": "89a482a4-3d51-4136-b0c5-0c1014d2f17a"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Tamaño de empresa",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Microempresas"
+                  },
+                  {
+                    "option": "Pequeñas empresas"
+                  },
+                  {
+                    "option": "Medianas empresas"
+                  },
+                  {
+                    "option": "Grandes empresas"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Activos totales — mayor o igual a (opcional)",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Activos totales — menor o igual a (opcional)",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Activos totales — entre (opcional)",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Activos totales — y (opcional)",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Nivel de ventas — mayor o igual a (opcional)",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Nivel de ventas — menor o igual a (opcional)",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Nivel de ventas — entre (opcional)",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Nivel de ventas — y (opcional)",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Indiferente del nivel de ventas",
+              "fieldType": "checkbox",
+              "fieldOptions": {
+                "values": [
+                  {}
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        272
+      ],
+      "id": "59aec5de-4d02-4e80-af6b-a041d18c8119",
+      "name": "Página 6 - Tamaño de empresa y ventas",
+      "webhookId": "8c8e9cc7-66f4-4da3-a3aa-62829b605e25"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "¿Cómo conociste nuestros servicios?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Google"
+                  },
+                  {
+                    "option": "Información recibida en su correo"
+                  },
+                  {
+                    "option": "Redes sociales — Facebook"
+                  },
+                  {
+                    "option": "Redes sociales — LinkedIn"
+                  },
+                  {
+                    "option": "Promoción"
+                  },
+                  {
+                    "option": "Participación en eventos"
+                  },
+                  {
+                    "option": "Otro"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Si elegiste \"Otro\", especificá (opcional)"
+            },
+            {
+              "fieldLabel": "Comentarios y observaciones (opcional)",
+              "fieldType": "textarea"
+            },
+            {
+              "fieldType": "html",
+              "html": "<p style=\"line-height:1.6;\">Gracias por preferir nuestros servicios institucionales. Pronto estaremos enviándole una cotización de acuerdo con su consulta.</p>"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Enviar solicitud"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        272
+      ],
+      "id": "04828af8-c56a-456a-a590-e507c98a3597",
+      "name": "Página 7 - Medio de conocimiento y comentarios",
+      "webhookId": "a9aef1b2-c43b-4f1d-b0d9-bebdb2e5d926"
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst join = (v) => Array.isArray(v) ? v.filter((x) => x !== '' && x != null).join('; ') : ((v === undefined || v === null) ? '' : String(v));\nconst num = (v) => (v === '' || v === undefined || v === null) ? null : Number(v);\nconst bool = (v) => Array.isArray(v) ? v.some((x) => x !== '') : (v === true || v === 'true');\nconst p1 = get('Página 1 - Datos de la empresa');\nconst p2 = get('Página 2 - Datos del solicitante');\nconst p3 = get('Página 3 - Selector de servicio');\nconst captura = get('Capturar ID de solicitud');\nconst crit = get('Página 4 - Criterios - Zonificación y Rutero');\nconst cierre = get('Página 5 - Medio de conocimiento y comentarios');\nconst criterios = {\n  id_solicitud: captura.id_solicitud || p1.id_solicitud || '',\n  razon_social: join(p1['Razón Social / Nombre']),\n  nit_cc: join(p1['NIT / C.C.']),\n  direccion_empresa: join(p1['Dirección']),\n  email_empresa: join(p1['Email']),\n  telefono_empresa: join(p1['Teléfono']),\n  ciudad: join(p1['Ciudad']),\n  nombre_solicitante: join(p2['Nombre del solicitante']),\n  cc_solicitante: join(p2['C.C.']),\n  telefono_solicitante: join(p2['Teléfono de contacto']),\n  direccion_solicitante: join(p2['Dirección']),\n  representacion_empresa: join(p2['¿Viene en representación de una empresa?']),\n  empresa_representada: join(p2['En caso de responder Sí, ¿cuál?']),\n  email_solicitante: join(p2['Email']),\n  cargo: join(p2['Cargo']),\n  nivel_cargo: join(p2['Nivel del cargo']),\n  area_cargo: join(p2['Área del cargo']),\n  servicio: join(p3['¿Qué servicio te interesa?']),\n  tipo_base: join(crit['Tipo de base de datos']),\n  cantidad_registros: num(crit['Cantidad de registros a procesar']),\n  visitas_asesor: num(crit['Visitas por asesor comercial']),\n  incluir_rutas: bool(crit['¿Incluir rutas comerciales?']),\n  medio_conocimiento: join(cierre['¿Cómo conociste nuestros servicios?']),\n  otro_medio: join(cierre['Si elegiste \"Otro\", especificá (opcional)']),\n  comentarios: join(cierre['Comentarios y observaciones (opcional)']),\n  fecha_envio: cierre.submittedAt || ''\n};\n\nreturn { json: criterios };"
+      },
+      "id": "c82cfc69-4baf-4e03-8ad7-d18c6040f7e2",
+      "name": "Consolidar criterios - Zonificación y Rutero",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nit_cc": "={{ $json.nit_cc }}",
+            "direccion_empresa": "={{ $json.direccion_empresa }}",
+            "email_empresa": "={{ $json.email_empresa }}",
+            "telefono_empresa": "={{ $json.telefono_empresa }}",
+            "ciudad": "={{ $json.ciudad }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "cc_solicitante": "={{ $json.cc_solicitante }}",
+            "telefono_solicitante": "={{ $json.telefono_solicitante }}",
+            "direccion_solicitante": "={{ $json.direccion_solicitante }}",
+            "representacion_empresa": "={{ $json.representacion_empresa }}",
+            "empresa_representada": "={{ $json.empresa_representada }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "cargo": "={{ $json.cargo }}",
+            "nivel_cargo": "={{ $json.nivel_cargo }}",
+            "area_cargo": "={{ $json.area_cargo }}",
+            "servicio": "={{ $json.servicio }}",
+            "medio_conocimiento": "={{ $json.medio_conocimiento }}",
+            "otro_medio": "={{ $json.otro_medio }}",
+            "comentarios": "={{ $json.comentarios }}",
+            "fecha_envio": "={{ $json.fecha_envio }}",
+            "tipo_base": "={{ $json.tipo_base }}",
+            "cantidad_registros": "={{ $json.cantidad_registros }}",
+            "visitas_asesor": "={{ $json.visitas_asesor }}",
+            "incluir_rutas": "={{ $json.incluir_rutas }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "razon_social",
+              "displayName": "razon_social",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nit_cc",
+              "displayName": "nit_cc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "direccion_empresa",
+              "displayName": "direccion_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email_empresa",
+              "displayName": "email_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telefono_empresa",
+              "displayName": "telefono_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ciudad",
+              "displayName": "ciudad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre_solicitante",
+              "displayName": "nombre_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cc_solicitante",
+              "displayName": "cc_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telefono_solicitante",
+              "displayName": "telefono_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "direccion_solicitante",
+              "displayName": "direccion_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "representacion_empresa",
+              "displayName": "representacion_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "empresa_representada",
+              "displayName": "empresa_representada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email_solicitante",
+              "displayName": "email_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cargo",
+              "displayName": "cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nivel_cargo",
+              "displayName": "nivel_cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "area_cargo",
+              "displayName": "area_cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "medio_conocimiento",
+              "displayName": "medio_conocimiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "otro_medio",
+              "displayName": "otro_medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "comentarios",
+              "displayName": "comentarios",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_envio",
+              "displayName": "fecha_envio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "date",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tipo_base",
+              "displayName": "tipo_base",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cantidad_registros",
+              "displayName": "cantidad_registros",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "visitas_asesor",
+              "displayName": "visitas_asesor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "incluir_rutas",
+              "displayName": "incluir_rutas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "condition": "eq",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "d81b5286-6b69-4d4f-a686-4af75e7be34a",
+      "name": "Guardar criterios - Zonificación y Rutero",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        544
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst join = (v) => Array.isArray(v) ? v.filter((x) => x !== '' && x != null).join('; ') : ((v === undefined || v === null) ? '' : String(v));\nconst num = (v) => (v === '' || v === undefined || v === null) ? null : Number(v);\nconst bool = (v) => Array.isArray(v) ? v.some((x) => x !== '') : (v === true || v === 'true');\nconst p1 = get('Página 1 - Datos de la empresa');\nconst p2 = get('Página 2 - Datos del solicitante');\nconst p3 = get('Página 3 - Selector de servicio');\nconst captura = get('Capturar ID de solicitud');\nconst crit = get('Página 4 - Criterios - Ubicación de Nuevo Negocio');\nconst cierre = get('Página 5 - Medio de conocimiento y comentarios1');\nconst criterios = {\n  id_solicitud: captura.id_solicitud || p1.id_solicitud || '',\n  razon_social: join(p1['Razón Social / Nombre']),\n  nit_cc: join(p1['NIT / C.C.']),\n  direccion_empresa: join(p1['Dirección']),\n  email_empresa: join(p1['Email']),\n  telefono_empresa: join(p1['Teléfono']),\n  ciudad: join(p1['Ciudad']),\n  nombre_solicitante: join(p2['Nombre del solicitante']),\n  cc_solicitante: join(p2['C.C.']),\n  telefono_solicitante: join(p2['Teléfono de contacto']),\n  direccion_solicitante: join(p2['Dirección']),\n  representacion_empresa: join(p2['¿Viene en representación de una empresa?']),\n  empresa_representada: join(p2['En caso de responder Sí, ¿cuál?']),\n  email_solicitante: join(p2['Email']),\n  cargo: join(p2['Cargo']),\n  nivel_cargo: join(p2['Nivel del cargo']),\n  area_cargo: join(p2['Área del cargo']),\n  servicio: join(p3['¿Qué servicio te interesa?']),\n  tipo_base: join(crit['Tipo de registros']),\n  cantidad_registros: num(crit['Cantidad de registros a procesar']),\n  niveles_analisis: join(crit['Niveles de análisis']),\n  medio_conocimiento: join(cierre['¿Cómo conociste nuestros servicios?']),\n  otro_medio: join(cierre['Si elegiste \"Otro\", especificá (opcional)']),\n  comentarios: join(cierre['Comentarios y observaciones (opcional)']),\n  fecha_envio: cierre.submittedAt || ''\n};\n\nreturn { json: criterios };"
+      },
+      "id": "d6d582f5-c543-4006-8211-017cac8dfac2",
+      "name": "Consolidar criterios - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nit_cc": "={{ $json.nit_cc }}",
+            "direccion_empresa": "={{ $json.direccion_empresa }}",
+            "email_empresa": "={{ $json.email_empresa }}",
+            "telefono_empresa": "={{ $json.telefono_empresa }}",
+            "ciudad": "={{ $json.ciudad }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "cc_solicitante": "={{ $json.cc_solicitante }}",
+            "telefono_solicitante": "={{ $json.telefono_solicitante }}",
+            "direccion_solicitante": "={{ $json.direccion_solicitante }}",
+            "representacion_empresa": "={{ $json.representacion_empresa }}",
+            "empresa_representada": "={{ $json.empresa_representada }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "cargo": "={{ $json.cargo }}",
+            "nivel_cargo": "={{ $json.nivel_cargo }}",
+            "area_cargo": "={{ $json.area_cargo }}",
+            "servicio": "={{ $json.servicio }}",
+            "medio_conocimiento": "={{ $json.medio_conocimiento }}",
+            "otro_medio": "={{ $json.otro_medio }}",
+            "comentarios": "={{ $json.comentarios }}",
+            "fecha_envio": "={{ $json.fecha_envio }}",
+            "tipo_base": "={{ $json.tipo_base }}",
+            "cantidad_registros": "={{ $json.cantidad_registros }}",
+            "niveles_analisis": "={{ $json.niveles_analisis }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "razon_social",
+              "displayName": "razon_social",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nit_cc",
+              "displayName": "nit_cc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "direccion_empresa",
+              "displayName": "direccion_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email_empresa",
+              "displayName": "email_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telefono_empresa",
+              "displayName": "telefono_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ciudad",
+              "displayName": "ciudad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre_solicitante",
+              "displayName": "nombre_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cc_solicitante",
+              "displayName": "cc_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telefono_solicitante",
+              "displayName": "telefono_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "direccion_solicitante",
+              "displayName": "direccion_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "representacion_empresa",
+              "displayName": "representacion_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "empresa_representada",
+              "displayName": "empresa_representada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email_solicitante",
+              "displayName": "email_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cargo",
+              "displayName": "cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nivel_cargo",
+              "displayName": "nivel_cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "area_cargo",
+              "displayName": "area_cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "medio_conocimiento",
+              "displayName": "medio_conocimiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "otro_medio",
+              "displayName": "otro_medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "comentarios",
+              "displayName": "comentarios",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_envio",
+              "displayName": "fecha_envio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "date",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tipo_base",
+              "displayName": "tipo_base",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cantidad_registros",
+              "displayName": "cantidad_registros",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "niveles_analisis",
+              "displayName": "niveles_analisis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "condition": "eq",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "f68f91ba-102f-4bb6-a04e-875aeb21f87e",
+      "name": "Guardar criterios - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        832
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst join = (v) => Array.isArray(v) ? v.filter((x) => x !== '' && x != null).join('; ') : ((v === undefined || v === null) ? '' : String(v));\nconst num = (v) => (v === '' || v === undefined || v === null) ? null : Number(v);\nconst bool = (v) => Array.isArray(v) ? v.some((x) => x !== '') : (v === true || v === 'true');\nconst p1 = get('Página 1 - Datos de la empresa');\nconst p2 = get('Página 2 - Datos del solicitante');\nconst p3 = get('Página 3 - Selector de servicio');\nconst captura = get('Capturar ID de solicitud');\nconst crit = get('Página 4 - Criterios - Información en Línea');\nconst cierre = get('Página 5 - Medio de conocimiento y comentarios2');\nconst criterios = {\n  id_solicitud: captura.id_solicitud || p1.id_solicitud || '',\n  razon_social: join(p1['Razón Social / Nombre']),\n  nit_cc: join(p1['NIT / C.C.']),\n  direccion_empresa: join(p1['Dirección']),\n  email_empresa: join(p1['Email']),\n  telefono_empresa: join(p1['Teléfono']),\n  ciudad: join(p1['Ciudad']),\n  nombre_solicitante: join(p2['Nombre del solicitante']),\n  cc_solicitante: join(p2['C.C.']),\n  telefono_solicitante: join(p2['Teléfono de contacto']),\n  direccion_solicitante: join(p2['Dirección']),\n  representacion_empresa: join(p2['¿Viene en representación de una empresa?']),\n  empresa_representada: join(p2['En caso de responder Sí, ¿cuál?']),\n  email_solicitante: join(p2['Email']),\n  cargo: join(p2['Cargo']),\n  nivel_cargo: join(p2['Nivel del cargo']),\n  area_cargo: join(p2['Área del cargo']),\n  servicio: join(p3['¿Qué servicio te interesa?']),\n  plan_en_linea: join(crit['¿Qué plan te interesa?']),\n  consultas_mensuales: num(crit['Consultas mensuales estimadas']),\n  usuarios: num(crit['Número de usuarios']),\n  medio_conocimiento: join(cierre['¿Cómo conociste nuestros servicios?']),\n  otro_medio: join(cierre['Si elegiste \"Otro\", especificá (opcional)']),\n  comentarios: join(cierre['Comentarios y observaciones (opcional)']),\n  fecha_envio: cierre.submittedAt || ''\n};\n\nreturn { json: criterios };"
+      },
+      "id": "d7958919-44d1-4004-a851-f3b29963df76",
+      "name": "Consolidar criterios - Información en Línea",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        1104
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nit_cc": "={{ $json.nit_cc }}",
+            "direccion_empresa": "={{ $json.direccion_empresa }}",
+            "email_empresa": "={{ $json.email_empresa }}",
+            "telefono_empresa": "={{ $json.telefono_empresa }}",
+            "ciudad": "={{ $json.ciudad }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "cc_solicitante": "={{ $json.cc_solicitante }}",
+            "telefono_solicitante": "={{ $json.telefono_solicitante }}",
+            "direccion_solicitante": "={{ $json.direccion_solicitante }}",
+            "representacion_empresa": "={{ $json.representacion_empresa }}",
+            "empresa_representada": "={{ $json.empresa_representada }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "cargo": "={{ $json.cargo }}",
+            "nivel_cargo": "={{ $json.nivel_cargo }}",
+            "area_cargo": "={{ $json.area_cargo }}",
+            "servicio": "={{ $json.servicio }}",
+            "medio_conocimiento": "={{ $json.medio_conocimiento }}",
+            "otro_medio": "={{ $json.otro_medio }}",
+            "comentarios": "={{ $json.comentarios }}",
+            "fecha_envio": "={{ $json.fecha_envio }}",
+            "plan_en_linea": "={{ $json.plan_en_linea }}",
+            "consultas_mensuales": "={{ $json.consultas_mensuales }}",
+            "usuarios": "={{ $json.usuarios }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "razon_social",
+              "displayName": "razon_social",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nit_cc",
+              "displayName": "nit_cc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "direccion_empresa",
+              "displayName": "direccion_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email_empresa",
+              "displayName": "email_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telefono_empresa",
+              "displayName": "telefono_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ciudad",
+              "displayName": "ciudad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre_solicitante",
+              "displayName": "nombre_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cc_solicitante",
+              "displayName": "cc_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telefono_solicitante",
+              "displayName": "telefono_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "direccion_solicitante",
+              "displayName": "direccion_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "representacion_empresa",
+              "displayName": "representacion_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "empresa_representada",
+              "displayName": "empresa_representada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email_solicitante",
+              "displayName": "email_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cargo",
+              "displayName": "cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nivel_cargo",
+              "displayName": "nivel_cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "area_cargo",
+              "displayName": "area_cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "medio_conocimiento",
+              "displayName": "medio_conocimiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "otro_medio",
+              "displayName": "otro_medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "comentarios",
+              "displayName": "comentarios",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_envio",
+              "displayName": "fecha_envio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "date",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "plan_en_linea",
+              "displayName": "plan_en_linea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "consultas_mensuales",
+              "displayName": "consultas_mensuales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "usuarios",
+              "displayName": "usuarios",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "condition": "eq",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "a6b7ecdc-e519-48ba-962c-2e7988871595",
+      "name": "Guardar criterios - Información en Línea",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        1104
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Tipo de base de datos",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Clientes Actuales"
+                  },
+                  {
+                    "option": "Competencia"
+                  },
+                  {
+                    "option": "Nuevos Clientes"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Cantidad de registros a procesar",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Visitas por asesor comercial",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "¿Incluir rutas comerciales?",
+              "fieldType": "checkbox",
+              "fieldOptions": {
+                "values": [
+                  {}
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "id": "b69e4e88-4902-439d-bb06-749c2f5d25f8",
+      "name": "Página 4 - Criterios - Zonificación y Rutero",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        544
+      ],
+      "webhookId": "ce4267e8-b397-4381-98ec-f0c8ca3e2469"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Tipo de registros",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Clientes actuales o propios"
+                  },
+                  {
+                    "option": "Proveedores"
+                  },
+                  {
+                    "option": "Nuevos o potenciales clientes (Registro Mercantil)"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Cantidad de registros a procesar",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Niveles de análisis",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Capa 1: Crecimiento geográfico y demográfico de la zona"
+                  },
+                  {
+                    "option": "Capa 2: Comportamiento histórico empresarial"
+                  },
+                  {
+                    "option": "Capa 3: Infografías o resúmenes empresariales"
+                  },
+                  {
+                    "option": "Capa 4: Estratificación y densidad empresarial"
+                  },
+                  {
+                    "option": "Capa 5: Ubicación de empresas del sector y análisis de participación"
+                  },
+                  {
+                    "option": "Capa 6: Gastos promedio en la zona"
+                  },
+                  {
+                    "option": "Capa 7: Ubicación de competencia, proveedores y sitios de interés"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "id": "e8210cb2-6d6b-46c3-b903-07fa593e98f1",
+      "name": "Página 4 - Criterios - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        832
+      ],
+      "webhookId": "d66fa5c6-eca4-4253-848c-3e48581b6dd1"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "¿Qué plan te interesa?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Plan Bronce"
+                  },
+                  {
+                    "option": "Plan Plata"
+                  },
+                  {
+                    "option": "Plan Gold"
+                  },
+                  {
+                    "option": "Plan Rubí"
+                  },
+                  {
+                    "option": "Plan Diamante"
+                  },
+                  {
+                    "option": "No estoy seguro / necesito ayuda"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Consultas mensuales estimadas",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Número de usuarios",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Siguiente"
+        }
+      },
+      "id": "7fa2a05c-5b17-48e4-b42e-05f0756e9f4d",
+      "name": "Página 4 - Criterios - Información en Línea",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        1104
+      ],
+      "webhookId": "a874e776-e248-433c-87a2-969d38aab516"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "¿Cómo conociste nuestros servicios?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Google"
+                  },
+                  {
+                    "option": "Información recibida en su correo"
+                  },
+                  {
+                    "option": "Redes sociales — Facebook"
+                  },
+                  {
+                    "option": "Redes sociales — LinkedIn"
+                  },
+                  {
+                    "option": "Promoción"
+                  },
+                  {
+                    "option": "Participación en eventos"
+                  },
+                  {
+                    "option": "Otro"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Si elegiste \"Otro\", especificá (opcional)"
+            },
+            {
+              "fieldLabel": "Comentarios y observaciones (opcional)",
+              "fieldType": "textarea"
+            },
+            {
+              "fieldType": "html",
+              "html": "<p style=\"line-height:1.6;\">Gracias por preferir nuestros servicios institucionales. Pronto estaremos enviándole una cotización de acuerdo con su consulta.</p>"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Enviar solicitud"
+        }
+      },
+      "id": "09d64a4d-6e5f-4d4f-9ca0-53530c15884b",
+      "name": "Página 5 - Medio de conocimiento y comentarios",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        544
+      ],
+      "webhookId": "268cba0d-ce41-41d4-8660-1ca7949fac31"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "¿Cómo conociste nuestros servicios?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Google"
+                  },
+                  {
+                    "option": "Información recibida en su correo"
+                  },
+                  {
+                    "option": "Redes sociales — Facebook"
+                  },
+                  {
+                    "option": "Redes sociales — LinkedIn"
+                  },
+                  {
+                    "option": "Promoción"
+                  },
+                  {
+                    "option": "Participación en eventos"
+                  },
+                  {
+                    "option": "Otro"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Si elegiste \"Otro\", especificá (opcional)"
+            },
+            {
+              "fieldLabel": "Comentarios y observaciones (opcional)",
+              "fieldType": "textarea"
+            },
+            {
+              "fieldType": "html",
+              "html": "<p style=\"line-height:1.6;\">Gracias por preferir nuestros servicios institucionales. Pronto estaremos enviándole una cotización de acuerdo con su consulta.</p>"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Enviar solicitud"
+        }
+      },
+      "id": "4f370efd-9930-4c77-9b8c-f5a7bfa00391",
+      "name": "Página 5 - Medio de conocimiento y comentarios1",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        832
+      ],
+      "webhookId": "5b00ca11-3a67-4a84-9905-f4527228b296"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "¿Cómo conociste nuestros servicios?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Google"
+                  },
+                  {
+                    "option": "Información recibida en su correo"
+                  },
+                  {
+                    "option": "Redes sociales — Facebook"
+                  },
+                  {
+                    "option": "Redes sociales — LinkedIn"
+                  },
+                  {
+                    "option": "Promoción"
+                  },
+                  {
+                    "option": "Participación en eventos"
+                  },
+                  {
+                    "option": "Otro"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Si elegiste \"Otro\", especificá (opcional)"
+            },
+            {
+              "fieldLabel": "Comentarios y observaciones (opcional)",
+              "fieldType": "textarea"
+            },
+            {
+              "fieldType": "html",
+              "html": "<p style=\"line-height:1.6;\">Gracias por preferir nuestros servicios institucionales. Pronto estaremos enviándole una cotización de acuerdo con su consulta.</p>"
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Enviar solicitud"
+        }
+      },
+      "id": "9a12afe2-35dc-42c2-8797-f93593a03e46",
+      "name": "Página 5 - Medio de conocimiento y comentarios2",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        1104
+      ],
+      "webhookId": "29e070c2-4aa0-45fe-9f0c-2a22db41d6ab"
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => {\n  try { return $(name).first().json || {}; } catch (e) { return {}; }\n};\nconst join = (v) => Array.isArray(v) ? v.filter((x) => x !== '' && x != null).join('; ') : ((v === undefined || v === null) ? '' : String(v));\nconst num = (v) => (v === '' || v === undefined || v === null) ? null : Number(v);\nconst bool = (v) => Array.isArray(v) ? v.some((x) => x !== '') : (v === true || v === 'true');\n\nconst p1 = get('Página 1 - Datos de la empresa');\nconst p2 = get('Página 2 - Datos del solicitante');\nconst p3 = get('Página 3 - Selector de servicio');\nconst p4 = get('Página 4 - Organización jurídica y ubicación');\nconst p5 = get('Página 5 - Actividad económica y ESAL');\nconst p6 = get('Página 6 - Tamaño de empresa y ventas');\nconst p7 = get('Página 7 - Medio de conocimiento y comentarios');\nconst captura = get('Capturar ID de solicitud');\n\nconst criterios = {\n  id_solicitud: captura.id_solicitud || p1.id_solicitud || '',\n  razon_social: join(p1['Razón Social / Nombre']),\n  nit_cc: join(p1['NIT / C.C.']),\n  direccion_empresa: join(p1['Dirección']),\n  email_empresa: join(p1['Email']),\n  telefono_empresa: join(p1['Teléfono']),\n  ciudad: join(p1['Ciudad']),\n  nombre_solicitante: join(p2['Nombre del solicitante']),\n  cc_solicitante: join(p2['C.C.']),\n  telefono_solicitante: join(p2['Teléfono de contacto']),\n  direccion_solicitante: join(p2['Dirección']),\n  representacion_empresa: join(p2['¿Viene en representación de una empresa?']),\n  empresa_representada: join(p2['En caso de responder Sí, ¿cuál?']),\n  email_solicitante: join(p2['Email']),\n  cargo: join(p2['Cargo']),\n  nivel_cargo: join(p2['Nivel del cargo']),\n  area_cargo: join(p2['Área del cargo']),\n  servicio: join(p3['¿Qué servicio te interesa?']),\n  organizacion_juridica: join(p4['Organización jurídica']),\n  ubicacion_geografica: join(p4['Ubicación geográfica']),\n  ciudades_municipios: join(p4['Ciudades / municipios específicos del Atlántico (solo si aplica)']),\n  actividad_economica: join(p5['Actividad económica']),\n  actividades_especificas: join(p5['Actividades específicas requeridas (opcional)']),\n  categorias_esal: join(p5['Categorías de entidades sin ánimo de lucro (solo si seleccionó ESAL en la página anterior)']),\n  categorias_esal_especificas: join(p5['Categorías ESAL específicas requeridas (opcional)']),\n  tamano_empresa: join(p6['Tamaño de empresa']),\n  activos_min: num(p6['Activos totales — mayor o igual a (opcional)']),\n  activos_max: num(p6['Activos totales — menor o igual a (opcional)']),\n  activos_entre: num(p6['Activos totales — entre (opcional)']),\n  activos_y: num(p6['Activos totales — y (opcional)']),\n  ventas_min: num(p6['Nivel de ventas — mayor o igual a (opcional)']),\n  ventas_max: num(p6['Nivel de ventas — menor o igual a (opcional)']),\n  ventas_entre: num(p6['Nivel de ventas — entre (opcional)']),\n  ventas_y: num(p6['Nivel de ventas — y (opcional)']),\n  indiferente_ventas: bool(p6['Indiferente del nivel de ventas']),\n  medio_conocimiento: join(p7['¿Cómo conociste nuestros servicios?']),\n  otro_medio: join(p7['Si elegiste \"Otro\", especificá (opcional)']),\n  comentarios: join(p7['Comentarios y observaciones (opcional)']),\n  fecha_envio: p7.submittedAt || ''\n};\n\nreturn { json: criterios };"
+      },
+      "id": "622b54cb-c2c3-450c-8b17-520c74ca0274",
+      "name": "Consolidar criterios - Información Georreferenciada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nit_cc": "={{ $json.nit_cc }}",
+            "direccion_empresa": "={{ $json.direccion_empresa }}",
+            "email_empresa": "={{ $json.email_empresa }}",
+            "telefono_empresa": "={{ $json.telefono_empresa }}",
+            "ciudad": "={{ $json.ciudad }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "cc_solicitante": "={{ $json.cc_solicitante }}",
+            "telefono_solicitante": "={{ $json.telefono_solicitante }}",
+            "direccion_solicitante": "={{ $json.direccion_solicitante }}",
+            "representacion_empresa": "={{ $json.representacion_empresa }}",
+            "empresa_representada": "={{ $json.empresa_representada }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "cargo": "={{ $json.cargo }}",
+            "nivel_cargo": "={{ $json.nivel_cargo }}",
+            "area_cargo": "={{ $json.area_cargo }}",
+            "servicio": "={{ $json.servicio }}",
+            "organizacion_juridica": "={{ $json.organizacion_juridica }}",
+            "ubicacion_geografica": "={{ $json.ubicacion_geografica }}",
+            "ciudades_municipios": "={{ $json.ciudades_municipios }}",
+            "actividad_economica": "={{ $json.actividad_economica }}",
+            "actividades_especificas": "={{ $json.actividades_especificas }}",
+            "categorias_esal": "={{ $json.categorias_esal }}",
+            "categorias_esal_especificas": "={{ $json.categorias_esal_especificas }}",
+            "tamano_empresa": "={{ $json.tamano_empresa }}",
+            "activos_min": "={{ $json.activos_min }}",
+            "activos_max": "={{ $json.activos_max }}",
+            "activos_entre": "={{ $json.activos_entre }}",
+            "activos_y": "={{ $json.activos_y }}",
+            "ventas_min": "={{ $json.ventas_min }}",
+            "ventas_max": "={{ $json.ventas_max }}",
+            "ventas_entre": "={{ $json.ventas_entre }}",
+            "ventas_y": "={{ $json.ventas_y }}",
+            "indiferente_ventas": "={{ $json.indiferente_ventas }}",
+            "medio_conocimiento": "={{ $json.medio_conocimiento }}",
+            "otro_medio": "={{ $json.otro_medio }}",
+            "comentarios": "={{ $json.comentarios }}",
+            "fecha_envio": "={{ $json.fecha_envio }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "razon_social",
+              "displayName": "razon_social",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nit_cc",
+              "displayName": "nit_cc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "direccion_empresa",
+              "displayName": "direccion_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email_empresa",
+              "displayName": "email_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telefono_empresa",
+              "displayName": "telefono_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ciudad",
+              "displayName": "ciudad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nombre_solicitante",
+              "displayName": "nombre_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cc_solicitante",
+              "displayName": "cc_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telefono_solicitante",
+              "displayName": "telefono_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "direccion_solicitante",
+              "displayName": "direccion_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "representacion_empresa",
+              "displayName": "representacion_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "empresa_representada",
+              "displayName": "empresa_representada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "email_solicitante",
+              "displayName": "email_solicitante",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "cargo",
+              "displayName": "cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nivel_cargo",
+              "displayName": "nivel_cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "area_cargo",
+              "displayName": "area_cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "organizacion_juridica",
+              "displayName": "organizacion_juridica",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ubicacion_geografica",
+              "displayName": "ubicacion_geografica",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ciudades_municipios",
+              "displayName": "ciudades_municipios",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "actividad_economica",
+              "displayName": "actividad_economica",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "actividades_especificas",
+              "displayName": "actividades_especificas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categorias_esal",
+              "displayName": "categorias_esal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categorias_esal_especificas",
+              "displayName": "categorias_esal_especificas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "tamano_empresa",
+              "displayName": "tamano_empresa",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "activos_min",
+              "displayName": "activos_min",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "activos_max",
+              "displayName": "activos_max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "activos_entre",
+              "displayName": "activos_entre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "activos_y",
+              "displayName": "activos_y",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ventas_min",
+              "displayName": "ventas_min",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ventas_max",
+              "displayName": "ventas_max",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ventas_entre",
+              "displayName": "ventas_entre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "ventas_y",
+              "displayName": "ventas_y",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "indiferente_ventas",
+              "displayName": "indiferente_ventas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "medio_conocimiento",
+              "displayName": "medio_conocimiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "otro_medio",
+              "displayName": "otro_medio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "comentarios",
+              "displayName": "comentarios",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_envio",
+              "displayName": "fecha_envio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "date",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "condition": "eq",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "1f30183d-9598-4127-9b02-95b6ee7b8eb9",
+      "name": "Guardar criterios - Información Georreferenciada",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2000,
+        272
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\n\nconst captura = get('Capturar ID de solicitud');\nconst p3 = get('Página 3 - Selector de servicio');\nconst idSolicitud = captura.id_solicitud || '';\nconst servicio = p3['¿Qué servicio te interesa?'] || '(sin valor)';\n\nconst nodoFallido = 'Enrutar por servicio';\nconst mensajeError = 'Servicio no reconocido en el formulario: ' + servicio;\n\nreturn {\n  json: {\n    id_solicitud: idSolicitud,\n    workflow_origen: 'workflow-formulario',\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError\n  }\n};"
+      },
+      "id": "dc41c023-6c8a-4ac4-a04d-fe575b7e1643",
+      "name": "Preparar error - Servicio no reconocido",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        1392
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "workflow_origen",
+              "displayName": "workflow_origen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nodo_fallido",
+              "displayName": "nodo_fallido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mensaje_error",
+              "displayName": "mensaje_error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "5165dced-643a-4b43-a61e-8a226bcbe441",
+      "name": "Registrar error - Servicio no reconocido",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        1392
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Servicio no reconocido",
+        "completionMessage": "No pudimos identificar el servicio seleccionado en tu solicitud. Un asesor de la Cámara de Comercio de Barranquilla se pondrá en contacto contigo próximamente.",
+        "options": {}
+      },
+      "id": "6c97ab68-7380-4c91-b055-3dc156d0651a",
+      "name": "Servicio no reconocido",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        1392
+      ],
+      "webhookId": "26604e53-368b-448a-86ca-12382ed5dcbf"
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\n\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst nodoFallido = $json.error?.node?.name || $json.error?.name || 'Guardar criterios';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Error guardando criterios</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">Falló el guardado de criterios del formulario (Workflow 2).</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: idSolicitud,\n    workflow_origen: 'workflow-formulario',\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    emailBody\n  }\n};"
+      },
+      "id": "b2b5d7e9-6037-48d5-bf15-0fea06059677",
+      "name": "Preparar error - Guardado de criterios",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "workflow_origen",
+              "displayName": "workflow_origen",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nodo_fallido",
+              "displayName": "nodo_fallido",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mensaje_error",
+              "displayName": "mensaje_error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1dabc8d9-ce3e-4187-a065-262be75e296b",
+      "name": "Guardar incidencia - Data Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2864,
+        512
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '⚠️ Error guardando criterios - nodo: ' + $json.nodo_fallido }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "91bab2ac-36ff-46b9-96c3-2af5a542f7c9",
+      "name": "Enviar alerta de guardado",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        704
+      ],
+      "webhookId": "45713254-b38b-45b6-bf02-3b05f6333a4e",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\nconst c = $('Consolidar criterios - Información Georreferenciada').first().json;\nreturn { json: {\n  id_solicitud: j.id_solicitud || c.id_solicitud,\n  servicio: 'Información Georreferenciada',\n  tipo_organizacion: j.organizacion_juridica,\n  municipios: j.ubicacion_geografica,\n  sectores: j.actividad_economica,\n  tamano_empresa: j.tamano_empresa,\n  activos_min: j.activos_min, activos_max: j.activos_max, activos_entre: j.activos_entre, activos_y: j.activos_y,\n  ventas_min: j.ventas_min, ventas_max: j.ventas_max, ventas_entre: j.ventas_entre, ventas_y: j.ventas_y,\n  indiferente_ventas: j.indiferente_ventas,\n  tipo_servicio: 'Georreferenciada',\n  nombre_solicitante: c.nombre_solicitante,\n  razon_social: c.razon_social,\n  email_solicitante: c.email_solicitante,\n  telefono_solicitante: c.telefono_solicitante,\n  ciudad: c.ciudad\n} };"
+      },
+      "id": "96155ce9-7c1d-4909-8092-1c1eea8e388b",
+      "name": "Preparar criterios para motor - Información Georreferenciada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2208,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cHOIOEFB5nbltN82",
+          "mode": "list",
+          "cachedResultName": "CCB - Motor Criterios y Precio v2",
+          "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "36d31ed2-d7ec-4497-bdea-4f60904dd862",
+      "name": "Ejecutar motor - Información Georreferenciada",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2400,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "servicio": "={{ $json.servicio }}",
+            "total_registros": "={{ $json.TOTAL_REGISTROS }}",
+            "valor": "={{ $json.VALOR }}",
+            "iva": "={{ $json.IVA }}",
+            "valor_total": "={{ $json.VALOR_TOTAL }}",
+            "plan_seleccionado": "={{ $json.PLAN_SELECCIONADO }}",
+            "inversion_inicial": "={{ $json.INVERSION_INICIAL }}",
+            "pago_mensual": "={{ $json.PAGO_MENSUAL }}",
+            "num_zonas": "={{ $json.NUM_ZONAS }}",
+            "num_niveles": "={{ $json.NUM_NIVELES }}",
+            "criterio_sector": "={{ $json.CRITERIO_SECTOR }}",
+            "estado": "={{ $json.ok === false ? 'ERROR_CALCULO' : 'PROPUESTA_GENERADA' }}",
+            "fecha_calculo": "={{ DateTime.now().toISO() }}",
+            "error": "={{ $json.error }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "total_registros",
+              "displayName": "total_registros",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "valor",
+              "displayName": "valor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "iva",
+              "displayName": "iva",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "valor_total",
+              "displayName": "valor_total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "plan_seleccionado",
+              "displayName": "plan_seleccionado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "inversion_inicial",
+              "displayName": "inversion_inicial",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pago_mensual",
+              "displayName": "pago_mensual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_zonas",
+              "displayName": "num_zonas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_niveles",
+              "displayName": "num_niveles",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "criterio_sector",
+              "displayName": "criterio_sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_calculo",
+              "displayName": "fecha_calculo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "date",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "condition": "eq",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "3a0d80bd-e154-40f0-aa99-e7cdacdadb81",
+      "name": "Guardar cotización - Información Georreferenciada",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2608,
+        272
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\nconst c = $('Consolidar criterios - Zonificación y Rutero').first().json;\nreturn { json: {\n  id_solicitud: j.id_solicitud || c.id_solicitud,\n  servicio: 'Zonificación y Rutero',\n  tipo_servicio: 'Zonificacion y Rutero',\n  total_registros: j.cantidad_registros,\n  visitas_por_asesor: j.visitas_asesor,\n  incluye_rutas: j.incluir_rutas,\n  nombre_solicitante: c.nombre_solicitante,\n  razon_social: c.razon_social,\n  email_solicitante: c.email_solicitante,\n  telefono_solicitante: c.telefono_solicitante,\n  ciudad: c.ciudad\n} };"
+      },
+      "id": "d1b473f4-23eb-4395-9421-ec5f08bdb98d",
+      "name": "Preparar criterios para motor - Zonificación y Rutero",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cHOIOEFB5nbltN82",
+          "mode": "list",
+          "cachedResultName": "CCB - Motor Criterios y Precio v2",
+          "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "d8e0bae1-955d-442f-bc26-f5bb33c32d66",
+      "name": "Ejecutar motor - Zonificación y Rutero",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "servicio": "={{ $json.servicio }}",
+            "total_registros": "={{ $json.TOTAL_REGISTROS }}",
+            "valor": "={{ $json.VALOR }}",
+            "iva": "={{ $json.IVA }}",
+            "valor_total": "={{ $json.VALOR_TOTAL }}",
+            "plan_seleccionado": "={{ $json.PLAN_SELECCIONADO }}",
+            "inversion_inicial": "={{ $json.INVERSION_INICIAL }}",
+            "pago_mensual": "={{ $json.PAGO_MENSUAL }}",
+            "num_zonas": "={{ $json.NUM_ZONAS }}",
+            "num_niveles": "={{ $json.NUM_NIVELES }}",
+            "criterio_sector": "={{ $json.CRITERIO_SECTOR }}",
+            "estado": "={{ $json.ok === false ? 'ERROR_CALCULO' : 'PROPUESTA_GENERADA' }}",
+            "fecha_calculo": "={{ DateTime.now().toISO() }}",
+            "error": "={{ $json.error }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "total_registros",
+              "displayName": "total_registros",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "valor",
+              "displayName": "valor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "iva",
+              "displayName": "iva",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "valor_total",
+              "displayName": "valor_total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "plan_seleccionado",
+              "displayName": "plan_seleccionado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "inversion_inicial",
+              "displayName": "inversion_inicial",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pago_mensual",
+              "displayName": "pago_mensual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_zonas",
+              "displayName": "num_zonas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_niveles",
+              "displayName": "num_niveles",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "criterio_sector",
+              "displayName": "criterio_sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_calculo",
+              "displayName": "fecha_calculo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "date",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "condition": "eq",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "61bdb6e0-40c1-47cc-8db6-85970aab8b87",
+      "name": "Guardar cotización - Zonificación y Rutero",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2208,
+        544
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\nconst c = $('Consolidar criterios - Ubicación de Nuevo Negocio').first().json;\nconst niveles = (j.niveles_analisis || '').split('; ').filter(Boolean).length;\nreturn { json: {\n  id_solicitud: j.id_solicitud || c.id_solicitud,\n  servicio: 'Ubicación de Nuevo Negocio',\n  tipo_servicio: 'Ubicacion de Nuevo Negocio',\n  total_registros: j.cantidad_registros,\n  num_niveles: niveles,\n  niveles_analisis: j.niveles_analisis,\n  nombre_solicitante: c.nombre_solicitante,\n  razon_social: c.razon_social,\n  email_solicitante: c.email_solicitante,\n  telefono_solicitante: c.telefono_solicitante,\n  ciudad: c.ciudad\n} };"
+      },
+      "id": "4186391c-b034-404a-a833-a46abcc45b79",
+      "name": "Preparar criterios para motor - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cHOIOEFB5nbltN82",
+          "mode": "list",
+          "cachedResultName": "CCB - Motor Criterios y Precio v2",
+          "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "9de9570c-c0a9-4769-a5e7-82d3a8fca651",
+      "name": "Ejecutar motor - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "servicio": "={{ $json.servicio }}",
+            "total_registros": "={{ $json.TOTAL_REGISTROS }}",
+            "valor": "={{ $json.VALOR }}",
+            "iva": "={{ $json.IVA }}",
+            "valor_total": "={{ $json.VALOR_TOTAL }}",
+            "plan_seleccionado": "={{ $json.PLAN_SELECCIONADO }}",
+            "inversion_inicial": "={{ $json.INVERSION_INICIAL }}",
+            "pago_mensual": "={{ $json.PAGO_MENSUAL }}",
+            "num_zonas": "={{ $json.NUM_ZONAS }}",
+            "num_niveles": "={{ $json.NUM_NIVELES }}",
+            "criterio_sector": "={{ $json.CRITERIO_SECTOR }}",
+            "estado": "={{ $json.ok === false ? 'ERROR_CALCULO' : 'PROPUESTA_GENERADA' }}",
+            "fecha_calculo": "={{ DateTime.now().toISO() }}",
+            "error": "={{ $json.error }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "total_registros",
+              "displayName": "total_registros",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "valor",
+              "displayName": "valor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "iva",
+              "displayName": "iva",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "valor_total",
+              "displayName": "valor_total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "plan_seleccionado",
+              "displayName": "plan_seleccionado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "inversion_inicial",
+              "displayName": "inversion_inicial",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pago_mensual",
+              "displayName": "pago_mensual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_zonas",
+              "displayName": "num_zonas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_niveles",
+              "displayName": "num_niveles",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "criterio_sector",
+              "displayName": "criterio_sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_calculo",
+              "displayName": "fecha_calculo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "date",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "condition": "eq",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "f9a50378-149e-4ce2-af2e-998b167a1da5",
+      "name": "Guardar cotización - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2208,
+        832
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\nconst c = $('Consolidar criterios - Información en Línea').first().json;\nconst plan = (j.plan_en_linea || '').trim().replace(/^Plan\\s+/i, '');\nconst noSeguro = plan === 'No estoy seguro / necesito ayuda' || plan === '';\nreturn { json: {\n  id_solicitud: j.id_solicitud || c.id_solicitud,\n  servicio: 'Información en Línea',\n  tipo_servicio: 'Informacion en Linea',\n  ya_sabe_plan: noSeguro ? false : true,\n  plan_deseado: noSeguro ? '' : plan,\n  consultas_mensuales: j.consultas_mensuales,\n  numero_usuarios: j.usuarios,\n  nombre_solicitante: c.nombre_solicitante,\n  razon_social: c.razon_social,\n  email_solicitante: c.email_solicitante,\n  telefono_solicitante: c.telefono_solicitante,\n  ciudad: c.ciudad\n} };"
+      },
+      "id": "ff2d6842-83b3-43ca-bf22-f4fa4f3b1905",
+      "name": "Preparar criterios para motor - Información en Línea",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        1104
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cHOIOEFB5nbltN82",
+          "mode": "list",
+          "cachedResultName": "CCB - Motor Criterios y Precio v2",
+          "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
+        },
+        "options": {}
+      },
+      "id": "1b81c41b-8a8e-4502-8b15-4916bb28aa0d",
+      "name": "Ejecutar motor - Información en Línea",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        1104
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "servicio": "={{ $json.servicio }}",
+            "total_registros": "={{ $json.TOTAL_REGISTROS }}",
+            "valor": "={{ $json.VALOR }}",
+            "iva": "={{ $json.IVA }}",
+            "valor_total": "={{ $json.VALOR_TOTAL }}",
+            "plan_seleccionado": "={{ $json.PLAN_SELECCIONADO }}",
+            "inversion_inicial": "={{ $json.INVERSION_INICIAL }}",
+            "pago_mensual": "={{ $json.PAGO_MENSUAL }}",
+            "num_zonas": "={{ $json.NUM_ZONAS }}",
+            "num_niveles": "={{ $json.NUM_NIVELES }}",
+            "criterio_sector": "={{ $json.CRITERIO_SECTOR }}",
+            "estado": "={{ $json.ok === false ? 'ERROR_CALCULO' : 'PROPUESTA_GENERADA' }}",
+            "fecha_calculo": "={{ DateTime.now().toISO() }}",
+            "error": "={{ $json.error }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "servicio",
+              "displayName": "servicio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "total_registros",
+              "displayName": "total_registros",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "valor",
+              "displayName": "valor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "iva",
+              "displayName": "iva",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "valor_total",
+              "displayName": "valor_total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "plan_seleccionado",
+              "displayName": "plan_seleccionado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "inversion_inicial",
+              "displayName": "inversion_inicial",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pago_mensual",
+              "displayName": "pago_mensual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_zonas",
+              "displayName": "num_zonas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "num_niveles",
+              "displayName": "num_niveles",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "criterio_sector",
+              "displayName": "criterio_sector",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "fecha_calculo",
+              "displayName": "fecha_calculo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "date",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "condition": "eq",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "d7916401-4efb-4da6-b21c-1134ed0151d3",
+      "name": "Guardar cotización - Información en Línea",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2208,
+        1104
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "e760c803-3f94-4895-bda6-b1e79fdaa1cc",
+      "name": "Nota - W2 Formulario",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -160
+      ],
+      "parameters": {
+        "content": "## W2 — Formulario de solicitud\nFormulario multipágina (Form Trigger). La Página 3 enruta por servicio (Switch) a 1 de 4 ramas de criterios: Información Georreferenciada, Zonificación y Rutero, Ubicación de Nuevo Negocio, Información en Línea.\n\nCada rama junta sus propias páginas de criterios + la página común de \"medio de conocimiento y comentarios\".",
+        "width": 950,
+        "height": 220,
+        "color": 4
+      }
+    },
+    {
+      "id": "ff900103-4622-400b-bcca-54a638d60716",
+      "name": "Nota - W2 Motor por servicio",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        -60
+      ],
+      "parameters": {
+        "content": "## Por cada servicio (x4)\nconsolidar criterios → guardar en Data Table → preparar para el motor → ejecutar W3 (motor) → guardar cotización.\n\nErrores de guardado y de \"servicio no reconocido\" caen en una rama común: Preparar error - Guardado de criterios → Data Table → alerta Outlook.",
+        "width": 900,
+        "height": 300,
+        "color": 4
+      }
+    },
+    {
+      "id": "88ec6e97-2165-4446-bca8-f204002dd4e3",
+      "name": "Validar motor - Información Georreferenciada",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2504,
+        272
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "3bed852e-7d1d-45c5-aaed-7c4e296edcf5"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "b2520d30-3785-49af-8cad-716e46fa9955",
+      "name": "Validar motor - Zonificación y Rutero",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2104,
+        544
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "c0e30a98-429b-4016-9110-d322af18247e"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "ce0903ea-7f98-4c48-a249-925e265509be",
+      "name": "Validar motor - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2104,
+        832
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "9711c7dd-3c41-4e60-950c-08abebc96a15"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1ef15b40-606a-48a4-9128-af678065eac5",
+      "name": "Validar motor - Información en Línea",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2104,
+        1104
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "f31129de-99ac-4c3a-b4b3-bd6152cba41c"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "8739bc0c-5616-4242-83c0-2c592b9c2943",
+      "name": "Preparar error - Motor rechazó la propuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        1400
+      ],
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst servicio = $json.servicio || '(sin servicio)';\nconst nodoFallido = 'Motor Criterios y Precio';\nconst mensajeError = $json.error || JSON.stringify($json.error || {}) || 'El motor rechazó el cálculo sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Motor rechazó el cálculo</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">El motor de criterios y precio rechazó el cálculo de esta propuesta (Workflow 3). No se generó cotización.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ${servicio}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: idSolicitud, workflow_origen: 'workflow-formulario', nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, emailBody } };"
+      }
+    },
+    {
+      "id": "acf1143d-fbfd-451e-a8ed-29d43fb22e9b",
+      "name": "Guardar incidencia motor - Data Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2864,
+        1600
+      ],
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "fecha_error": "={{ $json.fecha_error }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "9703caf3-4ec3-447f-9353-2b632ca974b8",
+      "name": "Enviar alerta motor",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        1760
+      ],
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '⚠️ Motor rechazó el cálculo - nodo: ' + $json.nodo_fallido }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "webhookId": "1fa88f8b-9ce7-4ccf-98fb-2c1ed5af5cbb"
+    },
+    {
+      "id": "bf3b2b26-dbf2-4798-af56-780aee34a3d9",
+      "name": "Aviso - Propuesta no generada",
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        2864,
+        1920
+      ],
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "No pudimos generar tu propuesta",
+        "completionMessage": "Hubo un detalle al calcular tu cotización. Un asesor de la Cámara de Comercio de Barranquilla se pondrá en contacto contigo muy pronto.",
+        "options": {}
+      },
+      "webhookId": "9eb5630d-764b-4117-b91c-97aafc2aaace"
+    }
+  ],
+  "connections": {
+    "Página 1 - Datos de la empresa": {
+      "main": [
+        [
+          {
+            "node": "Capturar ID de solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capturar ID de solicitud": {
+      "main": [
+        [
+          {
+            "node": "Página 2 - Datos del solicitante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 2 - Datos del solicitante": {
+      "main": [
+        [
+          {
+            "node": "Página 3 - Selector de servicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 3 - Selector de servicio": {
+      "main": [
+        [
+          {
+            "node": "Enrutar por servicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 4 - Organización jurídica y ubicación": {
+      "main": [
+        [
+          {
+            "node": "Página 5 - Actividad económica y ESAL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 5 - Actividad económica y ESAL": {
+      "main": [
+        [
+          {
+            "node": "Página 6 - Tamaño de empresa y ventas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 6 - Tamaño de empresa y ventas": {
+      "main": [
+        [
+          {
+            "node": "Página 7 - Medio de conocimiento y comentarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrutar por servicio": {
+      "main": [
+        [
+          {
+            "node": "Página 4 - Organización jurídica y ubicación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Página 4 - Criterios - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Página 4 - Criterios - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Página 4 - Criterios - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Servicio no reconocido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 7 - Medio de conocimiento y comentarios": {
+      "main": [
+        [
+          {
+            "node": "Consolidar criterios - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar criterios - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Guardar criterios - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar criterios - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Guardar criterios - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar criterios - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Guardar criterios - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 4 - Criterios - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Página 5 - Medio de conocimiento y comentarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 4 - Criterios - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Página 5 - Medio de conocimiento y comentarios1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 4 - Criterios - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Página 5 - Medio de conocimiento y comentarios2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 5 - Medio de conocimiento y comentarios": {
+      "main": [
+        [
+          {
+            "node": "Consolidar criterios - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 5 - Medio de conocimiento y comentarios1": {
+      "main": [
+        [
+          {
+            "node": "Consolidar criterios - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Página 5 - Medio de conocimiento y comentarios2": {
+      "main": [
+        [
+          {
+            "node": "Consolidar criterios - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar criterios - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Guardar criterios - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Servicio no reconocido": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Servicio no reconocido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Servicio no reconocido": {
+      "main": [
+        [
+          {
+            "node": "Servicio no reconocido",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar criterios - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios para motor - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar criterios - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios para motor - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar criterios - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios para motor - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar criterios - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios para motor - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Guardado de criterios": {
+      "main": [
+        [
+          {
+            "node": "Guardar incidencia - Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar incidencia - Data Table": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta de guardado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios para motor - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar cotización - Información Georreferenciada": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios para motor - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar cotización - Zonificación y Rutero": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios para motor - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar cotización - Ubicación de Nuevo Negocio": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios para motor - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar cotización - Información en Línea": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Validar motor - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Validar motor - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Validar motor - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Validar motor - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Guardar cotización - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Guardar cotización - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Guardar cotización - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Guardar cotización - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Motor rechazó la propuesta": {
+      "main": [
+        [
+          {
+            "node": "Guardar incidencia motor - Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar incidencia motor - Data Table": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar alerta motor": {
+      "main": [
+        [
+          {
+            "node": "Aviso - Propuesta no generada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "Dh2lAQTzyoZBpXie",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "4b150427-7555-463a-a825-b28231a1df7f",
+  "activeVersionId": "4b150427-7555-463a-a825-b28231a1df7f",
+  "versionCounter": 244,
+  "triggerCount": 1,
+  "tags": []
+}

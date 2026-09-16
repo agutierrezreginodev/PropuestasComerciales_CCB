@@ -1,0 +1,1179 @@
+{
+  "updatedAt": "2026-09-16T16:24:13.065Z",
+  "createdAt": "2026-09-10T20:16:16.917Z",
+  "id": "VChcasvisGKekezR",
+  "name": "CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "return { json: { ...$json.criterios, servicio: $json.servicio, id_solicitud: $json.id_solicitud } };"
+      },
+      "id": "sw-flatten",
+      "name": "Aplanar contrato de entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -832,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.servicio }}",
+                    "rightValue": "Información Georreferenciada",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Información Georreferenciada"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.servicio }}",
+                    "rightValue": "Zonificación y Rutero",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Zonificación y Rutero"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.servicio }}",
+                    "rightValue": "Ubicación de Nuevo Negocio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Ubicación de Nuevo Negocio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.servicio }}",
+                    "rightValue": "Información en Línea",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Información en Línea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sw-switch",
+      "name": "Switch por servicio",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -608,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nit_cc": "={{ $json.nit_cc }}",
+            "direccion_empresa": "={{ $json.direccion_empresa }}",
+            "email_empresa": "={{ $json.email_empresa }}",
+            "telefono_empresa": "={{ $json.telefono_empresa }}",
+            "ciudad": "={{ $json.ciudad }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "cc_solicitante": "={{ $json.cc_solicitante }}",
+            "telefono_solicitante": "={{ $json.telefono_solicitante }}",
+            "direccion_solicitante": "={{ $json.direccion_solicitante }}",
+            "representacion_empresa": "={{ $json.representacion_empresa }}",
+            "empresa_representada": "={{ $json.empresa_representada }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "cargo": "={{ $json.cargo }}",
+            "nivel_cargo": "={{ $json.nivel_cargo }}",
+            "area_cargo": "={{ $json.area_cargo }}",
+            "servicio": "={{ $json.servicio }}",
+            "organizacion_juridica": "={{ $json.organizacion_juridica }}",
+            "ubicacion_geografica": "={{ $json.ubicacion_geografica }}",
+            "ciudades_municipios": "={{ $json.ciudades_municipios }}",
+            "actividad_economica": "={{ $json.actividad_economica }}",
+            "actividades_especificas": "={{ $json.actividades_especificas }}",
+            "categorias_esal": "={{ $json.categorias_esal }}",
+            "categorias_esal_especificas": "={{ $json.categorias_esal_especificas }}",
+            "tamano_empresa": "={{ $json.tamano_empresa }}",
+            "activos_min": "={{ $json.activos_min }}",
+            "activos_max": "={{ $json.activos_max }}",
+            "activos_entre": "={{ $json.activos_entre }}",
+            "activos_y": "={{ $json.activos_y }}",
+            "ventas_min": "={{ $json.ventas_min }}",
+            "ventas_max": "={{ $json.ventas_max }}",
+            "ventas_entre": "={{ $json.ventas_entre }}",
+            "ventas_y": "={{ $json.ventas_y }}",
+            "indiferente_ventas": "={{ $json.indiferente_ventas }}",
+            "medio_conocimiento": "={{ $json.medio_conocimiento }}",
+            "otro_medio": "={{ $json.otro_medio }}",
+            "comentarios": "={{ $json.comentarios }}",
+            "fecha_envio": "={{ $json.fecha_envio }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "sw-guardar-crit-geo",
+      "name": "Guardar criterios - Información Georreferenciada",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        272
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nit_cc": "={{ $json.nit_cc }}",
+            "direccion_empresa": "={{ $json.direccion_empresa }}",
+            "email_empresa": "={{ $json.email_empresa }}",
+            "telefono_empresa": "={{ $json.telefono_empresa }}",
+            "ciudad": "={{ $json.ciudad }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "cc_solicitante": "={{ $json.cc_solicitante }}",
+            "telefono_solicitante": "={{ $json.telefono_solicitante }}",
+            "direccion_solicitante": "={{ $json.direccion_solicitante }}",
+            "representacion_empresa": "={{ $json.representacion_empresa }}",
+            "empresa_representada": "={{ $json.empresa_representada }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "cargo": "={{ $json.cargo }}",
+            "nivel_cargo": "={{ $json.nivel_cargo }}",
+            "area_cargo": "={{ $json.area_cargo }}",
+            "servicio": "={{ $json.servicio }}",
+            "medio_conocimiento": "={{ $json.medio_conocimiento }}",
+            "otro_medio": "={{ $json.otro_medio }}",
+            "comentarios": "={{ $json.comentarios }}",
+            "fecha_envio": "={{ $json.fecha_envio }}",
+            "tipo_base": "={{ $json.tipo_base }}",
+            "cantidad_registros": "={{ $json.cantidad_registros }}",
+            "niveles_analisis": "={{ $json.niveles_analisis }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "sw-guardar-crit-zon",
+      "name": "Guardar criterios - Zonificación y Rutero",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        496
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nit_cc": "={{ $json.nit_cc }}",
+            "direccion_empresa": "={{ $json.direccion_empresa }}",
+            "email_empresa": "={{ $json.email_empresa }}",
+            "telefono_empresa": "={{ $json.telefono_empresa }}",
+            "ciudad": "={{ $json.ciudad }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "cc_solicitante": "={{ $json.cc_solicitante }}",
+            "telefono_solicitante": "={{ $json.telefono_solicitante }}",
+            "direccion_solicitante": "={{ $json.direccion_solicitante }}",
+            "representacion_empresa": "={{ $json.representacion_empresa }}",
+            "empresa_representada": "={{ $json.empresa_representada }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "cargo": "={{ $json.cargo }}",
+            "nivel_cargo": "={{ $json.nivel_cargo }}",
+            "area_cargo": "={{ $json.area_cargo }}",
+            "servicio": "={{ $json.servicio }}",
+            "medio_conocimiento": "={{ $json.medio_conocimiento }}",
+            "otro_medio": "={{ $json.otro_medio }}",
+            "comentarios": "={{ $json.comentarios }}",
+            "fecha_envio": "={{ $json.fecha_envio }}",
+            "plan_en_linea": "={{ $json.plan_en_linea }}",
+            "consultas_mensuales": "={{ $json.consultas_mensuales }}",
+            "usuarios": "={{ $json.usuarios }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "sw-guardar-crit-ubi",
+      "name": "Guardar criterios - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        720
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nit_cc": "={{ $json.nit_cc }}",
+            "direccion_empresa": "={{ $json.direccion_empresa }}",
+            "email_empresa": "={{ $json.email_empresa }}",
+            "telefono_empresa": "={{ $json.telefono_empresa }}",
+            "ciudad": "={{ $json.ciudad }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "cc_solicitante": "={{ $json.cc_solicitante }}",
+            "telefono_solicitante": "={{ $json.telefono_solicitante }}",
+            "direccion_solicitante": "={{ $json.direccion_solicitante }}",
+            "representacion_empresa": "={{ $json.representacion_empresa }}",
+            "empresa_representada": "={{ $json.empresa_representada }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "cargo": "={{ $json.cargo }}",
+            "nivel_cargo": "={{ $json.nivel_cargo }}",
+            "area_cargo": "={{ $json.area_cargo }}",
+            "servicio": "={{ $json.servicio }}",
+            "medio_conocimiento": "={{ $json.medio_conocimiento }}",
+            "otro_medio": "={{ $json.otro_medio }}",
+            "comentarios": "={{ $json.comentarios }}",
+            "fecha_envio": "={{ $json.fecha_envio }}",
+            "plan_en_linea": "={{ $json.plan_en_linea }}",
+            "consultas_mensuales": "={{ $json.consultas_mensuales }}",
+            "usuarios": "={{ $json.usuarios }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "sw-guardar-crit-inl",
+      "name": "Guardar criterios - Información en Línea",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        944
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\nconst c = $json;\nreturn { json: {\n  id_solicitud: j.id_solicitud || c.id_solicitud,\n  servicio: 'Información Georreferenciada',\n  tipo_organizacion: j.organizacion_juridica,\n  municipios: j.ubicacion_geografica,\n  sectores: j.actividad_economica,\n  tamano_empresa: j.tamano_empresa,\n  activos_min: j.activos_min, activos_max: j.activos_max, activos_entre: j.activos_entre, activos_y: j.activos_y,\n  ventas_min: j.ventas_min, ventas_max: j.ventas_max, ventas_entre: j.ventas_entre, ventas_y: j.ventas_y,\n  indiferente_ventas: j.indiferente_ventas,\n  tipo_servicio: 'Georreferenciada',\n  nombre_solicitante: c.nombre_solicitante,\n  razon_social: c.razon_social,\n  email_solicitante: c.email_solicitante,\n  telefono_solicitante: c.telefono_solicitante,\n  ciudad: c.ciudad\n} };"
+      },
+      "id": "sw-prep-motor-geo",
+      "name": "Preparar criterios para motor - Información Georreferenciada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\nconst c = $json;\nreturn { json: {\n  id_solicitud: j.id_solicitud || c.id_solicitud,\n  servicio: 'Zonificación y Rutero',\n  tipo_servicio: 'Zonificacion y Rutero',\n  total_registros: j.cantidad_registros,\n  visitas_por_asesor: j.visitas_asesor,\n  incluye_rutas: j.incluir_rutas,\n  nombre_solicitante: c.nombre_solicitante,\n  razon_social: c.razon_social,\n  email_solicitante: c.email_solicitante,\n  telefono_solicitante: c.telefono_solicitante,\n  ciudad: c.ciudad\n} };"
+      },
+      "id": "sw-prep-motor-zon",
+      "name": "Preparar criterios para motor - Zonificación y Rutero",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\nconst c = $json;\nconst niveles = (j.niveles_analisis || '').split('; ').filter(Boolean).length;\nreturn { json: {\n  id_solicitud: j.id_solicitud || c.id_solicitud,\n  servicio: 'Ubicación de Nuevo Negocio',\n  tipo_servicio: 'Ubicacion de Nuevo Negocio',\n  total_registros: j.cantidad_registros,\n  num_niveles: niveles,\n  niveles_analisis: j.niveles_analisis,\n  nombre_solicitante: c.nombre_solicitante,\n  razon_social: c.razon_social,\n  email_solicitante: c.email_solicitante,\n  telefono_solicitante: c.telefono_solicitante,\n  ciudad: c.ciudad\n} };"
+      },
+      "id": "sw-prep-motor-ubi",
+      "name": "Preparar criterios para motor - Ubicación de Nuevo Negocio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\nconst c = $json;\nconst plan = (j.plan_en_linea || '').trim().replace(/^Plan\\s+/i, '');\nconst noSeguro = plan === 'No estoy seguro / necesito ayuda' || plan === '';\nreturn { json: {\n  id_solicitud: j.id_solicitud || c.id_solicitud,\n  servicio: 'Información en Línea',\n  tipo_servicio: 'Informacion en Linea',\n  ya_sabe_plan: noSeguro ? false : true,\n  plan_deseado: noSeguro ? '' : plan,\n  consultas_mensuales: j.consultas_mensuales,\n  numero_usuarios: j.usuarios,\n  nombre_solicitante: c.nombre_solicitante,\n  razon_social: c.razon_social,\n  email_solicitante: c.email_solicitante,\n  telefono_solicitante: c.telefono_solicitante,\n  ciudad: c.ciudad\n} };"
+      },
+      "id": "sw-prep-motor-inl",
+      "name": "Preparar criterios para motor - Información en Línea",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cHOIOEFB5nbltN82",
+          "mode": "list",
+          "cachedResultName": "CCB - Motor Criterios y Precio v2",
+          "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "sw-ejecutar-motor",
+      "name": "Ejecutar motor",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        496
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "3bed852e-7d1d-45c5-aaed-7c4e296edcf5"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "sw-validar-motor",
+      "name": "Validar motor",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "servicio": "={{ $json.servicio }}",
+            "total_registros": "={{ $json.TOTAL_REGISTROS }}",
+            "valor": "={{ $json.VALOR }}",
+            "iva": "={{ $json.IVA }}",
+            "valor_total": "={{ $json.VALOR_TOTAL }}",
+            "plan_seleccionado": "={{ $json.PLAN_SELECCIONADO }}",
+            "inversion_inicial": "={{ $json.INVERSION_INICIAL }}",
+            "pago_mensual": "={{ $json.PAGO_MENSUAL }}",
+            "num_zonas": "={{ $json.NUM_ZONAS }}",
+            "num_niveles": "={{ $json.NUM_NIVELES }}",
+            "criterio_sector": "={{ $json.CRITERIO_SECTOR }}",
+            "estado": "={{ $json.ok === false ? 'ERROR_CALCULO' : 'PROPUESTA_GENERADA' }}",
+            "fecha_calculo": "={{ DateTime.now().toISO() }}",
+            "error": "={{ $json.error }}",
+            "pdf_url": "={{ $json.PDF_URL }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "sw-guardar-cotiz",
+      "name": "Guardar cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1472,
+        160
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "ok",
+              "type": "boolean",
+              "value": true
+            },
+            {
+              "id": "r2",
+              "name": "id_solicitud",
+              "type": "string",
+              "value": "={{ $json.id_solicitud }}"
+            },
+            {
+              "id": "r3",
+              "name": "servicio",
+              "type": "string",
+              "value": "={{ $json.servicio }}"
+            },
+            {
+              "id": "r4",
+              "name": "valor_total",
+              "type": "number",
+              "value": "={{ $json.valor_total }}"
+            },
+            {
+              "id": "r5",
+              "name": "error",
+              "type": "string",
+              "value": "={{ $json.error || null }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sw-return-ok",
+      "name": "Return - Cotización generada",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1712,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst servicio = $json.servicio || '(sin servicio)';\nconst nodoFallido = 'Motor Criterios y Precio';\nconst flujo = $workflow.name;\nconst tipoError = 'Rechazo del motor de cálculo (ok=false)';\nconst mensajeError = $json.error || JSON.stringify($json.error || {}) || 'El motor rechazó el cálculo sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Motor rechazó el cálculo</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">El motor de criterios y precio rechazó el cálculo de esta propuesta (Workflow 3). No se generó cotización.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ${servicio}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, workflow_origen: 'workflow-formulario', nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, emailBody } };"
+      },
+      "id": "sw-prep-error-motor",
+      "name": "Preparar error - Motor rechazó la propuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "sw-guardar-inc-motor",
+      "name": "Guardar incidencia motor - Data Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        704
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '⚠️ Motor rechazó el cálculo - nodo: ' + $json.nodo_fallido }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "sw-alerta-motor",
+      "name": "Enviar alerta motor",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        704
+      ],
+      "webhookId": "648e0804-134f-43df-9274-9bde6a537660",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\n\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst nodoFallido = $json.error?.node?.name || $json.error?.name || 'Guardar criterios';\nconst flujo = $workflow.name;\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Error guardando criterios</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">Falló el guardado de criterios o cotización (Sub-workflow Guardar Criterios y Cotizar Servicio).</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: idSolicitud,\n    flujo,\n    tipo_error: tipoError,\n    workflow_origen: 'workflow-formulario',\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    emailBody\n  }\n};"
+      },
+      "id": "sw-prep-error-guardado",
+      "name": "Preparar error - Guardado de criterios",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "sw-guardar-inc",
+      "name": "Guardar incidencia - Data Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        704,
+        1040
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '⚠️ Error guardando criterios - nodo: ' + $json.nodo_fallido }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "sw-alerta-guardado",
+      "name": "Enviar alerta de guardado",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        944,
+        1040
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "webhookId": "a0ecd9c0-c77a-49bc-a13a-b8fb4e2860b6",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = get('Aplanar contrato de entrada');\nconst errGuardado = get('Preparar error - Guardado de criterios');\nconst errMotor = get('Preparar error - Motor rechazó la propuesta');\nconst mensaje = errMotor.mensaje_error || errGuardado.mensaje_error || $json.mensaje_error || 'Error sin especificar';\nreturn { json: {\n  id_solicitud: entrada.id_solicitud || $json.id_solicitud || '(sin id)',\n  servicio: entrada.servicio || $json.servicio || '(sin servicio)',\n  mensaje_error: mensaje\n} };"
+      },
+      "id": "sw-consolidar-error",
+      "name": "Consolidar resultado de error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "ok",
+              "type": "boolean",
+              "value": false
+            },
+            {
+              "id": "e2",
+              "name": "error",
+              "type": "string",
+              "value": "={{ $json.mensaje_error }}"
+            },
+            {
+              "id": "e3",
+              "name": "id_solicitud",
+              "type": "string",
+              "value": "={{ $json.id_solicitud }}"
+            },
+            {
+              "id": "e4",
+              "name": "servicio",
+              "type": "string",
+              "value": "={{ $json.servicio }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sw-return-error",
+      "name": "Return - Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1424,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## CCB - Subworkflow - Guardar Criterios y Cotizar Servicio\n\nExtraído de W2 (REQ-1.2, SRP) para eliminar la duplicación de 4x (Guardar criterios → Preparar para motor → Ejecutar motor → Validar motor → Guardar cotización), una por servicio.\n\n**Entrada (Define Below):**\n- `servicio` (string)\n- `id_solicitud` (string)\n- `criterios` (object, el mismo que arma `Consolidar criterios - <servicio>` en W2)\n\n**Salida (nodo Return):**\n`{ ok, id_solicitud, servicio, valor_total, error }`\n\n**Nota de diseño:** los 4 `Preparar criterios para motor - <servicio>` se movieron tal cual desde W2; la única línea cambiada por rama es la fuente de `c` (antes `$('Consolidar criterios - <servicio>')`, un nodo que solo existe en W2) por `$json` — mismos valores, ya presentes tras `Guardar criterios`.",
+        "height": 380,
+        "width": 620
+      },
+      "id": "sw-sticky",
+      "name": "Nota - Sub-workflow Guardar Criterios y Cotizar",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1088,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// W3 (Normalizar Criterios) no reenvía id_solicitud en su salida — se restaura acá desde\n// el contrato de entrada original, para no depender de que el motor lo corrija.\nconst idOriginal = $('Aplanar contrato de entrada').item.json.id_solicitud;\nreturn { json: { ...$json, id_solicitud: idOriginal } };"
+      },
+      "id": "71750b93-9fa2-4f04-ac52-fdecc88c99ae",
+      "name": "Restaurar id_solicitud",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1040,
+        592
+      ],
+      "id": "20238d45-a96c-4508-bfa8-329a7f23a9a5",
+      "name": "Recibir solicitud"
+    }
+  ],
+  "connections": {
+    "Aplanar contrato de entrada": {
+      "main": [
+        [
+          {
+            "node": "Switch por servicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch por servicio": {
+      "main": [
+        [
+          {
+            "node": "Guardar criterios - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Guardar criterios - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Guardar criterios - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Guardar criterios - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar criterios - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios para motor - Información Georreferenciada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar criterios - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios para motor - Zonificación y Rutero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar criterios - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios para motor - Ubicación de Nuevo Negocio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar criterios - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios para motor - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios para motor - Información Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios para motor - Zonificación y Rutero": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios para motor - Ubicación de Nuevo Negocio": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios para motor - Información en Línea": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar motor": {
+      "main": [
+        [
+          {
+            "node": "Guardar cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar cotización": {
+      "main": [
+        [
+          {
+            "node": "Return - Cotización generada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Motor rechazó la propuesta": {
+      "main": [
+        [
+          {
+            "node": "Guardar incidencia motor - Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar incidencia motor - Data Table": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar alerta motor": {
+      "main": [
+        [
+          {
+            "node": "Consolidar resultado de error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Guardado de criterios": {
+      "main": [
+        [
+          {
+            "node": "Guardar incidencia - Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar incidencia - Data Table": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta de guardado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar alerta de guardado": {
+      "main": [
+        [
+          {
+            "node": "Consolidar resultado de error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar resultado de error": {
+      "main": [
+        [
+          {
+            "node": "Return - Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor": {
+      "main": [
+        [
+          {
+            "node": "Restaurar id_solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restaurar id_solicitud": {
+      "main": [
+        [
+          {
+            "node": "Validar motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recibir solicitud": {
+      "main": [
+        [
+          {
+            "node": "Aplanar contrato de entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "binaryMode": "separate",
+    "errorWorkflow": "Dh2lAQTzyoZBpXie"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+  "activeVersionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+  "versionCounter": 65,
+  "triggerCount": 0,
+  "tags": []
+}
