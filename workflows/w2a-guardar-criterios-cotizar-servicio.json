@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-16T16:24:13.065Z",
+  "updatedAt": "2026-09-17T14:18:51.036Z",
   "createdAt": "2026-09-10T20:16:16.917Z",
   "id": "VChcasvisGKekezR",
-  "name": "CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio",
-  "description": null,
+  "name": "[SUB] CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio",
+  "description": "W2A (sub-workflow) — Guardar Criterios y Cotizar Servicio. Invocado por los flujos de recepcion de formulario (hoy: W2C). Guarda los criterios en Criterios_Cotizacion, ejecuta el motor de precio (W3) y guarda la cotizacion en Cotizaciones_CCB. Integra: Data Table, Execute Workflow (W3), Outlook. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -1173,7 +1173,7 @@
   "pinData": {},
   "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
   "activeVersionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
-  "versionCounter": 65,
+  "versionCounter": 71,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -2350,6 +2350,38 @@
       {
         "createdAt": "2026-09-16T16:24:13.166Z",
         "id": 2357,
+        "workflowId": "VChcasvisGKekezR",
+        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:28.307Z",
+        "id": 2410,
+        "workflowId": "VChcasvisGKekezR",
+        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:28.327Z",
+        "id": 2411,
+        "workflowId": "VChcasvisGKekezR",
+        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:18:51.103Z",
+        "id": 2436,
+        "workflowId": "VChcasvisGKekezR",
+        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:18:51.123Z",
+        "id": 2437,
         "workflowId": "VChcasvisGKekezR",
         "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
         "event": "activated",

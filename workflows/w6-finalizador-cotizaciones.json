@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-11T20:01:24.120Z",
+  "updatedAt": "2026-09-17T14:16:49.033Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB - Workflow 6 - Finalizador de Cotizaciones",
-  "description": null,
+  "description": "W6 — Finalizador de Cotizaciones. Corre diariamente a las 3am: marca FINALIZADA toda cotizacion ENVIADA con 30+ dias sin respuesta del cliente, en Cotizaciones_CCB y Solicitudes_CCB. Cierre automatico sin intervencion humana — ver kill switch pendiente en el plan de remediacion. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -211,7 +211,7 @@
     },
     {
       "parameters": {
-        "content": "### W6 — Finalizador de Cotizaciones\n\n- Diario 3am: busca cotizaciones ENVIADA con fecha_envio >= 30 dias, las marca FINALIZADA en Cotizaciones_CCB y Solicitudes_CCB.\n- Sin loop, sin notificacion al cliente (pendiente de decision).\n- Creado INACTIVO — pendiente de revision antes de activar.",
+        "content": "### W6 — Finalizador de Cotizaciones\n\n- Diario 3am: busca cotizaciones ENVIADA con fecha_envio >= 30 dias, las marca FINALIZADA en Cotizaciones_CCB y Solicitudes_CCB.\n- Sin loop, sin notificacion al cliente (pendiente de decision).\n- Activo en producción desde el 11/09/2026. Corre sin supervisión diaria; si el cierre automático deja de ser deseable, desactivar el flujo o el Schedule Trigger.",
         "width": 480
       },
       "id": "w6-nota",
@@ -327,18 +327,27 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "44a15e8d-3957-4d45-ada8-e661d3b60454",
-  "activeVersionId": "bca6c798-b35b-448c-a7ca-7f244cc8b8f6",
-  "versionCounter": 16,
+  "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
+  "activeVersionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
+  "versionCounter": 22,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-11T19:52:09.084Z",
-    "createdAt": "2026-09-11T19:52:09.084Z",
-    "versionId": "bca6c798-b35b-448c-a7ca-7f244cc8b8f6",
+    "updatedAt": "2026-09-17T13:53:42.763Z",
+    "createdAt": "2026-09-17T13:53:42.763Z",
+    "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 3
+              }
+            ]
+          }
+        },
         "id": "w6-schedule",
         "name": "Diario 3am",
         "type": "n8n-nodes-base.scheduleTrigger",
@@ -346,29 +355,9 @@
         "position": [
           0,
           0
-        ],
-        "parameters": {
-          "rule": {
-            "interval": [
-              {
-                "field": "days",
-                "daysInterval": 1,
-                "triggerAtHour": 3,
-                "triggerAtMinute": 0
-              }
-            ]
-          }
-        }
+        ]
       },
       {
-        "id": "w6-leer",
-        "name": "Leer cotizaciones ENVIADA",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          240,
-          0
-        ],
         "parameters": {
           "operation": "get",
           "dataTableId": {
@@ -381,16 +370,25 @@
             "conditions": [
               {
                 "keyName": "estado",
-                "condition": "eq",
                 "keyValue": "ENVIADA"
               }
             ]
           },
-          "returnAll": true,
-          "options": {}
-        }
+          "returnAll": true
+        },
+        "id": "w6-leer",
+        "name": "Leer cotizaciones ENVIADA",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          0
+        ]
       },
       {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nconst result = [];\nfor (const item of items) {\n  const fecha = item.json.fecha_envio;\n  if (!fecha) continue;\n  const dias = DateTime.now().diff(DateTime.fromISO(fecha), 'days').days;\n  if (dias >= 30) {\n    result.push({ json: { ...item.json, dias_desde_envio: Math.floor(dias) } });\n  }\n}\nreturn result;"
+        },
         "id": "w6-filtrar",
         "name": "Filtrar 30+ dias sin respuesta",
         "type": "n8n-nodes-base.code",
@@ -398,21 +396,9 @@
         "position": [
           480,
           0
-        ],
-        "parameters": {
-          "mode": "runOnceForAllItems",
-          "jsCode": "const items = $input.all();\nconst result = [];\nfor (const item of items) {\n  const fecha = item.json.fecha_envio;\n  if (!fecha) continue;\n  const dias = DateTime.now().diff(DateTime.fromISO(fecha), 'days').days;\n  if (dias >= 30) {\n    result.push({ json: { ...item.json, dias_desde_envio: Math.floor(dias) } });\n  }\n}\nreturn result;"
-        }
+        ]
       },
       {
-        "id": "w6-marcar-cot",
-        "name": "Marcar FINALIZADA - Cotizacion",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          720,
-          0
-        ],
         "parameters": {
           "operation": "update",
           "dataTableId": {
@@ -425,7 +411,6 @@
             "conditions": [
               {
                 "keyName": "id_solicitud",
-                "condition": "eq",
                 "keyValue": "={{ $json.id_solicitud }}"
               }
             ]
@@ -439,17 +424,17 @@
           },
           "options": {}
         },
-        "onError": "continueErrorOutput"
-      },
-      {
-        "id": "w6-marcar-sol",
-        "name": "Marcar FINALIZADA - Solicitudes",
+        "id": "w6-marcar-cot",
+        "name": "Marcar FINALIZADA - Cotizacion",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          960,
+          720,
           0
         ],
+        "onError": "continueErrorOutput"
+      },
+      {
         "parameters": {
           "operation": "update",
           "dataTableId": {
@@ -462,7 +447,6 @@
             "conditions": [
               {
                 "keyName": "id_solicitud",
-                "condition": "eq",
                 "keyValue": "={{ $json.id_solicitud || $('Filtrar 30+ dias sin respuesta').item.json.id_solicitud }}"
               }
             ]
@@ -476,33 +460,32 @@
           },
           "options": {}
         },
+        "id": "w6-marcar-sol",
+        "name": "Marcar FINALIZADA - Solicitudes",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          992,
+          0
+        ],
         "onError": "continueErrorOutput"
       },
       {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Marcar FINALIZADA';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el finalizador W6';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W6 (Finalizador de Cotizaciones)</b>. La fila puede haber quedado a mitad de camino — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W6-finalizador', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+        },
         "id": "w6-prep-error",
         "name": "Preparar error - Finalizador",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
           720,
-          260
-        ],
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Marcar FINALIZADA';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el finalizador W6';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W6 (Finalizador de Cotizaciones)</b>. La fila puede haber quedado a mitad de camino — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W6-finalizador', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
-        }
+          272
+        ]
       },
       {
-        "id": "w6-reg-error",
-        "name": "Registrar error - Finalizador",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          960,
-          260
-        ],
         "parameters": {
-          "operation": "insert",
           "dataTableId": {
             "__rl": true,
             "value": "lO46Xkqj0TTedLjI",
@@ -521,17 +504,17 @@
           },
           "options": {}
         },
+        "id": "w6-reg-error",
+        "name": "Registrar error - Finalizador",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          896,
+          272
+        ],
         "onError": "continueRegularOutput"
       },
       {
-        "id": "w6-alerta",
-        "name": "Enviar alerta - Finalizador",
-        "type": "n8n-nodes-base.microsoftOutlook",
-        "typeVersion": 2,
-        "position": [
-          1200,
-          260
-        ],
         "parameters": {
           "toRecipients": "dev-alerts@example.com",
           "subject": "={{ '[Propuesta CCB] Error en finalizador W6 — ' + $json.id_solicitud }}",
@@ -540,29 +523,36 @@
             "bodyContentType": "html"
           }
         },
+        "id": "w6-alerta",
+        "name": "Enviar alerta - Finalizador",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          1072,
+          272
+        ],
+        "webhookId": "62427ab8-52cd-476d-a31d-668f018cafe1",
         "credentials": {
           "microsoftOutlookOAuth2Api": {
             "id": "iOA7XXDSHZojLhJz",
             "name": "INT-ServiciosInformacion Microsoft Outlook"
           }
         },
-        "onError": "continueRegularOutput",
-        "webhookId": "62427ab8-52cd-476d-a31d-668f018cafe1"
+        "onError": "continueRegularOutput"
       },
       {
+        "parameters": {
+          "content": "### W6 — Finalizador de Cotizaciones\n\n- Diario 3am: busca cotizaciones ENVIADA con fecha_envio >= 30 dias, las marca FINALIZADA en Cotizaciones_CCB y Solicitudes_CCB.\n- Sin loop, sin notificacion al cliente (pendiente de decision).\n- Activo en producción desde el 11/09/2026. Corre sin supervisión diaria; si el cierre automático deja de ser deseable, desactivar el flujo o el Schedule Trigger.",
+          "width": 480
+        },
         "id": "w6-nota",
         "name": "Nota - W6",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -40,
-          -280
-        ],
-        "parameters": {
-          "width": 480,
-          "height": 240,
-          "content": "### W6 — Finalizador de Cotizaciones\n\n- Diario 3am: busca cotizaciones ENVIADA con fecha_envio >= 30 dias, las marca FINALIZADA en Cotizaciones_CCB y Solicitudes_CCB.\n- Sin loop, sin notificacion al cliente (pendiente de decision).\n- Creado INACTIVO — pendiente de revision antes de activar."
-        }
+          48,
+          224
+        ]
       }
     ],
     "connections": {
@@ -658,26 +648,34 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-11T19:54:23.154Z",
-        "id": 2159,
+        "createdAt": "2026-09-17T13:53:42.808Z",
+        "id": 2406,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "bca6c798-b35b-448c-a7ca-7f244cc8b8f6",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-11T20:00:55.075Z",
-        "id": 2160,
-        "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "bca6c798-b35b-448c-a7ca-7f244cc8b8f6",
+        "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-11T20:00:55.101Z",
-        "id": 2161,
+        "createdAt": "2026-09-17T13:53:42.826Z",
+        "id": 2407,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "bca6c798-b35b-448c-a7ca-7f244cc8b8f6",
+        "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:49.077Z",
+        "id": 2428,
+        "workflowId": "mPwl4qUb0zQkmDHN",
+        "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:49.095Z",
+        "id": 2429,
+        "workflowId": "mPwl4qUb0zQkmDHN",
+        "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

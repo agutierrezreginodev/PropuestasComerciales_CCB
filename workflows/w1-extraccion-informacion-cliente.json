@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-16T16:20:43.312Z",
+  "updatedAt": "2026-09-17T14:21:01.903Z",
   "createdAt": "2026-09-04T15:37:43.940Z",
   "id": "w6h0qSblUESIpSVc",
   "name": "CCB - Workflow 1 - Extracción información del cliente",
-  "description": null,
+  "description": "W1 — Extracción información del cliente. Recibe correos entrantes del buzón de mercadeo (o contacto directo del cliente), extrae nombre/telefono/email con IA (OpenRouter GPT-4o-mini) y envia al cliente el enlace del formulario de solicitud. Integra: Microsoft Outlook (trigger + envio), OpenRouter, Data Table (Solicitudes_CCB, Errores_CCB). Area propietaria: Servicios de Informacion - CCB. Errores escalan a Errores_CCB + alerta Outlook + Error Workflow catch-all.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -569,7 +569,7 @@
         1008
       ],
       "id": "74521c77-81fd-4590-b47d-583cfe8e0acc",
-      "name": "Preparar error - Solicitud"
+      "name": "Preparar error - Solicitud sin email"
     },
     {
       "parameters": {
@@ -643,7 +643,7 @@
         1120
       ],
       "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
-      "name": "Registrar error en Data Table"
+      "name": "Registrar error - Extractor IA"
     },
     {
       "parameters": {
@@ -661,7 +661,7 @@
         1120
       ],
       "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
-      "name": "Enviar alerta de error",
+      "name": "Enviar alerta - Extractor IA",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -684,7 +684,7 @@
         544
       ],
       "id": "c90cc077-2d79-4f36-bac0-9257320ce2a1",
-      "name": "Preparar error - Solicitud1"
+      "name": "Preparar error - Solicitud con email"
     },
     {
       "parameters": {
@@ -758,7 +758,7 @@
         1008
       ],
       "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
-      "name": "Registrar error en Data Table1"
+      "name": "Registrar error - Solicitud sin email"
     },
     {
       "parameters": {
@@ -776,7 +776,7 @@
         1008
       ],
       "id": "fb16513e-41dd-4c96-8fa8-2806727e5521",
-      "name": "Enviar alerta de error1",
+      "name": "Enviar alerta - Solicitud sin email",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -860,7 +860,7 @@
         544
       ],
       "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
-      "name": "Registrar error en Data Table2"
+      "name": "Registrar error - Solicitud con email"
     },
     {
       "parameters": {
@@ -878,7 +878,7 @@
         544
       ],
       "id": "1230166e-e6d9-4064-bc65-cf517b434f67",
-      "name": "Enviar alerta de error2",
+      "name": "Enviar alerta - Solicitud con email",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -937,7 +937,7 @@
         ],
         [
           {
-            "node": "Preparar error - Solicitud",
+            "node": "Preparar error - Solicitud sin email",
             "type": "main",
             "index": 0
           }
@@ -955,7 +955,7 @@
         ],
         [
           {
-            "node": "Preparar error - Solicitud1",
+            "node": "Preparar error - Solicitud con email",
             "type": "main",
             "index": 0
           }
@@ -1029,7 +1029,7 @@
         [],
         [
           {
-            "node": "Preparar error - Solicitud",
+            "node": "Preparar error - Solicitud sin email",
             "type": "main",
             "index": 0
           }
@@ -1041,7 +1041,7 @@
         [],
         [
           {
-            "node": "Preparar error - Solicitud1",
+            "node": "Preparar error - Solicitud con email",
             "type": "main",
             "index": 0
           }
@@ -1052,44 +1052,44 @@
       "main": [
         [
           {
-            "node": "Registrar error en Data Table",
+            "node": "Registrar error - Extractor IA",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Enviar alerta de error",
+            "node": "Enviar alerta - Extractor IA",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Preparar error - Solicitud": {
+    "Preparar error - Solicitud sin email": {
       "main": [
         [
           {
-            "node": "Registrar error en Data Table1",
+            "node": "Registrar error - Solicitud sin email",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Enviar alerta de error1",
+            "node": "Enviar alerta - Solicitud sin email",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Preparar error - Solicitud1": {
+    "Preparar error - Solicitud con email": {
       "main": [
         [
           {
-            "node": "Registrar error en Data Table2",
+            "node": "Registrar error - Solicitud con email",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Enviar alerta de error2",
+            "node": "Enviar alerta - Solicitud con email",
             "type": "main",
             "index": 0
           }
@@ -1118,22 +1118,22 @@
   },
   "staticData": {
     "node:Nuevo correo": {
-      "lastTimeChecked": "2026-09-16T16:20:43.384Z"
+      "lastTimeChecked": "2026-09-17T14:21:01.998Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
-  "activeVersionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
-  "versionCounter": 419,
+  "versionId": "36a41827-63cc-4180-a935-d8653308e9a4",
+  "activeVersionId": "36a41827-63cc-4180-a935-d8653308e9a4",
+  "versionCounter": 427,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-16T16:20:43.313Z",
-    "createdAt": "2026-09-16T16:20:43.313Z",
-    "versionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
+    "updatedAt": "2026-09-17T14:21:01.905Z",
+    "createdAt": "2026-09-17T14:21:01.905Z",
+    "versionId": "36a41827-63cc-4180-a935-d8653308e9a4",
     "workflowId": "w6h0qSblUESIpSVc",
     "nodes": [
       {
@@ -1698,7 +1698,7 @@
           1008
         ],
         "id": "74521c77-81fd-4590-b47d-583cfe8e0acc",
-        "name": "Preparar error - Solicitud"
+        "name": "Preparar error - Solicitud sin email"
       },
       {
         "parameters": {
@@ -1772,7 +1772,7 @@
           1120
         ],
         "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
-        "name": "Registrar error en Data Table"
+        "name": "Registrar error - Extractor IA"
       },
       {
         "parameters": {
@@ -1790,7 +1790,7 @@
           1120
         ],
         "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
-        "name": "Enviar alerta de error",
+        "name": "Enviar alerta - Extractor IA",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -1813,7 +1813,7 @@
           544
         ],
         "id": "c90cc077-2d79-4f36-bac0-9257320ce2a1",
-        "name": "Preparar error - Solicitud1"
+        "name": "Preparar error - Solicitud con email"
       },
       {
         "parameters": {
@@ -1887,7 +1887,7 @@
           1008
         ],
         "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
-        "name": "Registrar error en Data Table1"
+        "name": "Registrar error - Solicitud sin email"
       },
       {
         "parameters": {
@@ -1905,7 +1905,7 @@
           1008
         ],
         "id": "fb16513e-41dd-4c96-8fa8-2806727e5521",
-        "name": "Enviar alerta de error1",
+        "name": "Enviar alerta - Solicitud sin email",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -1989,7 +1989,7 @@
           544
         ],
         "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
-        "name": "Registrar error en Data Table2"
+        "name": "Registrar error - Solicitud con email"
       },
       {
         "parameters": {
@@ -2007,7 +2007,7 @@
           544
         ],
         "id": "1230166e-e6d9-4064-bc65-cf517b434f67",
-        "name": "Enviar alerta de error2",
+        "name": "Enviar alerta - Solicitud con email",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -2066,7 +2066,7 @@
           ],
           [
             {
-              "node": "Preparar error - Solicitud",
+              "node": "Preparar error - Solicitud sin email",
               "type": "main",
               "index": 0
             }
@@ -2084,7 +2084,7 @@
           ],
           [
             {
-              "node": "Preparar error - Solicitud1",
+              "node": "Preparar error - Solicitud con email",
               "type": "main",
               "index": 0
             }
@@ -2158,7 +2158,7 @@
           [],
           [
             {
-              "node": "Preparar error - Solicitud",
+              "node": "Preparar error - Solicitud sin email",
               "type": "main",
               "index": 0
             }
@@ -2170,7 +2170,7 @@
           [],
           [
             {
-              "node": "Preparar error - Solicitud1",
+              "node": "Preparar error - Solicitud con email",
               "type": "main",
               "index": 0
             }
@@ -2181,44 +2181,44 @@
         "main": [
           [
             {
-              "node": "Registrar error en Data Table",
+              "node": "Registrar error - Extractor IA",
               "type": "main",
               "index": 0
             },
             {
-              "node": "Enviar alerta de error",
+              "node": "Enviar alerta - Extractor IA",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Preparar error - Solicitud": {
+      "Preparar error - Solicitud sin email": {
         "main": [
           [
             {
-              "node": "Registrar error en Data Table1",
+              "node": "Registrar error - Solicitud sin email",
               "type": "main",
               "index": 0
             },
             {
-              "node": "Enviar alerta de error1",
+              "node": "Enviar alerta - Solicitud sin email",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Preparar error - Solicitud1": {
+      "Preparar error - Solicitud con email": {
         "main": [
           [
             {
-              "node": "Registrar error en Data Table2",
+              "node": "Registrar error - Solicitud con email",
               "type": "main",
               "index": 0
             },
             {
-              "node": "Enviar alerta de error2",
+              "node": "Enviar alerta - Solicitud con email",
               "type": "main",
               "index": 0
             }
@@ -2243,18 +2243,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-16T16:20:43.364Z",
-        "id": 2350,
+        "createdAt": "2026-09-17T14:21:01.974Z",
+        "id": 2444,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
+        "versionId": "36a41827-63cc-4180-a935-d8653308e9a4",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-16T16:20:43.497Z",
-        "id": 2351,
+        "createdAt": "2026-09-17T14:21:02.292Z",
+        "id": 2445,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
+        "versionId": "36a41827-63cc-4180-a935-d8653308e9a4",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

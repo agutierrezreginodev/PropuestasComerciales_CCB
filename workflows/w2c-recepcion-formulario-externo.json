@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-15T19:22:32.228Z",
+  "updatedAt": "2026-09-17T14:16:30.726Z",
   "createdAt": "2026-09-15T13:24:42.298Z",
   "id": "u6KCMnLwFOp6Ja0N",
   "name": "CCB - Workflow 2C - Recepción Formulario Externo (Georreferenciada)",
-  "description": null,
+  "description": "W2C — Recepcion Formulario Externo (Georreferenciada). Recibe por webhook autenticado (Header Auth + CORS al dominio del formulario) los datos del formulario publico estatico (formulario-solicitud-ccb en Vercel) para Informacion Georreferenciada, y delega guardado/cotizacion al sub-workflow W2A. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -12,7 +12,10 @@
         "httpMethod": "POST",
         "path": "solicitud-georreferenciada",
         "responseMode": "responseNode",
-        "options": {}
+        "options": {
+          "allowedOrigins": "https://formulario-solicitud-ccb.vercel.app"
+        },
+        "authentication": "headerAuth"
       },
       "id": "f1a2b3c4-1111-4a11-8a11-000000000001",
       "name": "Webhook - Solicitud Georreferenciada",
@@ -22,7 +25,13 @@
         -528,
         16
       ],
-      "webhookId": "cd5215b8-91b1-41b3-8c99-40e606514e61"
+      "webhookId": "cd5215b8-91b1-41b3-8c99-40e606514e61",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "BMFidggL09zKgdaT",
+          "name": "HeaderAuth - Solicitud Georreferenciada (W2C)"
+        }
+      }
     },
     {
       "parameters": {
@@ -182,15 +191,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "48eab9e7-5da1-4d6b-b18a-cbcb5f02fbcc",
-  "activeVersionId": "48eab9e7-5da1-4d6b-b18a-cbcb5f02fbcc",
-  "versionCounter": 41,
+  "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
+  "activeVersionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
+  "versionCounter": 50,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-15T18:26:48.627Z",
-    "createdAt": "2026-09-15T18:26:48.627Z",
-    "versionId": "48eab9e7-5da1-4d6b-b18a-cbcb5f02fbcc",
+    "updatedAt": "2026-09-17T13:52:16.703Z",
+    "createdAt": "2026-09-17T13:52:16.703Z",
+    "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
     "workflowId": "u6KCMnLwFOp6Ja0N",
     "nodes": [
       {
@@ -198,7 +207,10 @@
           "httpMethod": "POST",
           "path": "solicitud-georreferenciada",
           "responseMode": "responseNode",
-          "options": {}
+          "options": {
+            "allowedOrigins": "https://formulario-solicitud-ccb.vercel.app"
+          },
+          "authentication": "headerAuth"
         },
         "id": "f1a2b3c4-1111-4a11-8a11-000000000001",
         "name": "Webhook - Solicitud Georreferenciada",
@@ -208,7 +220,13 @@
           -528,
           16
         ],
-        "webhookId": "cd5215b8-91b1-41b3-8c99-40e606514e61"
+        "webhookId": "cd5215b8-91b1-41b3-8c99-40e606514e61",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "BMFidggL09zKgdaT",
+            "name": "HeaderAuth - Solicitud Georreferenciada (W2C)"
+          }
+        }
       },
       {
         "parameters": {
@@ -362,34 +380,34 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-15T18:26:48.674Z",
-        "id": 2292,
+        "createdAt": "2026-09-17T13:52:16.749Z",
+        "id": 2404,
         "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "48eab9e7-5da1-4d6b-b18a-cbcb5f02fbcc",
+        "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-15T18:26:48.697Z",
-        "id": 2293,
+        "createdAt": "2026-09-17T13:52:16.765Z",
+        "id": 2405,
         "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "48eab9e7-5da1-4d6b-b18a-cbcb5f02fbcc",
+        "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-15T18:26:49.085Z",
-        "id": 2294,
+        "createdAt": "2026-09-17T14:16:30.786Z",
+        "id": 2412,
         "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "48eab9e7-5da1-4d6b-b18a-cbcb5f02fbcc",
+        "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-15T18:26:49.100Z",
-        "id": 2295,
+        "createdAt": "2026-09-17T14:16:30.802Z",
+        "id": 2413,
         "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "48eab9e7-5da1-4d6b-b18a-cbcb5f02fbcc",
+        "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

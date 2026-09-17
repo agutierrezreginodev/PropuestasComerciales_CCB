@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-14T16:16:52.575Z",
+  "updatedAt": "2026-09-17T14:16:42.052Z",
   "createdAt": "2026-09-11T15:42:01.882Z",
   "id": "7gmpPMBJtEb0W3J5",
   "name": "CCB - Workflow 4A - Router de Aprobación",
-  "description": null,
+  "description": "W4A — Router de Aprobacion. Corre cada 15 minutos: busca cotizaciones PROPUESTA_GENERADA, las marca EN_REVISION y despacha cada una al sub-workflow de notificacion por Teams (W4B). Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -299,7 +299,7 @@
   "pinData": {},
   "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
   "activeVersionId": "bed28456-d261-4516-a16e-9491ea5e9775",
-  "versionCounter": 31,
+  "versionCounter": 34,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
@@ -614,6 +614,22 @@
       {
         "createdAt": "2026-09-14T16:16:53.120Z",
         "id": 2197,
+        "workflowId": "7gmpPMBJtEb0W3J5",
+        "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:42.092Z",
+        "id": 2416,
+        "workflowId": "7gmpPMBJtEb0W3J5",
+        "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:42.110Z",
+        "id": 2417,
         "workflowId": "7gmpPMBJtEb0W3J5",
         "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
         "event": "activated",

@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-15T19:22:34.780Z",
+  "updatedAt": "2026-09-17T14:17:55.009Z",
   "createdAt": "2026-09-15T15:09:07.764Z",
   "id": "KuLSIzBZgaRIjuSu",
   "name": "CCB - Workflow 4C - Consultar Propuesta para Revisión",
-  "description": null,
+  "description": "W4C — Consultar Propuesta para Revision. API de solo lectura (webhook GET, Header Auth + CORS restringido) consumida por la pagina externa de revision (revision-propuesta-ccb) para mostrar el resumen de la propuesta antes de decidir. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -20,9 +20,18 @@
         "httpMethod": "GET",
         "path": "consultar-propuesta",
         "responseMode": "responseNode",
-        "options": {}
+        "options": {
+          "allowedOrigins": "https://revision-propuesta-ccb.vercel.app"
+        },
+        "authentication": "headerAuth"
       },
-      "webhookId": "5a89df4f-821b-4066-9e14-82cece0fb106"
+      "webhookId": "5a89df4f-821b-4066-9e14-82cece0fb106",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jYGowZ6DBd6wkxBL",
+          "name": "HeaderAuth - Consultar Propuesta (W4C)"
+        }
+      }
     },
     {
       "id": "a1b2c3d4-2222-4a22-8a22-000000000002",
@@ -176,6 +185,21 @@
           "responseCode": 500
         }
       }
+    },
+    {
+      "id": "319a50e3-d0a2-4683-9210-a09bdc7bf734",
+      "name": "Nota - W4C Consultar Propuesta",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        -220
+      ],
+      "parameters": {
+        "content": "### W4C - Consultar Propuesta para Revision\n\n- API de solo lectura para la pagina externa de revision (revision-propuesta-ccb en Vercel): recibe id_solicitud y devuelve el resumen de la cotizacion.\n- Los 3 nodos de lectura (Cotizacion/Criterios/Solicitud) usan alwaysOutputData=true a proposito: si el id_solicitud no existe, la ejecucion sigue con datos vacios en vez de cortar, y Consolidar respuesta arma un {ok:false, error:...} explicito.\n- Protegido con Header Auth + CORS restringido al dominio del formulario (17/09/2026).",
+        "width": 480,
+        "height": 220
+      }
     }
   ],
   "connections": {
@@ -264,15 +288,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "519eb24d-685e-44a6-ac2d-727c7735209d",
-  "activeVersionId": "519eb24d-685e-44a6-ac2d-727c7735209d",
-  "versionCounter": 5,
+  "versionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
+  "activeVersionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
+  "versionCounter": 17,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-15T15:09:07.764Z",
-    "createdAt": "2026-09-15T15:09:07.764Z",
-    "versionId": "519eb24d-685e-44a6-ac2d-727c7735209d",
+    "updatedAt": "2026-09-17T14:17:55.011Z",
+    "createdAt": "2026-09-17T14:17:55.011Z",
+    "versionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
     "workflowId": "KuLSIzBZgaRIjuSu",
     "nodes": [
       {
@@ -288,9 +312,18 @@
           "httpMethod": "GET",
           "path": "consultar-propuesta",
           "responseMode": "responseNode",
-          "options": {}
+          "options": {
+            "allowedOrigins": "https://revision-propuesta-ccb.vercel.app"
+          },
+          "authentication": "headerAuth"
         },
-        "webhookId": "5a89df4f-821b-4066-9e14-82cece0fb106"
+        "webhookId": "5a89df4f-821b-4066-9e14-82cece0fb106",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "jYGowZ6DBd6wkxBL",
+            "name": "HeaderAuth - Consultar Propuesta (W4C)"
+          }
+        }
       },
       {
         "id": "a1b2c3d4-2222-4a22-8a22-000000000002",
@@ -444,6 +477,21 @@
             "responseCode": 500
           }
         }
+      },
+      {
+        "id": "319a50e3-d0a2-4683-9210-a09bdc7bf734",
+        "name": "Nota - W4C Consultar Propuesta",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -600,
+          -220
+        ],
+        "parameters": {
+          "content": "### W4C - Consultar Propuesta para Revision\n\n- API de solo lectura para la pagina externa de revision (revision-propuesta-ccb en Vercel): recibe id_solicitud y devuelve el resumen de la cotizacion.\n- Los 3 nodos de lectura (Cotizacion/Criterios/Solicitud) usan alwaysOutputData=true a proposito: si el id_solicitud no existe, la ejecucion sigue con datos vacios en vez de cortar, y Consolidar respuesta arma un {ok:false, error:...} explicito.\n- Protegido con Header Auth + CORS restringido al dominio del formulario (17/09/2026).",
+          "width": 480,
+          "height": 220
+        }
       }
     ],
     "connections": {
@@ -527,10 +575,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-15T15:14:36.286Z",
-        "id": 2241,
+        "createdAt": "2026-09-17T14:17:55.067Z",
+        "id": 2432,
         "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "519eb24d-685e-44a6-ac2d-727c7735209d",
+        "versionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:17:55.084Z",
+        "id": 2433,
+        "workflowId": "KuLSIzBZgaRIjuSu",
+        "versionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

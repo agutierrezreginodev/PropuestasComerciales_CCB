@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-16T18:39:15.039Z",
+  "updatedAt": "2026-09-17T14:18:12.354Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
-  "description": null,
+  "description": "W4D — Procesar Decision de Propuesta. Webhook autenticado (Header Auth) que recibe la decision del asesor: aprobar, cancelar o solicitar correcciones. En correccion, un asistente de IA (OpenRouter) ajusta los criterios guardados, validados contra listas cerradas de valores permitidos, y reinvoca el motor (W3); tope de 3 rondas antes de escalar a revision manual. Flujo de mayor riesgo del pipeline segun la auditoria de buenas practicas. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -12,7 +12,8 @@
         "httpMethod": "POST",
         "path": "decidir-propuesta",
         "responseMode": "responseNode",
-        "options": {}
+        "options": {},
+        "authentication": "headerAuth"
       },
       "id": "53ca7f86-c409-4377-9190-a84b430a8756",
       "name": "Webhook - Decisión Propuesta",
@@ -22,7 +23,13 @@
         -992,
         704
       ],
-      "webhookId": "a7fc4cf6-9ad7-410f-86ad-8745c6233fee"
+      "webhookId": "a7fc4cf6-9ad7-410f-86ad-8745c6233fee",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8x9jwYfI0wpSKL86",
+          "name": "HeaderAuth - Decisión Propuesta (W4D)"
+        }
+      }
     },
     {
       "parameters": {
@@ -1035,6 +1042,21 @@
         3936,
         1168
       ]
+    },
+    {
+      "id": "b1d626a9-7a9c-4cc5-b57d-4f112cead7b4",
+      "name": "Nota - W4D Procesar Decision",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        400
+      ],
+      "parameters": {
+        "content": "### W4D - Procesar Decision de Propuesta\n\n- Webhook que recibe la decision del asesor (aprobar/cancelar/corregir) desde revision-propuesta-ccb.\n- En correccion: IA (OpenRouter) ajusta los criterios; Aplicar correcciones valida cada clave devuelta contra las claves existentes y contra listas cerradas de valores permitidos por campo - un valor fuera de rango se descarta, no se aplica a ciegas.\n- Tope de 3 rondas de correccion antes de escalar a revision manual.\n- Protegido con Header Auth (17/09/2026). Pendiente: la confianza que devuelve la IA aun no enruta a revision humana - ver Fase 7 del plan de remediacion.",
+        "width": 520,
+        "height": 260
+      }
     }
   ],
   "connections": {
@@ -1555,15 +1577,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
-  "activeVersionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
-  "versionCounter": 142,
+  "versionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
+  "activeVersionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
+  "versionCounter": 151,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-16T18:39:15.040Z",
-    "createdAt": "2026-09-16T18:39:15.040Z",
-    "versionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
+    "updatedAt": "2026-09-17T14:18:12.356Z",
+    "createdAt": "2026-09-17T14:18:12.356Z",
+    "versionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -1571,7 +1593,8 @@
           "httpMethod": "POST",
           "path": "decidir-propuesta",
           "responseMode": "responseNode",
-          "options": {}
+          "options": {},
+          "authentication": "headerAuth"
         },
         "id": "53ca7f86-c409-4377-9190-a84b430a8756",
         "name": "Webhook - Decisión Propuesta",
@@ -1581,7 +1604,13 @@
           -992,
           704
         ],
-        "webhookId": "a7fc4cf6-9ad7-410f-86ad-8745c6233fee"
+        "webhookId": "a7fc4cf6-9ad7-410f-86ad-8745c6233fee",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "8x9jwYfI0wpSKL86",
+            "name": "HeaderAuth - Decisión Propuesta (W4D)"
+          }
+        }
       },
       {
         "parameters": {
@@ -2594,6 +2623,21 @@
           3936,
           1168
         ]
+      },
+      {
+        "id": "b1d626a9-7a9c-4cc5-b57d-4f112cead7b4",
+        "name": "Nota - W4D Procesar Decision",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -992,
+          400
+        ],
+        "parameters": {
+          "content": "### W4D - Procesar Decision de Propuesta\n\n- Webhook que recibe la decision del asesor (aprobar/cancelar/corregir) desde revision-propuesta-ccb.\n- En correccion: IA (OpenRouter) ajusta los criterios; Aplicar correcciones valida cada clave devuelta contra las claves existentes y contra listas cerradas de valores permitidos por campo - un valor fuera de rango se descarta, no se aplica a ciegas.\n- Tope de 3 rondas de correccion antes de escalar a revision manual.\n- Protegido con Header Auth (17/09/2026). Pendiente: la confianza que devuelve la IA aun no enruta a revision humana - ver Fase 7 del plan de remediacion.",
+          "width": 520,
+          "height": 260
+        }
       }
     ],
     "connections": {
@@ -3108,18 +3152,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-16T18:39:15.105Z",
-        "id": 2363,
+        "createdAt": "2026-09-17T14:18:12.476Z",
+        "id": 2434,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
+        "versionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-16T18:39:15.129Z",
-        "id": 2364,
+        "createdAt": "2026-09-17T14:18:12.535Z",
+        "id": 2435,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
+        "versionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

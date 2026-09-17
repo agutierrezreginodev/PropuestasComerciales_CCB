@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-16T16:19:30.575Z",
+  "updatedAt": "2026-09-17T14:16:50.046Z",
   "createdAt": "2026-09-07T14:40:21.862Z",
   "id": "Dh2lAQTzyoZBpXie",
   "name": "CCB - Error Workflow (catch-all)",
-  "description": null,
+  "description": "Error Workflow (catch-all) — componente transversal del pipeline de Servicios de Informacion - CCB. Recibe cualquier fallo no capturado localmente por el flujo de origen (via settings.errorWorkflow de cada flujo), lo registra en Errores_CCB y envia alerta tecnica por Outlook con flujo, nodo fallido y mensaje de error.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -194,7 +194,7 @@
   "pinData": {},
   "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
   "activeVersionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
-  "versionCounter": 24,
+  "versionCounter": 27,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -397,6 +397,22 @@
       {
         "createdAt": "2026-09-16T16:19:30.627Z",
         "id": 2349,
+        "workflowId": "Dh2lAQTzyoZBpXie",
+        "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:50.076Z",
+        "id": 2430,
+        "workflowId": "Dh2lAQTzyoZBpXie",
+        "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:50.088Z",
+        "id": 2431,
         "workflowId": "Dh2lAQTzyoZBpXie",
         "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
         "event": "activated",

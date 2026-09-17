@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-16T16:24:23.319Z",
+  "updatedAt": "2026-09-17T14:19:41.951Z",
   "createdAt": "2026-09-11T18:19:42.906Z",
   "id": "XWBHgbmtBubA4gqx",
-  "name": "CCB - Workflow 5B - Envío al Cliente",
-  "description": null,
+  "name": "[SUB] CCB - Workflow 5B - Envío al Cliente",
+  "description": "W5B (sub-workflow) — Envio al Cliente. Invocado por W5A: descarga el PDF de la propuesta, lo envia por correo al cliente (adjunto si pesa menos de 4MB, si no solo el enlace) y confirma internamente al asesor. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -842,7 +842,7 @@
   "pinData": {},
   "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
   "activeVersionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
-  "versionCounter": 66,
+  "versionCounter": 72,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -1688,6 +1688,38 @@
       {
         "createdAt": "2026-09-16T16:24:23.387Z",
         "id": 2359,
+        "workflowId": "XWBHgbmtBubA4gqx",
+        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:47.845Z",
+        "id": 2426,
+        "workflowId": "XWBHgbmtBubA4gqx",
+        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:47.863Z",
+        "id": 2427,
+        "workflowId": "XWBHgbmtBubA4gqx",
+        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:19:42.096Z",
+        "id": 2442,
+        "workflowId": "XWBHgbmtBubA4gqx",
+        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:19:42.134Z",
+        "id": 2443,
         "workflowId": "XWBHgbmtBubA4gqx",
         "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
         "event": "activated",

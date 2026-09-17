@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-16T16:23:41.506Z",
+  "updatedAt": "2026-09-17T14:19:35.166Z",
   "createdAt": "2026-09-11T15:41:10.905Z",
   "id": "5RJdnHDQ8NuWZJG7",
-  "name": "CCB - Workflow 4B - Aprobación de Propuesta (Teams)",
-  "description": null,
+  "name": "[SUB] CCB - Workflow 4B - Aprobación de Propuesta (Teams)",
+  "description": "W4B (sub-workflow) — Aprobacion de Propuesta (Teams). Invocado por W4A: notifica al asesor comercial por Microsoft Teams con enlace a la pagina de revision (revision-propuesta-ccb en Vercel). Area propietaria: Servicios de Informacion / Asesoria Comercial - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -427,7 +427,7 @@
   "pinData": {},
   "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
   "activeVersionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
-  "versionCounter": 119,
+  "versionCounter": 125,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -858,6 +858,38 @@
       {
         "createdAt": "2026-09-16T16:23:41.565Z",
         "id": 2353,
+        "workflowId": "5RJdnHDQ8NuWZJG7",
+        "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:43.138Z",
+        "id": 2418,
+        "workflowId": "5RJdnHDQ8NuWZJG7",
+        "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:43.151Z",
+        "id": 2419,
+        "workflowId": "5RJdnHDQ8NuWZJG7",
+        "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:19:35.211Z",
+        "id": 2440,
+        "workflowId": "5RJdnHDQ8NuWZJG7",
+        "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:19:35.239Z",
+        "id": 2441,
         "workflowId": "5RJdnHDQ8NuWZJG7",
         "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
         "event": "activated",

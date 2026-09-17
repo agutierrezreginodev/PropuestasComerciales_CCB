@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-16T15:11:13.620Z",
+  "updatedAt": "2026-09-17T14:19:19.951Z",
   "createdAt": "2026-09-07T18:48:54.850Z",
   "id": "cHOIOEFB5nbltN82",
-  "name": "CCB - Workflow 3 - Motor Criterios y Precio",
-  "description": null,
+  "name": "[SUB] CCB - Workflow 3 - Motor Criterios y Precio",
+  "description": "W3 (sub-workflow) — Motor Criterios y Precio. Consulta la base de empresas (Excel/SharePoint), calcula conteo y precio segun el servicio, genera el HTML interpolado de la propuesta y llama al microservicio Puppeteer para el PDF (hoy sobre tunel temporal — ver deploy estable pendiente en el plan de remediacion). Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -837,29 +837,10 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "When Executed by Another Workflow": [
-      {
-        "json": {
-          "id_solicitud": "SOL-TEST-GEO",
-          "servicio": "Información Georreferenciada",
-          "tipo_servicio": "Georreferenciada",
-          "tipo_organizacion": "Personas Jurídicas",
-          "municipios": "Barranquilla",
-          "sectores": "COMERCIO AL POR MAYOR Y AL POR MENOR",
-          "tamano_empresa": "Microempresas",
-          "nombre_solicitante": "María Gómez Pérez",
-          "razon_social": "Comercial Prueba Ltda",
-          "email_solicitante": "prueba@example.com",
-          "telefono_solicitante": "3001112233",
-          "ciudad": "Barranquilla"
-        }
-      }
-    ]
-  },
+  "pinData": null,
   "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
   "activeVersionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
-  "versionCounter": 238,
+  "versionCounter": 247,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -1693,6 +1674,54 @@
       {
         "createdAt": "2026-09-16T15:11:58.011Z",
         "id": 2343,
+        "workflowId": "cHOIOEFB5nbltN82",
+        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T13:19:19.763Z",
+        "id": 2394,
+        "workflowId": "cHOIOEFB5nbltN82",
+        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T13:19:19.832Z",
+        "id": 2395,
+        "workflowId": "cHOIOEFB5nbltN82",
+        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:35.825Z",
+        "id": 2414,
+        "workflowId": "cHOIOEFB5nbltN82",
+        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:35.927Z",
+        "id": 2415,
+        "workflowId": "cHOIOEFB5nbltN82",
+        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:19:20.101Z",
+        "id": 2438,
+        "workflowId": "cHOIOEFB5nbltN82",
+        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:19:20.542Z",
+        "id": 2439,
         "workflowId": "cHOIOEFB5nbltN82",
         "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
         "event": "activated",

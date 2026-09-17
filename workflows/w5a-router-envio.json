@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-14T16:16:55.529Z",
+  "updatedAt": "2026-09-17T14:16:46.486Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
-  "description": null,
+  "description": "W5A — Router de Envio. Corre cada 15 minutos: busca cotizaciones APROBADA, las marca EN_ENVIO y despacha cada una al sub-workflow de envio al cliente (W5B). Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -300,7 +300,7 @@
   "pinData": {},
   "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
   "activeVersionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
-  "versionCounter": 24,
+  "versionCounter": 27,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
@@ -616,6 +616,22 @@
       {
         "createdAt": "2026-09-14T16:16:56.005Z",
         "id": 2201,
+        "workflowId": "gvIn6mbAn2Y1bMRR",
+        "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:46.521Z",
+        "id": 2424,
+        "workflowId": "gvIn6mbAn2Y1bMRR",
+        "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-17T14:16:46.537Z",
+        "id": 2425,
         "workflowId": "gvIn6mbAn2Y1bMRR",
         "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
         "event": "activated",
