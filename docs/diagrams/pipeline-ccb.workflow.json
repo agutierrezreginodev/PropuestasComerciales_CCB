@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Pipeline CCB — Información Georreferenciada",
+    "output": "docs/diagrams/pipeline-ccb.html",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "cliente", "label": "Cliente" },
+    { "id": "intake", "label": "Intake y Motor" },
+    { "id": "revision", "label": "Revisión del Asesor" },
+    { "id": "entrega", "label": "Entrega y Cierre" },
+    { "id": "exceptions", "label": "Excepciones (Cancelar / Corregir / Errores)", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "captacion", "label": "Captación", "fromCol": 0, "toCol": 1 },
+    { "id": "calculo", "label": "Cálculo", "fromCol": 2, "toCol": 2 },
+    { "id": "decision", "label": "Decisión del asesor", "fromCol": 3, "toCol": 4, "variant": "emphasis" },
+    { "id": "cierre", "label": "Cierre", "fromCol": 5, "toCol": 5 }
+  ],
+  "mainPath": ["formulario", "cotizacion", "teams", "revisar", "entrega"],
+  "semanticChecks": {
+    "allowedRoots": ["correo"],
+    "allowedTerminals": ["entrega", "cancelar", "errorwf"]
+  },
+  "nodes": [
+    { "id": "correo", "lane": "intake", "col": 0, "type": "external", "label": "W1 — Correo o contacto directo", "sublabel": "IA extrae nombre/teléfono/email", "width": 200 },
+    { "id": "formulario", "lane": "cliente", "col": 1, "type": "frontend", "label": "Formulario público", "sublabel": "informaciongeorreferenciada-ccb", "width": 140 },
+    { "id": "cotizacion", "lane": "intake", "col": 2, "type": "backend", "label": "W2C → W2A → W3", "sublabel": "guarda criterios, calcula y genera PDF", "width": 150 },
+    { "id": "teams", "lane": "revision", "col": 3, "type": "messagebus", "label": "W4-A / W4-B", "sublabel": "notifica por Microsoft Teams", "width": 115 },
+    { "id": "revisar", "lane": "revision", "col": 4, "type": "security", "label": "Asesor CCB revisa la propuesta", "sublabel": "página de revisión + PDF", "tag": "3 vías", "width": 182 },
+    { "id": "entrega", "lane": "entrega", "col": 5, "type": "external", "label": "W5 — Envío al cliente", "sublabel": "PDF + confirmación interna", "tag": "W6 cierra a 30+ días", "width": 165 },
+    { "id": "cancelar", "lane": "exceptions", "col": 5, "type": "backend", "label": "Cancelada", "sublabel": "el flujo termina aquí" },
+    { "id": "correccion", "lane": "exceptions", "col": 4, "type": "backend", "label": "IA ajusta criterios", "sublabel": "valida contra listas fijas (3 rondas)", "width": 150 },
+    { "id": "errorwf", "lane": "exceptions", "col": 2, "type": "security", "label": "Error Workflow (catch-all)", "sublabel": "registra en Errores_CCB + alerta", "width": 180 }
+  ],
+  "edges": [
+    { "from": "correo", "to": "formulario", "label": "envía link del formulario", "variant": "emphasis", "role": "main" },
+    { "from": "formulario", "to": "cotizacion", "label": "envía la solicitud (webhook)", "variant": "emphasis", "role": "main" },
+    { "from": "cotizacion", "to": "teams", "label": "cotización lista", "variant": "emphasis", "role": "main" },
+    { "from": "teams", "to": "revisar", "label": "abre la página de revisión", "variant": "emphasis", "role": "main" },
+    { "from": "revisar", "to": "entrega", "label": "Aprobar", "variant": "emphasis", "role": "main" },
+    { "from": "revisar", "to": "cancelar", "label": "Cancelar", "variant": "security", "role": "branch" },
+    { "from": "revisar", "to": "correccion", "label": "Solicitar correcciones", "variant": "dashed", "role": "branch" },
+    { "from": "correccion", "to": "revisar", "label": "recalculado (máx. 3 rondas)", "variant": "dashed", "role": "return" },
+    { "from": "cotizacion", "to": "errorwf", "label": "excepción no manejada", "variant": "security", "role": "error" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Entrada dual", "items": ["Contacto directo (W1) o formulario público generan la misma solicitud", "El motor W3 filtra la base de empresas y genera cotización + PDF reales", "Recorrido completo verificado en vivo, sin simulaciones (16/09)"] },
+    { "dot": "amber", "title": "Ciclo de corrección con IA", "items": ["La IA solo ajusta criterios permitidos, validados contra listas fijas", "Un valor fuera de lista se descarta en vez de corromper el dato en silencio", "Tope de 3 rondas: la 4ª pasa a revisión manual en vez de loopear"] },
+    { "dot": "rose", "title": "Manejo de errores", "items": ["Cada flujo tiene un Error Workflow catch-all como red de respaldo", "Los puntos de falla esperados (IA, Teams, descarga de PDF) arman su propia alerta antes del catch-all", "Toda alerta incluye Flujo, Tipo de error, Nodo fallido y Mensaje real"] },
+    { "dot": "emerald", "title": "Cierre del ciclo", "items": ["Al aprobar, W5 entrega el PDF y confirma internamente a Asesor CCB", "W6 cierra automáticamente las cotizaciones enviadas tras 30+ días sin respuesta", "Cancelar termina el flujo sin llegar nunca a entrega"] }
+  ]
+}

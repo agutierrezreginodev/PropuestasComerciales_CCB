@@ -1,0 +1,868 @@
+{
+  "updatedAt": "2026-09-16T16:23:41.506Z",
+  "createdAt": "2026-09-11T15:41:10.905Z",
+  "id": "5RJdnHDQ8NuWZJG7",
+  "name": "CCB - Workflow 4B - Aprobación de Propuesta (Teams)",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "w4b-leer-cotizacion",
+      "name": "Leer cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "w4b-leer-criterios",
+      "name": "Leer criterios",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "w4b-leer-solicitud",
+      "name": "Leer solicitud",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        -16
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
+      },
+      "id": "w4b-consolidar",
+      "name": "Consolidar datos de la propuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Arma el texto markdown del mensaje de Teams (el formulario colapsa \\n simple: hace falta \\n\\n).\n// Mensaje simple con link a la página de revisión propia (reemplaza el formulario interactivo de Teams).\nconst d = $json;\nconst fmt = (n) => Number(n || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });\nconst link = 'https://revision-propuesta-ccb.vercel.app/?id_solicitud=' + encodeURIComponent(d.id_solicitud);\nconst mensaje = '📋 <b>Nueva propuesta para revisar</b><br><br>'\n  + 'Cliente: ' + (d.nombre_cliente || '(sin nombre)') + '<br>'\n  + 'Empresa: ' + (d.razon_social || '-') + '<br>'\n  + 'Servicio: ' + (d.servicio || '-') + '<br>'\n  + 'Valor: ' + fmt(d.valor_total) + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { ...d, mensaje_teams: mensaje } };"
+      },
+      "id": "w4b-mensaje",
+      "name": "Construir mensaje Teams",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "chatId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "48:notes"
+        },
+        "contentType": "html",
+        "message": "={{ $json.mensaje_teams }}",
+        "options": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "w4b-teams",
+      "name": "Enviar mensaje Teams",
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        1328,
+        -16
+      ],
+      "webhookId": "9f1c7a2b-4d3e-4f5a-8b6c-1d2e3f4a5b6c",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "XuEqB2riUsSUuZEr",
+          "name": "INT-ServiciosInformacion Microsoft Teams"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "notes": "MODO PRUEBA (15/09): chatId apuntando al chat de Notas de Adrian (interno-alertas@example.com) mientras se prueba el pipeline. Antes de producción real, restaurar a Asesor CCB: <TEAMS_CHAT_ID>"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst flujo = $workflow.name;\nconst nodoFallido = 'Teams - Notificar y Esperar Decisión';\nconst tipoError = (j.error && (j.error.name || j.error.type)) || 'Error técnico';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico del nodo Teams (sendAndWait)';\nconst id = $('Consolidar datos de la propuesta').first().json.id_solicitud;\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ La fila quedó en REVISION_MANUAL</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">El nodo de Teams falló técnicamente al notificar/esperar la decisión. La fila se marca REVISION_MANUAL para que no quede huérfana.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-B-aprobacion-teams', nodo_fallido: nodoFallido, mensaje_error: mensaje, emailBody } };"
+      },
+      "id": "w4b-prep-teams-err",
+      "name": "Preparar error - Teams",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w4b-reg-teams-err",
+      "name": "Registrar error - Teams",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        272,
+        224
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Consolidar datos de la propuesta').first().json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "REVISION_MANUAL"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w4b-marcar-teams-err",
+      "name": "Marcar REVISION_MANUAL - Error Teams",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        464,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '[Propuesta CCB] Error técnico en Teams — ' + $json.id_solicitud }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "w4b-alerta-teams-err",
+      "name": "Enviar alerta - Teams",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        656,
+        224
+      ],
+      "webhookId": "61e05e2c-db16-4059-86d6-c52b2db9f6dc",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "### W4-B — Notificación de Propuesta (Teams)\n\nSimplificado 15/09: ya NO maneja la decisión de Asesor CCB (aprobar/corregir/cancelar). Solo arma los datos de la propuesta y manda un mensaje simple de Teams con un link a la página de revisión propia (revision-propuesta-ccb.vercel.app).\n\n- chatId: chat 1:1 con Asesor CCB.\n- La decisión completa (aprobar/corregir con IA/cancelar, tope de 3 rondas) vive en **W4-C** (consulta, GET) y **W4-D** (decisión, POST) — workflows nuevos, disparados por la página web, no por este.\n- Si falla el envío de Teams: log + alerta + REVISION_MANUAL (igual que antes).",
+        "height": 260,
+        "width": 720
+      },
+      "id": "w4b-nota",
+      "name": "Nota - W4-B",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        864,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "id_solicitud"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        32,
+        -16
+      ],
+      "id": "5b5f08d2-7364-46e3-aa44-37453be42790",
+      "name": "Recibir solicitud"
+    }
+  ],
+  "connections": {
+    "Leer cotización": {
+      "main": [
+        [
+          {
+            "node": "Leer criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer criterios": {
+      "main": [
+        [
+          {
+            "node": "Leer solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer solicitud": {
+      "main": [
+        [
+          {
+            "node": "Consolidar datos de la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar datos de la propuesta": {
+      "main": [
+        [
+          {
+            "node": "Construir mensaje Teams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construir mensaje Teams": {
+      "main": [
+        [
+          {
+            "node": "Enviar mensaje Teams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar mensaje Teams": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Preparar error - Teams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Teams": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Teams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Teams": {
+      "main": [
+        [
+          {
+            "node": "Marcar REVISION_MANUAL - Error Teams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar REVISION_MANUAL - Error Teams": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta - Teams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recibir solicitud": {
+      "main": [
+        [
+          {
+            "node": "Leer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "binaryMode": "separate",
+    "errorWorkflow": "Dh2lAQTzyoZBpXie"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+  "activeVersionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+  "versionCounter": 119,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-16T16:23:41.507Z",
+    "createdAt": "2026-09-16T16:23:41.507Z",
+    "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+    "workflowId": "5RJdnHDQ8NuWZJG7",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "w4b-leer-cotizacion",
+        "name": "Leer cotización",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          224,
+          -16
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "ldABWugJR1GcFFyy",
+            "mode": "list",
+            "cachedResultName": "Criterios_Cotizacion",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "w4b-leer-criterios",
+        "name": "Leer criterios",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          448,
+          -16
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "w4b-leer-solicitud",
+        "name": "Leer solicitud",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          672,
+          -16
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
+        },
+        "id": "w4b-consolidar",
+        "name": "Consolidar datos de la propuesta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          -16
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Arma el texto markdown del mensaje de Teams (el formulario colapsa \\n simple: hace falta \\n\\n).\n// Mensaje simple con link a la página de revisión propia (reemplaza el formulario interactivo de Teams).\nconst d = $json;\nconst fmt = (n) => Number(n || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });\nconst link = 'https://revision-propuesta-ccb.vercel.app/?id_solicitud=' + encodeURIComponent(d.id_solicitud);\nconst mensaje = '📋 <b>Nueva propuesta para revisar</b><br><br>'\n  + 'Cliente: ' + (d.nombre_cliente || '(sin nombre)') + '<br>'\n  + 'Empresa: ' + (d.razon_social || '-') + '<br>'\n  + 'Servicio: ' + (d.servicio || '-') + '<br>'\n  + 'Valor: ' + fmt(d.valor_total) + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { ...d, mensaje_teams: mensaje } };"
+        },
+        "id": "w4b-mensaje",
+        "name": "Construir mensaje Teams",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1104,
+          -16
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "chatMessage",
+          "chatId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "48:notes"
+          },
+          "contentType": "html",
+          "message": "={{ $json.mensaje_teams }}",
+          "options": {
+            "includeLinkToWorkflow": false
+          }
+        },
+        "id": "w4b-teams",
+        "name": "Enviar mensaje Teams",
+        "type": "n8n-nodes-base.microsoftTeams",
+        "typeVersion": 2,
+        "position": [
+          1328,
+          -16
+        ],
+        "webhookId": "9f1c7a2b-4d3e-4f5a-8b6c-1d2e3f4a5b6c",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "credentials": {
+          "microsoftTeamsOAuth2Api": {
+            "id": "XuEqB2riUsSUuZEr",
+            "name": "INT-ServiciosInformacion Microsoft Teams"
+          }
+        },
+        "onError": "continueErrorOutput",
+        "notes": "MODO PRUEBA (15/09): chatId apuntando al chat de Notas de Adrian (interno-alertas@example.com) mientras se prueba el pipeline. Antes de producción real, restaurar a Asesor CCB: <TEAMS_CHAT_ID>"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst flujo = $workflow.name;\nconst nodoFallido = 'Teams - Notificar y Esperar Decisión';\nconst tipoError = (j.error && (j.error.name || j.error.type)) || 'Error técnico';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico del nodo Teams (sendAndWait)';\nconst id = $('Consolidar datos de la propuesta').first().json.id_solicitud;\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ La fila quedó en REVISION_MANUAL</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">El nodo de Teams falló técnicamente al notificar/esperar la decisión. La fila se marca REVISION_MANUAL para que no quede huérfana.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-B-aprobacion-teams', nodo_fallido: nodoFallido, mensaje_error: mensaje, emailBody } };"
+        },
+        "id": "w4b-prep-teams-err",
+        "name": "Preparar error - Teams",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          64,
+          224
+        ]
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w4b-reg-teams-err",
+        "name": "Registrar error - Teams",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          272,
+          224
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Consolidar datos de la propuesta').first().json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "REVISION_MANUAL"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w4b-marcar-teams-err",
+        "name": "Marcar REVISION_MANUAL - Error Teams",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          464,
+          224
+        ]
+      },
+      {
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ '[Propuesta CCB] Error técnico en Teams — ' + $json.id_solicitud }}",
+          "bodyContent": "={{ $json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "w4b-alerta-teams-err",
+        "name": "Enviar alerta - Teams",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          656,
+          224
+        ],
+        "webhookId": "61e05e2c-db16-4059-86d6-c52b2db9f6dc",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "content": "### W4-B — Notificación de Propuesta (Teams)\n\nSimplificado 15/09: ya NO maneja la decisión de Asesor CCB (aprobar/corregir/cancelar). Solo arma los datos de la propuesta y manda un mensaje simple de Teams con un link a la página de revisión propia (revision-propuesta-ccb.vercel.app).\n\n- chatId: chat 1:1 con Asesor CCB.\n- La decisión completa (aprobar/corregir con IA/cancelar, tope de 3 rondas) vive en **W4-C** (consulta, GET) y **W4-D** (decisión, POST) — workflows nuevos, disparados por la página web, no por este.\n- Si falla el envío de Teams: log + alerta + REVISION_MANUAL (igual que antes).",
+          "height": 260,
+          "width": 720
+        },
+        "id": "w4b-nota",
+        "name": "Nota - W4-B",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          864,
+          208
+        ]
+      },
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "id_solicitud"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          32,
+          -16
+        ],
+        "id": "5b5f08d2-7364-46e3-aa44-37453be42790",
+        "name": "Recibir solicitud"
+      }
+    ],
+    "connections": {
+      "Leer cotización": {
+        "main": [
+          [
+            {
+              "node": "Leer criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer criterios": {
+        "main": [
+          [
+            {
+              "node": "Leer solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer solicitud": {
+        "main": [
+          [
+            {
+              "node": "Consolidar datos de la propuesta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consolidar datos de la propuesta": {
+        "main": [
+          [
+            {
+              "node": "Construir mensaje Teams",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Construir mensaje Teams": {
+        "main": [
+          [
+            {
+              "node": "Enviar mensaje Teams",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar mensaje Teams": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Preparar error - Teams",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Teams": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Teams",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar error - Teams": {
+        "main": [
+          [
+            {
+              "node": "Marcar REVISION_MANUAL - Error Teams",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marcar REVISION_MANUAL - Error Teams": {
+        "main": [
+          [
+            {
+              "node": "Enviar alerta - Teams",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Recibir solicitud": {
+        "main": [
+          [
+            {
+              "node": "Leer cotización",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-16T16:23:41.548Z",
+        "id": 2352,
+        "workflowId": "5RJdnHDQ8NuWZJG7",
+        "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-16T16:23:41.565Z",
+        "id": 2353,
+        "workflowId": "5RJdnHDQ8NuWZJG7",
+        "versionId": "cdf19a8b-9f78-4111-aa19-f11044613d2e",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

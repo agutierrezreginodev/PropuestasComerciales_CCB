@@ -1,0 +1,3128 @@
+{
+  "updatedAt": "2026-09-16T18:39:15.039Z",
+  "createdAt": "2026-09-15T15:20:09.653Z",
+  "id": "W0TDH4b0tHCNOzFQ",
+  "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "decidir-propuesta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "53ca7f86-c409-4377-9190-a84b430a8756",
+      "name": "Webhook - Decisión Propuesta",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -992,
+        704
+      ],
+      "webhookId": "a7fc4cf6-9ad7-410f-86ad-8745c6233fee"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "375c8bdf-8bb4-4fdf-9163-c8554dd0bded",
+      "name": "Responder decisión",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -752,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const b = $json.body || $json;\nreturn { json: { id_solicitud: b.id_solicitud || '', Decision: b.decision || '', Comentario: b.comentario || '' } };"
+      },
+      "id": "4529dd3f-1790-4831-8919-c4708b5e2471",
+      "name": "Extraer decisión del body",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -752,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "e85b218c-ee48-4f03-aff1-1aa6d91f70cc",
+      "name": "Leer cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -512,
+        512
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "48cc9fce-186e-45ad-aa75-cf71cec69715",
+      "name": "Leer criterios",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -272,
+        512
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "82842f57-c375-4525-aadc-75dbe5ab3d10",
+      "name": "Leer solicitud",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -32,
+        512
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
+      },
+      "id": "4c70404a-cf07-48dc-882c-8d8ec665ae6b",
+      "name": "Consolidar datos y decisión",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-aprobar",
+              "leftValue": "={{ $json.Decision }}",
+              "rightValue": "Aprobar",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bcc48f31-11f5-4c81-87de-9c991c39cda0",
+      "name": "¿Aprobar?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "APROBADA",
+            "comentario_fausto": "={{ $json.Comentario }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "10f107aa-83c7-49b8-bea7-f867a5778266",
+      "name": "Aprobar - Marcar APROBADA",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Propuesta aprobada. Gracias.' } };"
+      },
+      "id": "56628919-4ef5-45f3-914b-d6fb0916f310",
+      "name": "Confirmar aprobación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-cancelar",
+              "leftValue": "={{ $json.Decision }}",
+              "rightValue": "Cancelar",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a9a720fc-3498-40a1-a509-16b59b0ed165",
+      "name": "¿Cancelar?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "CANCELADA",
+            "comentario_fausto": "={{ $json.Comentario }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "48cd1869-c128-4bfa-972e-62053fd4c0be",
+      "name": "Cancelar - Marcar CANCELADA",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        976,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Solicitud marcada como cancelada.' } };"
+      },
+      "id": "6dcab535-a8c1-4e7b-959f-440026498ebb",
+      "name": "Confirmar cancelación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-corregir",
+              "leftValue": "={{ $json.Decision }}",
+              "rightValue": "Solicitar correcciones",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c2c29387-7d07-4e4e-8682-b1cd0ddf4777",
+      "name": "¿Solicitar correcciones?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1216,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst mensaje = 'Decisión no reconocida recibida desde la página de revisión: \"' + (j.Decision || '(vacía)') + '\"';\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enrutar decisión', mensaje_error: mensaje } };"
+      },
+      "id": "91f348e7-e148-4990-8fad-984bb22ca60e",
+      "name": "Preparar error - No reconocida",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "618d89f1-fb78-40c6-acc7-c20fa8fd249a",
+      "name": "Registrar error - No reconocida",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1696,
+        1168
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: false, mensaje: 'No pudimos interpretar la decisión enviada. Por favor intentá de nuevo.' } };"
+      },
+      "id": "dd4d3e69-cc51-4c2e-b274-726cd6cbaeb3",
+      "name": "Confirmar no reconocida",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-tope",
+              "leftValue": "={{ Number($json.ronda_correccion) || 0 }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "98350229-ba94-4d0b-9279-884502826904",
+      "name": "¿Se agotaron las rondas? (>=3)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1456,
+        928
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + (j.servicio || 'servicio') + ' (' + (j.id_solicitud || '') + ')';\nconst cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + (j.nombre_cliente || 'cliente') + ' (' + (j.razon_social || '-') + '). Requiere revisión manual.\\n\\nComentario del asesor: ' + (j.Comentario || '(sin comentario)') + '\\n\\nDocumento: ' + (j.pdf_url || '(sin documento)');\nreturn { json: { ...j, _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
+      },
+      "id": "a2ee211f-5d41-4cff-8288-7565e2deb358",
+      "name": "Preparar aviso - Tope",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "REVISION_MANUAL",
+            "comentario_fausto": "={{ $json.Comentario }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "9080ddd7-b2cc-4684-8283-6bbced10ee58",
+      "name": "Marcar REVISION_MANUAL - Tope",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1936,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ $json._aviso_asunto }}",
+        "bodyContent": "={{ $json._aviso_cuerpo }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "b9531726-9172-4942-b9b8-a0d9f5ab64d1",
+      "name": "Enviar alerta - Tope",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        768
+      ],
+      "webhookId": "a56745db-8f8e-4d36-9f5a-9a6151acee3c",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Se alcanzó el máximo de 3 rondas de corrección. La propuesta queda en revisión manual y te vamos a contactar directamente.' } };"
+      },
+      "id": "bbc83972-5d3a-4526-a6e3-2e81c42c1712",
+      "name": "Confirmar tope",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2416,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const base = $json;\nconst comentario = base.Comentario || '';\nconst criterios = base.criterios || {};\nconst CLAVES_PROHIBIDAS = ['servicio', 'id_solicitud'];\nconst claves = Object.keys(criterios).filter(k => !CLAVES_PROHIBIDAS.includes(k));\nconst prompt = 'Sos un asistente de la Cámara de Comercio de Barranquilla (CCB). Aplicás correcciones a los criterios de una cotización ya generada, según el pedido del asesor comercial.\\n\\n'\n  + 'REGLAS ESTRICTAS:\\n'\n  + '- Solo podés modificar valores de estas claves existentes: ' + claves.join(', ') + '\\n'\n  + '- Está prohibido agregar claves nuevas o cambiar la estructura del objeto.\\n'\n  + '- Si el pedido requiere una clave que no existe, dejá criterios_ajustados vacío y explicá en resumen_cambios qué información falta.\\n'\n  + '- No inventes valores: usá solo lo que el pedido indica de forma inequívoca.\\n'\n  + '- confianza: alta si el pedido es claro, media si es interpretable, baja si es ambiguo.\\n\\n'\n  + 'CONVENCIONES DE VALORES (usar EXACTAMENTE estos textos cuando aplique):\\n'\n  + '- organizacion_juridica: solo \"Personas Jurídicas\", \"Personas Naturales\", \"Establecimientos\", \"Entidades sin ánimo de lucro\" (separadas por \"; \" si son varias).\\n'\n  + '- ubicacion_geografica: para zonas amplias usar exactamente \"Barranquilla\", \"Área Metropolitana de Barranquilla\" o \"Todo el Departamento del Atlántico\". Para municipios puntuales, listar el nombre exacto del municipio separados por \"; \".\\n'\n  + '- actividad_economica: para \"todos los sectores/actividades\" usar exactamente \"Todas las actividades económicas\". Para sectores puntuales, usar EXCLUSIVAMENTE uno o más de estos 18 nombres exactos, SIN partirlos aunque contengan \"y\"/\"al por\": \"Agropecuario\", \"Minero\", \"Industria\", \"Electricidad, gas, vapor y aire acondicionado\", \"Agua\", \"Construcción\", \"Comercio al por mayor y al por menor\", \"Transporte\", \"Alojamiento y restaurantes\", \"Información y comunicaciones\", \"Financiero\", \"Inmobiliarias\", \"Profesionales, científicas y técnicas\", \"Servicios administrativos y de apoyo\", \"Educación\", \"Salud\", \"Artísticas, de entretenimiento y recreación\", \"Otras actividades de servicios\". Si el asesor menciona varios sectores, separalos por \"; \" manteniendo cada nombre completo e intacto (nunca dividas un nombre de la lista en dos partes).\\n'\n  + '- tamano_empresa: solo \"Microempresas\", \"Pequeñas empresas\", \"Medianas empresas\", \"Grandes empresas\" (separadas por \"; \" si son varias).\\n'\n  + '- Si el pedido ajusta un rango de activos o ventas (activos_min/activos_max/activos_entre/activos_y, o su equivalente en ventas), seteá en null los otros campos del mismo grupo que queden en conflicto para no dejar un filtro inconsistente.\\n\\n'\n  + 'CRITERIOS ACTUALES (JSON):\\n' + JSON.stringify(criterios, null, 2) + '\\n\\n'\n  + 'PEDIDO DE CORRECCIÓN DEL ASESOR:\\n\"' + comentario + '\"';\nreturn { json: { ...base, prompt_correccion: prompt } };"
+      },
+      "id": "ac77d766-fbe1-49d8-aae7-f08e4ef511d8",
+      "name": "Preparar corrección IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt_correccion }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "id": "08c7a343-0734-4753-b916-d340d2dbe23a",
+      "name": "IA - Ajustar criterios",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2160,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o-mini",
+        "options": {}
+      },
+      "id": "276150b4-9ed2-43c9-b10a-2278c2bcaa76",
+      "name": "Modelo OpenRouter",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        1392
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "openRouterApi": {
+          "id": "PPk35IDkMnX3QnnE",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"criterios_ajustados\": {\n      \"type\": \"object\",\n      \"description\": \"Subconjunto de claves existentes de los criterios con sus nuevos valores. Vacío si no hay ajustes válidos.\",\n      \"additionalProperties\": true\n    },\n    \"resumen_cambios\": {\n      \"type\": \"string\",\n      \"description\": \"Resumen breve en español de qué se cambió y por qué.\"\n    },\n    \"confianza\": {\n      \"type\": \"string\",\n      \"enum\": [\"alta\",\"media\",\"baja\"],\n      \"description\": \"Confianza en la interpretación del pedido.\"\n    }\n  },\n  \"required\": [\"criterios_ajustados\",\"resumen_cambios\",\"confianza\"]\n}",
+        "autoFix": true
+      },
+      "id": "787af846-5b01-4676-b19b-13a58318d921",
+      "name": "Parser criterios ajustados",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2320,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o-mini",
+        "options": {}
+      },
+      "id": "036f0526-2250-43f3-abcb-31f3e846d036",
+      "name": "Modelo Fixer",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        1376
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "openRouterApi": {
+          "id": "PPk35IDkMnX3QnnE",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const base = $('Preparar corrección IA').first().json;\nconst raw = $json;\nconst out = (raw && typeof raw.output === 'object' && raw.output !== null) ? raw.output\n  : (raw && typeof raw.response === 'object' && raw.response !== null) ? raw.response\n  : (raw || {});\nconst ajustes = out.criterios_ajustados || {};\nconst criterios = { ...base.criterios };\nconst aplicadas = {};\nconst rechazadas = {};\n\n// Valores permitidos por clave -- si la IA escribe algo fuera de esta lista para una clave\n// controlada, se descarta el ajuste en vez de aplicarlo (evita corromper el criterio en\n// silencio, p.ej. valores de organizacion_juridica escritos por error en tamano_empresa).\nconst VALORES_VALIDOS = {\n  organizacion_juridica: ['Personas Jurídicas', 'Personas Naturales', 'Establecimientos', 'Entidades sin ánimo de lucro'],\n  tamano_empresa: ['Microempresas', 'Pequeñas empresas', 'Medianas empresas', 'Grandes empresas'],\n  actividad_economica: ['Agropecuario', 'Minero', 'Industria', 'Electricidad, gas, vapor y aire acondicionado', 'Agua', 'Construcción', 'Comercio al por mayor y al por menor', 'Transporte', 'Alojamiento y restaurantes', 'Información y comunicaciones', 'Financiero', 'Inmobiliarias', 'Profesionales, científicas y técnicas', 'Servicios administrativos y de apoyo', 'Educación', 'Salud', 'Artísticas, de entretenimiento y recreación', 'Otras actividades de servicios', 'Todas las actividades económicas']\n};\n\nfunction esValorValido(clave, valor) {\n  const permitidos = VALORES_VALIDOS[clave];\n  if (!permitidos) return true;\n  const partes = String(valor).split(';').map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return false;\n  return partes.every(p => permitidos.includes(p));\n}\n\nfor (const [k, v] of Object.entries(ajustes)) {\n  if (!Object.prototype.hasOwnProperty.call(criterios, k)) continue;\n  if (esValorValido(k, v)) { criterios[k] = v; aplicadas[k] = v; }\n  else { rechazadas[k] = v; }\n}\n\nconst huboRechazos = Object.keys(rechazadas).length > 0;\nconst avisoRechazo = huboRechazos\n  ? ' [AVISO: se descartaron ajustes invalidos para: ' + Object.keys(rechazadas).join(', ') + ' -- valor(es) no reconocido(s): ' + JSON.stringify(rechazadas) + ']'\n  : '';\n\nreturn { json: { id_solicitud: base.id_solicitud, servicio: base.servicio, criterios, criterios_ajustados_aplicados: aplicadas, criterios_ajustados_rechazados: rechazadas, resumen_cambios: (out.resumen_cambios || '') + avisoRechazo, comentario: base.Comentario || '' } };"
+      },
+      "id": "9bbd410a-676b-4ccc-852b-3b88839220d9",
+      "name": "Aplicar correcciones",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "VChcasvisGKekezR",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "servicio": "={{ $json.servicio }}",
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "criterios": "={{ $json.criterios }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "servicio",
+              "type": "string",
+              "display": true
+            },
+            {
+              "id": "id_solicitud",
+              "type": "string",
+              "display": true
+            },
+            {
+              "id": "criterios",
+              "type": "object",
+              "display": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a4ae8173-2ea4-4d08-932d-d222ce182ef6",
+      "name": "Re-invocar motor",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2720,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-ok",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5201a9ef-1df5-4a0c-b211-9dad1726f905",
+      "name": "¿ok recálculo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2960,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "f1931cd8-4da1-443b-9799-309947dc6dc4",
+      "name": "Releer cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2976,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ronda_correccion": "={{ (Number($json.ronda_correccion) || 0) + 1 }}",
+            "comentario_fausto": "={{ $('Consolidar datos y decisión').first().json.Comentario }}",
+            "estado": "EN_REVISION"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "866f961a-96d8-4cad-b079-63f5ef1dceef",
+      "name": "Guardar ronda + comentario",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3216,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const fresh = $json;\nconst idSolicitud = fresh.id_solicitud;\nconst rondaGuardada = Number(fresh.ronda_correccion) || 0;\nconst link = 'https://revision-propuesta-ccb.vercel.app/?id_solicitud=' + encodeURIComponent(idSolicitud);\nconst mensaje = '📋 <b>Propuesta actualizada — ronda ' + rondaGuardada + ' de 3</b><br><br>'\n  + 'Solicitud: ' + idSolicitud + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { id_solicitud: idSolicitud, mensaje_teams: mensaje } };"
+      },
+      "id": "5c01a49c-6ccd-4855-bc29-8aed6f2f32da",
+      "name": "Reconstruir mensaje simple",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3456,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "chatId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "48:notes"
+        },
+        "contentType": "html",
+        "message": "={{ $json.mensaje_teams }}",
+        "options": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "52d8c83b-371c-4993-aa80-b87e5ed2ad66",
+      "name": "Enviar mensaje Teams",
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        3696,
+        896
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "webhookId": "b5bc81d8-ac78-4f1e-98a2-85de97c1e1c3",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "XuEqB2riUsSUuZEr",
+          "name": "INT-ServiciosInformacion Microsoft Teams"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "notes": "MODO PRUEBA (15/09): chatId apuntando al chat de Notas de Adrian mientras se prueba el pipeline. Antes de producción real, restaurar a Asesor CCB: <TEAMS_CHAT_ID>"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Se enviaron tus comentarios. El asesor va a recalcular y te va a volver a escribir por Teams con el link actualizado.' } };"
+      },
+      "id": "6b50bae2-171a-4dda-9230-20d01c103272",
+      "name": "Confirmar corrección enviada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3936,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams';\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enviar mensaje Teams', mensaje_error: mensaje } };"
+      },
+      "id": "54d2b4a3-ade7-45b1-a3be-f6915fcbbc17",
+      "name": "Preparar error - Teams envío",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3696,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "cd00c18e-4e50-4e01-b7a5-63cd1bef1f7a",
+      "name": "Registrar error - Teams envío",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3936,
+        1072
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Se guardaron tus comentarios y se recalculó la propuesta, pero no pudimos avisarte por Teams. El asesor te va a contactar directamente.' } };"
+      },
+      "id": "51b4054e-a874-4f01-a1a2-3ce48579fda6",
+      "name": "Confirmar corrección (aviso Teams falló)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4176,
+        1072
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst flujo = $workflow.name;\nconst nodoFallido = 'Re-invocar motor (recálculo)';\nconst tipoError = 'Rechazo del motor de cálculo (ok=false)';\nconst id = j.id_solicitud || $('Consolidar datos y decisión').first().json.id_solicitud;\nconst mensaje = j.error || 'El recálculo devolvió ok=false';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Recálculo falló — propuesta en ERROR_CALCULO</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La corrección con IA se aplicó pero el motor rechazó el recálculo (ok=false). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: nodoFallido, mensaje_error: mensaje, fecha_error: fechaError, emailBody } };"
+      },
+      "id": "8025ad4e-1707-450a-8c27-22e51d5cdf42",
+      "name": "Preparar error - Recálculo falló",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3200,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "552ddb9b-5a0a-47c2-be10-8d8bc23f0067",
+      "name": "Registrar error - Recálculo",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3440,
+        1168
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Preparar error - Recálculo falló').first().json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "ERROR_CALCULO"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "20596eff-c580-4a01-bec9-c60235537c16",
+      "name": "Marcar ERROR_CALCULO",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        3680,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '[Propuesta CCB] Recálculo falló — ' + $('Preparar error - Recálculo falló').first().json.id_solicitud }}",
+        "bodyContent": "={{ $('Preparar error - Recálculo falló').first().json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "b5a358f6-81fe-471e-859e-992a47e1a409",
+      "name": "Enviar alerta - Recálculo",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        3696,
+        1168
+      ],
+      "webhookId": "890daad7-202e-4846-a653-1dd09eeefa56",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: false, mensaje: 'Se registró tu comentario, pero el motor no pudo recalcular la propuesta con esos ajustes. El asesor te va a contactar directamente.' } };"
+      },
+      "id": "42f9531e-9645-4c9e-98e6-90eef1b265e8",
+      "name": "Confirmar error recálculo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3936,
+        1168
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook - Decisión Propuesta": {
+      "main": [
+        [
+          {
+            "node": "Extraer decisión del body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer decisión del body": {
+      "main": [
+        [
+          {
+            "node": "Leer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer cotización": {
+      "main": [
+        [
+          {
+            "node": "Leer criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer criterios": {
+      "main": [
+        [
+          {
+            "node": "Leer solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer solicitud": {
+      "main": [
+        [
+          {
+            "node": "Consolidar datos y decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar datos y decisión": {
+      "main": [
+        [
+          {
+            "node": "¿Aprobar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Aprobar?": {
+      "main": [
+        [
+          {
+            "node": "Aprobar - Marcar APROBADA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "¿Cancelar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aprobar - Marcar APROBADA": {
+      "main": [
+        [
+          {
+            "node": "Confirmar aprobación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar aprobación": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Cancelar?": {
+      "main": [
+        [
+          {
+            "node": "Cancelar - Marcar CANCELADA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "¿Solicitar correcciones?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancelar - Marcar CANCELADA": {
+      "main": [
+        [
+          {
+            "node": "Confirmar cancelación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar cancelación": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Solicitar correcciones?": {
+      "main": [
+        [
+          {
+            "node": "¿Se agotaron las rondas? (>=3)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - No reconocida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - No reconocida": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - No reconocida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - No reconocida": {
+      "main": [
+        [
+          {
+            "node": "Confirmar no reconocida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar no reconocida": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Se agotaron las rondas? (>=3)": {
+      "main": [
+        [
+          {
+            "node": "Preparar aviso - Tope",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar corrección IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar aviso - Tope": {
+      "main": [
+        [
+          {
+            "node": "Marcar REVISION_MANUAL - Tope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar REVISION_MANUAL - Tope": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta - Tope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar alerta - Tope": {
+      "main": [
+        [
+          {
+            "node": "Confirmar tope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar tope": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar corrección IA": {
+      "main": [
+        [
+          {
+            "node": "IA - Ajustar criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modelo OpenRouter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA - Ajustar criterios",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser criterios ajustados": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "IA - Ajustar criterios",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modelo Fixer": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Parser criterios ajustados",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA - Ajustar criterios": {
+      "main": [
+        [
+          {
+            "node": "Aplicar correcciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aplicar correcciones": {
+      "main": [
+        [
+          {
+            "node": "Re-invocar motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Re-invocar motor": {
+      "main": [
+        [
+          {
+            "node": "¿ok recálculo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿ok recálculo?": {
+      "main": [
+        [
+          {
+            "node": "Releer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Recálculo falló",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Releer cotización": {
+      "main": [
+        [
+          {
+            "node": "Guardar ronda + comentario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar ronda + comentario": {
+      "main": [
+        [
+          {
+            "node": "Reconstruir mensaje simple",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reconstruir mensaje simple": {
+      "main": [
+        [
+          {
+            "node": "Enviar mensaje Teams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar mensaje Teams": {
+      "main": [
+        [
+          {
+            "node": "Confirmar corrección enviada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Teams envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar corrección enviada": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Teams envío": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Teams envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Teams envío": {
+      "main": [
+        [
+          {
+            "node": "Confirmar corrección (aviso Teams falló)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar corrección (aviso Teams falló)": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Recálculo falló": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Recálculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Recálculo": {
+      "main": [
+        [
+          {
+            "node": "Marcar ERROR_CALCULO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar ERROR_CALCULO": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta - Recálculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar alerta - Recálculo": {
+      "main": [
+        [
+          {
+            "node": "Confirmar error recálculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar error recálculo": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "errorWorkflow": "Dh2lAQTzyoZBpXie",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
+  "activeVersionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
+  "versionCounter": 142,
+  "triggerCount": 1,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-16T18:39:15.040Z",
+    "createdAt": "2026-09-16T18:39:15.040Z",
+    "versionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
+    "workflowId": "W0TDH4b0tHCNOzFQ",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "decidir-propuesta",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "53ca7f86-c409-4377-9190-a84b430a8756",
+        "name": "Webhook - Decisión Propuesta",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -992,
+          704
+        ],
+        "webhookId": "a7fc4cf6-9ad7-410f-86ad-8745c6233fee"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ $json }}",
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "id": "375c8bdf-8bb4-4fdf-9163-c8554dd0bded",
+        "name": "Responder decisión",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          -752,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const b = $json.body || $json;\nreturn { json: { id_solicitud: b.id_solicitud || '', Decision: b.decision || '', Comentario: b.comentario || '' } };"
+        },
+        "id": "4529dd3f-1790-4831-8919-c4708b5e2471",
+        "name": "Extraer decisión del body",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -752,
+          512
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "e85b218c-ee48-4f03-aff1-1aa6d91f70cc",
+        "name": "Leer cotización",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          -512,
+          512
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "ldABWugJR1GcFFyy",
+            "mode": "list",
+            "cachedResultName": "Criterios_Cotizacion",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "48cc9fce-186e-45ad-aa75-cf71cec69715",
+        "name": "Leer criterios",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          -272,
+          512
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "82842f57-c375-4525-aadc-75dbe5ab3d10",
+        "name": "Leer solicitud",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          -32,
+          512
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
+        },
+        "id": "4c70404a-cf07-48dc-882c-8d8ec665ae6b",
+        "name": "Consolidar datos y decisión",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          208,
+          512
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-aprobar",
+                "leftValue": "={{ $json.Decision }}",
+                "rightValue": "Aprobar",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bcc48f31-11f5-4c81-87de-9c991c39cda0",
+        "name": "¿Aprobar?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          448,
+          512
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "APROBADA",
+              "comentario_fausto": "={{ $json.Comentario }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "10f107aa-83c7-49b8-bea7-f867a5778266",
+        "name": "Aprobar - Marcar APROBADA",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          736,
+          176
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Propuesta aprobada. Gracias.' } };"
+        },
+        "id": "56628919-4ef5-45f3-914b-d6fb0916f310",
+        "name": "Confirmar aprobación",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          976,
+          176
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-cancelar",
+                "leftValue": "={{ $json.Decision }}",
+                "rightValue": "Cancelar",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a9a720fc-3498-40a1-a509-16b59b0ed165",
+        "name": "¿Cancelar?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          736,
+          704
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "CANCELADA",
+              "comentario_fausto": "={{ $json.Comentario }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "48cd1869-c128-4bfa-972e-62053fd4c0be",
+        "name": "Cancelar - Marcar CANCELADA",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          976,
+          624
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Solicitud marcada como cancelada.' } };"
+        },
+        "id": "6dcab535-a8c1-4e7b-959f-440026498ebb",
+        "name": "Confirmar cancelación",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1216,
+          624
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-corregir",
+                "leftValue": "={{ $json.Decision }}",
+                "rightValue": "Solicitar correcciones",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "c2c29387-7d07-4e4e-8682-b1cd0ddf4777",
+        "name": "¿Solicitar correcciones?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1216,
+          832
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst mensaje = 'Decisión no reconocida recibida desde la página de revisión: \"' + (j.Decision || '(vacía)') + '\"';\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enrutar decisión', mensaje_error: mensaje } };"
+        },
+        "id": "91f348e7-e148-4990-8fad-984bb22ca60e",
+        "name": "Preparar error - No reconocida",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1456,
+          1168
+        ]
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "618d89f1-fb78-40c6-acc7-c20fa8fd249a",
+        "name": "Registrar error - No reconocida",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          1696,
+          1168
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: false, mensaje: 'No pudimos interpretar la decisión enviada. Por favor intentá de nuevo.' } };"
+        },
+        "id": "dd4d3e69-cc51-4c2e-b274-726cd6cbaeb3",
+        "name": "Confirmar no reconocida",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1920,
+          1168
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-tope",
+                "leftValue": "={{ Number($json.ronda_correccion) || 0 }}",
+                "rightValue": 3,
+                "operator": {
+                  "type": "number",
+                  "operation": "gte"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "98350229-ba94-4d0b-9279-884502826904",
+        "name": "¿Se agotaron las rondas? (>=3)",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1456,
+          928
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + (j.servicio || 'servicio') + ' (' + (j.id_solicitud || '') + ')';\nconst cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + (j.nombre_cliente || 'cliente') + ' (' + (j.razon_social || '-') + '). Requiere revisión manual.\\n\\nComentario del asesor: ' + (j.Comentario || '(sin comentario)') + '\\n\\nDocumento: ' + (j.pdf_url || '(sin documento)');\nreturn { json: { ...j, _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
+        },
+        "id": "a2ee211f-5d41-4cff-8288-7565e2deb358",
+        "name": "Preparar aviso - Tope",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1696,
+          768
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "REVISION_MANUAL",
+              "comentario_fausto": "={{ $json.Comentario }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "9080ddd7-b2cc-4684-8283-6bbced10ee58",
+        "name": "Marcar REVISION_MANUAL - Tope",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          1936,
+          768
+        ]
+      },
+      {
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ $json._aviso_asunto }}",
+          "bodyContent": "={{ $json._aviso_cuerpo }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "b9531726-9172-4942-b9b8-a0d9f5ab64d1",
+        "name": "Enviar alerta - Tope",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          2176,
+          768
+        ],
+        "webhookId": "a56745db-8f8e-4d36-9f5a-9a6151acee3c",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Se alcanzó el máximo de 3 rondas de corrección. La propuesta queda en revisión manual y te vamos a contactar directamente.' } };"
+        },
+        "id": "bbc83972-5d3a-4526-a6e3-2e81c42c1712",
+        "name": "Confirmar tope",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2416,
+          768
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const base = $json;\nconst comentario = base.Comentario || '';\nconst criterios = base.criterios || {};\nconst CLAVES_PROHIBIDAS = ['servicio', 'id_solicitud'];\nconst claves = Object.keys(criterios).filter(k => !CLAVES_PROHIBIDAS.includes(k));\nconst prompt = 'Sos un asistente de la Cámara de Comercio de Barranquilla (CCB). Aplicás correcciones a los criterios de una cotización ya generada, según el pedido del asesor comercial.\\n\\n'\n  + 'REGLAS ESTRICTAS:\\n'\n  + '- Solo podés modificar valores de estas claves existentes: ' + claves.join(', ') + '\\n'\n  + '- Está prohibido agregar claves nuevas o cambiar la estructura del objeto.\\n'\n  + '- Si el pedido requiere una clave que no existe, dejá criterios_ajustados vacío y explicá en resumen_cambios qué información falta.\\n'\n  + '- No inventes valores: usá solo lo que el pedido indica de forma inequívoca.\\n'\n  + '- confianza: alta si el pedido es claro, media si es interpretable, baja si es ambiguo.\\n\\n'\n  + 'CONVENCIONES DE VALORES (usar EXACTAMENTE estos textos cuando aplique):\\n'\n  + '- organizacion_juridica: solo \"Personas Jurídicas\", \"Personas Naturales\", \"Establecimientos\", \"Entidades sin ánimo de lucro\" (separadas por \"; \" si son varias).\\n'\n  + '- ubicacion_geografica: para zonas amplias usar exactamente \"Barranquilla\", \"Área Metropolitana de Barranquilla\" o \"Todo el Departamento del Atlántico\". Para municipios puntuales, listar el nombre exacto del municipio separados por \"; \".\\n'\n  + '- actividad_economica: para \"todos los sectores/actividades\" usar exactamente \"Todas las actividades económicas\". Para sectores puntuales, usar EXCLUSIVAMENTE uno o más de estos 18 nombres exactos, SIN partirlos aunque contengan \"y\"/\"al por\": \"Agropecuario\", \"Minero\", \"Industria\", \"Electricidad, gas, vapor y aire acondicionado\", \"Agua\", \"Construcción\", \"Comercio al por mayor y al por menor\", \"Transporte\", \"Alojamiento y restaurantes\", \"Información y comunicaciones\", \"Financiero\", \"Inmobiliarias\", \"Profesionales, científicas y técnicas\", \"Servicios administrativos y de apoyo\", \"Educación\", \"Salud\", \"Artísticas, de entretenimiento y recreación\", \"Otras actividades de servicios\". Si el asesor menciona varios sectores, separalos por \"; \" manteniendo cada nombre completo e intacto (nunca dividas un nombre de la lista en dos partes).\\n'\n  + '- tamano_empresa: solo \"Microempresas\", \"Pequeñas empresas\", \"Medianas empresas\", \"Grandes empresas\" (separadas por \"; \" si son varias).\\n'\n  + '- Si el pedido ajusta un rango de activos o ventas (activos_min/activos_max/activos_entre/activos_y, o su equivalente en ventas), seteá en null los otros campos del mismo grupo que queden en conflicto para no dejar un filtro inconsistente.\\n\\n'\n  + 'CRITERIOS ACTUALES (JSON):\\n' + JSON.stringify(criterios, null, 2) + '\\n\\n'\n  + 'PEDIDO DE CORRECCIÓN DEL ASESOR:\\n\"' + comentario + '\"';\nreturn { json: { ...base, prompt_correccion: prompt } };"
+        },
+        "id": "ac77d766-fbe1-49d8-aae7-f08e4ef511d8",
+        "name": "Preparar corrección IA",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2000,
+          1008
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.prompt_correccion }}",
+          "hasOutputParser": true,
+          "batching": {}
+        },
+        "id": "08c7a343-0734-4753-b916-d340d2dbe23a",
+        "name": "IA - Ajustar criterios",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.9,
+        "position": [
+          2160,
+          1008
+        ]
+      },
+      {
+        "parameters": {
+          "model": "openai/gpt-4o-mini",
+          "options": {}
+        },
+        "id": "276150b4-9ed2-43c9-b10a-2278c2bcaa76",
+        "name": "Modelo OpenRouter",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          2160,
+          1392
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "openRouterApi": {
+            "id": "PPk35IDkMnX3QnnE",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"criterios_ajustados\": {\n      \"type\": \"object\",\n      \"description\": \"Subconjunto de claves existentes de los criterios con sus nuevos valores. Vacío si no hay ajustes válidos.\",\n      \"additionalProperties\": true\n    },\n    \"resumen_cambios\": {\n      \"type\": \"string\",\n      \"description\": \"Resumen breve en español de qué se cambió y por qué.\"\n    },\n    \"confianza\": {\n      \"type\": \"string\",\n      \"enum\": [\"alta\",\"media\",\"baja\"],\n      \"description\": \"Confianza en la interpretación del pedido.\"\n    }\n  },\n  \"required\": [\"criterios_ajustados\",\"resumen_cambios\",\"confianza\"]\n}",
+          "autoFix": true
+        },
+        "id": "787af846-5b01-4676-b19b-13a58318d921",
+        "name": "Parser criterios ajustados",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          2320,
+          1200
+        ]
+      },
+      {
+        "parameters": {
+          "model": "openai/gpt-4o-mini",
+          "options": {}
+        },
+        "id": "036f0526-2250-43f3-abcb-31f3e846d036",
+        "name": "Modelo Fixer",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          2320,
+          1376
+        ],
+        "retryOnFail": true,
+        "maxTries": 2,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "openRouterApi": {
+            "id": "PPk35IDkMnX3QnnE",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const base = $('Preparar corrección IA').first().json;\nconst raw = $json;\nconst out = (raw && typeof raw.output === 'object' && raw.output !== null) ? raw.output\n  : (raw && typeof raw.response === 'object' && raw.response !== null) ? raw.response\n  : (raw || {});\nconst ajustes = out.criterios_ajustados || {};\nconst criterios = { ...base.criterios };\nconst aplicadas = {};\nconst rechazadas = {};\n\n// Valores permitidos por clave -- si la IA escribe algo fuera de esta lista para una clave\n// controlada, se descarta el ajuste en vez de aplicarlo (evita corromper el criterio en\n// silencio, p.ej. valores de organizacion_juridica escritos por error en tamano_empresa).\nconst VALORES_VALIDOS = {\n  organizacion_juridica: ['Personas Jurídicas', 'Personas Naturales', 'Establecimientos', 'Entidades sin ánimo de lucro'],\n  tamano_empresa: ['Microempresas', 'Pequeñas empresas', 'Medianas empresas', 'Grandes empresas'],\n  actividad_economica: ['Agropecuario', 'Minero', 'Industria', 'Electricidad, gas, vapor y aire acondicionado', 'Agua', 'Construcción', 'Comercio al por mayor y al por menor', 'Transporte', 'Alojamiento y restaurantes', 'Información y comunicaciones', 'Financiero', 'Inmobiliarias', 'Profesionales, científicas y técnicas', 'Servicios administrativos y de apoyo', 'Educación', 'Salud', 'Artísticas, de entretenimiento y recreación', 'Otras actividades de servicios', 'Todas las actividades económicas']\n};\n\nfunction esValorValido(clave, valor) {\n  const permitidos = VALORES_VALIDOS[clave];\n  if (!permitidos) return true;\n  const partes = String(valor).split(';').map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return false;\n  return partes.every(p => permitidos.includes(p));\n}\n\nfor (const [k, v] of Object.entries(ajustes)) {\n  if (!Object.prototype.hasOwnProperty.call(criterios, k)) continue;\n  if (esValorValido(k, v)) { criterios[k] = v; aplicadas[k] = v; }\n  else { rechazadas[k] = v; }\n}\n\nconst huboRechazos = Object.keys(rechazadas).length > 0;\nconst avisoRechazo = huboRechazos\n  ? ' [AVISO: se descartaron ajustes invalidos para: ' + Object.keys(rechazadas).join(', ') + ' -- valor(es) no reconocido(s): ' + JSON.stringify(rechazadas) + ']'\n  : '';\n\nreturn { json: { id_solicitud: base.id_solicitud, servicio: base.servicio, criterios, criterios_ajustados_aplicados: aplicadas, criterios_ajustados_rechazados: rechazadas, resumen_cambios: (out.resumen_cambios || '') + avisoRechazo, comentario: base.Comentario || '' } };"
+        },
+        "id": "9bbd410a-676b-4ccc-852b-3b88839220d9",
+        "name": "Aplicar correcciones",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2480,
+          1008
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "VChcasvisGKekezR",
+            "mode": "id"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "servicio": "={{ $json.servicio }}",
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "criterios": "={{ $json.criterios }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "servicio",
+                "type": "string",
+                "display": true
+              },
+              {
+                "id": "id_solicitud",
+                "type": "string",
+                "display": true
+              },
+              {
+                "id": "criterios",
+                "type": "object",
+                "display": true
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a4ae8173-2ea4-4d08-932d-d222ce182ef6",
+        "name": "Re-invocar motor",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          2720,
+          1008
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-ok",
+                "leftValue": "={{ $json.ok }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5201a9ef-1df5-4a0c-b211-9dad1726f905",
+        "name": "¿ok recálculo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          2960,
+          1008
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "f1931cd8-4da1-443b-9799-309947dc6dc4",
+        "name": "Releer cotización",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          2976,
+          896
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ronda_correccion": "={{ (Number($json.ronda_correccion) || 0) + 1 }}",
+              "comentario_fausto": "={{ $('Consolidar datos y decisión').first().json.Comentario }}",
+              "estado": "EN_REVISION"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "866f961a-96d8-4cad-b079-63f5ef1dceef",
+        "name": "Guardar ronda + comentario",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          3216,
+          896
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const fresh = $json;\nconst idSolicitud = fresh.id_solicitud;\nconst rondaGuardada = Number(fresh.ronda_correccion) || 0;\nconst link = 'https://revision-propuesta-ccb.vercel.app/?id_solicitud=' + encodeURIComponent(idSolicitud);\nconst mensaje = '📋 <b>Propuesta actualizada — ronda ' + rondaGuardada + ' de 3</b><br><br>'\n  + 'Solicitud: ' + idSolicitud + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { id_solicitud: idSolicitud, mensaje_teams: mensaje } };"
+        },
+        "id": "5c01a49c-6ccd-4855-bc29-8aed6f2f32da",
+        "name": "Reconstruir mensaje simple",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3456,
+          896
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "chatMessage",
+          "chatId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "48:notes"
+          },
+          "contentType": "html",
+          "message": "={{ $json.mensaje_teams }}",
+          "options": {
+            "includeLinkToWorkflow": false
+          }
+        },
+        "id": "52d8c83b-371c-4993-aa80-b87e5ed2ad66",
+        "name": "Enviar mensaje Teams",
+        "type": "n8n-nodes-base.microsoftTeams",
+        "typeVersion": 2,
+        "position": [
+          3696,
+          896
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "webhookId": "b5bc81d8-ac78-4f1e-98a2-85de97c1e1c3",
+        "credentials": {
+          "microsoftTeamsOAuth2Api": {
+            "id": "XuEqB2riUsSUuZEr",
+            "name": "INT-ServiciosInformacion Microsoft Teams"
+          }
+        },
+        "onError": "continueErrorOutput",
+        "notes": "MODO PRUEBA (15/09): chatId apuntando al chat de Notas de Adrian mientras se prueba el pipeline. Antes de producción real, restaurar a Asesor CCB: <TEAMS_CHAT_ID>"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Se enviaron tus comentarios. El asesor va a recalcular y te va a volver a escribir por Teams con el link actualizado.' } };"
+        },
+        "id": "6b50bae2-171a-4dda-9230-20d01c103272",
+        "name": "Confirmar corrección enviada",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3936,
+          896
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams';\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enviar mensaje Teams', mensaje_error: mensaje } };"
+        },
+        "id": "54d2b4a3-ade7-45b1-a3be-f6915fcbbc17",
+        "name": "Preparar error - Teams envío",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3696,
+          1072
+        ]
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "cd00c18e-4e50-4e01-b7a5-63cd1bef1f7a",
+        "name": "Registrar error - Teams envío",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          3936,
+          1072
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Se guardaron tus comentarios y se recalculó la propuesta, pero no pudimos avisarte por Teams. El asesor te va a contactar directamente.' } };"
+        },
+        "id": "51b4054e-a874-4f01-a1a2-3ce48579fda6",
+        "name": "Confirmar corrección (aviso Teams falló)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          4176,
+          1072
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst flujo = $workflow.name;\nconst nodoFallido = 'Re-invocar motor (recálculo)';\nconst tipoError = 'Rechazo del motor de cálculo (ok=false)';\nconst id = j.id_solicitud || $('Consolidar datos y decisión').first().json.id_solicitud;\nconst mensaje = j.error || 'El recálculo devolvió ok=false';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Recálculo falló — propuesta en ERROR_CALCULO</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La corrección con IA se aplicó pero el motor rechazó el recálculo (ok=false). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: nodoFallido, mensaje_error: mensaje, fecha_error: fechaError, emailBody } };"
+        },
+        "id": "8025ad4e-1707-450a-8c27-22e51d5cdf42",
+        "name": "Preparar error - Recálculo falló",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3200,
+          1168
+        ]
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "552ddb9b-5a0a-47c2-be10-8d8bc23f0067",
+        "name": "Registrar error - Recálculo",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          3440,
+          1168
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Preparar error - Recálculo falló').first().json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "ERROR_CALCULO"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "20596eff-c580-4a01-bec9-c60235537c16",
+        "name": "Marcar ERROR_CALCULO",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          3680,
+          1168
+        ]
+      },
+      {
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ '[Propuesta CCB] Recálculo falló — ' + $('Preparar error - Recálculo falló').first().json.id_solicitud }}",
+          "bodyContent": "={{ $('Preparar error - Recálculo falló').first().json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "b5a358f6-81fe-471e-859e-992a47e1a409",
+        "name": "Enviar alerta - Recálculo",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          3696,
+          1168
+        ],
+        "webhookId": "890daad7-202e-4846-a653-1dd09eeefa56",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: false, mensaje: 'Se registró tu comentario, pero el motor no pudo recalcular la propuesta con esos ajustes. El asesor te va a contactar directamente.' } };"
+        },
+        "id": "42f9531e-9645-4c9e-98e6-90eef1b265e8",
+        "name": "Confirmar error recálculo",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3936,
+          1168
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook - Decisión Propuesta": {
+        "main": [
+          [
+            {
+              "node": "Extraer decisión del body",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extraer decisión del body": {
+        "main": [
+          [
+            {
+              "node": "Leer cotización",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer cotización": {
+        "main": [
+          [
+            {
+              "node": "Leer criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer criterios": {
+        "main": [
+          [
+            {
+              "node": "Leer solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer solicitud": {
+        "main": [
+          [
+            {
+              "node": "Consolidar datos y decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consolidar datos y decisión": {
+        "main": [
+          [
+            {
+              "node": "¿Aprobar?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Aprobar?": {
+        "main": [
+          [
+            {
+              "node": "Aprobar - Marcar APROBADA",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "¿Cancelar?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aprobar - Marcar APROBADA": {
+        "main": [
+          [
+            {
+              "node": "Confirmar aprobación",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar aprobación": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Cancelar?": {
+        "main": [
+          [
+            {
+              "node": "Cancelar - Marcar CANCELADA",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "¿Solicitar correcciones?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cancelar - Marcar CANCELADA": {
+        "main": [
+          [
+            {
+              "node": "Confirmar cancelación",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar cancelación": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Solicitar correcciones?": {
+        "main": [
+          [
+            {
+              "node": "¿Se agotaron las rondas? (>=3)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - No reconocida",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - No reconocida": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - No reconocida",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar error - No reconocida": {
+        "main": [
+          [
+            {
+              "node": "Confirmar no reconocida",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar no reconocida": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Se agotaron las rondas? (>=3)": {
+        "main": [
+          [
+            {
+              "node": "Preparar aviso - Tope",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar corrección IA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar aviso - Tope": {
+        "main": [
+          [
+            {
+              "node": "Marcar REVISION_MANUAL - Tope",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marcar REVISION_MANUAL - Tope": {
+        "main": [
+          [
+            {
+              "node": "Enviar alerta - Tope",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar alerta - Tope": {
+        "main": [
+          [
+            {
+              "node": "Confirmar tope",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar tope": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar corrección IA": {
+        "main": [
+          [
+            {
+              "node": "IA - Ajustar criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Modelo OpenRouter": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "IA - Ajustar criterios",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parser criterios ajustados": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "IA - Ajustar criterios",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Modelo Fixer": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Parser criterios ajustados",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IA - Ajustar criterios": {
+        "main": [
+          [
+            {
+              "node": "Aplicar correcciones",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aplicar correcciones": {
+        "main": [
+          [
+            {
+              "node": "Re-invocar motor",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Re-invocar motor": {
+        "main": [
+          [
+            {
+              "node": "¿ok recálculo?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿ok recálculo?": {
+        "main": [
+          [
+            {
+              "node": "Releer cotización",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Recálculo falló",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Releer cotización": {
+        "main": [
+          [
+            {
+              "node": "Guardar ronda + comentario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Guardar ronda + comentario": {
+        "main": [
+          [
+            {
+              "node": "Reconstruir mensaje simple",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Reconstruir mensaje simple": {
+        "main": [
+          [
+            {
+              "node": "Enviar mensaje Teams",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar mensaje Teams": {
+        "main": [
+          [
+            {
+              "node": "Confirmar corrección enviada",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Teams envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar corrección enviada": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Teams envío": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Teams envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar error - Teams envío": {
+        "main": [
+          [
+            {
+              "node": "Confirmar corrección (aviso Teams falló)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar corrección (aviso Teams falló)": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Recálculo falló": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Recálculo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar error - Recálculo": {
+        "main": [
+          [
+            {
+              "node": "Marcar ERROR_CALCULO",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marcar ERROR_CALCULO": {
+        "main": [
+          [
+            {
+              "node": "Enviar alerta - Recálculo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar alerta - Recálculo": {
+        "main": [
+          [
+            {
+              "node": "Confirmar error recálculo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar error recálculo": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-16T18:39:15.105Z",
+        "id": 2363,
+        "workflowId": "W0TDH4b0tHCNOzFQ",
+        "versionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-16T18:39:15.129Z",
+        "id": 2364,
+        "workflowId": "W0TDH4b0tHCNOzFQ",
+        "versionId": "1f9b6210-2324-4f9e-bee0-f594c9537333",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}
