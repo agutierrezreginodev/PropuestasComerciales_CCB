@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:18:51.036Z",
+  "updatedAt": "2026-09-17T21:08:47.394Z",
   "createdAt": "2026-09-10T20:16:16.917Z",
   "id": "VChcasvisGKekezR",
   "name": "[SUB] CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio",
@@ -751,7 +751,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = get('Aplanar contrato de entrada');\nconst errGuardado = get('Preparar error - Guardado de criterios');\nconst errMotor = get('Preparar error - Motor rechazó la propuesta');\nconst mensaje = errMotor.mensaje_error || errGuardado.mensaje_error || $json.mensaje_error || 'Error sin especificar';\nreturn { json: {\n  id_solicitud: entrada.id_solicitud || $json.id_solicitud || '(sin id)',\n  servicio: entrada.servicio || $json.servicio || '(sin servicio)',\n  mensaje_error: mensaje\n} };"
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = get('Aplanar contrato de entrada');\nconst errGuardado = get('Preparar error - Guardado de criterios');\nconst errMotor = get('Preparar error - Motor rechazó la propuesta');\nconst errValidacion = get('Preparar error - Validación de entrada (Guardar Criterios)');\nconst mensaje = errMotor.mensaje_error || errGuardado.mensaje_error || errValidacion.mensaje_error || $json.mensaje_error || 'Error sin especificar';\nreturn { json: {\n  id_solicitud: entrada.id_solicitud || errValidacion.id_solicitud || $json.id_solicitud || '(sin id)',\n  servicio: entrada.servicio || errValidacion.servicio || $json.servicio || '(sin servicio)',\n  mensaje_error: mensaje\n} };"
       },
       "id": "sw-consolidar-error",
       "name": "Consolidar resultado de error",
@@ -843,6 +843,66 @@
       ],
       "id": "20238d45-a96c-4508-bfa8-329a7f23a9a5",
       "name": "Recibir solicitud"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validacion temprana de entrada (F2-01 extendido a W2A) -- corre ANTES de 'Aplanar contrato de\n// entrada' para no escribir en Data Tables ni llamar al motor (W3) con datos incompletos.\n// Campos minimos derivados de evidencia real: contrato de 'Recibir solicitud' (servicio/id_solicitud/\n// criterios, ver 'Ejecutar Guardar-y-Cotizar' en W2C), 'Switch por servicio' (4 valores exactos, sin\n// fallbackOutput -> lo que no matchea se pierde en silencio), y los checks duros de W3\n// ('Calcular Conteo y Precio': Falta tipo_organizacion / visitas_por_asesor / incluye_rutas ambiguo /\n// num_niveles / plan_deseado o consultas_mensuales+numero_usuarios).\nconst servicio = $json.servicio;\nconst idSolicitud = $json.id_solicitud;\nconst criterios = $json.criterios;\n\nconst SERVICIOS_VALIDOS = [\n  'Información Georreferenciada',\n  'Zonificación y Rutero',\n  'Ubicación de Nuevo Negocio',\n  'Información en Línea'\n];\n\nfunction rechazar(campo, mensaje) {\n  return { json: { ...$json, valido: false, campo_faltante: campo, mensaje_error: mensaje } };\n}\n\nif (!idSolicitud) {\n  return rechazar('id_solicitud', 'Falta \"id_solicitud\" en la solicitud recibida por el sub-workflow Guardar Criterios y Cotizar Servicio.');\n}\nif (!servicio || !SERVICIOS_VALIDOS.includes(servicio)) {\n  return rechazar('servicio', 'El campo \"servicio\" (\"' + (servicio || '(vacío)') + '\") no coincide con ninguno de los 4 valores que reconoce \"Switch por servicio\": ' + SERVICIOS_VALIDOS.join(' / ') + '.');\n}\nif (!criterios || typeof criterios !== 'object' || Array.isArray(criterios) || Object.keys(criterios).length === 0) {\n  return rechazar('criterios', 'Falta el objeto \"criterios\" (payload completo de la cotización) o llegó vacío.');\n}\n\nif (servicio === 'Información Georreferenciada') {\n  if (!criterios.organizacion_juridica) {\n    return rechazar('criterios.organizacion_juridica', 'Información Georreferenciada requiere \"organizacion_juridica\": sin ese dato, \"Calcular Conteo y Precio\" (W3) no puede filtrar la base de empresas (falla con \"Falta tipo_organizacion\").');\n  }\n} else if (servicio === 'Zonificación y Rutero') {\n  if (!criterios.cantidad_registros) {\n    return rechazar('criterios.cantidad_registros', 'Zonificación y Rutero requiere \"cantidad_registros\": \"Preparar criterios para motor - Zonificación y Rutero\" no envía tipo_organizacion, así que sin este dato el motor no puede contar empresas.');\n  }\n  if (!criterios.visitas_asesor) {\n    return rechazar('criterios.visitas_asesor', 'Zonificación y Rutero requiere \"visitas_asesor\" (> 0): el motor lo exige para calcular el número de zonas.');\n  }\n  if (criterios.incluir_rutas === undefined || criterios.incluir_rutas === null || criterios.incluir_rutas === '') {\n    return rechazar('criterios.incluir_rutas', 'Zonificación y Rutero requiere \"incluir_rutas\" (sí/no): el motor lo exige para calcular el valor de rutas.');\n  }\n} else if (servicio === 'Ubicación de Nuevo Negocio') {\n  if (!criterios.cantidad_registros) {\n    return rechazar('criterios.cantidad_registros', 'Ubicación de Nuevo Negocio requiere \"cantidad_registros\": \"Preparar criterios para motor - Ubicación de Nuevo Negocio\" no envía tipo_organizacion, así que sin este dato el motor no puede contar empresas.');\n  }\n  if (!criterios.niveles_analisis) {\n    return rechazar('criterios.niveles_analisis', 'Ubicación de Nuevo Negocio requiere \"niveles_analisis\": el motor lo exige para calcular el número de niveles de análisis.');\n  }\n} else if (servicio === 'Información en Línea') {\n  const planIndicado = (criterios.plan_en_linea || '').toString().trim();\n  const tienePlan = planIndicado && planIndicado !== 'No estoy seguro / necesito ayuda';\n  const tieneConsultasYUsuarios =\n    criterios.consultas_mensuales !== undefined && criterios.consultas_mensuales !== null && criterios.consultas_mensuales !== '' &&\n    criterios.usuarios !== undefined && criterios.usuarios !== null && criterios.usuarios !== '';\n  if (!tienePlan && !tieneConsultasYUsuarios) {\n    return rechazar('criterios.plan_en_linea', 'Información en Línea requiere \"plan_en_linea\" (un plan concreto) o, en su defecto, \"consultas_mensuales\" + \"usuarios\".');\n  }\n}\n\nreturn { json: { ...$json, valido: true } };"
+      },
+      "id": "a1b2c3d4-1001-4a11-9a11-100000000001",
+      "name": "Validar entrada - Guardar Criterios y Cotizar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -928,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.valido }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "condition-1789678889394-g2htvl876"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-1002-4a11-9a11-100000000002",
+      "name": "¿Entrada válida? - Guardar Criterios y Cotizar",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -704,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const idSolicitud = $json.id_solicitud || '(sin id)';\nconst servicio = $json.servicio || '(sin servicio)';\nconst campoFaltante = $json.campo_faltante || '(no especificado)';\nconst mensajeError = $json.mensaje_error || 'Falló la validación de campos mínimos de entrada en Guardar Criterios y Cotizar Servicio.';\nconst flujo = $workflow.name;\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Entrada inválida - Guardar Criterios y Cotizar</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La solicitud recibida no trae los campos mínimos requeridos y fue rechazada antes de guardar criterios o llamar al motor.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ${servicio}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Campo faltante:</strong> ${campoFaltante}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: {\n  id_solicitud: idSolicitud,\n  servicio: servicio,\n  flujo,\n  tipo_error: 'Validación de entrada',\n  workflow_origen: 'workflow-formulario',\n  nodo_fallido: 'Validar entrada - Guardar Criterios y Cotizar',\n  mensaje_error: mensajeError,\n  fecha_error: fechaError,\n  emailBody\n} };"
+      },
+      "id": "a1b2c3d4-1003-4a11-9a11-100000000003",
+      "name": "Preparar error - Validación de entrada (Guardar Criterios)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        1360
+      ]
     }
   ],
   "connections": {
@@ -1151,7 +1211,47 @@
       "main": [
         [
           {
+            "node": "Validar entrada - Guardar Criterios y Cotizar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar entrada - Guardar Criterios y Cotizar": {
+      "main": [
+        [
+          {
+            "node": "¿Entrada válida? - Guardar Criterios y Cotizar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Entrada válida? - Guardar Criterios y Cotizar": {
+      "main": [
+        [
+          {
             "node": "Aplanar contrato de entrada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Validación de entrada (Guardar Criterios)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Validación de entrada (Guardar Criterios)": {
+      "main": [
+        [
+          {
+            "node": "Guardar incidencia - Data Table",
             "type": "main",
             "index": 0
           }
@@ -1170,16 +1270,30 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
-  "activeVersionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
-  "versionCounter": 71,
+  "pinData": {
+    "Recibir solicitud": [
+      {
+        "json": {
+          "servicio": "Información Georreferenciada",
+          "id_solicitud": "SOL-TEST-0001",
+          "criterios": {
+            "razon_social": "Empresa Prueba SAS",
+            "nombre_solicitante": "Juan Pérez",
+            "email_solicitante": "juan@example.com"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "333e3c01-cb74-4a3d-b4f3-6cc087511933",
+  "activeVersionId": "c491e53a-069b-48f7-a832-8893293e9268",
+  "versionCounter": 78,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-16T16:24:13.066Z",
-    "createdAt": "2026-09-16T16:24:13.066Z",
-    "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+    "updatedAt": "2026-09-17T21:03:39.944Z",
+    "createdAt": "2026-09-17T21:03:39.944Z",
+    "versionId": "c491e53a-069b-48f7-a832-8893293e9268",
     "workflowId": "VChcasvisGKekezR",
     "nodes": [
       {
@@ -1926,7 +2040,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = get('Aplanar contrato de entrada');\nconst errGuardado = get('Preparar error - Guardado de criterios');\nconst errMotor = get('Preparar error - Motor rechazó la propuesta');\nconst mensaje = errMotor.mensaje_error || errGuardado.mensaje_error || $json.mensaje_error || 'Error sin especificar';\nreturn { json: {\n  id_solicitud: entrada.id_solicitud || $json.id_solicitud || '(sin id)',\n  servicio: entrada.servicio || $json.servicio || '(sin servicio)',\n  mensaje_error: mensaje\n} };"
+          "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = get('Aplanar contrato de entrada');\nconst errGuardado = get('Preparar error - Guardado de criterios');\nconst errMotor = get('Preparar error - Motor rechazó la propuesta');\nconst errValidacion = get('Preparar error - Validación de entrada (Guardar Criterios)');\nconst mensaje = errMotor.mensaje_error || errGuardado.mensaje_error || errValidacion.mensaje_error || $json.mensaje_error || 'Error sin especificar';\nreturn { json: {\n  id_solicitud: entrada.id_solicitud || errValidacion.id_solicitud || $json.id_solicitud || '(sin id)',\n  servicio: entrada.servicio || errValidacion.servicio || $json.servicio || '(sin servicio)',\n  mensaje_error: mensaje\n} };"
         },
         "id": "sw-consolidar-error",
         "name": "Consolidar resultado de error",
@@ -2018,6 +2132,66 @@
         ],
         "id": "20238d45-a96c-4508-bfa8-329a7f23a9a5",
         "name": "Recibir solicitud"
+      },
+      {
+        "id": "a1b2c3d4-1001-4a11-9a11-100000000001",
+        "name": "Validar entrada - Guardar Criterios y Cotizar",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -928,
+          780
+        ],
+        "parameters": {
+          "jsCode": "// Validacion temprana de entrada (F2-01 extendido a W2A) -- corre ANTES de 'Aplanar contrato de\n// entrada' para no escribir en Data Tables ni llamar al motor (W3) con datos incompletos.\n// Campos minimos derivados de evidencia real: contrato de 'Recibir solicitud' (servicio/id_solicitud/\n// criterios, ver 'Ejecutar Guardar-y-Cotizar' en W2C), 'Switch por servicio' (4 valores exactos, sin\n// fallbackOutput -> lo que no matchea se pierde en silencio), y los checks duros de W3\n// ('Calcular Conteo y Precio': Falta tipo_organizacion / visitas_por_asesor / incluye_rutas ambiguo /\n// num_niveles / plan_deseado o consultas_mensuales+numero_usuarios).\nconst servicio = $json.servicio;\nconst idSolicitud = $json.id_solicitud;\nconst criterios = $json.criterios;\n\nconst SERVICIOS_VALIDOS = [\n  'Información Georreferenciada',\n  'Zonificación y Rutero',\n  'Ubicación de Nuevo Negocio',\n  'Información en Línea'\n];\n\nfunction rechazar(campo, mensaje) {\n  return { json: { ...$json, valido: false, campo_faltante: campo, mensaje_error: mensaje } };\n}\n\nif (!idSolicitud) {\n  return rechazar('id_solicitud', 'Falta \"id_solicitud\" en la solicitud recibida por el sub-workflow Guardar Criterios y Cotizar Servicio.');\n}\nif (!servicio || !SERVICIOS_VALIDOS.includes(servicio)) {\n  return rechazar('servicio', 'El campo \"servicio\" (\"' + (servicio || '(vacío)') + '\") no coincide con ninguno de los 4 valores que reconoce \"Switch por servicio\": ' + SERVICIOS_VALIDOS.join(' / ') + '.');\n}\nif (!criterios || typeof criterios !== 'object' || Array.isArray(criterios) || Object.keys(criterios).length === 0) {\n  return rechazar('criterios', 'Falta el objeto \"criterios\" (payload completo de la cotización) o llegó vacío.');\n}\n\nif (servicio === 'Información Georreferenciada') {\n  if (!criterios.organizacion_juridica) {\n    return rechazar('criterios.organizacion_juridica', 'Información Georreferenciada requiere \"organizacion_juridica\": sin ese dato, \"Calcular Conteo y Precio\" (W3) no puede filtrar la base de empresas (falla con \"Falta tipo_organizacion\").');\n  }\n} else if (servicio === 'Zonificación y Rutero') {\n  if (!criterios.cantidad_registros) {\n    return rechazar('criterios.cantidad_registros', 'Zonificación y Rutero requiere \"cantidad_registros\": \"Preparar criterios para motor - Zonificación y Rutero\" no envía tipo_organizacion, así que sin este dato el motor no puede contar empresas.');\n  }\n  if (!criterios.visitas_asesor) {\n    return rechazar('criterios.visitas_asesor', 'Zonificación y Rutero requiere \"visitas_asesor\" (> 0): el motor lo exige para calcular el número de zonas.');\n  }\n  if (criterios.incluir_rutas === undefined || criterios.incluir_rutas === null || criterios.incluir_rutas === '') {\n    return rechazar('criterios.incluir_rutas', 'Zonificación y Rutero requiere \"incluir_rutas\" (sí/no): el motor lo exige para calcular el valor de rutas.');\n  }\n} else if (servicio === 'Ubicación de Nuevo Negocio') {\n  if (!criterios.cantidad_registros) {\n    return rechazar('criterios.cantidad_registros', 'Ubicación de Nuevo Negocio requiere \"cantidad_registros\": \"Preparar criterios para motor - Ubicación de Nuevo Negocio\" no envía tipo_organizacion, así que sin este dato el motor no puede contar empresas.');\n  }\n  if (!criterios.niveles_analisis) {\n    return rechazar('criterios.niveles_analisis', 'Ubicación de Nuevo Negocio requiere \"niveles_analisis\": el motor lo exige para calcular el número de niveles de análisis.');\n  }\n} else if (servicio === 'Información en Línea') {\n  const planIndicado = (criterios.plan_en_linea || '').toString().trim();\n  const tienePlan = planIndicado && planIndicado !== 'No estoy seguro / necesito ayuda';\n  const tieneConsultasYUsuarios =\n    criterios.consultas_mensuales !== undefined && criterios.consultas_mensuales !== null && criterios.consultas_mensuales !== '' &&\n    criterios.usuarios !== undefined && criterios.usuarios !== null && criterios.usuarios !== '';\n  if (!tienePlan && !tieneConsultasYUsuarios) {\n    return rechazar('criterios.plan_en_linea', 'Información en Línea requiere \"plan_en_linea\" (un plan concreto) o, en su defecto, \"consultas_mensuales\" + \"usuarios\".');\n  }\n}\n\nreturn { json: { ...$json, valido: true } };"
+        }
+      },
+      {
+        "id": "a1b2c3d4-1002-4a11-9a11-100000000002",
+        "name": "¿Entrada válida? - Guardar Criterios y Cotizar",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -700,
+          780
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.valido }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                },
+                "id": "condition-1789678889394-g2htvl876"
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "a1b2c3d4-1003-4a11-9a11-100000000003",
+        "name": "Preparar error - Validación de entrada (Guardar Criterios)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -700,
+          1350
+        ],
+        "parameters": {
+          "jsCode": "const idSolicitud = $json.id_solicitud || '(sin id)';\nconst servicio = $json.servicio || '(sin servicio)';\nconst campoFaltante = $json.campo_faltante || '(no especificado)';\nconst mensajeError = $json.mensaje_error || 'Falló la validación de campos mínimos de entrada en Guardar Criterios y Cotizar Servicio.';\nconst flujo = $workflow.name;\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Entrada inválida - Guardar Criterios y Cotizar</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La solicitud recibida no trae los campos mínimos requeridos y fue rechazada antes de guardar criterios o llamar al motor.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ${servicio}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Campo faltante:</strong> ${campoFaltante}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: {\n  id_solicitud: idSolicitud,\n  servicio: servicio,\n  flujo,\n  tipo_error: 'Validación de entrada',\n  workflow_origen: 'workflow-formulario',\n  nodo_fallido: 'Validar entrada - Guardar Criterios y Cotizar',\n  mensaje_error: mensajeError,\n  fecha_error: fechaError,\n  emailBody\n} };"
+        }
       }
     ],
     "connections": {
@@ -2326,7 +2500,47 @@
         "main": [
           [
             {
+              "node": "Validar entrada - Guardar Criterios y Cotizar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar entrada - Guardar Criterios y Cotizar": {
+        "main": [
+          [
+            {
+              "node": "¿Entrada válida? - Guardar Criterios y Cotizar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Entrada válida? - Guardar Criterios y Cotizar": {
+        "main": [
+          [
+            {
               "node": "Aplanar contrato de entrada",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Validación de entrada (Guardar Criterios)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Validación de entrada (Guardar Criterios)": {
+        "main": [
+          [
+            {
+              "node": "Guardar incidencia - Data Table",
               "type": "main",
               "index": 0
             }
@@ -2340,50 +2554,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-16T16:24:13.149Z",
-        "id": 2356,
+        "createdAt": "2026-09-17T21:03:40.027Z",
+        "id": 2488,
         "workflowId": "VChcasvisGKekezR",
-        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+        "versionId": "c491e53a-069b-48f7-a832-8893293e9268",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-16T16:24:13.166Z",
-        "id": 2357,
+        "createdAt": "2026-09-17T21:03:40.057Z",
+        "id": 2489,
         "workflowId": "VChcasvisGKekezR",
-        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:28.307Z",
-        "id": 2410,
-        "workflowId": "VChcasvisGKekezR",
-        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:28.327Z",
-        "id": 2411,
-        "workflowId": "VChcasvisGKekezR",
-        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:18:51.103Z",
-        "id": 2436,
-        "workflowId": "VChcasvisGKekezR",
-        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:18:51.123Z",
-        "id": 2437,
-        "workflowId": "VChcasvisGKekezR",
-        "versionId": "c6b55675-b1e2-40fd-8ce6-195ecd53cf78",
+        "versionId": "c491e53a-069b-48f7-a832-8893293e9268",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
