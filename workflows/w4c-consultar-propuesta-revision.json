@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:17:55.009Z",
+  "updatedAt": "2026-09-17T14:35:30.449Z",
   "createdAt": "2026-09-15T15:09:07.764Z",
   "id": "KuLSIzBZgaRIjuSu",
   "name": "CCB - Workflow 4C - Consultar Propuesta para Revisión",
@@ -149,7 +149,7 @@
       "onError": "continueErrorOutput",
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const idSolicitud = $('Extraer id_solicitud de la query').first().json.id_solicitud;\nif (!idSolicitud) {\n  return { json: { ok: false, error: 'Falta id_solicitud en la consulta.' } };\n}\n\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\n\nif (!q || !q.id_solicitud) {\n  return { json: { ok: false, error: 'No se encontró la propuesta solicitada.' } };\n}\n\nreturn { json: {\n  ok: true,\n  id_solicitud: q.id_solicitud,\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor_total: q.valor_total,\n  pdf_url: q.pdf_url || null,\n  ronda_correccion: Number(q.ronda_correccion) || 0,\n  estado: q.estado || ''\n} };"
+        "jsCode": "const idSolicitud = $('Extraer id_solicitud de la query').first().json.id_solicitud;\nif (!idSolicitud) {\n  throw new Error('Falta id_solicitud en la consulta.');\n}\n\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\n\nif (!q || !q.id_solicitud) {\n  return { json: { ok: false, error: 'No se encontró la propuesta solicitada.' } };\n}\n\nreturn { json: {\n  ok: true,\n  id_solicitud: q.id_solicitud,\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor_total: q.valor_total,\n  pdf_url: q.pdf_url || null,\n  ronda_correccion: Number(q.ronda_correccion) || 0,\n  estado: q.estado || ''\n} };"
       }
     },
     {
@@ -180,9 +180,9 @@
       ],
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { ok: false, error: ($json.error && $json.error.message) || 'Error consultando la propuesta' } }}",
+        "responseBody": "={{ { ok: false, error: $json.error || 'Error consultando la propuesta' } }}",
         "options": {
-          "responseCode": 500
+          "responseCode": 400
         }
       }
     },
@@ -288,15 +288,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
-  "activeVersionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
-  "versionCounter": 17,
+  "versionId": "18b67864-0567-4d77-8868-b614f5670675",
+  "activeVersionId": "18b67864-0567-4d77-8868-b614f5670675",
+  "versionCounter": 23,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T14:17:55.011Z",
-    "createdAt": "2026-09-17T14:17:55.011Z",
-    "versionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
+    "updatedAt": "2026-09-17T14:35:30.450Z",
+    "createdAt": "2026-09-17T14:35:30.450Z",
+    "versionId": "18b67864-0567-4d77-8868-b614f5670675",
     "workflowId": "KuLSIzBZgaRIjuSu",
     "nodes": [
       {
@@ -441,7 +441,7 @@
         "onError": "continueErrorOutput",
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const idSolicitud = $('Extraer id_solicitud de la query').first().json.id_solicitud;\nif (!idSolicitud) {\n  return { json: { ok: false, error: 'Falta id_solicitud en la consulta.' } };\n}\n\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\n\nif (!q || !q.id_solicitud) {\n  return { json: { ok: false, error: 'No se encontró la propuesta solicitada.' } };\n}\n\nreturn { json: {\n  ok: true,\n  id_solicitud: q.id_solicitud,\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor_total: q.valor_total,\n  pdf_url: q.pdf_url || null,\n  ronda_correccion: Number(q.ronda_correccion) || 0,\n  estado: q.estado || ''\n} };"
+          "jsCode": "const idSolicitud = $('Extraer id_solicitud de la query').first().json.id_solicitud;\nif (!idSolicitud) {\n  throw new Error('Falta id_solicitud en la consulta.');\n}\n\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\n\nif (!q || !q.id_solicitud) {\n  return { json: { ok: false, error: 'No se encontró la propuesta solicitada.' } };\n}\n\nreturn { json: {\n  ok: true,\n  id_solicitud: q.id_solicitud,\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor_total: q.valor_total,\n  pdf_url: q.pdf_url || null,\n  ronda_correccion: Number(q.ronda_correccion) || 0,\n  estado: q.estado || ''\n} };"
         }
       },
       {
@@ -472,9 +472,9 @@
         ],
         "parameters": {
           "respondWith": "json",
-          "responseBody": "={{ { ok: false, error: ($json.error && $json.error.message) || 'Error consultando la propuesta' } }}",
+          "responseBody": "={{ { ok: false, error: $json.error || 'Error consultando la propuesta' } }}",
           "options": {
-            "responseCode": 500
+            "responseCode": 400
           }
         }
       },
@@ -575,18 +575,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T14:17:55.067Z",
-        "id": 2432,
+        "createdAt": "2026-09-17T14:35:30.501Z",
+        "id": 2452,
         "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
+        "versionId": "18b67864-0567-4d77-8868-b614f5670675",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T14:17:55.084Z",
-        "id": 2433,
+        "createdAt": "2026-09-17T14:35:30.527Z",
+        "id": 2453,
         "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "2dbc1812-2cb7-40a9-bbca-8d0406b87e78",
+        "versionId": "18b67864-0567-4d77-8868-b614f5670675",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

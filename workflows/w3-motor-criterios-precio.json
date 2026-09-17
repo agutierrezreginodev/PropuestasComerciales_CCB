@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:19:19.951Z",
+  "updatedAt": "2026-09-17T14:28:38.193Z",
   "createdAt": "2026-09-07T18:48:54.850Z",
   "id": "cHOIOEFB5nbltN82",
   "name": "[SUB] CCB - Workflow 3 - Motor Criterios y Precio",
@@ -121,10 +121,10 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": true,
+                  "version": 2,
                   "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
                 },
                 "conditions": [
                   {
@@ -133,7 +133,8 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "condition-1789655314680-5rn28cq6k"
                   }
                 ],
                 "combinator": "and"
@@ -144,10 +145,10 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": true,
+                  "version": 2,
                   "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
                 },
                 "conditions": [
                   {
@@ -156,7 +157,8 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "condition-1789655314680-ramlc3ehq"
                   }
                 ],
                 "combinator": "and"
@@ -167,10 +169,10 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": true,
+                  "version": 2,
                   "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
                 },
                 "conditions": [
                   {
@@ -179,7 +181,8 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "condition-1789655314680-oyn5fxzu9"
                   }
                 ],
                 "combinator": "and"
@@ -190,10 +193,10 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": true,
+                  "version": 2,
                   "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
                 },
                 "conditions": [
                   {
@@ -202,7 +205,8 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "condition-1789655314680-d6k2b5qxj"
                   }
                 ],
                 "combinator": "and"
@@ -212,7 +216,10 @@
             }
           ]
         },
-        "options": {}
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Servicio no reconocido"
+        }
       },
       "id": "6325a2ef-649d-43f2-8548-584ec6d0dc1c",
       "name": "Enrutar por servicio",
@@ -591,6 +598,19 @@
         -1152,
         400
       ]
+    },
+    {
+      "id": "3c0a012c-a570-4461-aeec-d57ad61460f9",
+      "name": "Preparar error - Servicio no reconocido",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1920,
+        928
+      ],
+      "parameters": {
+        "jsCode": "const servicio = $json.servicio;\nreturn {\n  json: {\n    ...$json,\n    ok: false,\n    error: `El servicio '${servicio}' no coincide con ninguno de los 4 servicios soportados (Informacion Georreferenciada, Zonificacion y Rutero, Ubicacion de Nuevo Negocio, Informacion en Linea).`\n  }\n};"
+      }
     }
   ],
   "connections": {
@@ -660,6 +680,13 @@
         [
           {
             "node": "HTML - Información en Línea",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Servicio no reconocido",
             "type": "main",
             "index": 0
           }
@@ -822,6 +849,17 @@
           }
         ]
       ]
+    },
+    "Preparar error - Servicio no reconocido": {
+      "main": [
+        [
+          {
+            "node": "Devolver resultado al formulario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -838,15 +876,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
-  "activeVersionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
-  "versionCounter": 247,
+  "versionId": "435d0212-30ba-48bc-a1ec-1d23cada7cca",
+  "activeVersionId": "435d0212-30ba-48bc-a1ec-1d23cada7cca",
+  "versionCounter": 250,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-16T15:11:58.016Z",
-    "createdAt": "2026-09-16T15:11:13.634Z",
-    "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+    "updatedAt": "2026-09-17T14:28:38.203Z",
+    "createdAt": "2026-09-17T14:28:38.203Z",
+    "versionId": "435d0212-30ba-48bc-a1ec-1d23cada7cca",
     "workflowId": "cHOIOEFB5nbltN82",
     "nodes": [
       {
@@ -963,10 +1001,10 @@
               {
                 "conditions": {
                   "options": {
-                    "caseSensitive": true,
+                    "version": 2,
                     "leftValue": "",
-                    "typeValidation": "strict",
-                    "version": 2
+                    "caseSensitive": true,
+                    "typeValidation": "strict"
                   },
                   "conditions": [
                     {
@@ -975,7 +1013,8 @@
                       "operator": {
                         "type": "string",
                         "operation": "equals"
-                      }
+                      },
+                      "id": "condition-1789655314680-5rn28cq6k"
                     }
                   ],
                   "combinator": "and"
@@ -986,10 +1025,10 @@
               {
                 "conditions": {
                   "options": {
-                    "caseSensitive": true,
+                    "version": 2,
                     "leftValue": "",
-                    "typeValidation": "strict",
-                    "version": 2
+                    "caseSensitive": true,
+                    "typeValidation": "strict"
                   },
                   "conditions": [
                     {
@@ -998,7 +1037,8 @@
                       "operator": {
                         "type": "string",
                         "operation": "equals"
-                      }
+                      },
+                      "id": "condition-1789655314680-ramlc3ehq"
                     }
                   ],
                   "combinator": "and"
@@ -1009,10 +1049,10 @@
               {
                 "conditions": {
                   "options": {
-                    "caseSensitive": true,
+                    "version": 2,
                     "leftValue": "",
-                    "typeValidation": "strict",
-                    "version": 2
+                    "caseSensitive": true,
+                    "typeValidation": "strict"
                   },
                   "conditions": [
                     {
@@ -1021,7 +1061,8 @@
                       "operator": {
                         "type": "string",
                         "operation": "equals"
-                      }
+                      },
+                      "id": "condition-1789655314680-oyn5fxzu9"
                     }
                   ],
                   "combinator": "and"
@@ -1032,10 +1073,10 @@
               {
                 "conditions": {
                   "options": {
-                    "caseSensitive": true,
+                    "version": 2,
                     "leftValue": "",
-                    "typeValidation": "strict",
-                    "version": 2
+                    "caseSensitive": true,
+                    "typeValidation": "strict"
                   },
                   "conditions": [
                     {
@@ -1044,7 +1085,8 @@
                       "operator": {
                         "type": "string",
                         "operation": "equals"
-                      }
+                      },
+                      "id": "condition-1789655314680-d6k2b5qxj"
                     }
                   ],
                   "combinator": "and"
@@ -1054,7 +1096,10 @@
               }
             ]
           },
-          "options": {}
+          "options": {
+            "fallbackOutput": "extra",
+            "renameFallbackOutput": "Servicio no reconocido"
+          }
         },
         "id": "6325a2ef-649d-43f2-8548-584ec6d0dc1c",
         "name": "Enrutar por servicio",
@@ -1433,6 +1478,19 @@
           -1152,
           400
         ]
+      },
+      {
+        "id": "3c0a012c-a570-4461-aeec-d57ad61460f9",
+        "name": "Preparar error - Servicio no reconocido",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1920,
+          928
+        ],
+        "parameters": {
+          "jsCode": "const servicio = $json.servicio;\nreturn {\n  json: {\n    ...$json,\n    ok: false,\n    error: `El servicio '${servicio}' no coincide con ninguno de los 4 servicios soportados (Informacion Georreferenciada, Zonificacion y Rutero, Ubicacion de Nuevo Negocio, Informacion en Linea).`\n  }\n};"
+        }
       }
     ],
     "connections": {
@@ -1502,6 +1560,13 @@
           [
             {
               "node": "HTML - Información en Línea",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Servicio no reconocido",
               "type": "main",
               "index": 0
             }
@@ -1664,66 +1729,37 @@
             }
           ]
         ]
+      },
+      "Preparar error - Servicio no reconocido": {
+        "main": [
+          [
+            {
+              "node": "Devolver resultado al formulario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": "Version 19ef8d2c",
-    "description": "",
-    "autosaved": true,
+    "name": null,
+    "description": null,
+    "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-16T15:11:58.011Z",
-        "id": 2343,
+        "createdAt": "2026-09-17T14:28:38.366Z",
+        "id": 2446,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T13:19:19.763Z",
-        "id": 2394,
-        "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+        "versionId": "435d0212-30ba-48bc-a1ec-1d23cada7cca",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T13:19:19.832Z",
-        "id": 2395,
+        "createdAt": "2026-09-17T14:28:38.522Z",
+        "id": 2447,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:35.825Z",
-        "id": 2414,
-        "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:35.927Z",
-        "id": 2415,
-        "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:19:20.101Z",
-        "id": 2438,
-        "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:19:20.542Z",
-        "id": 2439,
-        "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "19ef8d2c-f5bf-4cd4-bc2c-d3492ca18def",
+        "versionId": "435d0212-30ba-48bc-a1ec-1d23cada7cca",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

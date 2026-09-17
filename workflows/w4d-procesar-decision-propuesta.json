@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:18:12.354Z",
+  "updatedAt": "2026-09-17T14:31:19.673Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -1057,6 +1057,118 @@
         "width": 520,
         "height": 260
       }
+    },
+    {
+      "id": "a5cc5780-a89d-4cda-9ae4-d9f58c07a04c",
+      "name": "Validar decisión reconocida",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -512,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "c-ap",
+              "leftValue": "={{ $json.Decision }}",
+              "rightValue": "Aprobar",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "c-ca",
+              "leftValue": "={{ $json.Decision }}",
+              "rightValue": "Cancelar",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "c-co",
+              "leftValue": "={{ $json.Decision }}",
+              "rightValue": "Solicitar correcciones",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "9b9f59da-c941-45b9-afe1-755611957bf6",
+      "name": "Preparar error - Decisión no reconocida (rechazo temprano)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -272,
+        880
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst mensaje = 'Decision no reconocida, rechazada antes de leer la base: \"' + (j.Decision || '(vacia)') + '\"';\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Validar decision reconocida', mensaje_error: mensaje, ok: false, error: mensaje } };"
+      }
+    },
+    {
+      "id": "c54f4c93-dd7a-4674-b5c5-a712ce9d30bb",
+      "name": "Registrar error - Rechazo temprano",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -32,
+        880
+      ],
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "77501e18-7f18-48de-b93c-928836b0b543",
+      "name": "Responder decisión - Rechazo temprano",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        208,
+        880
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.mensaje_error } }}",
+        "options": {
+          "responseCode": 400
+        }
+      }
     }
   ],
   "connections": {
@@ -1065,17 +1177,6 @@
         [
           {
             "node": "Extraer decisión del body",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extraer decisión del body": {
-      "main": [
-        [
-          {
-            "node": "Leer cotización",
             "type": "main",
             "index": 0
           }
@@ -1563,6 +1664,57 @@
           }
         ]
       ]
+    },
+    "Extraer decisión del body": {
+      "main": [
+        [
+          {
+            "node": "Validar decisión reconocida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar decisión reconocida": {
+      "main": [
+        [
+          {
+            "node": "Leer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Decisión no reconocida (rechazo temprano)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Decisión no reconocida (rechazo temprano)": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Rechazo temprano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Rechazo temprano": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión - Rechazo temprano",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1577,15 +1729,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
-  "activeVersionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
-  "versionCounter": 151,
+  "versionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
+  "activeVersionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
+  "versionCounter": 154,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T14:18:12.356Z",
-    "createdAt": "2026-09-17T14:18:12.356Z",
-    "versionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
+    "updatedAt": "2026-09-17T14:31:19.675Z",
+    "createdAt": "2026-09-17T14:31:19.675Z",
+    "versionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -2638,6 +2790,118 @@
           "width": 520,
           "height": 260
         }
+      },
+      {
+        "id": "a5cc5780-a89d-4cda-9ae4-d9f58c07a04c",
+        "name": "Validar decisión reconocida",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -512,
+          320
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "loose"
+            },
+            "combinator": "or",
+            "conditions": [
+              {
+                "id": "c-ap",
+                "leftValue": "={{ $json.Decision }}",
+                "rightValue": "Aprobar",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "c-ca",
+                "leftValue": "={{ $json.Decision }}",
+                "rightValue": "Cancelar",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "c-co",
+                "leftValue": "={{ $json.Decision }}",
+                "rightValue": "Solicitar correcciones",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "9b9f59da-c941-45b9-afe1-755611957bf6",
+        "name": "Preparar error - Decisión no reconocida (rechazo temprano)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -272,
+          880
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst mensaje = 'Decision no reconocida, rechazada antes de leer la base: \"' + (j.Decision || '(vacia)') + '\"';\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Validar decision reconocida', mensaje_error: mensaje, ok: false, error: mensaje } };"
+        }
+      },
+      {
+        "id": "c54f4c93-dd7a-4674-b5c5-a712ce9d30bb",
+        "name": "Registrar error - Rechazo temprano",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          -32,
+          880
+        ],
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "id": "77501e18-7f18-48de-b93c-928836b0b543",
+        "name": "Responder decisión - Rechazo temprano",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          208,
+          880
+        ],
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{ { ok: false, error: $json.mensaje_error } }}",
+          "options": {
+            "responseCode": 400
+          }
+        }
       }
     ],
     "connections": {
@@ -2646,17 +2910,6 @@
           [
             {
               "node": "Extraer decisión del body",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Extraer decisión del body": {
-        "main": [
-          [
-            {
-              "node": "Leer cotización",
               "type": "main",
               "index": 0
             }
@@ -3144,6 +3397,57 @@
             }
           ]
         ]
+      },
+      "Extraer decisión del body": {
+        "main": [
+          [
+            {
+              "node": "Validar decisión reconocida",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar decisión reconocida": {
+        "main": [
+          [
+            {
+              "node": "Leer cotización",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Decisión no reconocida (rechazo temprano)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Decisión no reconocida (rechazo temprano)": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Rechazo temprano",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar error - Rechazo temprano": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión - Rechazo temprano",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -3152,18 +3456,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T14:18:12.476Z",
-        "id": 2434,
+        "createdAt": "2026-09-17T14:31:19.783Z",
+        "id": 2448,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
+        "versionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T14:18:12.535Z",
-        "id": 2435,
+        "createdAt": "2026-09-17T14:31:19.813Z",
+        "id": 2449,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "147101bb-6ccb-4a13-900c-5926a9848d4a",
+        "versionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
