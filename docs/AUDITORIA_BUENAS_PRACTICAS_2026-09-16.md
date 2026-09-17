@@ -214,6 +214,8 @@ El mejor puntuado del pipeline.
 
 ### W2B — Formulario de Solicitud · 31 nodos · inactivo · **46/100 (Crítico)**
 
+> **Actualización (17/09/2026):** confirmado con el usuario que W2B está **retirado**, no solo inactivo temporalmente. Fue reemplazado por un formulario estático nuevo (`formulario-solicitud-ccb` → W2C), pero **solo para Información Georreferenciada** — decisión de alcance, no hallazgo: los otros tres servicios que cubría W2B (Zonificación y Rutero, Ubicación de Nuevo Negocio, Información en Línea) quedan sin punto de entrada activo hasta que se implementen más adelante. La clasificación *Crítico* de abajo describe la calidad del código tal como quedó, útil para cuando se retome ese trabajo; no describe un riesgo hoy expuesto en producción.
+
 **Cumple:** `errorWorkflow` centralizado · `pinData` limpio · **Switch con rama por defecto real** cableada a manejo de error (mejor que W2A en esto) · guardarraíl de UX que informa al usuario según el resultado real del subflujo · esquema de entrada explícito en la invocación al subflujo · dos sticky notes que explican la arquitectura de ramas.
 
 **No cumple:** formulario público sin CAPTCHA, límite de tasa ni honeypot, recolectando razón social, identificación, dirección, correo y teléfono · `id_solicitud` se acepta como nulo sin rechazar, y aguas abajo es la clave del `upsert` — dos envíos sin ID colisionarían sobre el mismo registro · el nodo crítico que dispara todo el guardado **no tiene ni `onError` ni `retryOnFail`** · correo hardcodeado · `description: null` y solo dos notas para 31 nodos · cuatro nodos de consolidación con ~90% de código idéntico · registros de error con `insert` puro.
