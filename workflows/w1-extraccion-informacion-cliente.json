@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:21:01.903Z",
+  "updatedAt": "2026-09-17T19:14:15.269Z",
   "createdAt": "2026-09-04T15:37:43.940Z",
   "id": "w6h0qSblUESIpSVc",
   "name": "CCB - Workflow 1 - Extracción información del cliente",
@@ -27,8 +27,8 @@
       "type": "n8n-nodes-base.microsoftOutlookTrigger",
       "typeVersion": 1,
       "position": [
-        -896,
-        880
+        -1072,
+        896
       ],
       "id": "0fe1ee98-a884-47e0-b0fc-b1ef09f61bd5",
       "name": "Nuevo correo",
@@ -425,8 +425,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
       "position": [
-        -672,
-        1072
+        -848,
+        1088
       ],
       "id": "04037367-ae34-4e02-acac-1f4d5433d5cd",
       "name": "OpenRouter Chat Model",
@@ -464,8 +464,8 @@
       "type": "@n8n/n8n-nodes-langchain.informationExtractor",
       "typeVersion": 1.2,
       "position": [
-        -672,
-        880
+        -848,
+        896
       ],
       "id": "294b00c9-5ebd-4ba4-be18-119b899b6763",
       "name": "Information Extractor",
@@ -552,7 +552,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -240,
+        -400,
         1120
       ],
       "id": "03b166dc-bf5f-47b6-8087-f5c30945e88f",
@@ -639,7 +639,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -16,
+        -176,
         1120
       ],
       "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
@@ -657,7 +657,7 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        176,
+        16,
         1120
       ],
       "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
@@ -892,7 +892,7 @@
     },
     {
       "parameters": {
-        "content": "## W1 — Extracción de información del cliente\nEntrada: cualquier correo (de mercadeo o directo de un cliente) que una regla nativa de Outlook mueve a la carpeta 'Solicitudes CCB' por palabras clave en el asunto (ya no se filtra por remitente en n8n). El **Information Extractor** (IA) saca nombre/teléfono/email del cuerpo del correo.\n\nSi no hay email de contacto, se le pide al asesor conseguirlo por teléfono y responder el correo (rama 'sin email') — el ID de solicitud viaja en la referencia [REF:...] del asunto.\n\n**Salida:** registro en Solicitudes_CCB (Data Table) + notificación al cliente o a mercadeo.\n**Errores:** 2 ramas ad-hoc por nodo (Preparar error → Data Table → alerta), además del errorWorkflow centralizado ya asignado como red de respaldo (catch-all).",
+        "content": "## W1 — Extracción de información del cliente\nEntrada: cualquier correo (de mercadeo o directo de un cliente) que una regla nativa de Outlook mueve a la carpeta 'Solicitudes CCB' por palabras clave en el asunto (ya no se filtra por remitente en n8n). El **Information Extractor** (IA) saca nombre/teléfono/email del cuerpo del correo.\n\nSi no hay email de contacto, se le pide al asesor conseguirlo por teléfono y responder el correo (rama 'sin email') — el ID de solicitud viaja en la referencia [REF:...] del asunto.\n\n**Salida:** registro en Solicitudes_CCB (Data Table) + notificación al cliente o a mercadeo.\n**F2-07 (17/09):** antes de consolidar, '¿Extracción tiene datos mínimos?' exige que el Information Extractor haya devuelto al menos nombre, teléfono o email — si los tres vienen vacíos (correo sin datos extraíbles: spam, fuera de asunto, etc.) se corta ahí, sin crear registro en Solicitudes_CCB, y se registra/alerta igual que un fallo técnico del extractor.\n\n**Errores:** 2 ramas ad-hoc por nodo (Preparar error → Data Table → alerta), además del errorWorkflow centralizado ya asignado como red de respaldo (catch-all).",
         "height": 260,
         "width": 580,
         "color": 4
@@ -902,8 +902,75 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -928,
-        320
+        -1024,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2927cea3-3e3d-4f0b-9d2f-d4dddee5c8b6",
+              "leftValue": "={{ $json.output.nombre_cliente }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "7009d111-109b-4ff3-90a7-0e8bfbda2748",
+              "leftValue": "={{ $json.output.telefono }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "fff78429-3a1d-4618-a701-cb9b7befc091",
+              "leftValue": "={{ $json.output.email_cliente }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "093760c5-323f-4164-8346-9dd6ea542ade",
+      "name": "¿Extracción tiene datos mínimos?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -448,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Nuevo correo').item.json.from.emailAddress.address;\n  asunto = $('Nuevo correo').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Validar extracción de IA';\nconst flujo = $workflow.name;\nconst tipoError = 'Correo sin datos extraíbles';\nconst mensajeError = 'El Information Extractor no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. No se generó ningún registro en Solicitudes_CCB para evitar guardar datos inventados.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#B8860B\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">ℹ️ Correo sin datos extraíbles</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> procesó el correo sin errores técnicos, pero no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. Para evitar crear un registro con datos inventados, <strong>no se generó ninguna solicitud</strong> en Solicitudes_CCB. Revisar si el correo es spam, está fuera de asunto, o si el dato relevante está en un formato que la IA no reconoció.</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
+      },
+      "id": "342a1902-865d-46f1-9747-97acdd9f3061",
+      "name": "Preparar rechazo - Extracción sin datos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        1280
       ]
     }
   ],
@@ -999,7 +1066,7 @@
       "main": [
         [
           {
-            "node": "Consolidar datos de la solicitud",
+            "node": "¿Extracción tiene datos mínimos?",
             "type": "main",
             "index": 0
           }
@@ -1106,6 +1173,40 @@
           }
         ]
       ]
+    },
+    "¿Extracción tiene datos mínimos?": {
+      "main": [
+        [
+          {
+            "node": "Consolidar datos de la solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar rechazo - Extracción sin datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar rechazo - Extracción sin datos": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Extractor IA",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enviar alerta - Extractor IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1118,22 +1219,22 @@
   },
   "staticData": {
     "node:Nuevo correo": {
-      "lastTimeChecked": "2026-09-17T14:21:01.998Z"
+      "lastTimeChecked": "2026-09-17T19:14:17.081Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "36a41827-63cc-4180-a935-d8653308e9a4",
-  "activeVersionId": "36a41827-63cc-4180-a935-d8653308e9a4",
-  "versionCounter": 427,
+  "versionId": "f7a7c21e-4af7-4d28-9c1d-eee186d5b0b3",
+  "activeVersionId": "f7a7c21e-4af7-4d28-9c1d-eee186d5b0b3",
+  "versionCounter": 448,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T14:21:01.905Z",
-    "createdAt": "2026-09-17T14:21:01.905Z",
-    "versionId": "36a41827-63cc-4180-a935-d8653308e9a4",
+    "updatedAt": "2026-09-17T19:14:17.208Z",
+    "createdAt": "2026-09-17T19:14:15.276Z",
+    "versionId": "f7a7c21e-4af7-4d28-9c1d-eee186d5b0b3",
     "workflowId": "w6h0qSblUESIpSVc",
     "nodes": [
       {
@@ -1156,8 +1257,8 @@
         "type": "n8n-nodes-base.microsoftOutlookTrigger",
         "typeVersion": 1,
         "position": [
-          -896,
-          880
+          -1072,
+          896
         ],
         "id": "0fe1ee98-a884-47e0-b0fc-b1ef09f61bd5",
         "name": "Nuevo correo",
@@ -1554,8 +1655,8 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
         "typeVersion": 1,
         "position": [
-          -672,
-          1072
+          -848,
+          1088
         ],
         "id": "04037367-ae34-4e02-acac-1f4d5433d5cd",
         "name": "OpenRouter Chat Model",
@@ -1593,8 +1694,8 @@
         "type": "@n8n/n8n-nodes-langchain.informationExtractor",
         "typeVersion": 1.2,
         "position": [
-          -672,
-          880
+          -848,
+          896
         ],
         "id": "294b00c9-5ebd-4ba4-be18-119b899b6763",
         "name": "Information Extractor",
@@ -1681,7 +1782,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -240,
+          -400,
           1120
         ],
         "id": "03b166dc-bf5f-47b6-8087-f5c30945e88f",
@@ -1768,7 +1869,7 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          -16,
+          -176,
           1120
         ],
         "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
@@ -1786,7 +1887,7 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          176,
+          16,
           1120
         ],
         "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
@@ -2021,7 +2122,7 @@
       },
       {
         "parameters": {
-          "content": "## W1 — Extracción de información del cliente\nEntrada: cualquier correo (de mercadeo o directo de un cliente) que una regla nativa de Outlook mueve a la carpeta 'Solicitudes CCB' por palabras clave en el asunto (ya no se filtra por remitente en n8n). El **Information Extractor** (IA) saca nombre/teléfono/email del cuerpo del correo.\n\nSi no hay email de contacto, se le pide al asesor conseguirlo por teléfono y responder el correo (rama 'sin email') — el ID de solicitud viaja en la referencia [REF:...] del asunto.\n\n**Salida:** registro en Solicitudes_CCB (Data Table) + notificación al cliente o a mercadeo.\n**Errores:** 2 ramas ad-hoc por nodo (Preparar error → Data Table → alerta), además del errorWorkflow centralizado ya asignado como red de respaldo (catch-all).",
+          "content": "## W1 — Extracción de información del cliente\nEntrada: cualquier correo (de mercadeo o directo de un cliente) que una regla nativa de Outlook mueve a la carpeta 'Solicitudes CCB' por palabras clave en el asunto (ya no se filtra por remitente en n8n). El **Information Extractor** (IA) saca nombre/teléfono/email del cuerpo del correo.\n\nSi no hay email de contacto, se le pide al asesor conseguirlo por teléfono y responder el correo (rama 'sin email') — el ID de solicitud viaja en la referencia [REF:...] del asunto.\n\n**Salida:** registro en Solicitudes_CCB (Data Table) + notificación al cliente o a mercadeo.\n**F2-07 (17/09):** antes de consolidar, '¿Extracción tiene datos mínimos?' exige que el Information Extractor haya devuelto al menos nombre, teléfono o email — si los tres vienen vacíos (correo sin datos extraíbles: spam, fuera de asunto, etc.) se corta ahí, sin crear registro en Solicitudes_CCB, y se registra/alerta igual que un fallo técnico del extractor.\n\n**Errores:** 2 ramas ad-hoc por nodo (Preparar error → Data Table → alerta), además del errorWorkflow centralizado ya asignado como red de respaldo (catch-all).",
           "height": 260,
           "width": 580,
           "color": 4
@@ -2031,8 +2132,75 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -928,
-          320
+          -1024,
+          528
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "2927cea3-3e3d-4f0b-9d2f-d4dddee5c8b6",
+                "leftValue": "={{ $json.output.nombre_cliente }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "7009d111-109b-4ff3-90a7-0e8bfbda2748",
+                "leftValue": "={{ $json.output.telefono }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "fff78429-3a1d-4618-a701-cb9b7befc091",
+                "leftValue": "={{ $json.output.email_cliente }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "id": "093760c5-323f-4164-8346-9dd6ea542ade",
+        "name": "¿Extracción tiene datos mínimos?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -448,
+          880
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Nuevo correo').item.json.from.emailAddress.address;\n  asunto = $('Nuevo correo').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Validar extracción de IA';\nconst flujo = $workflow.name;\nconst tipoError = 'Correo sin datos extraíbles';\nconst mensajeError = 'El Information Extractor no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. No se generó ningún registro en Solicitudes_CCB para evitar guardar datos inventados.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#B8860B\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">ℹ️ Correo sin datos extraíbles</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> procesó el correo sin errores técnicos, pero no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. Para evitar crear un registro con datos inventados, <strong>no se generó ninguna solicitud</strong> en Solicitudes_CCB. Revisar si el correo es spam, está fuera de asunto, o si el dato relevante está en un formato que la IA no reconoció.</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
+        },
+        "id": "342a1902-865d-46f1-9747-97acdd9f3061",
+        "name": "Preparar rechazo - Extracción sin datos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -608,
+          1280
         ]
       }
     ],
@@ -2128,7 +2296,7 @@
         "main": [
           [
             {
-              "node": "Consolidar datos de la solicitud",
+              "node": "¿Extracción tiene datos mínimos?",
               "type": "main",
               "index": 0
             }
@@ -2235,26 +2403,52 @@
             }
           ]
         ]
+      },
+      "¿Extracción tiene datos mínimos?": {
+        "main": [
+          [
+            {
+              "node": "Consolidar datos de la solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar rechazo - Extracción sin datos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar rechazo - Extracción sin datos": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Extractor IA",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Enviar alerta - Extractor IA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": null,
-    "description": null,
+    "name": "Version f7a7c21e",
+    "description": "",
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T14:21:01.974Z",
-        "id": 2444,
+        "createdAt": "2026-09-17T19:14:17.205Z",
+        "id": 2467,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "36a41827-63cc-4180-a935-d8653308e9a4",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:21:02.292Z",
-        "id": 2445,
-        "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "36a41827-63cc-4180-a935-d8653308e9a4",
+        "versionId": "f7a7c21e-4af7-4d28-9c1d-eee186d5b0b3",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
