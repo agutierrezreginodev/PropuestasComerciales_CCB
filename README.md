@@ -60,7 +60,8 @@ Todo el detalle de casos de prueba (matriz completa de cobertura, evidencia de c
 Los 12 workflows se evaluaron contra el marco *Arquitectura e Ingeniería de Automatización en n8n* (rúbrica ponderada de 6 dimensiones sobre 100 puntos y lista de comprobación de 11 requisitos de despliegue).
 
 - **[Informe de auditoría (2026-09-16)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-16.md)** — procedimiento reproducible paso a paso, resultado consolidado, desglose por dimensión y ficha por flujo con lo que cumple, lo que no y sus pendientes.
-- **[Plan de remediación](docs/PLAN_REMEDIACION.md)** — las 8 fases para pasar de 53,6 a ≥90/100, con ganancia estimada, esfuerzo y dependencias externas.
+- **[Plan de remediación](docs/PLAN_REMEDIACION.md)** — la estrategia: las 8 fases para pasar de 53,6 a ≥90/100, con ganancia estimada, esfuerzo y dependencias externas.
+- **[Plan de trabajo](docs/PLAN_TRABAJO_FRAMEWORK.md)** — el tablero de ejecución: 50 tareas atómicas con el nodo exacto sobre el que se actúa, cómo se verifica cada una y el seguimiento de puntaje por flujo.
 
 Resultado: promedio **53,6/100**, ningún flujo sobre el umbral de 90. Tres flujos en clasificación *Crítico* y nueve en *Requiere refactorización*. Los hallazgos son sistemáticos (autenticación de endpoints, validación de entradas, documentación, configuración centralizada), no defectos aislados. Ningún workflow fue modificado durante la auditoría.
 
@@ -99,8 +100,10 @@ Las credenciales se leen solo del entorno: nunca se escriben en disco ni se impr
 
 **Historial reconstruido (16/09/2026):** se detectó que el correo interno (ahora `interno-alertas@example.com`) y el nombre del propietario del proyecto quedaron expuestos en texto plano en los commits anteriores (dentro del bloque `shared`, no cubierto por la tabla de anonimización original). El historial de esta rama se reconstruyó desde cero —no comparte ningún commit con el anterior— y está verificado sin esa exposición en **ninguno** de sus commits, no solo en el estado actual.
 
-> ⚠️ La purga se completa recién cuando esta rama reemplace a la rama publicada. Mientras eso no ocurra, los commits antiguos siguen siendo accesibles en el repositorio remoto.
+Ese historial reemplazó a la rama publicada el 16/09/2026, y las ramas que aún alcanzaban los commits antiguos se eliminaron. Hoy **ningún commit con esa exposición es alcanzable desde ninguna rama de este repositorio**.
 
-**Última actualización:** 2026-09-16 (tarde) — se completó el snapshot con los 7 workflows que faltaban (4A, 4B, 4C, 4D, 5A, 5B y 6), se re-exportaron los 6 existentes desde el estado vivo, se automatizó el proceso en `scripts/export_workflows.py`, se amplió la tabla de anonimización con tres identificadores nuevos, y se publicó la auditoría de buenas prácticas de los 12 flujos junto con su plan de remediación.
+> ⚠️ Queda un residuo conocido: GitHub conserva los commits huérfanos y las referencias internas de los pull requests, así que los commits antiguos siguen siendo consultables por su identificador directo. Cerrar eso requiere solicitar a GitHub Support la purga de referencias y la recolección de basura del repositorio. Los datos involucrados son un correo interno y un nombre propio — no credenciales.
+
+**Última actualización:** 2026-09-16 (tarde) — se completó el snapshot con los 7 workflows que faltaban (4A, 4B, 4C, 4D, 5A, 5B y 6), se re-exportaron los 6 existentes desde el estado vivo, se automatizó el proceso en `scripts/export_workflows.py`, se amplió la tabla de anonimización con tres identificadores nuevos, y se publicó la auditoría de buenas prácticas de los 12 flujos junto con su plan de remediación y el plan de trabajo para ejecutarlo. También se reemplazó la rama publicada por el historial sin PII.
 
 **Actualización previa:** 2026-09-16 (mañana) — se re-exportaron Workflow 1 (fixes de extracción por IA y filtro de correo), Workflow 3 (mapeos de organización jurídica y ubicación geográfica, corrección de género en "todos"), Error Workflow catch-all (campo de tipo de error agregado), y el formulario legacy (Workflow 2); se agregaron los workflows nuevos del formulario de Información Georreferenciada (Workflow 2C y Workflow 2A); y se corrigió la exposición de datos personales descrita arriba.

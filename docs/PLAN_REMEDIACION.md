@@ -3,6 +3,8 @@
 **Punto de partida:** [Auditoría de buenas prácticas del 2026-09-16](AUDITORIA_BUENAS_PRACTICAS_2026-09-16.md) — promedio del pipeline **53,6/100**, ningún flujo aprobado, 3 en clasificación *Crítico*.
 **Meta:** ≥90/100 en los 12 flujos (clasificación *Excelente / Nivel Enterprise*, despliegue en producción crítica sin restricciones).
 
+> Este documento es la **estrategia**: qué fases hay, cuánto aporta cada una y en qué orden conviene atacarlas. Para ejecutar, usar el [plan de trabajo](PLAN_TRABAJO_FRAMEWORK.md), que desglosa cada fase en tareas atómicas con el nodo afectado y su criterio de verificación.
+
 ---
 
 ## 1. Cómo se cierra la brecha
