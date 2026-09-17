@@ -23,17 +23,19 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 
 | ID | Tarea | Flujo · nodo | Esf. | Cómo se verifica | Hecho |
 |---|---|---|---|---|---|
-| F0-01 | Autenticar el webhook de decisión con Header Auth y validar el token desde la página de revisión | W4D · `Webhook - Decisión Propuesta` | ▪▪ | Un POST sin cabecera devuelve 401; el flujo completo sigue funcionando desde la página de revisión | ☐ |
-| F0-02 | Autenticar la API de consulta | W4C · `Webhook - Consultar Propuesta` | ▪▪ | Un GET sin cabecera devuelve 401; la página de revisión sigue cargando la propuesta | ☐ |
-| F0-03 | Autenticar el webhook del formulario externo, con la cabecera compartida con el front | W2C · `Webhook - Solicitud Georreferenciada` | ▪▪ | Un POST sin cabecera devuelve 401; el formulario publicado sigue enviando bien | ☐ |
+| F0-01 | Autenticar el webhook de decisión con Header Auth y validar el token desde la página de revisión | W4D · `Webhook - Decisión Propuesta` | ▪▪ | Un POST sin cabecera devuelve 401; el flujo completo sigue funcionando desde la página de revisión | ☑ 17/09 |
+| F0-02 | Autenticar la API de consulta | W4C · `Webhook - Consultar Propuesta` | ▪▪ | Un GET sin cabecera devuelve 401; la página de revisión sigue cargando la propuesta | ☑ 17/09 |
+| F0-03 | Autenticar el webhook del formulario externo, con la cabecera compartida con el front | W2C · `Webhook - Solicitud Georreferenciada` | ▪▪ | Un POST sin cabecera devuelve 401; el formulario publicado sigue enviando bien | ☑ 17/09 |
 | F0-04 | Proteger el formulario público contra abuso (CAPTCHA, honeypot o límite de tasa en el proxy) | W2B · `Página 1 - Datos de la empresa` | ▪▪ | Envíos automatizados repetidos son rechazados; un envío humano normal pasa | ☐ |
-| F0-05 | Restaurar el destinatario real de Teams en los dos flujos que siguen apuntando al chat de notas | W4B y W4D · `Enviar mensaje Teams` | ▪ | El aprobador recibe el mensaje en su chat; el `chatId` ya no es el de notas personales | ☐ |
-| F0-06 | Restaurar el destinatario real de la notificación interna de envío | W5B · `Notificar a Asesor CCB - Envío` | ▪ | El asesor recibe la confirmación; la nota de "modo prueba" del nodo se elimina | ☐ |
-| F0-07 | Quitar el `pinData` de prueba del trigger | W3 · `When Executed by Another Workflow` | ▪ | `pinData` vacío en el flujo activo; una ejecución real sigue calculando bien | ☐ |
-| F0-08 | Restringir CORS al origen conocido en los dos webhooks consumidos desde el front | W4C y W2C | ▪ | Una petición desde otro origen es rechazada por el navegador; el front propio sigue operando | ☐ |
-| F0-09 | Corregir la sticky note que dice "Creado INACTIVO" en un flujo activo | W6 · `Nota - W6` | ▪ | El texto de la nota coincide con el estado real del flujo | ☐ |
+| F0-05 | Restaurar el destinatario real de Teams en los dos flujos que siguen apuntando al chat de notas | W4B y W4D · `Enviar mensaje Teams` | ▪ | El aprobador recibe el mensaje en su chat; el `chatId` ya no es el de notas personales | ⏸ diferido — decisión explícita del usuario, queda en modo prueba por ahora |
+| F0-06 | Restaurar el destinatario real de la notificación interna de envío | W5B · `Notificar a Asesor CCB - Envío` | ▪ | El asesor recibe la confirmación; la nota de "modo prueba" del nodo se elimina | ⏸ diferido — misma decisión que F0-05 |
+| F0-07 | Quitar el `pinData` de prueba del trigger | W3 · `When Executed by Another Workflow` | ▪ | `pinData` vacío en el flujo activo; una ejecución real sigue calculando bien | ☑ 17/09 |
+| F0-08 | Restringir CORS al origen conocido en los dos webhooks consumidos desde el front | W4C y W2C | ▪ | Una petición desde otro origen es rechazada por el navegador; el front propio sigue operando | ☑ 17/09 |
+| F0-09 | Corregir la sticky note que dice "Creado INACTIVO" en un flujo activo | W6 · `Nota - W6` | ▪ | El texto de la nota coincide con el estado real del flujo | ☑ 17/09 |
 
-**Criterio de cierre:** los cuatro endpoints rechazan peticiones no autenticadas, ningún flujo activo apunta a un destinatario de prueba, y ningún flujo activo tiene datos fijados.
+**Criterio de cierre:** los cuatro endpoints rechazan peticiones no autenticadas, ningún flujo activo apunta a un destinatario de prueba, y ningún flujo activo tiene datos fijados. **6 de 9 hechas** (17/09); quedan F0-04 (pendiente) y F0-05/F0-06 (diferidas por decisión del usuario).
+
+> **Nota — desvío detectado en F0-08 (17/09):** el esquema de nodos de n8n-mcp no lista la opción "Allowed Origins (CORS)" del nodo Webhook, aunque sí existe en la documentación oficial de n8n y en el nodo real de esta instancia (v2.1). Se verificó contra la instancia viva con `validateOnly` y con tráfico real (`curl` variando el header `Origin`) antes de confiar en cualquiera de las dos fuentes: el campo es `parameters.options.allowedOrigins` y el servidor sí lo hace cumplir — refleja el origen configurado en `Access-Control-Allow-Origin` sin importar qué origen mande el cliente. Dicho esto, CORS solo lo hace cumplir el navegador: no es una barrera contra scripts/bots que ignoran esa cabecera, que es la amenaza que ya cubre el Header Auth de F0-01/F0-02/F0-03.
 
 ---
 
