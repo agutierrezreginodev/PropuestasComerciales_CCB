@@ -29,7 +29,7 @@
     { "id": "formulario", "lane": "cliente", "col": 1, "type": "frontend", "label": "Formulario público", "sublabel": "informaciongeorreferenciada-ccb", "width": 140 },
     { "id": "cotizacion", "lane": "intake", "col": 2, "type": "backend", "label": "W2C → W2A → W3", "sublabel": "guarda criterios, calcula y genera PDF", "width": 150 },
     { "id": "teams", "lane": "revision", "col": 3, "type": "messagebus", "label": "W4-A / W4-B", "sublabel": "notifica por Microsoft Teams", "width": 115 },
-    { "id": "revisar", "lane": "revision", "col": 4, "type": "security", "label": "Asesor CCB revisa la propuesta", "sublabel": "página de revisión + PDF", "tag": "3 vías", "width": 182 },
+    { "id": "revisar", "lane": "revision", "col": 4, "type": "security", "label": "Asesor revisa propuesta", "sublabel": "página de revisión + PDF", "tag": "3 vías", "width": 182 },
     { "id": "entrega", "lane": "entrega", "col": 5, "type": "external", "label": "W5 — Envío al cliente", "sublabel": "PDF + confirmación interna", "tag": "W6 cierra a 30+ días", "width": 165 },
     { "id": "cancelar", "lane": "exceptions", "col": 5, "type": "backend", "label": "Cancelada", "sublabel": "el flujo termina aquí" },
     { "id": "correccion", "lane": "exceptions", "col": 4, "type": "backend", "label": "IA ajusta criterios", "sublabel": "valida contra listas fijas (3 rondas)", "width": 150 },

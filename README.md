@@ -41,7 +41,17 @@ Recorrido de punta a punta, verificado en vivo con datos reales (16/09/2026), si
 7. Un cierre automático (W6) marca como finalizadas las cotizaciones enviadas que llevan 30+ días sin respuesta.
 8. Un **Error Workflow catch-all** transversal captura cualquier fallo no manejado explícitamente por el flujo de origen, lo registra y envía una alerta técnica con flujo, tipo de error, nodo fallido y mensaje.
 
-Un diagrama interactivo de este flujo (generado con [Archify](https://github.com/tt-a1i/archify)) está disponible en [`docs/diagrams/pipeline-ccb.html`](docs/diagrams/pipeline-ccb.html).
+### Diagramas interactivos del sistema (Archify)
+
+El pipeline cuenta con diagramas interactivos autocontenidos en HTML (con temas claro/oscuro, trazabilidad animada y exportación SVG/PNG), generados con [Archify](https://github.com/tt-a1i/archify):
+
+| Diagrama | Archivo HTML | Especificación JSON | Alcance y Contenido |
+|---|---|---|---|
+| **Pipeline E2E General** | [`docs/diagrams/pipeline-ccb.html`](docs/diagrams/pipeline-ccb.html) | [`docs/diagrams/pipeline-ccb.workflow.json`](docs/diagrams/pipeline-ccb.workflow.json) | Recorrido general de negocio desde captación hasta entrega y cierre. |
+| **Intake, Motor y PDF** | [`docs/diagrams/intake-motor-cotizacion.html`](docs/diagrams/intake-motor-cotizacion.html) | [`docs/diagrams/intake-motor-cotizacion.workflow.json`](docs/diagrams/intake-motor-cotizacion.workflow.json) | W1 (correo IA), W2C (webhook auth), W2A (criterios), W3 (motor tarifario) y microservicio Puppeteer. |
+| **Decisión Comercial e IA** | [`docs/diagrams/decision-comercial-ia.html`](docs/diagrams/decision-comercial-ia.html) | [`docs/diagrams/decision-comercial-ia.workflow.json`](docs/diagrams/decision-comercial-ia.workflow.json) | W4A (router), W4B (Teams), SPA Vercel, W4C/W4D, bucle de corrección IA (whitelist 18 CIIU) y tope de 3 rondas. |
+| **Envío, Cierre y Catch-All** | [`docs/diagrams/envio-y-cierre.html`](docs/diagrams/envio-y-cierre.html) | [`docs/diagrams/envio-y-cierre.workflow.json`](docs/diagrams/envio-y-cierre.workflow.json) | W5A (router), W5B (entrega PDF / link >4MB, confirmación asesor), W6 (cierre >30 días) y Catch-All transversal. |
+
 
 ## Resumen de pruebas realizadas (16/09/2026)
 

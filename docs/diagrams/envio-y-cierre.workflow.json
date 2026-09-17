@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Envío al Cliente, Cierre y Manejo de Errores (W5, W6, Catch-All)",
+    "output": "docs/diagrams/envio-y-cierre.html",
+    "quality_profile": "showcase"
+  },
+  "lanes": [
+    { "id": "router", "label": "Router de Despacho" },
+    { "id": "entrega", "label": "Entrega al Cliente" },
+    { "id": "trazabilidad", "label": "Trazabilidad y Cierre" },
+    { "id": "excepciones", "label": "Excepciones y Alertas", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "despacho", "label": "Despacho", "fromCol": 0, "toCol": 1 },
+    { "id": "envio", "label": "Descarga y Entrega", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "cierre", "label": "Trazabilidad y Cierre", "fromCol": 4, "toCol": 5 }
+  ],
+  "mainPath": ["w5a_router", "marcar_envio", "descarga_pdf", "envio_email", "marcar_enviada", "w6_finalizador"],
+  "semanticChecks": {
+    "allowedRoots": ["w5a_router"],
+    "allowedTerminals": ["confirm_asesor", "w6_finalizador", "error_descarga", "error_envio", "catchall_err"]
+  },
+  "nodes": [
+    { "id": "w5a_router", "lane": "router", "col": 0, "type": "backend", "label": "W5A Router Envío", "sublabel": "Polling cada 15 min", "width": 130 },
+    { "id": "marcar_envio", "lane": "router", "col": 1, "type": "database", "label": "Marca EN_ENVIO", "sublabel": "Previene duplicados", "width": 135 },
+    { "id": "descarga_pdf", "lane": "entrega", "col": 2, "type": "cloud", "label": "Descarga PDF", "sublabel": "Microservicio Docker", "width": 125 },
+    { "id": "envio_email", "lane": "entrega", "col": 3, "type": "external", "label": "W5B Email Cliente", "sublabel": "Adjunto o link (>4MB)", "width": 135 },
+    { "id": "confirm_asesor", "lane": "entrega", "col": 4, "type": "external", "label": "Confirmación Asesor", "sublabel": "Outlook a Fausto", "width": 140 },
+    { "id": "marcar_enviada", "lane": "trazabilidad", "col": 4, "type": "database", "label": "Marca ENVIADA", "sublabel": "Cotizaciones y Solicitudes", "tag": "Enviada", "width": 140 },
+    { "id": "w6_finalizador", "lane": "trazabilidad", "col": 5, "type": "backend", "label": "W6 Finalizador", "sublabel": "Cierre >30 días (3 AM)", "tag": "FINALIZADA", "width": 135 },
+    { "id": "error_descarga", "lane": "excepciones", "col": 2, "type": "security", "label": "Fallo Descarga PDF", "sublabel": "Registra en Errores_CCB", "width": 140 },
+    { "id": "error_envio", "lane": "excepciones", "col": 3, "type": "security", "label": "ERROR_ENVIO", "sublabel": "Sin email o rebote", "width": 130 },
+    { "id": "catchall_err", "lane": "excepciones", "col": 5, "type": "security", "label": "Catch-All Errores", "sublabel": "Red transversal n8n", "tag": "Alerta Outlook", "width": 140 }
+  ],
+  "edges": [
+    { "from": "w5a_router", "to": "marcar_envio", "label": "detecta APROBADA", "variant": "emphasis", "role": "main" },
+    { "from": "marcar_envio", "to": "descarga_pdf", "label": "dispara W5B", "variant": "emphasis", "role": "main" },
+    { "from": "descarga_pdf", "to": "envio_email", "label": "PDF obtenido", "variant": "emphasis", "role": "main" },
+    { "from": "envio_email", "to": "marcar_enviada", "label": "entrega exitosa", "variant": "emphasis", "role": "main" },
+    { "from": "marcar_enviada", "to": "confirm_asesor", "label": "notifica al asesor", "variant": "emphasis", "role": "branch" },
+    { "from": "marcar_enviada", "to": "w6_finalizador", "label": "espera 30 días", "variant": "emphasis", "role": "main" },
+    { "from": "descarga_pdf", "to": "error_descarga", "label": "fallo de red/archivo", "variant": "security", "role": "error" },
+    { "from": "envio_email", "to": "error_envio", "label": "fallo en envío", "variant": "security", "role": "error" },
+    { "from": "marcar_envio", "to": "catchall_err", "label": "excepción no capturada", "variant": "security", "role": "error" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Despacho Idempotente", "items": ["W5A marca EN_ENVIO antes de ejecutar W5B para blindar contra ticks concurrentes", "Desacopla la decisión comercial de la entrega final por correo"] },
+    { "dot": "emerald", "title": "Entrega al Cliente", "items": ["Descarga el PDF generado por el microservicio en memoria", "Adjunta el PDF al correo branded o incluye link si supera el umbral de 4 MB", "Envía confirmación en paralelo al asesor comercial (Fausto Eusse)"] },
+    { "dot": "rose", "title": "Cierre y Observabilidad", "items": ["W6 escanea diariamente cotizaciones ENVIADA y las marca FINALIZADA a los 30 días", "Cualquier fallo en la cadena genera alerta técnica con detalle de nodo y mensaje", "El Error Workflow centralizado captura excepciones imprevistas"] }
+  ]
+}
