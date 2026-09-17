@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:35:30.449Z",
+  "updatedAt": "2026-09-17T14:57:50.344Z",
   "createdAt": "2026-09-15T15:09:07.764Z",
   "id": "KuLSIzBZgaRIjuSu",
   "name": "CCB - Workflow 4C - Consultar Propuesta para Revisión",
@@ -180,7 +180,7 @@
       ],
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { ok: false, error: $json.error || 'Error consultando la propuesta' } }}",
+        "responseBody": "={{ { ok: false, error: $json.error || $json.mensaje_error || 'Error consultando la propuesta' } }}",
         "options": {
           "responseCode": 400
         }
@@ -200,6 +200,84 @@
         "width": 480,
         "height": 220
       }
+    },
+    {
+      "id": "4928a209-1305-4730-8f8b-80e8cef1c905",
+      "name": "Validar id_solicitud presente",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -240,
+        -140
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.id_solicitud }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "46ff9550-e8ba-45f3-b70b-32b6e7b4b78e",
+      "name": "Preparar error - Falta id_solicitud",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        140
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const mensaje = 'Falta id_solicitud en la consulta.';\nreturn { json: {\n  id_solicitud: '',\n  workflow_origen: 'W4C-consultar-propuesta',\n  nodo_fallido: 'Validar id_solicitud presente',\n  mensaje_error: mensaje,\n  error: mensaje\n} };"
+      }
+    },
+    {
+      "id": "1932302e-f985-4a27-9445-b32222dcb6df",
+      "name": "Registrar error - Falta id_solicitud",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        140
+      ],
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput"
     }
   ],
   "connections": {
@@ -208,17 +286,6 @@
         [
           {
             "node": "Extraer id_solicitud de la query",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extraer id_solicitud de la query": {
-      "main": [
-        [
-          {
-            "node": "Leer cotización",
             "type": "main",
             "index": 0
           }
@@ -275,6 +342,57 @@
           }
         ]
       ]
+    },
+    "Extraer id_solicitud de la query": {
+      "main": [
+        [
+          {
+            "node": "Validar id_solicitud presente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar id_solicitud presente": {
+      "main": [
+        [
+          {
+            "node": "Leer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Falta id_solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Falta id_solicitud": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Falta id_solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Falta id_solicitud": {
+      "main": [
+        [
+          {
+            "node": "Responder error consulta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -288,308 +406,9 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "18b67864-0567-4d77-8868-b614f5670675",
-  "activeVersionId": "18b67864-0567-4d77-8868-b614f5670675",
-  "versionCounter": 23,
+  "versionId": "c8834927-479a-43f4-b5df-327420f5ab30",
+  "activeVersionId": "c8834927-479a-43f4-b5df-327420f5ab30",
+  "versionCounter": 26,
   "triggerCount": 1,
-  "tags": [],
-  "activeVersion": {
-    "updatedAt": "2026-09-17T14:35:30.450Z",
-    "createdAt": "2026-09-17T14:35:30.450Z",
-    "versionId": "18b67864-0567-4d77-8868-b614f5670675",
-    "workflowId": "KuLSIzBZgaRIjuSu",
-    "nodes": [
-      {
-        "id": "a1b2c3d4-2222-4a22-8a22-000000000001",
-        "name": "Webhook - Consultar Propuesta",
-        "type": "n8n-nodes-base.webhook",
-        "typeVersion": 2.1,
-        "position": [
-          -600,
-          0
-        ],
-        "parameters": {
-          "httpMethod": "GET",
-          "path": "consultar-propuesta",
-          "responseMode": "responseNode",
-          "options": {
-            "allowedOrigins": "https://revision-propuesta-ccb.vercel.app"
-          },
-          "authentication": "headerAuth"
-        },
-        "webhookId": "5a89df4f-821b-4066-9e14-82cece0fb106",
-        "credentials": {
-          "httpHeaderAuth": {
-            "id": "jYGowZ6DBd6wkxBL",
-            "name": "HeaderAuth - Consultar Propuesta (W4C)"
-          }
-        }
-      },
-      {
-        "id": "a1b2c3d4-2222-4a22-8a22-000000000002",
-        "name": "Extraer id_solicitud de la query",
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          -360,
-          0
-        ],
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "const id = ($json.query && $json.query.id_solicitud) || '';\nreturn { json: { id_solicitud: id } };"
-        }
-      },
-      {
-        "id": "a1b2c3d4-2222-4a22-8a22-000000000003",
-        "name": "Leer cotización",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          -120,
-          0
-        ],
-        "alwaysOutputData": true,
-        "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "YAvQTqzsgJWjacVZ",
-            "mode": "list",
-            "cachedResultName": "Cotizaciones_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        }
-      },
-      {
-        "id": "a1b2c3d4-2222-4a22-8a22-000000000004",
-        "name": "Leer criterios",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          120,
-          0
-        ],
-        "alwaysOutputData": true,
-        "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "ldABWugJR1GcFFyy",
-            "mode": "list",
-            "cachedResultName": "Criterios_Cotizacion",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $('Extraer id_solicitud de la query').item.json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        }
-      },
-      {
-        "id": "a1b2c3d4-2222-4a22-8a22-000000000005",
-        "name": "Leer solicitud",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          360,
-          0
-        ],
-        "alwaysOutputData": true,
-        "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "u5gFYvTfuQRX71u5",
-            "mode": "list",
-            "cachedResultName": "Solicitudes_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $('Extraer id_solicitud de la query').item.json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        }
-      },
-      {
-        "id": "a1b2c3d4-2222-4a22-8a22-000000000006",
-        "name": "Consolidar respuesta",
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          600,
-          0
-        ],
-        "onError": "continueErrorOutput",
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "const idSolicitud = $('Extraer id_solicitud de la query').first().json.id_solicitud;\nif (!idSolicitud) {\n  throw new Error('Falta id_solicitud en la consulta.');\n}\n\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\n\nif (!q || !q.id_solicitud) {\n  return { json: { ok: false, error: 'No se encontró la propuesta solicitada.' } };\n}\n\nreturn { json: {\n  ok: true,\n  id_solicitud: q.id_solicitud,\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor_total: q.valor_total,\n  pdf_url: q.pdf_url || null,\n  ronda_correccion: Number(q.ronda_correccion) || 0,\n  estado: q.estado || ''\n} };"
-        }
-      },
-      {
-        "id": "a1b2c3d4-2222-4a22-8a22-000000000007",
-        "name": "Responder consulta",
-        "type": "n8n-nodes-base.respondToWebhook",
-        "typeVersion": 1.5,
-        "position": [
-          840,
-          -80
-        ],
-        "parameters": {
-          "respondWith": "json",
-          "responseBody": "={{ $json }}",
-          "options": {
-            "responseCode": 200
-          }
-        }
-      },
-      {
-        "id": "a1b2c3d4-2222-4a22-8a22-000000000008",
-        "name": "Responder error consulta",
-        "type": "n8n-nodes-base.respondToWebhook",
-        "typeVersion": 1.5,
-        "position": [
-          600,
-          200
-        ],
-        "parameters": {
-          "respondWith": "json",
-          "responseBody": "={{ { ok: false, error: $json.error || 'Error consultando la propuesta' } }}",
-          "options": {
-            "responseCode": 400
-          }
-        }
-      },
-      {
-        "id": "319a50e3-d0a2-4683-9210-a09bdc7bf734",
-        "name": "Nota - W4C Consultar Propuesta",
-        "type": "n8n-nodes-base.stickyNote",
-        "typeVersion": 1,
-        "position": [
-          -600,
-          -220
-        ],
-        "parameters": {
-          "content": "### W4C - Consultar Propuesta para Revision\n\n- API de solo lectura para la pagina externa de revision (revision-propuesta-ccb en Vercel): recibe id_solicitud y devuelve el resumen de la cotizacion.\n- Los 3 nodos de lectura (Cotizacion/Criterios/Solicitud) usan alwaysOutputData=true a proposito: si el id_solicitud no existe, la ejecucion sigue con datos vacios en vez de cortar, y Consolidar respuesta arma un {ok:false, error:...} explicito.\n- Protegido con Header Auth + CORS restringido al dominio del formulario (17/09/2026).",
-          "width": 480,
-          "height": 220
-        }
-      }
-    ],
-    "connections": {
-      "Webhook - Consultar Propuesta": {
-        "main": [
-          [
-            {
-              "node": "Extraer id_solicitud de la query",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Extraer id_solicitud de la query": {
-        "main": [
-          [
-            {
-              "node": "Leer cotización",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Leer cotización": {
-        "main": [
-          [
-            {
-              "node": "Leer criterios",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Leer criterios": {
-        "main": [
-          [
-            {
-              "node": "Leer solicitud",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Leer solicitud": {
-        "main": [
-          [
-            {
-              "node": "Consolidar respuesta",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Consolidar respuesta": {
-        "main": [
-          [
-            {
-              "node": "Responder consulta",
-              "type": "main",
-              "index": 0
-            }
-          ],
-          [
-            {
-              "node": "Responder error consulta",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      }
-    },
-    "authors": "Adrian Gutierrez",
-    "name": null,
-    "description": null,
-    "autosaved": false,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-09-17T14:35:30.501Z",
-        "id": 2452,
-        "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "18b67864-0567-4d77-8868-b614f5670675",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:35:30.527Z",
-        "id": 2453,
-        "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "18b67864-0567-4d77-8868-b614f5670675",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      }
-    ]
-  }
+  "tags": []
 }

@@ -68,19 +68,19 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 
 | ID | Tarea | Flujo · nodo | Esf. | Cómo se verifica | Hecho |
 |---|---|---|---|---|---|
-| F2-01 | Insertar un nodo de validación inmediatamente después del trigger, con rama de rechazo | los 12 activos | ▪▪▪ | Un payload sin campos requeridos se rechaza **antes** de leer o escribir en Data Table | ☐ *(hecho parcialmente vía F2-04 en W4D; resto pendiente)* |
-| F2-02 | Que la rama de rechazo responda **HTTP 400 real** en los flujos con webhook | W2C, W4C, W4D | ▪▪ | Una petición inválida devuelve 400, no 200 con `ok:false` en el cuerpo | ☑ 17/09 *(W4C y W4D; W2C pendiente)* |
+| F2-01 | Insertar un nodo de validación inmediatamente después del trigger, con rama de rechazo | los 12 activos | ▪▪▪ | Un payload sin campos requeridos se rechaza **antes** de leer o escribir en Data Table | ☐ *(hecho parcialmente: W4D vía F2-04, y ahora W2C y W4C; resto pendiente — ver nota)* |
+| F2-02 | Que la rama de rechazo responda **HTTP 400 real** en los flujos con webhook | W2C, W4C, W4D | ▪▪ | Una petición inválida devuelve 400, no 200 con `ok:false` en el cuerpo | ☑ 17/09 |
 | F2-03 | Hacer que el consolidador lance excepción real, para que la rama de error 500 deje de ser inalcanzable | W4C · `Consolidar respuesta` | ▪▪ | Forzando un fallo, la respuesta sale por la rama de error con código 500 | ☑ 17/09 *(ver nota)* |
 | F2-04 | Validar `decision` contra un enum cerrado antes de tocar la base | W4D · `Extraer decisión del body` | ▪ | Una decisión no reconocida se rechaza con 400 sin leer Data Table | ☑ 17/09 |
 | F2-05 | ~~Rechazar `id_solicitud` nulo o inválido~~ — **No aplica.** W2B retirado, fuera de alcance (ver Fase 0) | W2B | — | — | 🚫 N/A |
 | F2-06 | Agregar rama por defecto al Switch de servicio, que hoy descarta en silencio | W3 · `Enrutar por servicio` | ▪ | Un servicio no reconocido produce error explícito y queda registrado | ☑ 17/09 |
 | F2-07 | Validar la salida del extractor de IA antes de usarla | W1 · `Information Extractor` | ▪▪ | Un correo sin datos extraíbles no genera un registro con campos inventados | ☐ |
 
-**Criterio de cierre:** ningún flujo ejecuta lógica de negocio ni toca la base antes de comprobar que su entrada es válida. **3 de 7 hechas, 1 N/A** (17/09). Todas verificadas con tráfico real contra el webhook en vivo (no solo estructuralmente): F2-04 confirmado con 400 + registro en `Errores_CCB` para decisión inválida y vacía; F2-03 confirmado con 400 real para `id_solicitud` faltante, sin afectar el camino de "no encontrada" (200, sin cambios).
+**Criterio de cierre:** ningún flujo ejecuta lógica de negocio ni toca la base antes de comprobar que su entrada es válida. **4 de 7 hechas, 1 N/A** (17/09). Todas verificadas con tráfico real contra el webhook en vivo (no solo estructuralmente): F2-04 confirmado con 400 + registro en `Errores_CCB` para decisión inválida y vacía; F2-03 confirmado con 400 real para `id_solicitud` faltante, sin afectar el camino de "no encontrada" (200, sin cambios). Ronda adicional (17/09): F2-02 se cerró sin salvedades tras verificar con tráfico real contra el webhook en vivo los 4 casos siguientes — W2C con payload inválido (sin `nombre`/`email`/`telefono`/`razon_social`) → 400 real con el mensaje de campos faltantes; W2C con payload válido → 200, pipeline completo de punta a punta intacto (generó `id_solicitud` real y llegó al motor de criterios; la respuesta de negocio "0 registros" es un resultado legítimo de los criterios de prueba, no una falla); W4C sin `id_solicitud` → 400 real, cortando antes de tocar las 3 Data Tables; W4C con un `id_solicitud` real existente → 200 con el resumen completo de la propuesta, camino válido intacto.
 
 > **Nota — alcance real de F2-03:** el 400 para "falta `id_solicitud`" es un error real y verificado. El 500 para una falla genuina de infraestructura (ej. el Data Table deja de responder) sigue sin pasar por `Responder error consulta`: hoy cae en el manejo de error por defecto de n8n, porque los 3 nodos de lectura no tienen `onError` cableado hacia `Consolidar respuesta`. Cerrar eso del todo requeriría wiring adicional en las 3 lecturas — queda como mejora futura, no bloqueante.
 >
-> **F2-01 pendiente en 11 de 12 flujos:** por ahora solo W4D tiene gatekeeping real de entrada (F2-04). Extenderlo a los otros 11 (empezando por W2C y W4C, los otros dos webhooks públicos) queda para la próxima ronda de esta fase.
+> **F2-01 pendiente en 9 de 12 flujos:** ahora W4D (F2-04), W2C y W4C tienen gatekeeping real de entrada antes de tocar cualquier Data Table — verificado con tráfico real en los tres. Extenderlo a los otros 9 flujos activos queda para la próxima ronda de esta fase.
 
 ---
 

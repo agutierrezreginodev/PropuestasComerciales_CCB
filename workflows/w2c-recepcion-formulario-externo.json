@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:16:30.726Z",
+  "updatedAt": "2026-09-17T14:57:04.880Z",
   "createdAt": "2026-09-15T13:24:42.298Z",
   "id": "u6KCMnLwFOp6Ja0N",
   "name": "CCB - Workflow 2C - Recepción Formulario Externo (Georreferenciada)",
@@ -128,20 +128,118 @@
         -16,
         240
       ]
+    },
+    {
+      "id": "d083d2fb-b95c-47ad-870c-af920520e194",
+      "name": "Validar campos requeridos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        200
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const b = $json.body || $json;\nconst requeridos = ['nombre', 'email', 'telefono', 'razon_social'];\nconst faltantes = requeridos.filter((campo) => !b[campo] || String(b[campo]).trim() === '');\nreturn { json: { ...$json, valido: faltantes.length === 0, campos_faltantes: faltantes } };"
+      }
+    },
+    {
+      "id": "aaaa31e9-8286-4cc1-a46c-a41b311b5379",
+      "name": "Validar campos requeridos - ¿completo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -368,
+        200
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.valido }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "2bf94acd-195d-48b9-92b6-9db90e2dd495",
+      "name": "Preparar error - Campos requeridos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        400
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst b = j.body || j;\nconst mensaje = 'Faltan campos requeridos en la solicitud: ' + (j.campos_faltantes || []).join(', ');\nreturn { json: {\n  id_solicitud: b.id_solicitud || '',\n  workflow_origen: 'W2C-recepcion-formulario-externo',\n  nodo_fallido: 'Validar campos requeridos',\n  mensaje_error: mensaje,\n  ok: false,\n  error: mensaje\n} };"
+      }
+    },
+    {
+      "id": "3145d94e-babc-445c-8bdf-b112401a2a4b",
+      "name": "Registrar error - Campos requeridos",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        32,
+        400
+      ],
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "9edbbfe9-e0aa-46a7-8cc1-bf5279ddf06b",
+      "name": "Responder error - Campos requeridos",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        272,
+        400
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: $json.mensaje_error } }}",
+        "options": {
+          "responseCode": 400
+        }
+      }
     }
   ],
   "connections": {
-    "Webhook - Solicitud Georreferenciada": {
-      "main": [
-        [
-          {
-            "node": "Adaptar payload del formulario",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Adaptar payload del formulario": {
       "main": [
         [
@@ -177,6 +275,68 @@
           }
         ]
       ]
+    },
+    "Webhook - Solicitud Georreferenciada": {
+      "main": [
+        [
+          {
+            "node": "Validar campos requeridos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar campos requeridos": {
+      "main": [
+        [
+          {
+            "node": "Validar campos requeridos - ¿completo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar campos requeridos - ¿completo?": {
+      "main": [
+        [
+          {
+            "node": "Adaptar payload del formulario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Campos requeridos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Campos requeridos": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Campos requeridos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Campos requeridos": {
+      "main": [
+        [
+          {
+            "node": "Responder error - Campos requeridos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -191,226 +351,9 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
-  "activeVersionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
-  "versionCounter": 50,
+  "versionId": "c0f1e8a2-ea94-4b23-9e00-0abbbc5425b0",
+  "activeVersionId": "c0f1e8a2-ea94-4b23-9e00-0abbbc5425b0",
+  "versionCounter": 53,
   "triggerCount": 1,
-  "tags": [],
-  "activeVersion": {
-    "updatedAt": "2026-09-17T13:52:16.703Z",
-    "createdAt": "2026-09-17T13:52:16.703Z",
-    "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
-    "workflowId": "u6KCMnLwFOp6Ja0N",
-    "nodes": [
-      {
-        "parameters": {
-          "httpMethod": "POST",
-          "path": "solicitud-georreferenciada",
-          "responseMode": "responseNode",
-          "options": {
-            "allowedOrigins": "https://formulario-solicitud-ccb.vercel.app"
-          },
-          "authentication": "headerAuth"
-        },
-        "id": "f1a2b3c4-1111-4a11-8a11-000000000001",
-        "name": "Webhook - Solicitud Georreferenciada",
-        "type": "n8n-nodes-base.webhook",
-        "typeVersion": 2.1,
-        "position": [
-          -528,
-          16
-        ],
-        "webhookId": "cd5215b8-91b1-41b3-8c99-40e606514e61",
-        "credentials": {
-          "httpHeaderAuth": {
-            "id": "BMFidggL09zKgdaT",
-            "name": "HeaderAuth - Solicitud Georreferenciada (W2C)"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "// Adapta el payload del formulario externo (diseño de Asesor CCB, Vercel, solo Info. Georreferenciada)\n// al contrato plano que ya consume el sub-workflow 'Guardar Criterios y Cotizar Servicio',\n// replicando exactamente lo que 'Consolidar criterios - Información Georreferenciada' (W2)\n// produce hoy -- así se reutiliza el motor (W3) sin tocarlo.\n\nconst b = $json.body || $json;\n\nconst join = (arr) => Array.isArray(arr) ? arr.filter(Boolean).join('; ') : (arr || '');\nconst num = (v) => (v === '' || v === undefined || v === null) ? null : Number(v);\n// El motor solo reconoce 'Personas Jurídicas' / 'Personas Naturales' exactos para mapear al\n// valor de la BD (TIPO_FORM_TO_BD); el form de Asesor CCB agrega sufijos aclaratorios que hay que\n// quitar acá para que el match no falle en silencio (bug detectado en prueba en vivo).\nconst limpiarOrganizacion = (v) => String(v).replace(/\\s*\\(sociedades\\)\\s*/i, '').trim();\n\n// --- Ubicación: mapeo explícito a las claves que reconoce el motor (Normalizar Criterios, W3) ---\n// 'Barranquilla' y 'Todo el Departamento del Atlántico' ya matchean tal cual tras normalize().\n// 'Área Metropolitana...' del form es un texto largo con paréntesis -- se normaliza acá a la\n// forma corta que sí matchea la categoría del motor. Las otras 2 opciones caen al camino de\n// lista literal de municipios (también soportado por el motor sin cambios).\nlet ubicacionGeografica = '';\nconst ubic = b.ubicacion || '';\nif (ubic === 'Barranquilla') {\n  ubicacionGeografica = 'Barranquilla';\n} else if (ubic.startsWith('Área Metropolitana')) {\n  ubicacionGeografica = 'Área Metropolitana de Barranquilla';\n} else if (ubic === 'Todo el Departamento del Atlántico') {\n  ubicacionGeografica = 'Todo el Departamento del Atlántico';\n} else if (ubic.startsWith('Ciudades')) {\n  ubicacionGeografica = b.municipios || '';\n} else if (ubic.startsWith('Municipios del Magdalena')) {\n  ubicacionGeografica = join(b.municipios_magdalena);\n}\n\n// --- Actividad económica: 'todas' o lista de sectores seleccionados ---\nconst actividadEconomica = b.todas_actividades ? 'Todas las actividades económicas' : join(b.sectores);\n\n// --- Activos: modo (ninguno/mayor/menor/entre) -> columnas min/max/entre/y ---\nconst activos = b.activos || {};\nlet activos_min = null, activos_max = null, activos_entre = null, activos_y = null;\nif (activos.modo === 'mayor') activos_min = num(activos.desde);\nelse if (activos.modo === 'menor') activos_max = num(activos.desde);\nelse if (activos.modo === 'entre') { activos_entre = num(activos.desde); activos_y = num(activos.hasta); }\n\n// --- Ventas: modo (indiferente/mayor/menor/entre) -> columnas + indiferente_ventas ---\nconst ventas = b.ventas || {};\nlet ventas_min = null, ventas_max = null, ventas_entre = null, ventas_y = null;\nconst indiferenteVentas = ventas.modo === 'indiferente' || !ventas.modo;\nif (ventas.modo === 'mayor') ventas_min = num(ventas.desde);\nelse if (ventas.modo === 'menor') ventas_max = num(ventas.desde);\nelse if (ventas.modo === 'entre') { ventas_entre = num(ventas.desde); ventas_y = num(ventas.hasta); }\n\n// Este formulario se abre directo (sin pasar por W1/el link con ?id_solicitud=),\n// asi que si llega vacio generamos uno propio, mismo patron que usa W1.\nconst idSolicitud = b.id_solicitud || ('SOL-' + DateTime.now().setZone('America/Bogota').toFormat('yyyyMMddHHmmss'));\n\nconst criterios = {\n  id_solicitud: idSolicitud,\n  razon_social: b.razon_social || '',\n  nit_cc: '', direccion_empresa: '', email_empresa: '', telefono_empresa: '', ciudad: '',\n  nombre_solicitante: b.nombre || '',\n  cc_solicitante: '',\n  telefono_solicitante: b.telefono || '',\n  direccion_solicitante: '',\n  representacion_empresa: '', empresa_representada: '',\n  email_solicitante: b.email || '',\n  cargo: '', nivel_cargo: '', area_cargo: '',\n  servicio: 'Información Georreferenciada',\n  organizacion_juridica: Array.isArray(b.organizacion_juridica) ? b.organizacion_juridica.map(limpiarOrganizacion).join('; ') : limpiarOrganizacion(b.organizacion_juridica || ''),\n  ubicacion_geografica: ubicacionGeografica,\n  ciudades_municipios: b.municipios || '',\n  actividad_economica: actividadEconomica,\n  actividades_especificas: b.actividades_especificas || '',\n  categorias_esal: join(b.esal),\n  categorias_esal_especificas: b.esal_especificas || '',\n  tamano_empresa: join(b.tamanos),\n  activos_min: activos_min, activos_max: activos_max, activos_entre: activos_entre, activos_y: activos_y,\n  ventas_min: ventas_min, ventas_max: ventas_max, ventas_entre: ventas_entre, ventas_y: ventas_y,\n  indiferente_ventas: indiferenteVentas,\n  medio_conocimiento: join(b.como_nos_conocio),\n  otro_medio: b.como_nos_conocio_otro || '',\n  comentarios: b.comentarios || '',\n  fecha_envio: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss')\n};\n\nreturn { json: criterios };"
-        },
-        "id": "f1a2b3c4-1111-4a11-8a11-000000000002",
-        "name": "Adaptar payload del formulario",
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          -288,
-          16
-        ],
-        "onError": "continueErrorOutput"
-      },
-      {
-        "parameters": {
-          "workflowId": {
-            "__rl": true,
-            "value": "VChcasvisGKekezR",
-            "mode": "id"
-          },
-          "workflowInputs": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "servicio": "={{ $json.servicio }}",
-              "id_solicitud": "={{ $json.id_solicitud }}",
-              "criterios": "={{ $json }}"
-            },
-            "matchingColumns": [],
-            "schema": [
-              {
-                "id": "servicio",
-                "type": "string",
-                "display": true
-              },
-              {
-                "id": "id_solicitud",
-                "type": "string",
-                "display": true
-              },
-              {
-                "id": "criterios",
-                "type": "object",
-                "display": true
-              }
-            ]
-          },
-          "options": {
-            "waitForSubWorkflow": true
-          }
-        },
-        "id": "f1a2b3c4-1111-4a11-8a11-000000000003",
-        "name": "Ejecutar Guardar-y-Cotizar",
-        "type": "n8n-nodes-base.executeWorkflow",
-        "typeVersion": 1.2,
-        "position": [
-          -16,
-          0
-        ],
-        "onError": "continueErrorOutput"
-      },
-      {
-        "parameters": {
-          "respondWith": "json",
-          "responseBody": "={{ $json }}",
-          "options": {
-            "responseCode": 200
-          }
-        },
-        "id": "f1a2b3c4-1111-4a11-8a11-000000000004",
-        "name": "Responder OK",
-        "type": "n8n-nodes-base.respondToWebhook",
-        "typeVersion": 1.5,
-        "position": [
-          256,
-          -16
-        ]
-      },
-      {
-        "parameters": {
-          "respondWith": "json",
-          "responseBody": "={{ { ok: false, error: ($json.error && $json.error.message) || 'Error procesando la solicitud' } }}",
-          "options": {
-            "responseCode": 500
-          }
-        },
-        "id": "f1a2b3c4-1111-4a11-8a11-000000000005",
-        "name": "Responder Error",
-        "type": "n8n-nodes-base.respondToWebhook",
-        "typeVersion": 1.5,
-        "position": [
-          -16,
-          240
-        ]
-      }
-    ],
-    "connections": {
-      "Webhook - Solicitud Georreferenciada": {
-        "main": [
-          [
-            {
-              "node": "Adaptar payload del formulario",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Adaptar payload del formulario": {
-        "main": [
-          [
-            {
-              "node": "Ejecutar Guardar-y-Cotizar",
-              "type": "main",
-              "index": 0
-            }
-          ],
-          [
-            {
-              "node": "Responder Error",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Ejecutar Guardar-y-Cotizar": {
-        "main": [
-          [
-            {
-              "node": "Responder OK",
-              "type": "main",
-              "index": 0
-            }
-          ],
-          [
-            {
-              "node": "Responder Error",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      }
-    },
-    "authors": "Adrian Gutierrez",
-    "name": null,
-    "description": null,
-    "autosaved": false,
-    "workflowPublishHistory": [
-      {
-        "createdAt": "2026-09-17T13:52:16.749Z",
-        "id": 2404,
-        "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T13:52:16.765Z",
-        "id": 2405,
-        "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:30.786Z",
-        "id": 2412,
-        "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:30.802Z",
-        "id": 2413,
-        "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "234e3bae-d9d9-4035-a3fe-09380eada8ea",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      }
-    ]
-  }
+  "tags": []
 }
