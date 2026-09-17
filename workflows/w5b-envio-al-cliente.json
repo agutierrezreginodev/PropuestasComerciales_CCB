@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:19:41.951Z",
+  "updatedAt": "2026-09-17T19:45:20.865Z",
   "createdAt": "2026-09-11T18:19:42.906Z",
   "id": "XWBHgbmtBubA4gqx",
   "name": "[SUB] CCB - Workflow 5B - Envío al Cliente",
@@ -381,7 +381,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -240,
+        -16,
         640
       ]
     },
@@ -395,7 +395,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -16,
+        208,
         640
       ]
     },
@@ -427,7 +427,7 @@
           "conditions": [
             {
               "keyName": "id_solicitud",
-              "keyValue": "={{ $('Consolidar datos del envío').first().json.id_solicitud }}"
+              "keyValue": "={{ (() => { try { return $('Consolidar datos del envío').first().json.id_solicitud; } catch (e) { return $json.id_solicitud; } })() }}"
             }
           ]
         },
@@ -445,9 +445,10 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        896,
+        1056,
         640
-      ]
+      ],
+      "alwaysOutputData": true
     },
     {
       "parameters": {
@@ -475,7 +476,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        1120,
+        848,
         640
       ],
       "onError": "continueRegularOutput"
@@ -494,7 +495,7 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        1344,
+        1440,
         640
       ],
       "webhookId": "2581ddb1-9ac8-4000-9a59-e9a3297f5974",
@@ -528,13 +529,21 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -16,
-        -64
+        -144,
+        -48
       ],
       "id": "bac60584-ab19-48d6-b180-071a74af0e72",
       "name": "Recibir solicitud"
     },
     {
+      "parameters": {
+        "toRecipients": "interno-alertas@example.com",
+        "subject": "={{ '[Propuesta CCB] Enviada al cliente — ' + $('Consolidar datos del envío').first().json.id_solicitud }}",
+        "bodyContent": "={{ '<p>La propuesta comercial fue enviada exitosamente al cliente.</p><ul>' + '<li><b>Solicitud:</b> ' + $('Consolidar datos del envío').first().json.id_solicitud + '</li>' + '<li><b>Cliente:</b> ' + ($('Consolidar datos del envío').first().json.nombre_cliente || '(sin nombre)') + '</li>' + '<li><b>Empresa:</b> ' + ($('Consolidar datos del envío').first().json.razon_social || '-') + '</li>' + '<li><b>Servicio:</b> ' + ($('Consolidar datos del envío').first().json.servicio || '-') + '</li>' + '<li><b>Valor total:</b> ' + Number($('Consolidar datos del envío').first().json.valor_total || 0).toLocaleString('es-CO', {style:'currency',currency:'COP',maximumFractionDigits:0}) + '</li>' + '<li><b>Enviado a:</b> ' + $('Consolidar datos del envío').first().json.email_destinatario + '</li>' + '</ul>' }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
       "id": "dad6e49c-0035-444c-8301-2cb6dbff6e75",
       "name": "Notificar a Asesor CCB - Envío",
       "type": "n8n-nodes-base.microsoftOutlook",
@@ -543,16 +552,7 @@
         1344,
         288
       ],
-      "parameters": {
-        "resource": "message",
-        "operation": "send",
-        "toRecipients": "interno-alertas@example.com",
-        "subject": "={{ '[Propuesta CCB] Enviada al cliente — ' + $('Consolidar datos del envío').first().json.id_solicitud }}",
-        "bodyContent": "={{ '<p>La propuesta comercial fue enviada exitosamente al cliente.</p><ul>' + '<li><b>Solicitud:</b> ' + $('Consolidar datos del envío').first().json.id_solicitud + '</li>' + '<li><b>Cliente:</b> ' + ($('Consolidar datos del envío').first().json.nombre_cliente || '(sin nombre)') + '</li>' + '<li><b>Empresa:</b> ' + ($('Consolidar datos del envío').first().json.razon_social || '-') + '</li>' + '<li><b>Servicio:</b> ' + ($('Consolidar datos del envío').first().json.servicio || '-') + '</li>' + '<li><b>Valor total:</b> ' + Number($('Consolidar datos del envío').first().json.valor_total || 0).toLocaleString('es-CO', {style:'currency',currency:'COP',maximumFractionDigits:0}) + '</li>' + '<li><b>Enviado a:</b> ' + $('Consolidar datos del envío').first().json.email_destinatario + '</li>' + '</ul>' }}",
-        "additionalFields": {
-          "bodyContentType": "html"
-        }
-      },
+      "webhookId": "dad74ad4-3733-4d26-b660-80d54a0dee83",
       "credentials": {
         "microsoftOutlookOAuth2Api": {
           "id": "iOA7XXDSHZojLhJz",
@@ -560,21 +560,68 @@
         }
       },
       "onError": "continueRegularOutput",
-      "webhookId": "dad74ad4-3733-4d26-b660-80d54a0dee83",
       "notes": "MODO PRUEBA (15/09): redirigido a Adrian para grabación de demo. Restaurar a asesor@example.com antes de producción real."
     },
     {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst idFaltante = get('Preparar error - id_solicitud faltante');\nconst origen = idFaltante.nodo_fallido ? idFaltante : (datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : email));\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || get('Consolidar datos del envío').id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml } };"
+      },
       "id": "w5b-prep-alerta-consolidada",
       "name": "Preparar alerta de fallo - Envío",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1120,
-        800
-      ],
+        1248,
+        640
+      ]
+    },
+    {
       "parameters": {
-        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst origen = datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : email);\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml } };"
-      }
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.id_solicitud }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e88d9ea9-4aa6-4ad2-9c1f-5056e7d03c4d",
+      "name": "Validar id_solicitud presente",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        32,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en la solicitud recibida por W5-B.';\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+      },
+      "id": "6eb939ea-660f-4e1e-a810-2ef31641d01b",
+      "name": "Preparar error - id_solicitud faltante",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        640
+      ]
     }
   ],
   "connections": {
@@ -794,17 +841,6 @@
         ]
       ]
     },
-    "Recibir solicitud": {
-      "main": [
-        [
-          {
-            "node": "Leer cotización",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Marcar ERROR_ENVIO": {
       "main": [
         [
@@ -826,6 +862,46 @@
           }
         ]
       ]
+    },
+    "Recibir solicitud": {
+      "main": [
+        [
+          {
+            "node": "Validar id_solicitud presente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar id_solicitud presente": {
+      "main": [
+        [
+          {
+            "node": "Leer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - id_solicitud faltante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - id_solicitud faltante": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -840,15 +916,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
-  "activeVersionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
-  "versionCounter": 72,
+  "versionId": "21054b27-7d1f-4968-a4cb-c15619834243",
+  "activeVersionId": "21054b27-7d1f-4968-a4cb-c15619834243",
+  "versionCounter": 95,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-16T16:24:23.320Z",
-    "createdAt": "2026-09-16T16:24:23.320Z",
-    "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+    "updatedAt": "2026-09-17T19:45:20.866Z",
+    "createdAt": "2026-09-17T19:45:20.866Z",
+    "versionId": "21054b27-7d1f-4968-a4cb-c15619834243",
     "workflowId": "XWBHgbmtBubA4gqx",
     "nodes": [
       {
@@ -1225,7 +1301,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -240,
+          -16,
           640
         ]
       },
@@ -1239,7 +1315,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -16,
+          208,
           640
         ]
       },
@@ -1271,7 +1347,7 @@
             "conditions": [
               {
                 "keyName": "id_solicitud",
-                "keyValue": "={{ $('Consolidar datos del envío').first().json.id_solicitud }}"
+                "keyValue": "={{ (() => { try { return $('Consolidar datos del envío').first().json.id_solicitud; } catch (e) { return $json.id_solicitud; } })() }}"
               }
             ]
           },
@@ -1289,9 +1365,10 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          896,
+          1056,
           640
-        ]
+        ],
+        "alwaysOutputData": true
       },
       {
         "parameters": {
@@ -1319,7 +1396,7 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          1120,
+          848,
           640
         ],
         "onError": "continueRegularOutput"
@@ -1338,7 +1415,7 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          1344,
+          1440,
           640
         ],
         "webhookId": "2581ddb1-9ac8-4000-9a59-e9a3297f5974",
@@ -1372,13 +1449,21 @@
         "type": "n8n-nodes-base.executeWorkflowTrigger",
         "typeVersion": 1.1,
         "position": [
-          -16,
-          -64
+          -144,
+          -48
         ],
         "id": "bac60584-ab19-48d6-b180-071a74af0e72",
         "name": "Recibir solicitud"
       },
       {
+        "parameters": {
+          "toRecipients": "interno-alertas@example.com",
+          "subject": "={{ '[Propuesta CCB] Enviada al cliente — ' + $('Consolidar datos del envío').first().json.id_solicitud }}",
+          "bodyContent": "={{ '<p>La propuesta comercial fue enviada exitosamente al cliente.</p><ul>' + '<li><b>Solicitud:</b> ' + $('Consolidar datos del envío').first().json.id_solicitud + '</li>' + '<li><b>Cliente:</b> ' + ($('Consolidar datos del envío').first().json.nombre_cliente || '(sin nombre)') + '</li>' + '<li><b>Empresa:</b> ' + ($('Consolidar datos del envío').first().json.razon_social || '-') + '</li>' + '<li><b>Servicio:</b> ' + ($('Consolidar datos del envío').first().json.servicio || '-') + '</li>' + '<li><b>Valor total:</b> ' + Number($('Consolidar datos del envío').first().json.valor_total || 0).toLocaleString('es-CO', {style:'currency',currency:'COP',maximumFractionDigits:0}) + '</li>' + '<li><b>Enviado a:</b> ' + $('Consolidar datos del envío').first().json.email_destinatario + '</li>' + '</ul>' }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
         "id": "dad6e49c-0035-444c-8301-2cb6dbff6e75",
         "name": "Notificar a Asesor CCB - Envío",
         "type": "n8n-nodes-base.microsoftOutlook",
@@ -1387,16 +1472,7 @@
           1344,
           288
         ],
-        "parameters": {
-          "resource": "message",
-          "operation": "send",
-          "toRecipients": "interno-alertas@example.com",
-          "subject": "={{ '[Propuesta CCB] Enviada al cliente — ' + $('Consolidar datos del envío').first().json.id_solicitud }}",
-          "bodyContent": "={{ '<p>La propuesta comercial fue enviada exitosamente al cliente.</p><ul>' + '<li><b>Solicitud:</b> ' + $('Consolidar datos del envío').first().json.id_solicitud + '</li>' + '<li><b>Cliente:</b> ' + ($('Consolidar datos del envío').first().json.nombre_cliente || '(sin nombre)') + '</li>' + '<li><b>Empresa:</b> ' + ($('Consolidar datos del envío').first().json.razon_social || '-') + '</li>' + '<li><b>Servicio:</b> ' + ($('Consolidar datos del envío').first().json.servicio || '-') + '</li>' + '<li><b>Valor total:</b> ' + Number($('Consolidar datos del envío').first().json.valor_total || 0).toLocaleString('es-CO', {style:'currency',currency:'COP',maximumFractionDigits:0}) + '</li>' + '<li><b>Enviado a:</b> ' + $('Consolidar datos del envío').first().json.email_destinatario + '</li>' + '</ul>' }}",
-          "additionalFields": {
-            "bodyContentType": "html"
-          }
-        },
+        "webhookId": "dad74ad4-3733-4d26-b660-80d54a0dee83",
         "credentials": {
           "microsoftOutlookOAuth2Api": {
             "id": "iOA7XXDSHZojLhJz",
@@ -1404,21 +1480,68 @@
           }
         },
         "onError": "continueRegularOutput",
-        "webhookId": "dad74ad4-3733-4d26-b660-80d54a0dee83",
         "notes": "MODO PRUEBA (15/09): redirigido a Adrian para grabación de demo. Restaurar a asesor@example.com antes de producción real."
       },
       {
+        "parameters": {
+          "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst idFaltante = get('Preparar error - id_solicitud faltante');\nconst origen = idFaltante.nodo_fallido ? idFaltante : (datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : email));\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || get('Consolidar datos del envío').id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml } };"
+        },
         "id": "w5b-prep-alerta-consolidada",
         "name": "Preparar alerta de fallo - Envío",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1120,
-          800
-        ],
+          1248,
+          640
+        ]
+      },
+      {
         "parameters": {
-          "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst origen = datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : email);\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml } };"
-        }
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.id_solicitud }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "e88d9ea9-4aa6-4ad2-9c1f-5056e7d03c4d",
+        "name": "Validar id_solicitud presente",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          32,
+          -48
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en la solicitud recibida por W5-B.';\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+        },
+        "id": "6eb939ea-660f-4e1e-a810-2ef31641d01b",
+        "name": "Preparar error - id_solicitud faltante",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -240,
+          640
+        ]
       }
     ],
     "connections": {
@@ -1638,17 +1761,6 @@
           ]
         ]
       },
-      "Recibir solicitud": {
-        "main": [
-          [
-            {
-              "node": "Leer cotización",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Marcar ERROR_ENVIO": {
         "main": [
           [
@@ -1670,6 +1782,46 @@
             }
           ]
         ]
+      },
+      "Recibir solicitud": {
+        "main": [
+          [
+            {
+              "node": "Validar id_solicitud presente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar id_solicitud presente": {
+        "main": [
+          [
+            {
+              "node": "Leer cotización",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - id_solicitud faltante",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - id_solicitud faltante": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -1678,50 +1830,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-16T16:24:23.370Z",
-        "id": 2358,
+        "createdAt": "2026-09-17T19:45:20.925Z",
+        "id": 2476,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+        "versionId": "21054b27-7d1f-4968-a4cb-c15619834243",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-16T16:24:23.387Z",
-        "id": 2359,
+        "createdAt": "2026-09-17T19:45:20.949Z",
+        "id": 2477,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:47.845Z",
-        "id": 2426,
-        "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:47.863Z",
-        "id": 2427,
-        "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:19:42.096Z",
-        "id": 2442,
-        "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:19:42.134Z",
-        "id": 2443,
-        "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+        "versionId": "21054b27-7d1f-4968-a4cb-c15619834243",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

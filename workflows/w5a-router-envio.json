@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:16:46.486Z",
+  "updatedAt": "2026-09-17T19:50:46.673Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -88,7 +88,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        480,
+        720,
         0
       ],
       "onError": "continueErrorOutput"
@@ -126,7 +126,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        720,
+        960,
         0
       ],
       "notes": "waitForSubWorkflow=false: el envío corre en background y no bloquea el router."
@@ -216,6 +216,54 @@
         0,
         192
       ]
+    },
+    {
+      "id": "49401719-fe28-4381-a7d8-5bb7d9170bf7",
+      "name": "Validar id_solicitud presente",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.id_solicitud }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c1a2b3c4-1111-4a11-8a11-111111111111",
+      "name": "Preparar error - id_solicitud faltante",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        420
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila APROBADA de Cotizaciones_CCB.';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>: se encontró una fila APROBADA sin <code>id_solicitud</code>, no se despachó a W5-B.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W5-A-router-envio', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+      }
     }
   ],
   "connections": {
@@ -224,17 +272,6 @@
         [
           {
             "node": "Leer cotizaciones APROBADA",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Leer cotizaciones APROBADA": {
-      "main": [
-        [
-          {
-            "node": "Marcar EN_ENVIO",
             "type": "main",
             "index": 0
           }
@@ -280,6 +317,46 @@
           }
         ]
       ]
+    },
+    "Leer cotizaciones APROBADA": {
+      "main": [
+        [
+          {
+            "node": "Validar id_solicitud presente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar id_solicitud presente": {
+      "main": [
+        [
+          {
+            "node": "Marcar EN_ENVIO",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - id_solicitud faltante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - id_solicitud faltante": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -298,15 +375,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
-  "activeVersionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
-  "versionCounter": 27,
+  "versionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
+  "activeVersionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
+  "versionCounter": 33,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-14T16:16:55.530Z",
-    "createdAt": "2026-09-14T16:16:55.530Z",
-    "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
+    "updatedAt": "2026-09-17T19:50:46.675Z",
+    "createdAt": "2026-09-17T19:50:46.675Z",
+    "versionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -390,7 +467,7 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          480,
+          720,
           0
         ],
         "onError": "continueErrorOutput"
@@ -428,7 +505,7 @@
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.2,
         "position": [
-          720,
+          960,
           0
         ],
         "notes": "waitForSubWorkflow=false: el envío corre en background y no bloquea el router."
@@ -518,6 +595,54 @@
           0,
           192
         ]
+      },
+      {
+        "id": "49401719-fe28-4381-a7d8-5bb7d9170bf7",
+        "name": "Validar id_solicitud presente",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          480,
+          0
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "loose"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.id_solicitud }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "c1a2b3c4-1111-4a11-8a11-111111111111",
+        "name": "Preparar error - id_solicitud faltante",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          420
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila APROBADA de Cotizaciones_CCB.';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>: se encontró una fila APROBADA sin <code>id_solicitud</code>, no se despachó a W5-B.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W5-A-router-envio', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+        }
       }
     ],
     "connections": {
@@ -526,17 +651,6 @@
           [
             {
               "node": "Leer cotizaciones APROBADA",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Leer cotizaciones APROBADA": {
-        "main": [
-          [
-            {
-              "node": "Marcar EN_ENVIO",
               "type": "main",
               "index": 0
             }
@@ -582,6 +696,46 @@
             }
           ]
         ]
+      },
+      "Leer cotizaciones APROBADA": {
+        "main": [
+          [
+            {
+              "node": "Validar id_solicitud presente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar id_solicitud presente": {
+        "main": [
+          [
+            {
+              "node": "Marcar EN_ENVIO",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - id_solicitud faltante",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - id_solicitud faltante": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Router",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -590,50 +744,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-14T16:16:55.568Z",
-        "id": 2198,
+        "createdAt": "2026-09-17T19:50:46.726Z",
+        "id": 2478,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
+        "versionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-14T16:16:55.583Z",
-        "id": 2199,
+        "createdAt": "2026-09-17T19:50:46.748Z",
+        "id": 2479,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-14T16:16:55.986Z",
-        "id": 2200,
-        "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-14T16:16:56.005Z",
-        "id": 2201,
-        "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:46.521Z",
-        "id": 2424,
-        "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:46.537Z",
-        "id": 2425,
-        "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "adf7188b-6c7d-4df8-86f8-84d20f4f52a4",
+        "versionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
