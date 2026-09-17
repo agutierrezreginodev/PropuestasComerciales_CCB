@@ -97,7 +97,9 @@ N8N_API_URL="https://<instancia>" N8N_API_KEY="<clave>" python3 scripts/export_w
 
 Las credenciales se leen solo del entorno: nunca se escriben en disco ni se imprimen. Conviene correrlo después de cualquier cambio relevante en n8n, y siempre al cerrar una fase del plan de remediación.
 
-**Historial reescrito (16/09/2026):** se detectó que el correo interno (ahora `interno-alertas@example.com`) y el nombre del propietario del proyecto quedaron expuestos en texto plano en los commits anteriores (dentro del bloque `shared`, no cubierto por la tabla de anonimización original). Se reescribió el historial de este repositorio para purgar esa exposición de todos los commits, no solo del estado actual.
+**Historial reconstruido (16/09/2026):** se detectó que el correo interno (ahora `interno-alertas@example.com`) y el nombre del propietario del proyecto quedaron expuestos en texto plano en los commits anteriores (dentro del bloque `shared`, no cubierto por la tabla de anonimización original). El historial de esta rama se reconstruyó desde cero —no comparte ningún commit con el anterior— y está verificado sin esa exposición en **ninguno** de sus commits, no solo en el estado actual.
+
+> ⚠️ La purga se completa recién cuando esta rama reemplace a la rama publicada. Mientras eso no ocurra, los commits antiguos siguen siendo accesibles en el repositorio remoto.
 
 **Última actualización:** 2026-09-16 (tarde) — se completó el snapshot con los 7 workflows que faltaban (4A, 4B, 4C, 4D, 5A, 5B y 6), se re-exportaron los 6 existentes desde el estado vivo, se automatizó el proceso en `scripts/export_workflows.py`, se amplió la tabla de anonimización con tres identificadores nuevos, y se publicó la auditoría de buenas prácticas de los 12 flujos junto con su plan de remediación.
 
