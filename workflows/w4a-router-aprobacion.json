@@ -1,0 +1,624 @@
+{
+  "updatedAt": "2026-09-14T16:16:52.575Z",
+  "createdAt": "2026-09-11T15:42:01.882Z",
+  "id": "7gmpPMBJtEb0W3J5",
+  "name": "CCB - Workflow 4A - Router de Aprobación",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "w4a-schedule",
+      "name": "Cada 15 minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "estado",
+              "keyValue": "PROPUESTA_GENERADA"
+            }
+          ]
+        },
+        "returnAll": true
+      },
+      "id": "w4a-leer",
+      "name": "Leer cotizaciones PROPUESTA_GENERADA",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "EN_REVISION"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w4a-marcar",
+      "name": "Marcar EN_REVISION",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "5RJdnHDQ8NuWZJG7",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud || $('Leer cotizaciones PROPUESTA_GENERADA').item.json.id_solicitud }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id_solicitud",
+              "displayName": "id_solicitud",
+              "type": "string",
+              "required": false,
+              "display": true
+            }
+          ]
+        },
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "id": "w4a-despachar",
+      "name": "Despachar a W4-B",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        -16
+      ],
+      "notes": "waitForSubWorkflow=false OBLIGATORIO: W4-B puede esperar hasta 24h una respuesta humana; el router no debe bloquearse. mode='each' replica el patrón del diseño viejo validado en producción."
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Marcar EN_REVISION';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W4-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W4-A (Router de Aprobación)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-A-router-aprobacion', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+      },
+      "id": "w4a-prep-error",
+      "name": "Preparar error - Router",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w4a-reg-error",
+      "name": "Registrar error - Router",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        272
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '[Propuesta CCB] Error en router W4-A — ' + $json.id_solicitud }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "w4a-alerta",
+      "name": "Enviar alerta - Router",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        960,
+        272
+      ],
+      "webhookId": "d87fc779-bb1b-4e5f-a2ee-7b4029df352d",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "### W4-A — Router de Aprobación\n\n- Cada 15 min: busca cotizaciones en PROPUESTA_GENERADA, las marca EN_REVISION y despacha fire-and-forget a W4-B.\n- El marcado previo es anti-duplicado: si W4-B no arranca, la fila queda EN_REVISION para intervención manual.\n- Activar recién cuando W4-B esté probado.",
+        "width": 460
+      },
+      "id": "w4a-nota",
+      "name": "Nota - W4-A",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        192
+      ]
+    }
+  ],
+  "connections": {
+    "Cada 15 minutos": {
+      "main": [
+        [
+          {
+            "node": "Leer cotizaciones PROPUESTA_GENERADA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer cotizaciones PROPUESTA_GENERADA": {
+      "main": [
+        [
+          {
+            "node": "Marcar EN_REVISION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar EN_REVISION": {
+      "main": [
+        [
+          {
+            "node": "Despachar a W4-B",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Router": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Router": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta - Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "binaryMode": "separate",
+    "errorWorkflow": "Dh2lAQTzyoZBpXie"
+  },
+  "staticData": {
+    "node:Cada 15 minutos": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+  "activeVersionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+  "versionCounter": 31,
+  "triggerCount": 1,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-14T16:16:52.577Z",
+    "createdAt": "2026-09-14T16:16:52.577Z",
+    "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+    "workflowId": "7gmpPMBJtEb0W3J5",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "minutes",
+                "minutesInterval": 15
+              }
+            ]
+          }
+        },
+        "id": "w4a-schedule",
+        "name": "Cada 15 minutos",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "estado",
+                "keyValue": "PROPUESTA_GENERADA"
+              }
+            ]
+          },
+          "returnAll": true
+        },
+        "id": "w4a-leer",
+        "name": "Leer cotizaciones PROPUESTA_GENERADA",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "EN_REVISION"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w4a-marcar",
+        "name": "Marcar EN_REVISION",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          480,
+          0
+        ],
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "5RJdnHDQ8NuWZJG7",
+            "mode": "id"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud || $('Leer cotizaciones PROPUESTA_GENERADA').item.json.id_solicitud }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "id_solicitud",
+                "displayName": "id_solicitud",
+                "type": "string",
+                "required": false,
+                "display": true
+              }
+            ]
+          },
+          "mode": "each",
+          "options": {
+            "waitForSubWorkflow": false
+          }
+        },
+        "id": "w4a-despachar",
+        "name": "Despachar a W4-B",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          720,
+          -16
+        ],
+        "notes": "waitForSubWorkflow=false OBLIGATORIO: W4-B puede esperar hasta 24h una respuesta humana; el router no debe bloquearse. mode='each' replica el patrón del diseño viejo validado en producción."
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Marcar EN_REVISION';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W4-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W4-A (Router de Aprobación)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-A-router-aprobacion', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+        },
+        "id": "w4a-prep-error",
+        "name": "Preparar error - Router",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          272
+        ]
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w4a-reg-error",
+        "name": "Registrar error - Router",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          720,
+          272
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ '[Propuesta CCB] Error en router W4-A — ' + $json.id_solicitud }}",
+          "bodyContent": "={{ $json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "w4a-alerta",
+        "name": "Enviar alerta - Router",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          960,
+          272
+        ],
+        "webhookId": "d87fc779-bb1b-4e5f-a2ee-7b4029df352d",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "content": "### W4-A — Router de Aprobación\n\n- Cada 15 min: busca cotizaciones en PROPUESTA_GENERADA, las marca EN_REVISION y despacha fire-and-forget a W4-B.\n- El marcado previo es anti-duplicado: si W4-B no arranca, la fila queda EN_REVISION para intervención manual.\n- Activar recién cuando W4-B esté probado.",
+          "width": 460
+        },
+        "id": "w4a-nota",
+        "name": "Nota - W4-A",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -80,
+          192
+        ]
+      }
+    ],
+    "connections": {
+      "Cada 15 minutos": {
+        "main": [
+          [
+            {
+              "node": "Leer cotizaciones PROPUESTA_GENERADA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer cotizaciones PROPUESTA_GENERADA": {
+        "main": [
+          [
+            {
+              "node": "Marcar EN_REVISION",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marcar EN_REVISION": {
+        "main": [
+          [
+            {
+              "node": "Despachar a W4-B",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Router",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Router": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Router",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar error - Router": {
+        "main": [
+          [
+            {
+              "node": "Enviar alerta - Router",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-14T16:16:52.626Z",
+        "id": 2194,
+        "workflowId": "7gmpPMBJtEb0W3J5",
+        "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-14T16:16:52.645Z",
+        "id": 2195,
+        "workflowId": "7gmpPMBJtEb0W3J5",
+        "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-14T16:16:53.093Z",
+        "id": 2196,
+        "workflowId": "7gmpPMBJtEb0W3J5",
+        "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-14T16:16:53.120Z",
+        "id": 2197,
+        "workflowId": "7gmpPMBJtEb0W3J5",
+        "versionId": "bed28456-d261-4516-a16e-9491ea5e9775",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

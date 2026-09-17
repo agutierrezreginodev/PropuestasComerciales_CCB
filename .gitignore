@@ -1,0 +1,6 @@
+# Real values used by the anonymization pass — must never be committed.
+scripts/anonymization.local.json
+
+# Local tooling caches
+.atl/
+__pycache__/

@@ -1,0 +1,7 @@
+[
+  { "original": "correo-de-alertas-real@ejemplo-interno.com", "placeholder": "dev-alerts@example.com" },
+  { "original": "correo-interno-real@organizacion.com",      "placeholder": "interno-alertas@example.com" },
+  { "original": "correo-del-asesor-real@organizacion.com",   "placeholder": "asesor@example.com" },
+  { "original": "Nombre Completo Del Asesor",                "placeholder": "Asesor CCB" },
+  { "original": "Nombre",                                    "placeholder": "Asesor CCB" }
+]

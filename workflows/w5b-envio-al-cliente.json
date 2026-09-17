@@ -1,0 +1,1698 @@
+{
+  "updatedAt": "2026-09-16T16:24:23.319Z",
+  "createdAt": "2026-09-11T18:19:42.906Z",
+  "id": "XWBHgbmtBubA4gqx",
+  "name": "CCB - Workflow 5B - Envío al Cliente",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "w5b-leer-cotizacion",
+      "name": "Leer cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        -64
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "w5b-leer-criterios",
+      "name": "Leer criterios",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -64
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "w5b-leer-solicitud",
+      "name": "Leer solicitud",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        -64
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Junta cotizacion + criterios + solicitud y resuelve el destinatario del envio.\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst emailSolicitante = String(c.email_solicitante || '').trim();\nconst emailCliente = String(s.email_cliente || '').trim();\nconst destinatario = emailSolicitante || emailCliente;\nconst emailValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(destinatario);\nconst id = q.id_solicitud || c.id_solicitud || null;\nconst pdf = q.pdf_url || null;\nconst faltantes = [];\nif (!id) faltantes.push('id_solicitud');\nif (!pdf) faltantes.push('pdf_url');\nif (!emailValido) faltantes.push('email de destinatario');\nreturn { json: {\n  id_solicitud: id,\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor: q.valor, iva: q.iva, valor_total: q.valor_total,\n  pdf_url: pdf,\n  estado_actual: q.estado || '',\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  email_solicitante: emailSolicitante,\n  email_cliente: emailCliente,\n  email_destinatario: destinatario,\n  cc_destinatario: 'asesor@example.com',\n  datos_completos: faltantes.length === 0,\n  faltantes: faltantes.join(', ')\n} };"
+      },
+      "id": "w5b-consolidar",
+      "name": "Consolidar datos del envío",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-datos",
+              "leftValue": "={{ $json.datos_completos }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "w5b-if-datos",
+      "name": "¿Datos completos?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1104,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pdf_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "w5b-descargar",
+      "name": "Descargar PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        288
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "alwaysOutputData": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Calcula el tamano del PDF para decidir adjunto vs link (limite ~4MB).\n// OJO: n8n guarda el binario en el filesystem ('database') y expone 'bytes' numerico;\n// 'fileSize' puede venir como string humana (\"1 MB\"). El dato fiable es 'bytes'.\nconst b = ($input.item.binary && $input.item.binary.data) || {};\nconst fromBytes = Number(b.bytes) || 0;\nconst fromB64 = (typeof b.data === 'string' && b.data !== 'database') ? Math.floor((b.data.length * 3) / 4) : 0;\nconst tamano = fromBytes || fromB64 || 0;\nconst LIMITE = 4 * 1024 * 1024;\nreturn { json: { ...$json, tamano_bytes: tamano, adjuntar: tamano > 0 && tamano <= LIMITE }, binary: $input.item.binary };"
+      },
+      "id": "w5b-evaluar",
+      "name": "Evaluar adjunto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Arma el email branded CCB con el resumen de la propuesta. Dos variantes: con adjunto y solo link.\n// Importante: los Code nodes no propagan el binario solos -> se pasa explicitamente.\nconst d = $json;\nconst nombre = d.nombre_cliente || 'estimado cliente';\nconst fmt = (n) => Number(n || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });\nconst registros = Number(d.total_registros || 0).toLocaleString('es-CO');\nconst empresa = d.razon_social ? (' para <strong>' + d.razon_social + '</strong>') : '';\nconst link = d.pdf_url || '#';\n\nconst parrafoConAdjunto = '<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta completa (PDF) esta <strong>adjunta a este correo</strong>. Tambien podes verla online haciendo <a href=\"' + link + '\" style=\"color:#004c9e;\">clic aca</a>.</p>';\nconst parrafoSoloLink = '<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">Podes ver y descargar la propuesta completa en el siguiente enlace:</p>'\n  + '<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:20px 0;\"><tr><td align=\"center\">'\n  + '<a href=\"' + link + '\" style=\"display:inline-block;background-color:#009CDE;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:8px;\">Ver propuesta (PDF)</a>'\n  + '</td></tr></table>';\n\nconst resumen = '<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;margin:20px 0;\">'\n  + '<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Resumen de la propuesta</p></td></tr>'\n  + '<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">'\n  + '<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ' + (d.servicio || '-') + '</p>'\n  + '<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Registros:</strong> ' + registros + '</p>'\n  + '<p style=\"font-size:14px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Valor total:</strong> ' + fmt(d.valor_total) + '</p>'\n  + '<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Referencia:</strong> ' + (d.id_solicitud || '-') + '</p>'\n  + '</td></tr></table>';\n\nconst shell = (parrafoDoc) => '<!DOCTYPE html>\\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\\n'\n  + '<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">'\n  + '<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">'\n  + '<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">'\n  + '<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">'\n  + '<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />'\n  + '<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Informacion</p>'\n  + '</td></tr>'\n  + '<tr><td bgcolor=\"#009CDE\" align=\"center\" style=\"padding:11px 32px;\"><p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">Propuesta comercial</p></td></tr>'\n  + '<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">'\n  + '<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">Hola ' + nombre + ',<br><br>Te compartimos la propuesta comercial preparada' + empresa + '.</p>'\n  + resumen + parrafoDoc\n  + '<p style=\"font-size:14px;color:#404e4f;margin:16px 0 0 0;line-height:1.7;\">Quedamos atentos a cualquier consulta sobre esta propuesta.</p>'\n  + '</td></tr>'\n  + '<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\"><p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Camara de Comercio de Barranquilla - Servicios de Informacion. Este mensaje fue generado automaticamente.</p></td></tr>'\n  + '</table></td></tr></table></body></html>';\n\nreturn { json: {\n  ...d,\n  emailBodyConAdjunto: shell(parrafoConAdjunto),\n  emailBodySoloLink: shell(parrafoSoloLink)\n}, binary: $input.item.binary };"
+      },
+      "id": "w5b-preparar-correo",
+      "name": "Preparar correo al cliente",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-adj",
+              "leftValue": "={{ $json.adjuntar }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "w5b-if-adjunto",
+      "name": "¿Adjuntar PDF? (<4MB)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $json.email_destinatario }}",
+        "subject": "={{ 'Propuesta comercial CCB — ' + ($json.razon_social || $json.id_solicitud) }}",
+        "bodyContent": "={{ $json.emailBodyConAdjunto }}",
+        "additionalFields": {
+          "attachments": {
+            "attachments": [
+              {
+                "binaryPropertyName": "data"
+              }
+            ]
+          },
+          "bodyContentType": "html"
+        }
+      },
+      "id": "w5b-enviar-adjunto",
+      "name": "Enviar con adjunto",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        656,
+        160
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "webhookId": "2f9af50e-0e73-4e4d-a3f0-f1622ab99ad4",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $json.email_destinatario }}",
+        "subject": "={{ 'Propuesta comercial CCB — ' + ($json.razon_social || $json.id_solicitud) }}",
+        "bodyContent": "={{ $json.emailBodySoloLink }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "w5b-enviar-link",
+      "name": "Enviar solo link",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        656,
+        416
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "webhookId": "2b87e5b3-fd89-41d9-8d66-115773703231",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Consolidar datos del envío').first().json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "ENVIADA",
+            "fecha_envio": "={{ DateTime.now().toISO() }}",
+            "enviado_a": "={{ $('Consolidar datos del envío').first().json.email_destinatario }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w5b-marcar-enviada",
+      "name": "Marcar ENVIADA - Cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Consolidar datos del envío').first().json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "ENVIADA"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w5b-marcar-enviada-sol",
+      "name": "Marcar ENVIADA - Solicitudes",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'Faltan datos para el envío: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Validación de datos', mensaje_error: mensaje, emailBody } };"
+      },
+      "id": "w5b-prep-err-datos",
+      "name": "Preparar error - Datos incompletos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'No se pudo descargar el PDF: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Descargar PDF', mensaje_error: mensaje, emailBody } };"
+      },
+      "id": "w5b-prep-err-pdf",
+      "name": "Preparar error - Descarga PDF",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'Falló el envío del correo: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Enviar cotización al cliente', mensaje_error: mensaje, emailBody } };"
+      },
+      "id": "w5b-prep-err-envio",
+      "name": "Preparar error - Envío email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Consolidar datos del envío').first().json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "ERROR_ENVIO"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w5b-marcar-error",
+      "name": "Marcar ERROR_ENVIO",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w5b-reg-error",
+      "name": "Registrar error - Envío",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        640
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ '[Propuesta CCB] Error de envío — ' + $json.id_solicitud }}",
+        "bodyContent": "={{ $json.alertHtml }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "w5b-alerta",
+      "name": "Enviar alerta - Envío",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        640
+      ],
+      "webhookId": "2581ddb1-9ac8-4000-9a59-e9a3297f5974",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "### W5-B — Envío al Cliente\n\n- Disparado por W5-A (router cada 15 min) o manualmente con { id_solicitud }.\n- Destinatario: email_solicitante (Criterios) con fallback a email_cliente (Solicitudes).\n- PDF: descargado de pdf_url; si supera 4MB se manda solo link.\n- Exito → ENVIADA + fecha_envio + enviado_a (Cotizaciones) y ENVIADA (Solicitudes) + correo interno a Asesor CCB (asesor@example.com) confirmando el envio (nodo 'Notificar a Asesor CCB - Envio', separado del correo del cliente desde 14/09). Falla → ERROR_ENVIO + Errores_CCB + alerta.",
+        "height": 216,
+        "width": 584
+      },
+      "id": "w5b-nota",
+      "name": "Nota - W5-B",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        272,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -16,
+        -64
+      ],
+      "id": "bac60584-ab19-48d6-b180-071a74af0e72",
+      "name": "Recibir solicitud"
+    },
+    {
+      "id": "dad6e49c-0035-444c-8301-2cb6dbff6e75",
+      "name": "Notificar a Asesor CCB - Envío",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        288
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "toRecipients": "interno-alertas@example.com",
+        "subject": "={{ '[Propuesta CCB] Enviada al cliente — ' + $('Consolidar datos del envío').first().json.id_solicitud }}",
+        "bodyContent": "={{ '<p>La propuesta comercial fue enviada exitosamente al cliente.</p><ul>' + '<li><b>Solicitud:</b> ' + $('Consolidar datos del envío').first().json.id_solicitud + '</li>' + '<li><b>Cliente:</b> ' + ($('Consolidar datos del envío').first().json.nombre_cliente || '(sin nombre)') + '</li>' + '<li><b>Empresa:</b> ' + ($('Consolidar datos del envío').first().json.razon_social || '-') + '</li>' + '<li><b>Servicio:</b> ' + ($('Consolidar datos del envío').first().json.servicio || '-') + '</li>' + '<li><b>Valor total:</b> ' + Number($('Consolidar datos del envío').first().json.valor_total || 0).toLocaleString('es-CO', {style:'currency',currency:'COP',maximumFractionDigits:0}) + '</li>' + '<li><b>Enviado a:</b> ' + $('Consolidar datos del envío').first().json.email_destinatario + '</li>' + '</ul>' }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "webhookId": "dad74ad4-3733-4d26-b660-80d54a0dee83",
+      "notes": "MODO PRUEBA (15/09): redirigido a Adrian para grabación de demo. Restaurar a asesor@example.com antes de producción real."
+    },
+    {
+      "id": "w5b-prep-alerta-consolidada",
+      "name": "Preparar alerta de fallo - Envío",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        800
+      ],
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst origen = datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : email);\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml } };"
+      }
+    }
+  ],
+  "connections": {
+    "Leer cotización": {
+      "main": [
+        [
+          {
+            "node": "Leer criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer criterios": {
+      "main": [
+        [
+          {
+            "node": "Leer solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer solicitud": {
+      "main": [
+        [
+          {
+            "node": "Consolidar datos del envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar datos del envío": {
+      "main": [
+        [
+          {
+            "node": "¿Datos completos?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Datos completos?": {
+      "main": [
+        [
+          {
+            "node": "Descargar PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Datos incompletos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar PDF": {
+      "main": [
+        [
+          {
+            "node": "Evaluar adjunto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Descarga PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluar adjunto": {
+      "main": [
+        [
+          {
+            "node": "Preparar correo al cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar correo al cliente": {
+      "main": [
+        [
+          {
+            "node": "¿Adjuntar PDF? (<4MB)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Adjuntar PDF? (<4MB)": {
+      "main": [
+        [
+          {
+            "node": "Enviar con adjunto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar solo link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar con adjunto": {
+      "main": [
+        [
+          {
+            "node": "Marcar ENVIADA - Cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Envío email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar solo link": {
+      "main": [
+        [
+          {
+            "node": "Marcar ENVIADA - Cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Envío email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar ENVIADA - Cotización": {
+      "main": [
+        [
+          {
+            "node": "Marcar ENVIADA - Solicitudes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notificar a Asesor CCB - Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Datos incompletos": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Descarga PDF": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Envío email": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar error - Envío": {
+      "main": [
+        [
+          {
+            "node": "Marcar ERROR_ENVIO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recibir solicitud": {
+      "main": [
+        [
+          {
+            "node": "Leer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar ERROR_ENVIO": {
+      "main": [
+        [
+          {
+            "node": "Preparar alerta de fallo - Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar alerta de fallo - Envío": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta - Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "errorWorkflow": "Dh2lAQTzyoZBpXie",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+  "activeVersionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+  "versionCounter": 66,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-16T16:24:23.320Z",
+    "createdAt": "2026-09-16T16:24:23.320Z",
+    "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+    "workflowId": "XWBHgbmtBubA4gqx",
+    "nodes": [
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "w5b-leer-cotizacion",
+        "name": "Leer cotización",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          224,
+          -64
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "ldABWugJR1GcFFyy",
+            "mode": "list",
+            "cachedResultName": "Criterios_Cotizacion",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "w5b-leer-criterios",
+        "name": "Leer criterios",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          448,
+          -64
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "w5b-leer-solicitud",
+        "name": "Leer solicitud",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          672,
+          -64
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Junta cotizacion + criterios + solicitud y resuelve el destinatario del envio.\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst emailSolicitante = String(c.email_solicitante || '').trim();\nconst emailCliente = String(s.email_cliente || '').trim();\nconst destinatario = emailSolicitante || emailCliente;\nconst emailValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(destinatario);\nconst id = q.id_solicitud || c.id_solicitud || null;\nconst pdf = q.pdf_url || null;\nconst faltantes = [];\nif (!id) faltantes.push('id_solicitud');\nif (!pdf) faltantes.push('pdf_url');\nif (!emailValido) faltantes.push('email de destinatario');\nreturn { json: {\n  id_solicitud: id,\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor: q.valor, iva: q.iva, valor_total: q.valor_total,\n  pdf_url: pdf,\n  estado_actual: q.estado || '',\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  email_solicitante: emailSolicitante,\n  email_cliente: emailCliente,\n  email_destinatario: destinatario,\n  cc_destinatario: 'asesor@example.com',\n  datos_completos: faltantes.length === 0,\n  faltantes: faltantes.join(', ')\n} };"
+        },
+        "id": "w5b-consolidar",
+        "name": "Consolidar datos del envío",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          -64
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-datos",
+                "leftValue": "={{ $json.datos_completos }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "w5b-if-datos",
+        "name": "¿Datos completos?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1104,
+          -64
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.pdf_url }}",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "file"
+              }
+            }
+          }
+        },
+        "id": "w5b-descargar",
+        "name": "Descargar PDF",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -240,
+          288
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "alwaysOutputData": true,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Calcula el tamano del PDF para decidir adjunto vs link (limite ~4MB).\n// OJO: n8n guarda el binario en el filesystem ('database') y expone 'bytes' numerico;\n// 'fileSize' puede venir como string humana (\"1 MB\"). El dato fiable es 'bytes'.\nconst b = ($input.item.binary && $input.item.binary.data) || {};\nconst fromBytes = Number(b.bytes) || 0;\nconst fromB64 = (typeof b.data === 'string' && b.data !== 'database') ? Math.floor((b.data.length * 3) / 4) : 0;\nconst tamano = fromBytes || fromB64 || 0;\nconst LIMITE = 4 * 1024 * 1024;\nreturn { json: { ...$json, tamano_bytes: tamano, adjuntar: tamano > 0 && tamano <= LIMITE }, binary: $input.item.binary };"
+        },
+        "id": "w5b-evaluar",
+        "name": "Evaluar adjunto",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -16,
+          288
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Arma el email branded CCB con el resumen de la propuesta. Dos variantes: con adjunto y solo link.\n// Importante: los Code nodes no propagan el binario solos -> se pasa explicitamente.\nconst d = $json;\nconst nombre = d.nombre_cliente || 'estimado cliente';\nconst fmt = (n) => Number(n || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });\nconst registros = Number(d.total_registros || 0).toLocaleString('es-CO');\nconst empresa = d.razon_social ? (' para <strong>' + d.razon_social + '</strong>') : '';\nconst link = d.pdf_url || '#';\n\nconst parrafoConAdjunto = '<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta completa (PDF) esta <strong>adjunta a este correo</strong>. Tambien podes verla online haciendo <a href=\"' + link + '\" style=\"color:#004c9e;\">clic aca</a>.</p>';\nconst parrafoSoloLink = '<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">Podes ver y descargar la propuesta completa en el siguiente enlace:</p>'\n  + '<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:20px 0;\"><tr><td align=\"center\">'\n  + '<a href=\"' + link + '\" style=\"display:inline-block;background-color:#009CDE;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:8px;\">Ver propuesta (PDF)</a>'\n  + '</td></tr></table>';\n\nconst resumen = '<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;margin:20px 0;\">'\n  + '<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Resumen de la propuesta</p></td></tr>'\n  + '<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">'\n  + '<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ' + (d.servicio || '-') + '</p>'\n  + '<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Registros:</strong> ' + registros + '</p>'\n  + '<p style=\"font-size:14px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Valor total:</strong> ' + fmt(d.valor_total) + '</p>'\n  + '<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Referencia:</strong> ' + (d.id_solicitud || '-') + '</p>'\n  + '</td></tr></table>';\n\nconst shell = (parrafoDoc) => '<!DOCTYPE html>\\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\\n'\n  + '<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">'\n  + '<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">'\n  + '<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">'\n  + '<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">'\n  + '<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />'\n  + '<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Informacion</p>'\n  + '</td></tr>'\n  + '<tr><td bgcolor=\"#009CDE\" align=\"center\" style=\"padding:11px 32px;\"><p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">Propuesta comercial</p></td></tr>'\n  + '<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">'\n  + '<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">Hola ' + nombre + ',<br><br>Te compartimos la propuesta comercial preparada' + empresa + '.</p>'\n  + resumen + parrafoDoc\n  + '<p style=\"font-size:14px;color:#404e4f;margin:16px 0 0 0;line-height:1.7;\">Quedamos atentos a cualquier consulta sobre esta propuesta.</p>'\n  + '</td></tr>'\n  + '<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\"><p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Camara de Comercio de Barranquilla - Servicios de Informacion. Este mensaje fue generado automaticamente.</p></td></tr>'\n  + '</table></td></tr></table></body></html>';\n\nreturn { json: {\n  ...d,\n  emailBodyConAdjunto: shell(parrafoConAdjunto),\n  emailBodySoloLink: shell(parrafoSoloLink)\n}, binary: $input.item.binary };"
+        },
+        "id": "w5b-preparar-correo",
+        "name": "Preparar correo al cliente",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          208,
+          288
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-adj",
+                "leftValue": "={{ $json.adjuntar }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "w5b-if-adjunto",
+        "name": "¿Adjuntar PDF? (<4MB)",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          416,
+          288
+        ]
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $json.email_destinatario }}",
+          "subject": "={{ 'Propuesta comercial CCB — ' + ($json.razon_social || $json.id_solicitud) }}",
+          "bodyContent": "={{ $json.emailBodyConAdjunto }}",
+          "additionalFields": {
+            "attachments": {
+              "attachments": [
+                {
+                  "binaryPropertyName": "data"
+                }
+              ]
+            },
+            "bodyContentType": "html"
+          }
+        },
+        "id": "w5b-enviar-adjunto",
+        "name": "Enviar con adjunto",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          656,
+          160
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "2f9af50e-0e73-4e4d-a3f0-f1622ab99ad4",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $json.email_destinatario }}",
+          "subject": "={{ 'Propuesta comercial CCB — ' + ($json.razon_social || $json.id_solicitud) }}",
+          "bodyContent": "={{ $json.emailBodySoloLink }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "w5b-enviar-link",
+        "name": "Enviar solo link",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          656,
+          416
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "2b87e5b3-fd89-41d9-8d66-115773703231",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Consolidar datos del envío').first().json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "ENVIADA",
+              "fecha_envio": "={{ DateTime.now().toISO() }}",
+              "enviado_a": "={{ $('Consolidar datos del envío').first().json.email_destinatario }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w5b-marcar-enviada",
+        "name": "Marcar ENVIADA - Cotización",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          896,
+          288
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Consolidar datos del envío').first().json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "ENVIADA"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w5b-marcar-enviada-sol",
+        "name": "Marcar ENVIADA - Solicitudes",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          1120,
+          288
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'Faltan datos para el envío: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Validación de datos', mensaje_error: mensaje, emailBody } };"
+        },
+        "id": "w5b-prep-err-datos",
+        "name": "Preparar error - Datos incompletos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -240,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'No se pudo descargar el PDF: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Descargar PDF', mensaje_error: mensaje, emailBody } };"
+        },
+        "id": "w5b-prep-err-pdf",
+        "name": "Preparar error - Descarga PDF",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -16,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'Falló el envío del correo: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Enviar cotización al cliente', mensaje_error: mensaje, emailBody } };"
+        },
+        "id": "w5b-prep-err-envio",
+        "name": "Preparar error - Envío email",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          656,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Consolidar datos del envío').first().json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "ERROR_ENVIO"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w5b-marcar-error",
+        "name": "Marcar ERROR_ENVIO",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          896,
+          640
+        ]
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w5b-reg-error",
+        "name": "Registrar error - Envío",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          1120,
+          640
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ '[Propuesta CCB] Error de envío — ' + $json.id_solicitud }}",
+          "bodyContent": "={{ $json.alertHtml }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "w5b-alerta",
+        "name": "Enviar alerta - Envío",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          1344,
+          640
+        ],
+        "webhookId": "2581ddb1-9ac8-4000-9a59-e9a3297f5974",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "content": "### W5-B — Envío al Cliente\n\n- Disparado por W5-A (router cada 15 min) o manualmente con { id_solicitud }.\n- Destinatario: email_solicitante (Criterios) con fallback a email_cliente (Solicitudes).\n- PDF: descargado de pdf_url; si supera 4MB se manda solo link.\n- Exito → ENVIADA + fecha_envio + enviado_a (Cotizaciones) y ENVIADA (Solicitudes) + correo interno a Asesor CCB (asesor@example.com) confirmando el envio (nodo 'Notificar a Asesor CCB - Envio', separado del correo del cliente desde 14/09). Falla → ERROR_ENVIO + Errores_CCB + alerta.",
+          "height": 216,
+          "width": 584
+        },
+        "id": "w5b-nota",
+        "name": "Nota - W5-B",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          272,
+          -320
+        ]
+      },
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -16,
+          -64
+        ],
+        "id": "bac60584-ab19-48d6-b180-071a74af0e72",
+        "name": "Recibir solicitud"
+      },
+      {
+        "id": "dad6e49c-0035-444c-8301-2cb6dbff6e75",
+        "name": "Notificar a Asesor CCB - Envío",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          1344,
+          288
+        ],
+        "parameters": {
+          "resource": "message",
+          "operation": "send",
+          "toRecipients": "interno-alertas@example.com",
+          "subject": "={{ '[Propuesta CCB] Enviada al cliente — ' + $('Consolidar datos del envío').first().json.id_solicitud }}",
+          "bodyContent": "={{ '<p>La propuesta comercial fue enviada exitosamente al cliente.</p><ul>' + '<li><b>Solicitud:</b> ' + $('Consolidar datos del envío').first().json.id_solicitud + '</li>' + '<li><b>Cliente:</b> ' + ($('Consolidar datos del envío').first().json.nombre_cliente || '(sin nombre)') + '</li>' + '<li><b>Empresa:</b> ' + ($('Consolidar datos del envío').first().json.razon_social || '-') + '</li>' + '<li><b>Servicio:</b> ' + ($('Consolidar datos del envío').first().json.servicio || '-') + '</li>' + '<li><b>Valor total:</b> ' + Number($('Consolidar datos del envío').first().json.valor_total || 0).toLocaleString('es-CO', {style:'currency',currency:'COP',maximumFractionDigits:0}) + '</li>' + '<li><b>Enviado a:</b> ' + $('Consolidar datos del envío').first().json.email_destinatario + '</li>' + '</ul>' }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput",
+        "webhookId": "dad74ad4-3733-4d26-b660-80d54a0dee83",
+        "notes": "MODO PRUEBA (15/09): redirigido a Adrian para grabación de demo. Restaurar a asesor@example.com antes de producción real."
+      },
+      {
+        "id": "w5b-prep-alerta-consolidada",
+        "name": "Preparar alerta de fallo - Envío",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1120,
+          800
+        ],
+        "parameters": {
+          "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst origen = datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : email);\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml } };"
+        }
+      }
+    ],
+    "connections": {
+      "Leer cotización": {
+        "main": [
+          [
+            {
+              "node": "Leer criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer criterios": {
+        "main": [
+          [
+            {
+              "node": "Leer solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Leer solicitud": {
+        "main": [
+          [
+            {
+              "node": "Consolidar datos del envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consolidar datos del envío": {
+        "main": [
+          [
+            {
+              "node": "¿Datos completos?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Datos completos?": {
+        "main": [
+          [
+            {
+              "node": "Descargar PDF",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Datos incompletos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Descargar PDF": {
+        "main": [
+          [
+            {
+              "node": "Evaluar adjunto",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Descarga PDF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Evaluar adjunto": {
+        "main": [
+          [
+            {
+              "node": "Preparar correo al cliente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar correo al cliente": {
+        "main": [
+          [
+            {
+              "node": "¿Adjuntar PDF? (<4MB)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Adjuntar PDF? (<4MB)": {
+        "main": [
+          [
+            {
+              "node": "Enviar con adjunto",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Enviar solo link",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar con adjunto": {
+        "main": [
+          [
+            {
+              "node": "Marcar ENVIADA - Cotización",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Envío email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar solo link": {
+        "main": [
+          [
+            {
+              "node": "Marcar ENVIADA - Cotización",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Envío email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marcar ENVIADA - Cotización": {
+        "main": [
+          [
+            {
+              "node": "Marcar ENVIADA - Solicitudes",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Notificar a Asesor CCB - Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Datos incompletos": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Descarga PDF": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Envío email": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar error - Envío": {
+        "main": [
+          [
+            {
+              "node": "Marcar ERROR_ENVIO",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Recibir solicitud": {
+        "main": [
+          [
+            {
+              "node": "Leer cotización",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Marcar ERROR_ENVIO": {
+        "main": [
+          [
+            {
+              "node": "Preparar alerta de fallo - Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar alerta de fallo - Envío": {
+        "main": [
+          [
+            {
+              "node": "Enviar alerta - Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-16T16:24:23.370Z",
+        "id": 2358,
+        "workflowId": "XWBHgbmtBubA4gqx",
+        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-16T16:24:23.387Z",
+        "id": 2359,
+        "workflowId": "XWBHgbmtBubA4gqx",
+        "versionId": "92bc860b-97e1-47d1-9e32-3f800fb84990",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

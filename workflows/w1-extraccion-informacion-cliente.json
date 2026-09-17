@@ -1129,5 +1129,1135 @@
   "activeVersionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
   "versionCounter": 419,
   "triggerCount": 1,
-  "tags": []
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-16T16:20:43.313Z",
+    "createdAt": "2026-09-16T16:20:43.313Z",
+    "versionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
+    "workflowId": "w6h0qSblUESIpSVc",
+    "nodes": [
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "everyMinute"
+              }
+            ]
+          },
+          "output": "raw",
+          "filters": {
+            "foldersToInclude": [
+              "<OUTLOOK_FOLDER_ID>"
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.microsoftOutlookTrigger",
+        "typeVersion": 1,
+        "position": [
+          -896,
+          880
+        ],
+        "id": "0fe1ee98-a884-47e0-b0fc-b1ef09f61bd5",
+        "name": "Nuevo correo",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "39266cde-23cb-4fe3-a9bf-8bfb3c8902f9",
+                "leftValue": "={{ $json.email_cliente }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -32,
+          656
+        ],
+        "id": "941f8da6-8160-4802-8f2b-7cfc93a186aa",
+        "name": "¿Tiene el correo del cliente?"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+          },
+          "matchType": "allConditions",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "remitente": "={{ $json.remitente }}",
+              "asunto": "={{ $json.asunto }}",
+              "nombre_cliente": "={{ $json.nombre_cliente }}",
+              "telefono": "={{ $json.telefono }}",
+              "email_cliente": "={{ $json.email_cliente }}",
+              "estado": "=EMAIL_VALIDADO",
+              "observaciones": "={{ $json.observaciones }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "id_solicitud",
+                "displayName": "id_solicitud",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "remitente",
+                "displayName": "remitente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "asunto",
+                "displayName": "asunto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "nombre_cliente",
+                "displayName": "nombre_cliente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "telefono",
+                "displayName": "telefono",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "email_cliente",
+                "displayName": "email_cliente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "estado",
+                "displayName": "estado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "observaciones",
+                "displayName": "observaciones",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          192,
+          432
+        ],
+        "id": "38e38a44-b5d9-41c8-b4bb-fdd38bf3f103",
+        "name": "Crear solicitud (con email)",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+          },
+          "matchType": "allConditions",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "remitente": "={{ $json.remitente }}",
+              "asunto": "={{ $json.asunto }}",
+              "nombre_cliente": "={{ $json.nombre_cliente }}",
+              "telefono": "={{ $json.telefono }}",
+              "email_cliente": "={{ $json.email_cliente }}",
+              "estado": "=PENDIENTE_EMAIL",
+              "observaciones": "={{ $json.observaciones }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "id_solicitud",
+                "displayName": "id_solicitud",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "remitente",
+                "displayName": "remitente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "asunto",
+                "displayName": "asunto",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "nombre_cliente",
+                "displayName": "nombre_cliente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "telefono",
+                "displayName": "telefono",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "email_cliente",
+                "displayName": "email_cliente",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "estado",
+                "displayName": "estado",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "observaciones",
+                "displayName": "observaciones",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          192,
+          880
+        ],
+        "id": "bd2ab68e-4a28-4df7-a865-4ae8cb357322",
+        "name": "Crear solicitud (sin email)",
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const src = $('Consolidar datos de la solicitud').item.json;\nconst nombre = src.nombre_cliente || '(sin nombre)';\nconst telefono = src.telefono || '(sin teléfono)';\nconst remitente = src.remitente || '';\nconst asunto = src.asunto || '';\nconst idSolicitud = src.id_solicitud || '';\nconst linkFormulario = `https://informaciongeorreferenciada-ccb.vercel.app/?id_solicitud=${encodeURIComponent(idSolicitud)}`;\n\nconst cuerpoOriginal = (src.body?.content || '')\n  .replace(/<br\\s*\\/?>/gi, '\\n')\n  .replace(/<[^>]+>/g, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nconst html = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#3482FE\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">📞 Acción requerida - Contactar cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 4px 0;line-height:1.7;\">Llegó una solicitud con nombre y teléfono, pero <strong>sin correo electrónico registrado</strong>.</p>\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">Contactá al cliente por WhatsApp o teléfono y compartile el siguiente enlace para que complete el formulario de solicitud:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 10px 0;\"><tr><td align=\"center\">\n<a href=\"${linkFormulario}\" style=\"display:inline-block;background-color:#3482FE;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:8px;\">Abrir formulario de solicitud →</a>\n</td></tr></table>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\"><tr><td align=\"center\">\n<p style=\"font-size:11px;color:#7a8a94;margin:0;word-break:break-all;\">O copiá este enlace para WhatsApp: ${linkFormulario}</p>\n</td></tr></table>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;margin-bottom:16px;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Datos del cliente</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nombre:</strong> ${nombre}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Teléfono:</strong> ${telefono}</p>\n</td></tr></table>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#EDF1F5\" style=\"padding:9px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#8a99a8;text-transform:uppercase;letter-spacing:2px;margin:0;\">Correo original (referencia)</p></td></tr>\n<tr><td bgcolor=\"#F7F9FB\" style=\"padding:14px 20px;\">\n<p style=\"font-size:11.5px;color:#6b7a86;margin:0 0 5px 0;\"><strong style=\"color:#4a5865;\">Remitente:</strong> ${remitente}</p>\n<p style=\"font-size:11.5px;color:#6b7a86;margin:0 0 9px 0;\"><strong style=\"color:#4a5865;\">Asunto:</strong> ${asunto}</p>\n<p style=\"font-size:11.5px;color:#6b7a86;margin:0;line-height:1.6;\">${cuerpoOriginal}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Este mensaje fue generado automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { ...src, emailBody: html } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          416,
+          784
+        ],
+        "id": "21fdbf0a-aa41-4a58-a19b-6224983c9c1d",
+        "name": "Preparar email para mercadeo"
+      },
+      {
+        "parameters": {
+          "jsCode": "const src = $('Consolidar datos de la solicitud').item.json;\nconst nombre = src.nombre_cliente || '(sin nombre)';\nconst idSolicitud = src.id_solicitud || '';\nconst linkFormulario = `https://informaciongeorreferenciada-ccb.vercel.app/?id_solicitud=${encodeURIComponent(idSolicitud)}`;\n\nconst html = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#3482FE\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">Formulario de solicitud</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">Hola ${nombre},<br><br>Gracias por tu interés en nuestros servicios de información empresarial. Para preparar tu cotización, completá el siguiente formulario con los criterios de tu consulta.</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:24px 0;\"><tr><td align=\"center\">\n<a href=\"${linkFormulario}\" style=\"display:inline-block;background-color:#3482FE;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:700;padding:14px 32px;border-radius:8px;\">Completar formulario</a>\n</td></tr></table>\n<p style=\"font-size:12px;color:#8a99a8;margin:0;\">Referencia de tu solicitud: ${idSolicitud}</p>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Cámara de Comercio de Barranquilla — Servicios de Información. Este mensaje fue generado automáticamente.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { ...src, emailBody: html } };"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          416,
+          336
+        ],
+        "id": "da3c7ba9-def4-4a6e-bed4-116fa792342f",
+        "name": "Preparar correo para el cliente"
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $json.remitente }}",
+          "subject": "Formulario de solicitud - Cotización CCB",
+          "bodyContent": "={{ $json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          624,
+          784
+        ],
+        "id": "20037dbe-bdc1-4eca-a942-c4997aa22f0a",
+        "name": "Enviar notificación a mercadeo",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "1b564a7b-b88e-4b70-9437-04fe814bc92d",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $json.email_cliente }}",
+          "subject": "Formulario de solicitud - Cotización CCB",
+          "bodyContent": "={{ $json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          624,
+          336
+        ],
+        "id": "48569337-156d-4beb-8b46-2597b1cd2e8f",
+        "name": "Enviar notificación al cliente",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "1b564a7b-b88e-4b70-9437-04fe814bc92d",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "model": "openai/gpt-4o-mini",
+          "options": {
+            "responseFormat": "json_object"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          -672,
+          1072
+        ],
+        "id": "04037367-ae34-4e02-acac-1f4d5433d5cd",
+        "name": "OpenRouter Chat Model",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "openRouterApi": {
+            "id": "PPk35IDkMnX3QnnE",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.body.content.replace(/<[^>]+>/g, ' ') }}",
+          "attributes": {
+            "attributes": [
+              {
+                "name": "nombre_cliente",
+                "description": "Nombre completo de la persona que envía la solicitud, mencionado en el cuerpo del correo. El nombre NUNCA incluye palabras como \"Teléfono\", \"Correo\", \"Email\" ni sus valores — esas son etiquetas de otros campos, no parte del nombre. Si no se menciona ningún nombre, devolver una cadena vacía (\"\")."
+              },
+              {
+                "name": "telefono",
+                "description": "Número de teléfono de contacto mencionado en el correo, solo dígitos. Puede aparecer con o sin la palabra \"Teléfono\", a veces junto al nombre. Si no aparece ningún número, devolver una cadena vacía (\"\")."
+              },
+              {
+                "name": "email_cliente",
+                "description": "Correo electrónico del cliente que solicita la cotización, mencionado dentro del cuerpo del correo. Si no aparece ningún correo en el cuerpo, devolver una cadena vacía (\"\"). NUNCA uses el correo del remitente (el campo \"from\" del mensaje) como si fuera el del cliente — son personas distintas."
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+        "typeVersion": 1.2,
+        "position": [
+          -672,
+          880
+        ],
+        "id": "294b00c9-5ebd-4ba4-be18-119b899b6763",
+        "name": "Information Extractor",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "5409c1cb-9755-4baa-962e-aeae11642771",
+                "name": "id_solicitud",
+                "value": "={{ 'SOL-' + $now.setZone('America/Bogota').toFormat('yyyyMMddHHmmss') }}",
+                "type": "string"
+              },
+              {
+                "id": "66172420-8808-4e3e-8c83-679a763b6068",
+                "name": "fecha_recepcion",
+                "value": "={{ DateTime.fromISO($('Nuevo correo').item.json.receivedDateTime).setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+                "type": "string"
+              },
+              {
+                "id": "0f76ee3a-f364-4d48-afb4-b27f0f48c4f3",
+                "name": "remitente",
+                "value": "={{ $('Nuevo correo').item.json.from.emailAddress.address }}",
+                "type": "string"
+              },
+              {
+                "id": "ee8f3f51-e47b-4c37-af2a-06ee25a87857",
+                "name": "asunto",
+                "value": "={{ $('Nuevo correo').item.json.subject }}",
+                "type": "string"
+              },
+              {
+                "id": "f43a60a0-e2e4-40b0-8642-2acb62e58da1",
+                "name": "nombre_cliente",
+                "value": "={{ $json.output.nombre_cliente }}",
+                "type": "string"
+              },
+              {
+                "id": "ef6b63df-5d69-48c6-822d-f2d9f53be4f9",
+                "name": "telefono",
+                "value": "={{ $json.output.telefono }}",
+                "type": "string"
+              },
+              {
+                "id": "33c97ae6-5502-4e2f-a8a0-c166ad96677a",
+                "name": "email_cliente",
+                "value": "={{ $json.output.email_cliente }}",
+                "type": "string"
+              },
+              {
+                "id": "fd2c2f3e-f14e-43a8-8bae-03de6ae0e555",
+                "name": "estado",
+                "value": "EMAIL_VALIDADO",
+                "type": "string"
+              },
+              {
+                "id": "6f5256ed-7cdf-4703-8af1-6979abc4f4f8",
+                "name": "observaciones",
+                "value": "",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -240,
+          656
+        ],
+        "id": "29110928-a25a-42d4-a8fa-1a6fe7a71b8b",
+        "name": "Consolidar datos de la solicitud"
+      },
+      {
+        "parameters": {
+          "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Nuevo correo').item.json.from.emailAddress.address;\n  asunto = $('Nuevo correo').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Information Extractor';\nconst flujo = $workflow.name;\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló la extracción de datos (IA)</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> falló al procesar un correo entrante — esto pasa <strong>antes</strong> de generar el ID de solicitud, así que todavía no hay un registro asociado. Detalles del correo original:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle del error</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -240,
+          1120
+        ],
+        "id": "03b166dc-bf5f-47b6-8087-f5c30945e88f",
+        "name": "Preparar error - Extractor IA"
+      },
+      {
+        "parameters": {
+          "jsCode": "const idSolicitud = $('Consolidar datos de la solicitud').item.json.id_solicitud;\nconst flujo = $workflow.name;\nconst nodoFallido = $json.error?.node?.name || $json.error?.name || 'desconocido';\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Error procesando la solicitud</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">Un nodo del flujo <strong>intake-v2.0</strong> falló al procesar la solicitud <strong>${idSolicitud}</strong> (guardado en Data Table o envío de notificación). Detalles:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle del error</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: idSolicitud,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    emailBody\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          416,
+          1008
+        ],
+        "id": "74521c77-81fd-4590-b47d-583cfe8e0acc",
+        "name": "Preparar error - Solicitud"
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "=intake-v2.0",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "id_solicitud",
+                "displayName": "id_solicitud",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "workflow_origen",
+                "displayName": "workflow_origen",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "nodo_fallido",
+                "displayName": "nodo_fallido",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "mensaje_error",
+                "displayName": "mensaje_error",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          -16,
+          1120
+        ],
+        "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
+        "name": "Registrar error en Data Table"
+      },
+      {
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ '⚠️ Error en flujo de correo de mercadeo - nodo: ' + $json.nodo_fallido }}",
+          "bodyContent": "={{ $json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          176,
+          1120
+        ],
+        "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
+        "name": "Enviar alerta de error",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "38042881-80be-44f9-9edc-84328979fb23",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const idSolicitud = $('Consolidar datos de la solicitud').item.json.id_solicitud;\nconst flujo = $workflow.name;\nconst nodoFallido = $json.error?.node?.name || $json.error?.name || 'desconocido';\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Error procesando la solicitud</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">Un nodo del flujo <strong>intake-v2.0</strong> falló al procesar la solicitud <strong>${idSolicitud}</strong> (guardado en Data Table o envío de notificación). Detalles:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle del error</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: idSolicitud,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    emailBody\n  }\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          416,
+          544
+        ],
+        "id": "c90cc077-2d79-4f36-bac0-9257320ce2a1",
+        "name": "Preparar error - Solicitud1"
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "=intake-v2.0",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "id_solicitud",
+                "displayName": "id_solicitud",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "workflow_origen",
+                "displayName": "workflow_origen",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "nodo_fallido",
+                "displayName": "nodo_fallido",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "mensaje_error",
+                "displayName": "mensaje_error",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          624,
+          1008
+        ],
+        "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
+        "name": "Registrar error en Data Table1"
+      },
+      {
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ '⚠️ Error en flujo de correo de mercadeo - nodo: ' + $json.nodo_fallido }}",
+          "bodyContent": "={{ $json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          816,
+          1008
+        ],
+        "id": "fb16513e-41dd-4c96-8fa8-2806727e5521",
+        "name": "Enviar alerta de error1",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "38042881-80be-44f9-9edc-84328979fb23",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "=intake-v2.0",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "id_solicitud",
+                "displayName": "id_solicitud",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "workflow_origen",
+                "displayName": "workflow_origen",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "nodo_fallido",
+                "displayName": "nodo_fallido",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "mensaje_error",
+                "displayName": "mensaje_error",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          624,
+          544
+        ],
+        "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
+        "name": "Registrar error en Data Table2"
+      },
+      {
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ '⚠️ Error en flujo de correo de mercadeo - nodo: ' + $json.nodo_fallido }}",
+          "bodyContent": "={{ $json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          816,
+          544
+        ],
+        "id": "1230166e-e6d9-4064-bc65-cf517b434f67",
+        "name": "Enviar alerta de error2",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "38042881-80be-44f9-9edc-84328979fb23",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## W1 — Extracción de información del cliente\nEntrada: cualquier correo (de mercadeo o directo de un cliente) que una regla nativa de Outlook mueve a la carpeta 'Solicitudes CCB' por palabras clave en el asunto (ya no se filtra por remitente en n8n). El **Information Extractor** (IA) saca nombre/teléfono/email del cuerpo del correo.\n\nSi no hay email de contacto, se le pide al asesor conseguirlo por teléfono y responder el correo (rama 'sin email') — el ID de solicitud viaja en la referencia [REF:...] del asunto.\n\n**Salida:** registro en Solicitudes_CCB (Data Table) + notificación al cliente o a mercadeo.\n**Errores:** 2 ramas ad-hoc por nodo (Preparar error → Data Table → alerta), además del errorWorkflow centralizado ya asignado como red de respaldo (catch-all).",
+          "height": 260,
+          "width": 580,
+          "color": 4
+        },
+        "id": "d9a1efcf-5c90-4312-9b30-abfd1b5a3e8d",
+        "name": "Nota - W1 Extracción",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -928,
+          320
+        ]
+      }
+    ],
+    "connections": {
+      "¿Tiene el correo del cliente?": {
+        "main": [
+          [
+            {
+              "node": "Crear solicitud (con email)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Crear solicitud (sin email)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Crear solicitud (sin email)": {
+        "main": [
+          [
+            {
+              "node": "Preparar email para mercadeo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Crear solicitud (con email)": {
+        "main": [
+          [
+            {
+              "node": "Preparar correo para el cliente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Solicitud1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar correo para el cliente": {
+        "main": [
+          [
+            {
+              "node": "Enviar notificación al cliente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar email para mercadeo": {
+        "main": [
+          [
+            {
+              "node": "Enviar notificación a mercadeo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenRouter Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Information Extractor",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Information Extractor": {
+        "main": [
+          [
+            {
+              "node": "Consolidar datos de la solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Extractor IA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consolidar datos de la solicitud": {
+        "main": [
+          [
+            {
+              "node": "¿Tiene el correo del cliente?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar notificación a mercadeo": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Preparar error - Solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Enviar notificación al cliente": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Preparar error - Solicitud1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Extractor IA": {
+        "main": [
+          [
+            {
+              "node": "Registrar error en Data Table",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Enviar alerta de error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Solicitud": {
+        "main": [
+          [
+            {
+              "node": "Registrar error en Data Table1",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Enviar alerta de error1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Solicitud1": {
+        "main": [
+          [
+            {
+              "node": "Registrar error en Data Table2",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Enviar alerta de error2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Nuevo correo": {
+        "main": [
+          [
+            {
+              "node": "Information Extractor",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-16T16:20:43.364Z",
+        "id": 2350,
+        "workflowId": "w6h0qSblUESIpSVc",
+        "versionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-16T16:20:43.497Z",
+        "id": 2351,
+        "workflowId": "w6h0qSblUESIpSVc",
+        "versionId": "4ca55461-e506-4f13-aea2-ce14275e629e",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
 }

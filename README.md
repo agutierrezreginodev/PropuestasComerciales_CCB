@@ -15,9 +15,16 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 | `VChcasvisGKekezR` | CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio | [`workflows/w2a-guardar-criterios-cotizar-servicio.json`](workflows/w2a-guardar-criterios-cotizar-servicio.json) |
 | `lIcdT6nGd0w1G2i0` | CCB - Workflow 2 - Formulario de Solicitud *(formulario viejo, multi-página — sigue en producción para Zonificación, Ubicación e Información en Línea; Información Georreferenciada usa el formulario nuevo vía W2C)* | [`workflows/w2-formulario-solicitud.json`](workflows/w2-formulario-solicitud.json) |
 | `cHOIOEFB5nbltN82` | CCB - Workflow 3 - Motor Criterios y Precio | [`workflows/w3-motor-criterios-precio.json`](workflows/w3-motor-criterios-precio.json) |
+| `7gmpPMBJtEb0W3J5` | CCB - Workflow 4A - Router de Aprobación | [`workflows/w4a-router-aprobacion.json`](workflows/w4a-router-aprobacion.json) |
+| `5RJdnHDQ8NuWZJG7` | CCB - Workflow 4B - Aprobación de Propuesta (Teams) | [`workflows/w4b-aprobacion-propuesta-teams.json`](workflows/w4b-aprobacion-propuesta-teams.json) |
+| `KuLSIzBZgaRIjuSu` | CCB - Workflow 4C - Consultar Propuesta para Revisión | [`workflows/w4c-consultar-propuesta-revision.json`](workflows/w4c-consultar-propuesta-revision.json) |
+| `W0TDH4b0tHCNOzFQ` | CCB - Workflow 4D - Procesar Decisión de Propuesta | [`workflows/w4d-procesar-decision-propuesta.json`](workflows/w4d-procesar-decision-propuesta.json) |
+| `gvIn6mbAn2Y1bMRR` | CCB - Workflow 5A - Router de Envío | [`workflows/w5a-router-envio.json`](workflows/w5a-router-envio.json) |
+| `XWBHgbmtBubA4gqx` | CCB - Workflow 5B - Envío al Cliente | [`workflows/w5b-envio-al-cliente.json`](workflows/w5b-envio-al-cliente.json) |
+| `mPwl4qUb0zQkmDHN` | CCB - Workflow 6 - Finalizador de Cotizaciones | [`workflows/w6-finalizador-cotizaciones.json`](workflows/w6-finalizador-cotizaciones.json) |
 | `Dh2lAQTzyoZBpXie` | CCB - Error Workflow (catch-all) | [`workflows/error-workflow-catchall.json`](workflows/error-workflow-catchall.json) |
 
-**Pendiente de agregar a este snapshot** (existen y están activos en producción, todavía no exportados a este repo): W4-A (Router de Aprobación), W4-B (Aprobación de Propuesta / Teams), W4-C (Consultar Propuesta), W4-D (Procesar Decisión de Propuesta), W5-A (Router de Envío), W5-B (Envío al Cliente), W6 (Finalizador de Cotizaciones).
+El snapshot está **completo**: los 12 workflows del pipeline definitivo más el Error Workflow catch-all. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
 
 ## Pipeline completo — Información Georreferenciada
 
@@ -48,6 +55,15 @@ Se corrió el recorrido completo en vivo contra la instancia real de n8n y datos
 
 Todo el detalle de casos de prueba (matriz completa de cobertura, evidencia de cada ejecución) se mantiene en la documentación operativa interna del proyecto, fuera de este repositorio público.
 
+## Auditoría de buenas prácticas
+
+Los 12 workflows se evaluaron contra el marco *Arquitectura e Ingeniería de Automatización en n8n* (rúbrica ponderada de 6 dimensiones sobre 100 puntos y lista de comprobación de 11 requisitos de despliegue).
+
+- **[Informe de auditoría (2026-09-16)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-16.md)** — procedimiento reproducible paso a paso, resultado consolidado, desglose por dimensión y ficha por flujo con lo que cumple, lo que no y sus pendientes.
+- **[Plan de remediación](docs/PLAN_REMEDIACION.md)** — las 8 fases para pasar de 53,6 a ≥90/100, con ganancia estimada, esfuerzo y dependencias externas.
+
+Resultado: promedio **53,6/100**, ningún flujo sobre el umbral de 90. Tres flujos en clasificación *Crítico* y nueve en *Requiere refactorización*. Los hallazgos son sistemáticos (autenticación de endpoints, validación de entradas, documentación, configuración centralizada), no defectos aislados. Ningún workflow fue modificado durante la auditoría.
+
 ## Anonimización
 
 Este repositorio es **público**. Antes de subir los JSON se reemplazaron textualmente los siguientes valores internos/sensibles por placeholders genéricos. La lógica de negocio, nombres de nodos, expresiones, fórmulas de precio y estructura de conexiones **no se modificaron**.
@@ -63,13 +79,26 @@ Este repositorio es **público**. Antes de subir los JSON se reemplazaron textua
 | Identificador de archivo (workbook) de Excel/SharePoint | Nodo de lectura de la base de empresas (Workflow 3) | `<EXCEL_WORKBOOK_ID>` |
 | Identificador de hoja (worksheet) de Excel/SharePoint | Nodo de lectura de la base de empresas (Workflow 3) | `<EXCEL_WORKSHEET_ID>` |
 | URL de SharePoint con sitio personal, ruta interna e identificador del documento | Nodo de lectura de la base de empresas (Workflow 3) | `https://<EXCEL_SITE_ID>/<EXCEL_WORKBOOK_ID>` (y variante con `/<EXCEL_WORKSHEET_ID>`) |
+| Nombre de pila del asesor comercial, suelto (sin apellidos) | Nombres de nodo y sticky notes de varios flujos | `Asesor CCB` |
+| Identificador de chat de Microsoft Teams (`<n>:<hash>@unq.gbl.spaces`) | Nodos de envío a Teams (Workflows 4B y 4D) | `<TEAMS_CHAT_ID>` |
+| Identificador de carpeta/mensaje de Outlook (cadena que empieza con `AAMk`) | Filtro `foldersToInclude` del trigger de correo (Workflow 1) | `<OUTLOOK_FOLDER_ID>` |
+
+Las tres últimas filas se agregaron el 2026-09-16: el proceso anterior no las cubría porque esos identificadores solo aparecen en los flujos incorporados en esa fecha.
 
 Además, el bloque `shared` que n8n incluye en cada export (metadata de propiedad del workflow: nombre y correo del propietario, ID de proyecto, ID de creador) se **elimina por completo** de cada archivo antes de commitear — no aporta nada para auditar la lógica del flujo y expone datos personales innecesariamente.
 
-**Qué NO se anonimizó (a propósito):** IDs de workflow, IDs de Data Table, ID del proyecto de n8n, IDs y nombres de credenciales. Son identificadores internos de n8n, no secretos explotables por sí solos, y modificarlos habría roto el valor del snapshot como respaldo fiel de lo que corre en producción.
+**Qué NO se anonimizó (a propósito):** IDs de workflow, IDs de Data Table, ID del proyecto de n8n, IDs y nombres de credenciales. Son identificadores internos de n8n, no secretos explotables por sí solos, y modificarlos habría roto el valor del snapshot como respaldo fiel de lo que corre en producción. Tampoco se tocó la columna `comentario_fausto` de una Data Table: es un nombre de campo del esquema de datos, y renombrarlo en el snapshot lo dejaría inconsistente con la base real.
 
-**Mantenimiento:** cualquier cambio relevante que se haga a estos workflows directamente en n8n debería re-exportarse (`n8n_get_workflow` en modo `full`, quitar el bloque `shared`, aplicar los mismos reemplazos de esta tabla, y commitear el JSON actualizado acá) para que este repositorio no quede desactualizado como respaldo.
+**Mantenimiento:** el proceso está automatizado en [`scripts/export_workflows.py`](scripts/export_workflows.py). Exporta los 13 flujos desde la instancia, elimina el bloque `shared`, aplica exactamente la tabla de reemplazos de arriba y **termina con código de error si sobrevive algún correo fuera de los dominios de reemplazo**, para que una fuga no pueda colarse en un commit sin que nadie lo note.
+
+```bash
+N8N_API_URL="https://<instancia>" N8N_API_KEY="<clave>" python3 scripts/export_workflows.py
+```
+
+Las credenciales se leen solo del entorno: nunca se escriben en disco ni se imprimen. Conviene correrlo después de cualquier cambio relevante en n8n, y siempre al cerrar una fase del plan de remediación.
 
 **Historial reescrito (16/09/2026):** se detectó que el correo interno (ahora `interno-alertas@example.com`) y el nombre del propietario del proyecto quedaron expuestos en texto plano en los commits anteriores (dentro del bloque `shared`, no cubierto por la tabla de anonimización original). Se reescribió el historial de este repositorio para purgar esa exposición de todos los commits, no solo del estado actual.
 
-**Última actualización:** 2026-09-16 — se re-exportaron Workflow 1 (fixes de extracción por IA y filtro de correo), Workflow 3 (mapeos de organización jurídica y ubicación geográfica, corrección de género en "todos"), Error Workflow catch-all (campo de tipo de error agregado), y el formulario legacy (Workflow 2); se agregaron los workflows nuevos del formulario de Información Georreferenciada (Workflow 2C y Workflow 2A); y se corrigió la exposición de datos personales descrita arriba.
+**Última actualización:** 2026-09-16 (tarde) — se completó el snapshot con los 7 workflows que faltaban (4A, 4B, 4C, 4D, 5A, 5B y 6), se re-exportaron los 6 existentes desde el estado vivo, se automatizó el proceso en `scripts/export_workflows.py`, se amplió la tabla de anonimización con tres identificadores nuevos, y se publicó la auditoría de buenas prácticas de los 12 flujos junto con su plan de remediación.
+
+**Actualización previa:** 2026-09-16 (mañana) — se re-exportaron Workflow 1 (fixes de extracción por IA y filtro de correo), Workflow 3 (mapeos de organización jurídica y ubicación geográfica, corrección de género en "todos"), Error Workflow catch-all (campo de tipo de error agregado), y el formulario legacy (Workflow 2); se agregaron los workflows nuevos del formulario de Información Georreferenciada (Workflow 2C y Workflow 2A); y se corrigió la exposición de datos personales descrita arriba.
