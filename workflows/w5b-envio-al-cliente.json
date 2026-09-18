@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T19:45:20.865Z",
+  "updatedAt": "2026-09-18T18:20:55.120Z",
   "createdAt": "2026-09-11T18:19:42.906Z",
   "id": "XWBHgbmtBubA4gqx",
   "name": "[SUB] CCB - Workflow 5B - Envío al Cliente",
@@ -28,7 +28,7 @@
         "limit": 1
       },
       "id": "w5b-leer-cotizacion",
-      "name": "Leer cotización",
+      "name": "Data Table - Leer cotización",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -58,7 +58,7 @@
         "limit": 1
       },
       "id": "w5b-leer-criterios",
-      "name": "Leer criterios",
+      "name": "Data Table - Leer criterios",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -88,7 +88,7 @@
         "limit": 1
       },
       "id": "w5b-leer-solicitud",
-      "name": "Leer solicitud",
+      "name": "Data Table - Leer solicitud",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -100,7 +100,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Junta cotizacion + criterios + solicitud y resuelve el destinatario del envio.\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst emailSolicitante = String(c.email_solicitante || '').trim();\nconst emailCliente = String(s.email_cliente || '').trim();\nconst destinatario = emailSolicitante || emailCliente;\nconst emailValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(destinatario);\nconst id = q.id_solicitud || c.id_solicitud || null;\nconst pdf = q.pdf_url || null;\nconst faltantes = [];\nif (!id) faltantes.push('id_solicitud');\nif (!pdf) faltantes.push('pdf_url');\nif (!emailValido) faltantes.push('email de destinatario');\nreturn { json: {\n  id_solicitud: id,\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor: q.valor, iva: q.iva, valor_total: q.valor_total,\n  pdf_url: pdf,\n  estado_actual: q.estado || '',\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  email_solicitante: emailSolicitante,\n  email_cliente: emailCliente,\n  email_destinatario: destinatario,\n  cc_destinatario: 'asesor@example.com',\n  datos_completos: faltantes.length === 0,\n  faltantes: faltantes.join(', ')\n} };"
+        "jsCode": "// Junta cotizacion + criterios + solicitud y resuelve el destinatario del envio.\nconst q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst emailSolicitante = String(c.email_solicitante || '').trim();\nconst emailCliente = String(s.email_cliente || '').trim();\nconst destinatario = emailSolicitante || emailCliente;\nconst emailValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(destinatario);\nconst id = q.id_solicitud || c.id_solicitud || null;\nconst pdf = q.pdf_url || null;\nconst faltantes = [];\nif (!id) faltantes.push('id_solicitud');\nif (!pdf) faltantes.push('pdf_url');\nif (!emailValido) faltantes.push('email de destinatario');\nreturn { json: {\n  id_solicitud: id,\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor: q.valor, iva: q.iva, valor_total: q.valor_total,\n  pdf_url: pdf,\n  estado_actual: q.estado || '',\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  email_solicitante: emailSolicitante,\n  email_cliente: emailCliente,\n  email_destinatario: destinatario,\n  cc_destinatario: 'asesor@example.com',\n  datos_completos: faltantes.length === 0,\n  faltantes: faltantes.join(', ')\n} };"
       },
       "id": "w5b-consolidar",
       "name": "Consolidar datos del envío",
@@ -157,12 +157,12 @@
         }
       },
       "id": "w5b-descargar",
-      "name": "Descargar PDF",
+      "name": "HTTP - Descargar PDF",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
         -240,
-        288
+        304
       ],
       "retryOnFail": true,
       "maxTries": 3,
@@ -202,10 +202,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
+            "caseSensitive": true,
+            "typeValidation": "strict"
           },
           "combinator": "and",
           "conditions": [
@@ -224,7 +224,7 @@
         "options": {}
       },
       "id": "w5b-if-adjunto",
-      "name": "¿Adjuntar PDF? (<4MB)",
+      "name": "IF - ¿Adjuntar PDF? (<4MB)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
@@ -249,7 +249,7 @@
         }
       },
       "id": "w5b-enviar-adjunto",
-      "name": "Enviar con adjunto",
+      "name": "Outlook - Enviar con adjunto",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
@@ -278,7 +278,7 @@
         }
       },
       "id": "w5b-enviar-link",
-      "name": "Enviar solo link",
+      "name": "Outlook - Enviar solo link",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
@@ -327,7 +327,7 @@
         "options": {}
       },
       "id": "w5b-marcar-enviada",
-      "name": "Marcar ENVIADA - Cotización",
+      "name": "Data Table - Marcar ENVIADA (Cotización)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -363,7 +363,7 @@
         "options": {}
       },
       "id": "w5b-marcar-enviada-sol",
-      "name": "Marcar ENVIADA - Solicitudes",
+      "name": "Data Table - Marcar ENVIADA (Solicitudes)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -388,7 +388,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'No se pudo descargar el PDF: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Descargar PDF', mensaje_error: mensaje, emailBody } };"
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'No se pudo descargar el PDF: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'HTTP - Descargar PDF', mensaje_error: mensaje, emailBody } };"
       },
       "id": "w5b-prep-err-pdf",
       "name": "Preparar error - Descarga PDF",
@@ -441,7 +441,7 @@
         "options": {}
       },
       "id": "w5b-marcar-error",
-      "name": "Marcar ERROR_ENVIO",
+      "name": "Data Table - Marcar ERROR_ENVIO",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -472,7 +472,7 @@
         "options": {}
       },
       "id": "w5b-reg-error",
-      "name": "Registrar error - Envío",
+      "name": "Data Table - Registrar error (Envío)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -491,7 +491,7 @@
         }
       },
       "id": "w5b-alerta",
-      "name": "Enviar alerta - Envío",
+      "name": "Outlook - Enviar alerta (Envío)",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
@@ -530,7 +530,7 @@
       "typeVersion": 1.1,
       "position": [
         -144,
-        -48
+        -64
       ],
       "id": "bac60584-ab19-48d6-b180-071a74af0e72",
       "name": "Recibir solicitud"
@@ -606,7 +606,7 @@
       "typeVersion": 2.3,
       "position": [
         32,
-        -48
+        -64
       ]
     },
     {
@@ -625,29 +625,29 @@
     }
   ],
   "connections": {
-    "Leer cotización": {
+    "Data Table - Leer cotización": {
       "main": [
         [
           {
-            "node": "Leer criterios",
+            "node": "Data Table - Leer criterios",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer criterios": {
+    "Data Table - Leer criterios": {
       "main": [
         [
           {
-            "node": "Leer solicitud",
+            "node": "Data Table - Leer solicitud",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer solicitud": {
+    "Data Table - Leer solicitud": {
       "main": [
         [
           {
@@ -673,7 +673,7 @@
       "main": [
         [
           {
-            "node": "Descargar PDF",
+            "node": "HTTP - Descargar PDF",
             "type": "main",
             "index": 0
           }
@@ -687,7 +687,7 @@
         ]
       ]
     },
-    "Descargar PDF": {
+    "HTTP - Descargar PDF": {
       "main": [
         [
           {
@@ -720,54 +720,36 @@
       "main": [
         [
           {
-            "node": "¿Adjuntar PDF? (<4MB)",
+            "node": "IF - ¿Adjuntar PDF? (<4MB)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "¿Adjuntar PDF? (<4MB)": {
+    "IF - ¿Adjuntar PDF? (<4MB)": {
       "main": [
         [
           {
-            "node": "Enviar con adjunto",
+            "node": "Outlook - Enviar con adjunto",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Enviar solo link",
+            "node": "Outlook - Enviar solo link",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Enviar con adjunto": {
+    "Outlook - Enviar con adjunto": {
       "main": [
         [
           {
-            "node": "Marcar ENVIADA - Cotización",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Preparar error - Envío email",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enviar solo link": {
-      "main": [
-        [
-          {
-            "node": "Marcar ENVIADA - Cotización",
+            "node": "Data Table - Marcar ENVIADA (Cotización)",
             "type": "main",
             "index": 0
           }
@@ -781,11 +763,29 @@
         ]
       ]
     },
-    "Marcar ENVIADA - Cotización": {
+    "Outlook - Enviar solo link": {
       "main": [
         [
           {
-            "node": "Marcar ENVIADA - Solicitudes",
+            "node": "Data Table - Marcar ENVIADA (Cotización)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Envío email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Marcar ENVIADA (Cotización)": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Marcar ENVIADA (Solicitudes)",
             "type": "main",
             "index": 0
           },
@@ -801,7 +801,7 @@
       "main": [
         [
           {
-            "node": "Registrar error - Envío",
+            "node": "Data Table - Registrar error (Envío)",
             "type": "main",
             "index": 0
           }
@@ -812,7 +812,7 @@
       "main": [
         [
           {
-            "node": "Registrar error - Envío",
+            "node": "Data Table - Registrar error (Envío)",
             "type": "main",
             "index": 0
           }
@@ -823,25 +823,25 @@
       "main": [
         [
           {
-            "node": "Registrar error - Envío",
+            "node": "Data Table - Registrar error (Envío)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - Envío": {
+    "Data Table - Registrar error (Envío)": {
       "main": [
         [
           {
-            "node": "Marcar ERROR_ENVIO",
+            "node": "Data Table - Marcar ERROR_ENVIO",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Marcar ERROR_ENVIO": {
+    "Data Table - Marcar ERROR_ENVIO": {
       "main": [
         [
           {
@@ -856,7 +856,7 @@
       "main": [
         [
           {
-            "node": "Enviar alerta - Envío",
+            "node": "Outlook - Enviar alerta (Envío)",
             "type": "main",
             "index": 0
           }
@@ -878,7 +878,7 @@
       "main": [
         [
           {
-            "node": "Leer cotización",
+            "node": "Data Table - Leer cotización",
             "type": "main",
             "index": 0
           }
@@ -896,7 +896,7 @@
       "main": [
         [
           {
-            "node": "Registrar error - Envío",
+            "node": "Data Table - Registrar error (Envío)",
             "type": "main",
             "index": 0
           }
@@ -916,15 +916,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "21054b27-7d1f-4968-a4cb-c15619834243",
-  "activeVersionId": "21054b27-7d1f-4968-a4cb-c15619834243",
-  "versionCounter": 95,
+  "versionId": "791dd452-7fd9-471f-8537-d5cc09e97985",
+  "activeVersionId": "791dd452-7fd9-471f-8537-d5cc09e97985",
+  "versionCounter": 120,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T19:45:20.866Z",
-    "createdAt": "2026-09-17T19:45:20.866Z",
-    "versionId": "21054b27-7d1f-4968-a4cb-c15619834243",
+    "updatedAt": "2026-09-18T18:20:55.121Z",
+    "createdAt": "2026-09-18T18:20:55.121Z",
+    "versionId": "791dd452-7fd9-471f-8537-d5cc09e97985",
     "workflowId": "XWBHgbmtBubA4gqx",
     "nodes": [
       {
@@ -948,7 +948,7 @@
           "limit": 1
         },
         "id": "w5b-leer-cotizacion",
-        "name": "Leer cotización",
+        "name": "Data Table - Leer cotización",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -978,7 +978,7 @@
           "limit": 1
         },
         "id": "w5b-leer-criterios",
-        "name": "Leer criterios",
+        "name": "Data Table - Leer criterios",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1008,7 +1008,7 @@
           "limit": 1
         },
         "id": "w5b-leer-solicitud",
-        "name": "Leer solicitud",
+        "name": "Data Table - Leer solicitud",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1020,7 +1020,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// Junta cotizacion + criterios + solicitud y resuelve el destinatario del envio.\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst emailSolicitante = String(c.email_solicitante || '').trim();\nconst emailCliente = String(s.email_cliente || '').trim();\nconst destinatario = emailSolicitante || emailCliente;\nconst emailValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(destinatario);\nconst id = q.id_solicitud || c.id_solicitud || null;\nconst pdf = q.pdf_url || null;\nconst faltantes = [];\nif (!id) faltantes.push('id_solicitud');\nif (!pdf) faltantes.push('pdf_url');\nif (!emailValido) faltantes.push('email de destinatario');\nreturn { json: {\n  id_solicitud: id,\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor: q.valor, iva: q.iva, valor_total: q.valor_total,\n  pdf_url: pdf,\n  estado_actual: q.estado || '',\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  email_solicitante: emailSolicitante,\n  email_cliente: emailCliente,\n  email_destinatario: destinatario,\n  cc_destinatario: 'asesor@example.com',\n  datos_completos: faltantes.length === 0,\n  faltantes: faltantes.join(', ')\n} };"
+          "jsCode": "// Junta cotizacion + criterios + solicitud y resuelve el destinatario del envio.\nconst q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst emailSolicitante = String(c.email_solicitante || '').trim();\nconst emailCliente = String(s.email_cliente || '').trim();\nconst destinatario = emailSolicitante || emailCliente;\nconst emailValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(destinatario);\nconst id = q.id_solicitud || c.id_solicitud || null;\nconst pdf = q.pdf_url || null;\nconst faltantes = [];\nif (!id) faltantes.push('id_solicitud');\nif (!pdf) faltantes.push('pdf_url');\nif (!emailValido) faltantes.push('email de destinatario');\nreturn { json: {\n  id_solicitud: id,\n  servicio: q.servicio || c.servicio || '',\n  total_registros: q.total_registros,\n  valor: q.valor, iva: q.iva, valor_total: q.valor_total,\n  pdf_url: pdf,\n  estado_actual: q.estado || '',\n  nombre_cliente: s.nombre_cliente || c.nombre_solicitante || '',\n  razon_social: c.razon_social || '',\n  email_solicitante: emailSolicitante,\n  email_cliente: emailCliente,\n  email_destinatario: destinatario,\n  cc_destinatario: 'asesor@example.com',\n  datos_completos: faltantes.length === 0,\n  faltantes: faltantes.join(', ')\n} };"
         },
         "id": "w5b-consolidar",
         "name": "Consolidar datos del envío",
@@ -1077,12 +1077,12 @@
           }
         },
         "id": "w5b-descargar",
-        "name": "Descargar PDF",
+        "name": "HTTP - Descargar PDF",
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
           -240,
-          288
+          304
         ],
         "retryOnFail": true,
         "maxTries": 3,
@@ -1122,10 +1122,10 @@
         "parameters": {
           "conditions": {
             "options": {
-              "caseSensitive": true,
+              "version": 2,
               "leftValue": "",
-              "typeValidation": "strict",
-              "version": 2
+              "caseSensitive": true,
+              "typeValidation": "strict"
             },
             "combinator": "and",
             "conditions": [
@@ -1144,7 +1144,7 @@
           "options": {}
         },
         "id": "w5b-if-adjunto",
-        "name": "¿Adjuntar PDF? (<4MB)",
+        "name": "IF - ¿Adjuntar PDF? (<4MB)",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.2,
         "position": [
@@ -1169,7 +1169,7 @@
           }
         },
         "id": "w5b-enviar-adjunto",
-        "name": "Enviar con adjunto",
+        "name": "Outlook - Enviar con adjunto",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
@@ -1198,7 +1198,7 @@
           }
         },
         "id": "w5b-enviar-link",
-        "name": "Enviar solo link",
+        "name": "Outlook - Enviar solo link",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
@@ -1247,7 +1247,7 @@
           "options": {}
         },
         "id": "w5b-marcar-enviada",
-        "name": "Marcar ENVIADA - Cotización",
+        "name": "Data Table - Marcar ENVIADA (Cotización)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1283,7 +1283,7 @@
           "options": {}
         },
         "id": "w5b-marcar-enviada-sol",
-        "name": "Marcar ENVIADA - Solicitudes",
+        "name": "Data Table - Marcar ENVIADA (Solicitudes)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1308,7 +1308,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'No se pudo descargar el PDF: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Descargar PDF', mensaje_error: mensaje, emailBody } };"
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || j.faltantes || 'Error desconocido';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'No se pudo descargar el PDF: ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'HTTP - Descargar PDF', mensaje_error: mensaje, emailBody } };"
         },
         "id": "w5b-prep-err-pdf",
         "name": "Preparar error - Descarga PDF",
@@ -1361,7 +1361,7 @@
           "options": {}
         },
         "id": "w5b-marcar-error",
-        "name": "Marcar ERROR_ENVIO",
+        "name": "Data Table - Marcar ERROR_ENVIO",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1392,7 +1392,7 @@
           "options": {}
         },
         "id": "w5b-reg-error",
-        "name": "Registrar error - Envío",
+        "name": "Data Table - Registrar error (Envío)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1411,7 +1411,7 @@
           }
         },
         "id": "w5b-alerta",
-        "name": "Enviar alerta - Envío",
+        "name": "Outlook - Enviar alerta (Envío)",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
@@ -1450,7 +1450,7 @@
         "typeVersion": 1.1,
         "position": [
           -144,
-          -48
+          -64
         ],
         "id": "bac60584-ab19-48d6-b180-071a74af0e72",
         "name": "Recibir solicitud"
@@ -1526,7 +1526,7 @@
         "typeVersion": 2.3,
         "position": [
           32,
-          -48
+          -64
         ]
       },
       {
@@ -1545,29 +1545,29 @@
       }
     ],
     "connections": {
-      "Leer cotización": {
+      "Data Table - Leer cotización": {
         "main": [
           [
             {
-              "node": "Leer criterios",
+              "node": "Data Table - Leer criterios",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer criterios": {
+      "Data Table - Leer criterios": {
         "main": [
           [
             {
-              "node": "Leer solicitud",
+              "node": "Data Table - Leer solicitud",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer solicitud": {
+      "Data Table - Leer solicitud": {
         "main": [
           [
             {
@@ -1593,7 +1593,7 @@
         "main": [
           [
             {
-              "node": "Descargar PDF",
+              "node": "HTTP - Descargar PDF",
               "type": "main",
               "index": 0
             }
@@ -1607,7 +1607,7 @@
           ]
         ]
       },
-      "Descargar PDF": {
+      "HTTP - Descargar PDF": {
         "main": [
           [
             {
@@ -1640,54 +1640,36 @@
         "main": [
           [
             {
-              "node": "¿Adjuntar PDF? (<4MB)",
+              "node": "IF - ¿Adjuntar PDF? (<4MB)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "¿Adjuntar PDF? (<4MB)": {
+      "IF - ¿Adjuntar PDF? (<4MB)": {
         "main": [
           [
             {
-              "node": "Enviar con adjunto",
+              "node": "Outlook - Enviar con adjunto",
               "type": "main",
               "index": 0
             }
           ],
           [
             {
-              "node": "Enviar solo link",
+              "node": "Outlook - Enviar solo link",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Enviar con adjunto": {
+      "Outlook - Enviar con adjunto": {
         "main": [
           [
             {
-              "node": "Marcar ENVIADA - Cotización",
-              "type": "main",
-              "index": 0
-            }
-          ],
-          [
-            {
-              "node": "Preparar error - Envío email",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Enviar solo link": {
-        "main": [
-          [
-            {
-              "node": "Marcar ENVIADA - Cotización",
+              "node": "Data Table - Marcar ENVIADA (Cotización)",
               "type": "main",
               "index": 0
             }
@@ -1701,11 +1683,29 @@
           ]
         ]
       },
-      "Marcar ENVIADA - Cotización": {
+      "Outlook - Enviar solo link": {
         "main": [
           [
             {
-              "node": "Marcar ENVIADA - Solicitudes",
+              "node": "Data Table - Marcar ENVIADA (Cotización)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Envío email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Marcar ENVIADA (Cotización)": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Marcar ENVIADA (Solicitudes)",
               "type": "main",
               "index": 0
             },
@@ -1721,7 +1721,7 @@
         "main": [
           [
             {
-              "node": "Registrar error - Envío",
+              "node": "Data Table - Registrar error (Envío)",
               "type": "main",
               "index": 0
             }
@@ -1732,7 +1732,7 @@
         "main": [
           [
             {
-              "node": "Registrar error - Envío",
+              "node": "Data Table - Registrar error (Envío)",
               "type": "main",
               "index": 0
             }
@@ -1743,25 +1743,25 @@
         "main": [
           [
             {
-              "node": "Registrar error - Envío",
+              "node": "Data Table - Registrar error (Envío)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - Envío": {
+      "Data Table - Registrar error (Envío)": {
         "main": [
           [
             {
-              "node": "Marcar ERROR_ENVIO",
+              "node": "Data Table - Marcar ERROR_ENVIO",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Marcar ERROR_ENVIO": {
+      "Data Table - Marcar ERROR_ENVIO": {
         "main": [
           [
             {
@@ -1776,7 +1776,7 @@
         "main": [
           [
             {
-              "node": "Enviar alerta - Envío",
+              "node": "Outlook - Enviar alerta (Envío)",
               "type": "main",
               "index": 0
             }
@@ -1798,7 +1798,7 @@
         "main": [
           [
             {
-              "node": "Leer cotización",
+              "node": "Data Table - Leer cotización",
               "type": "main",
               "index": 0
             }
@@ -1816,7 +1816,7 @@
         "main": [
           [
             {
-              "node": "Registrar error - Envío",
+              "node": "Data Table - Registrar error (Envío)",
               "type": "main",
               "index": 0
             }
@@ -1830,18 +1830,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T19:45:20.925Z",
-        "id": 2476,
+        "createdAt": "2026-09-18T18:20:55.170Z",
+        "id": 2576,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "21054b27-7d1f-4968-a4cb-c15619834243",
+        "versionId": "791dd452-7fd9-471f-8537-d5cc09e97985",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T19:45:20.949Z",
-        "id": 2477,
+        "createdAt": "2026-09-18T18:20:55.189Z",
+        "id": 2577,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "21054b27-7d1f-4968-a4cb-c15619834243",
+        "versionId": "791dd452-7fd9-471f-8537-d5cc09e97985",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
