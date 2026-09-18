@@ -48,17 +48,17 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 | ID | Tarea | Alcance | Esf. | Cómo se verifica | Hecho |
 |---|---|---|---|---|---|
 | F1-01 | Completar el campo `description` de cada workflow con propósito, sistemas integrados, área propietaria y canal de escalado | los 12 activos | ▪▪ | Ningún flujo del pipeline tiene `description: null` | ☑ 17/09 |
-| F1-02 | Renombrar nodos de integración a `[Servicio] - [Acción/Recurso]` | los 12 activos | ▪▪▪ | Los nodos que llaman a Outlook, Teams, Excel, Data Table y HTTP siguen el patrón | ☐ *(ver nota abajo)* |
-| F1-03 | Renombrar nodos de decisión a `[Lógica] - [Condición]` | los 12 activos | ▪▪ | Los IF y Switch siguen el patrón; desaparece `¿ok?` y similares sin contexto | ☐ *(ver nota abajo)* |
+| F1-02 | Renombrar nodos de integración a `[Servicio] - [Acción/Recurso]` | los 12 activos | ▪▪▪ | Los nodos que llaman a Outlook, Teams, Excel, Data Table y HTTP siguen el patrón | ☑ 18/09 |
+| F1-03 | Renombrar nodos de decisión a `[Lógica] - [Condición]` | los 12 activos | ▪▪ | Los IF y Switch siguen el patrón; desaparece `¿ok?` y similares sin contexto | ☑ 18/09 |
 | F1-04 | Eliminar los sufijos de copia-pega (`...1`, `...2`) | W1 *(W2B fuera de alcance — retirado)* | ▪ | Ningún nodo conserva sufijo numérico automático | ☑ 17/09 |
 | F1-05 | Agregar sticky notes que justifiquen las decisiones de diseño en los dos flujos que no tienen ninguna | W4C, W4D | ▪▪ | Cada bloque funcional tiene una nota que explica **por qué**, no **qué** | ☑ 17/09 |
 | F1-06 | Renombrar con el prefijo `[SUB]` los workflows que son subflujos | W2A, W3, W4B, W5B | ▪ | El nombre distingue a simple vista un subflujo de un flujo principal | ☑ 17/09 |
 
 **Nota de estilo:** el patrón a replicar ya existe en el repositorio — `Nota - W5-A`, `Nota - W3 Motor` y la nota de contrato de W2A explican decisiones y dependencias, que es justo lo que pide el framework.
 
-**Criterio de cierre:** los 12 con descripción completa, convención de nombres aplicada y al menos una nota por bloque funcional. **4 de 6 hechas** (17/09): F1-01, F1-04, F1-05, F1-06 cerradas y verificadas (validación en 0 errores tras cada cambio). Quedan F1-02 y F1-03.
+**Criterio de cierre:** los 12 con descripción completa, convención de nombres aplicada y al menos una nota por bloque funcional. **6 de 6 hechas — Fase 1 cerrada (18/09).**
 
-> **Nota — F1-02/F1-03 pausadas a propósito (17/09):** renombrar cada nodo de integración/decisión implica revisar antes, workflow por workflow, si algún Code/Set lo referencia por texto (`$('Nombre del nodo')`) — eso **no se actualiza solo** al renombrar (solo las `connections` se actualizan automáticamente; confirmado leyendo la documentación de la herramienta). Un rename a ciegas puede tumbar una expresión en producción sin que ninguna validación lo detecte hasta que ese nodo se ejecute. Ya se hizo así, con verificación previa, para los 8 nodos de W1 (F1-04). El resto de los ~150 nodos de integración/decisión en los 11 flujos activos se abordará en la misma modalidad — de a un flujo por vez, con su verificación — en una sesión dedicada, no de una sola pasada.
+> **Nota — F1-02/F1-03 cerradas (18/09):** se retomaron con la misma disciplina con la que se pausaron el 17/09 — de a un flujo por vez, revisando antes de cada rename si algún Code/Set lo referenciaba por texto (`$('Nombre del nodo')`, literales de auditoría `nodo_fallido: '...'`), porque eso **no se actualiza solo** al renombrar (solo las `connections` lo hacen). Cubiertos los 11 flujos activos: W1, W2A, W3, W4A, W4B, W4C, W4D, W5A, W5B y W6 tenían nodos que renombrar; **W2C** ya cumplía el patrón en su totalidad (sin cambios). Cada flujo se validó con `n8n_validate_workflow` (0 errores) después de aplicar sus renames y corregir las referencias encontradas. Commits locales (sin push): `00dee2c` (W1), `55e8e80` (W2A), `17431dd` (W3), `43d0443` (W4A), `3871659` (W4B), `9772483` (W4C), `efba200` (W4D), `d1eb29e` (W5A), `b30e73e` (W5B), `a6b74b7` (W6).
 
 ---
 
