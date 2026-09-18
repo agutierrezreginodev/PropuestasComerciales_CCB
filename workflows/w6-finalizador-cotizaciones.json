@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T12:31:39.501Z",
+  "updatedAt": "2026-09-18T15:24:45.863Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB - Workflow 6 - Finalizador de Cotizaciones",
@@ -46,7 +46,7 @@
         "returnAll": true
       },
       "id": "w6-leer",
-      "name": "Leer cotizaciones ENVIADA",
+      "name": "Data Table - Leer cotizaciones ENVIADA",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -94,7 +94,7 @@
         "options": {}
       },
       "id": "w6-marcar-cot",
-      "name": "Marcar FINALIZADA - Cotizacion",
+      "name": "Data Table - Marcar FINALIZADA (Cotización)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -130,7 +130,7 @@
         "options": {}
       },
       "id": "w6-marcar-sol",
-      "name": "Marcar FINALIZADA - Solicitudes",
+      "name": "Data Table - Marcar FINALIZADA (Solicitudes)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -174,7 +174,7 @@
         "options": {}
       },
       "id": "w6-reg-error",
-      "name": "Registrar error - Finalizador",
+      "name": "Data Table - Registrar error (Finalizador)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -193,11 +193,11 @@
         }
       },
       "id": "w6-alerta",
-      "name": "Enviar alerta - Finalizador",
+      "name": "Outlook - Enviar alerta (Finalizador)",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        1072,
+        1088,
         272
       ],
       "webhookId": "62427ab8-52cd-476d-a31d-668f018cafe1",
@@ -212,33 +212,26 @@
     {
       "parameters": {
         "content": "### W6 — Finalizador de Cotizaciones\n\n- Diario 3am: busca cotizaciones ENVIADA con fecha_envio >= 30 dias, las marca FINALIZADA en Cotizaciones_CCB y Solicitudes_CCB.\n- Sin loop, sin notificacion al cliente (pendiente de decision).\n- Activo en producción desde el 11/09/2026. Corre sin supervisión diaria; si el cierre automático deja de ser deseable, desactivar el flujo o el Schedule Trigger.",
-        "width": 480
+        "height": 208,
+        "width": 368
       },
       "id": "w6-nota",
       "name": "Nota - W6",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        48,
-        224
+        16,
+        192
       ]
     },
     {
-      "id": "f3e1a9d2-6b47-4c1a-9e5d-2a7c8b1f0d34",
-      "name": "Validar id_solicitud presente",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        480,
-        0
-      ],
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "loose"
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
           },
           "combinator": "and",
           "conditions": [
@@ -255,21 +248,29 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "f3e1a9d2-6b47-4c1a-9e5d-2a7c8b1f0d34",
+      "name": "Validar id_solicitud presente",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        480,
+        0
+      ]
     },
     {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila ENVIADA de Cotizaciones_CCB (previo al filtro de 30+ días sin respuesta).';\nconst emailBody = '<p>Error en <b>W6 (Finalizador de Cotizaciones)</b>: se encontró una fila ENVIADA sin <code>id_solicitud</code> en Cotizaciones_CCB, no se evaluó ni se marcó FINALIZADA.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W6-finalizador', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+      },
       "id": "a7c4e1b8-3d92-4f6a-b1e0-5c9a2d8f4e17",
       "name": "Preparar error - id_solicitud faltante",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        480,
-        420
-      ],
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila ENVIADA de Cotizaciones_CCB (previo al filtro de 30+ días sin respuesta).';\nconst emailBody = '<p>Error en <b>W6 (Finalizador de Cotizaciones)</b>: se encontró una fila ENVIADA sin <code>id_solicitud</code> en Cotizaciones_CCB, no se evaluó ni se marcó FINALIZADA.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W6-finalizador', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
-      }
+        496,
+        416
+      ]
     }
   ],
   "connections": {
@@ -277,7 +278,7 @@
       "main": [
         [
           {
-            "node": "Leer cotizaciones ENVIADA",
+            "node": "Data Table - Leer cotizaciones ENVIADA",
             "type": "main",
             "index": 0
           }
@@ -288,18 +289,18 @@
       "main": [
         [
           {
-            "node": "Marcar FINALIZADA - Cotizacion",
+            "node": "Data Table - Marcar FINALIZADA (Cotización)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Marcar FINALIZADA - Cotizacion": {
+    "Data Table - Marcar FINALIZADA (Cotización)": {
       "main": [
         [
           {
-            "node": "Marcar FINALIZADA - Solicitudes",
+            "node": "Data Table - Marcar FINALIZADA (Solicitudes)",
             "type": "main",
             "index": 0
           }
@@ -313,7 +314,7 @@
         ]
       ]
     },
-    "Marcar FINALIZADA - Solicitudes": {
+    "Data Table - Marcar FINALIZADA (Solicitudes)": {
       "main": [
         [],
         [
@@ -329,25 +330,25 @@
       "main": [
         [
           {
-            "node": "Registrar error - Finalizador",
+            "node": "Data Table - Registrar error (Finalizador)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - Finalizador": {
+    "Data Table - Registrar error (Finalizador)": {
       "main": [
         [
           {
-            "node": "Enviar alerta - Finalizador",
+            "node": "Outlook - Enviar alerta (Finalizador)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer cotizaciones ENVIADA": {
+    "Data Table - Leer cotizaciones ENVIADA": {
       "main": [
         [
           {
@@ -380,7 +381,7 @@
       "main": [
         [
           {
-            "node": "Registrar error - Finalizador",
+            "node": "Data Table - Registrar error (Finalizador)",
             "type": "main",
             "index": 0
           }
@@ -404,15 +405,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
-  "activeVersionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
-  "versionCounter": 25,
+  "versionId": "d53c6a05-1d5e-4228-b0a1-ff98498b8934",
+  "activeVersionId": "d53c6a05-1d5e-4228-b0a1-ff98498b8934",
+  "versionCounter": 38,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T12:31:39.503Z",
-    "createdAt": "2026-09-18T12:31:39.503Z",
-    "versionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
+    "updatedAt": "2026-09-18T15:24:48.177Z",
+    "createdAt": "2026-09-18T15:24:45.865Z",
+    "versionId": "d53c6a05-1d5e-4228-b0a1-ff98498b8934",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
@@ -454,7 +455,7 @@
           "returnAll": true
         },
         "id": "w6-leer",
-        "name": "Leer cotizaciones ENVIADA",
+        "name": "Data Table - Leer cotizaciones ENVIADA",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -502,7 +503,7 @@
           "options": {}
         },
         "id": "w6-marcar-cot",
-        "name": "Marcar FINALIZADA - Cotizacion",
+        "name": "Data Table - Marcar FINALIZADA (Cotización)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -538,7 +539,7 @@
           "options": {}
         },
         "id": "w6-marcar-sol",
-        "name": "Marcar FINALIZADA - Solicitudes",
+        "name": "Data Table - Marcar FINALIZADA (Solicitudes)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -582,7 +583,7 @@
           "options": {}
         },
         "id": "w6-reg-error",
-        "name": "Registrar error - Finalizador",
+        "name": "Data Table - Registrar error (Finalizador)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -601,11 +602,11 @@
           }
         },
         "id": "w6-alerta",
-        "name": "Enviar alerta - Finalizador",
+        "name": "Outlook - Enviar alerta (Finalizador)",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          1072,
+          1088,
           272
         ],
         "webhookId": "62427ab8-52cd-476d-a31d-668f018cafe1",
@@ -620,33 +621,26 @@
       {
         "parameters": {
           "content": "### W6 — Finalizador de Cotizaciones\n\n- Diario 3am: busca cotizaciones ENVIADA con fecha_envio >= 30 dias, las marca FINALIZADA en Cotizaciones_CCB y Solicitudes_CCB.\n- Sin loop, sin notificacion al cliente (pendiente de decision).\n- Activo en producción desde el 11/09/2026. Corre sin supervisión diaria; si el cierre automático deja de ser deseable, desactivar el flujo o el Schedule Trigger.",
-          "width": 480
+          "height": 208,
+          "width": 368
         },
         "id": "w6-nota",
         "name": "Nota - W6",
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          48,
-          224
+          16,
+          192
         ]
       },
       {
-        "id": "f3e1a9d2-6b47-4c1a-9e5d-2a7c8b1f0d34",
-        "name": "Validar id_solicitud presente",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2.3,
-        "position": [
-          480,
-          0
-        ],
         "parameters": {
           "conditions": {
             "options": {
-              "version": 2,
-              "leftValue": "",
               "caseSensitive": true,
-              "typeValidation": "loose"
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
             },
             "combinator": "and",
             "conditions": [
@@ -663,21 +657,29 @@
             ]
           },
           "options": {}
-        }
+        },
+        "id": "f3e1a9d2-6b47-4c1a-9e5d-2a7c8b1f0d34",
+        "name": "Validar id_solicitud presente",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          480,
+          0
+        ]
       },
       {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila ENVIADA de Cotizaciones_CCB (previo al filtro de 30+ días sin respuesta).';\nconst emailBody = '<p>Error en <b>W6 (Finalizador de Cotizaciones)</b>: se encontró una fila ENVIADA sin <code>id_solicitud</code> en Cotizaciones_CCB, no se evaluó ni se marcó FINALIZADA.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W6-finalizador', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+        },
         "id": "a7c4e1b8-3d92-4f6a-b1e0-5c9a2d8f4e17",
         "name": "Preparar error - id_solicitud faltante",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          480,
-          420
-        ],
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila ENVIADA de Cotizaciones_CCB (previo al filtro de 30+ días sin respuesta).';\nconst emailBody = '<p>Error en <b>W6 (Finalizador de Cotizaciones)</b>: se encontró una fila ENVIADA sin <code>id_solicitud</code> en Cotizaciones_CCB, no se evaluó ni se marcó FINALIZADA.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W6-finalizador', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
-        }
+          496,
+          416
+        ]
       }
     ],
     "connections": {
@@ -685,7 +687,7 @@
         "main": [
           [
             {
-              "node": "Leer cotizaciones ENVIADA",
+              "node": "Data Table - Leer cotizaciones ENVIADA",
               "type": "main",
               "index": 0
             }
@@ -696,18 +698,18 @@
         "main": [
           [
             {
-              "node": "Marcar FINALIZADA - Cotizacion",
+              "node": "Data Table - Marcar FINALIZADA (Cotización)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Marcar FINALIZADA - Cotizacion": {
+      "Data Table - Marcar FINALIZADA (Cotización)": {
         "main": [
           [
             {
-              "node": "Marcar FINALIZADA - Solicitudes",
+              "node": "Data Table - Marcar FINALIZADA (Solicitudes)",
               "type": "main",
               "index": 0
             }
@@ -721,7 +723,7 @@
           ]
         ]
       },
-      "Marcar FINALIZADA - Solicitudes": {
+      "Data Table - Marcar FINALIZADA (Solicitudes)": {
         "main": [
           [],
           [
@@ -737,25 +739,25 @@
         "main": [
           [
             {
-              "node": "Registrar error - Finalizador",
+              "node": "Data Table - Registrar error (Finalizador)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - Finalizador": {
+      "Data Table - Registrar error (Finalizador)": {
         "main": [
           [
             {
-              "node": "Enviar alerta - Finalizador",
+              "node": "Outlook - Enviar alerta (Finalizador)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer cotizaciones ENVIADA": {
+      "Data Table - Leer cotizaciones ENVIADA": {
         "main": [
           [
             {
@@ -788,7 +790,7 @@
         "main": [
           [
             {
-              "node": "Registrar error - Finalizador",
+              "node": "Data Table - Registrar error (Finalizador)",
               "type": "main",
               "index": 0
             }
@@ -797,23 +799,15 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": null,
-    "description": null,
-    "autosaved": false,
+    "name": "Version d53c6a05",
+    "description": "",
+    "autosaved": true,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T12:31:39.550Z",
-        "id": 2490,
+        "createdAt": "2026-09-18T15:24:48.172Z",
+        "id": 2559,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-18T12:31:39.576Z",
-        "id": 2491,
-        "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
+        "versionId": "d53c6a05-1d5e-4228-b0a1-ff98498b8934",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
