@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T19:14:15.269Z",
+  "updatedAt": "2026-09-18T13:31:29.280Z",
   "createdAt": "2026-09-04T15:37:43.940Z",
   "id": "w6h0qSblUESIpSVc",
   "name": "CCB - Workflow 1 - Extracción información del cliente",
@@ -31,7 +31,7 @@
         896
       ],
       "id": "0fe1ee98-a884-47e0-b0fc-b1ef09f61bd5",
-      "name": "Nuevo correo",
+      "name": "Outlook - Nuevo correo recibido",
       "credentials": {
         "microsoftOutlookOAuth2Api": {
           "id": "iOA7XXDSHZojLhJz",
@@ -199,7 +199,7 @@
         432
       ],
       "id": "38e38a44-b5d9-41c8-b4bb-fdd38bf3f103",
-      "name": "Crear solicitud (con email)",
+      "name": "Data Table - Crear solicitud (con email)",
       "onError": "continueErrorOutput"
     },
     {
@@ -328,7 +328,7 @@
         880
       ],
       "id": "bd2ab68e-4a28-4df7-a865-4ae8cb357322",
-      "name": "Crear solicitud (sin email)",
+      "name": "Data Table - Crear solicitud (sin email)",
       "onError": "continueErrorOutput"
     },
     {
@@ -373,7 +373,7 @@
         784
       ],
       "id": "20037dbe-bdc1-4eca-a942-c4997aa22f0a",
-      "name": "Enviar notificación a mercadeo",
+      "name": "Outlook - Enviar notificación a mercadeo",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -402,7 +402,7 @@
         336
       ],
       "id": "48569337-156d-4beb-8b46-2597b1cd2e8f",
-      "name": "Enviar notificación al cliente",
+      "name": "Outlook - Enviar notificación al cliente",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -487,19 +487,19 @@
             {
               "id": "66172420-8808-4e3e-8c83-679a763b6068",
               "name": "fecha_recepcion",
-              "value": "={{ DateTime.fromISO($('Nuevo correo').item.json.receivedDateTime).setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+              "value": "={{ DateTime.fromISO($('Outlook - Nuevo correo recibido').item.json.receivedDateTime).setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}",
               "type": "string"
             },
             {
               "id": "0f76ee3a-f364-4d48-afb4-b27f0f48c4f3",
               "name": "remitente",
-              "value": "={{ $('Nuevo correo').item.json.from.emailAddress.address }}",
+              "value": "={{ $('Outlook - Nuevo correo recibido').item.json.from.emailAddress.address }}",
               "type": "string"
             },
             {
               "id": "ee8f3f51-e47b-4c37-af2a-06ee25a87857",
               "name": "asunto",
-              "value": "={{ $('Nuevo correo').item.json.subject }}",
+              "value": "={{ $('Outlook - Nuevo correo recibido').item.json.subject }}",
               "type": "string"
             },
             {
@@ -547,7 +547,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Nuevo correo').item.json.from.emailAddress.address;\n  asunto = $('Nuevo correo').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Information Extractor';\nconst flujo = $workflow.name;\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló la extracción de datos (IA)</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> falló al procesar un correo entrante — esto pasa <strong>antes</strong> de generar el ID de solicitud, así que todavía no hay un registro asociado. Detalles del correo original:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle del error</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
+        "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Outlook - Nuevo correo recibido').item.json.from.emailAddress.address;\n  asunto = $('Outlook - Nuevo correo recibido').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Information Extractor';\nconst flujo = $workflow.name;\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló la extracción de datos (IA)</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> falló al procesar un correo entrante — esto pasa <strong>antes</strong> de generar el ID de solicitud, así que todavía no hay un registro asociado. Detalles del correo original:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle del error</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -643,7 +643,7 @@
         1120
       ],
       "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
-      "name": "Registrar error - Extractor IA"
+      "name": "Data Table - Registrar error de extracción IA"
     },
     {
       "parameters": {
@@ -661,7 +661,7 @@
         1120
       ],
       "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
-      "name": "Enviar alerta - Extractor IA",
+      "name": "Outlook - Enviar alerta de extracción IA",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -758,7 +758,7 @@
         1008
       ],
       "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
-      "name": "Registrar error - Solicitud sin email"
+      "name": "Data Table - Registrar error de solicitud sin email"
     },
     {
       "parameters": {
@@ -776,7 +776,7 @@
         1008
       ],
       "id": "fb16513e-41dd-4c96-8fa8-2806727e5521",
-      "name": "Enviar alerta - Solicitud sin email",
+      "name": "Outlook - Enviar alerta de solicitud sin email",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -860,7 +860,7 @@
         544
       ],
       "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
-      "name": "Registrar error - Solicitud con email"
+      "name": "Data Table - Registrar error de solicitud con email"
     },
     {
       "parameters": {
@@ -878,7 +878,7 @@
         544
       ],
       "id": "1230166e-e6d9-4064-bc65-cf517b434f67",
-      "name": "Enviar alerta - Solicitud con email",
+      "name": "Outlook - Enviar alerta de solicitud con email",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -962,7 +962,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Nuevo correo').item.json.from.emailAddress.address;\n  asunto = $('Nuevo correo').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Validar extracción de IA';\nconst flujo = $workflow.name;\nconst tipoError = 'Correo sin datos extraíbles';\nconst mensajeError = 'El Information Extractor no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. No se generó ningún registro en Solicitudes_CCB para evitar guardar datos inventados.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#B8860B\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">ℹ️ Correo sin datos extraíbles</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> procesó el correo sin errores técnicos, pero no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. Para evitar crear un registro con datos inventados, <strong>no se generó ninguna solicitud</strong> en Solicitudes_CCB. Revisar si el correo es spam, está fuera de asunto, o si el dato relevante está en un formato que la IA no reconoció.</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
+        "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Outlook - Nuevo correo recibido').item.json.from.emailAddress.address;\n  asunto = $('Outlook - Nuevo correo recibido').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Validar extracción de IA';\nconst flujo = $workflow.name;\nconst tipoError = 'Correo sin datos extraíbles';\nconst mensajeError = 'El Information Extractor no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. No se generó ningún registro en Solicitudes_CCB para evitar guardar datos inventados.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#B8860B\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">ℹ️ Correo sin datos extraíbles</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> procesó el correo sin errores técnicos, pero no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. Para evitar crear un registro con datos inventados, <strong>no se generó ninguna solicitud</strong> en Solicitudes_CCB. Revisar si el correo es spam, está fuera de asunto, o si el dato relevante está en un formato que la IA no reconoció.</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
       },
       "id": "342a1902-865d-46f1-9747-97acdd9f3061",
       "name": "Preparar rechazo - Extracción sin datos",
@@ -979,21 +979,21 @@
       "main": [
         [
           {
-            "node": "Crear solicitud (con email)",
+            "node": "Data Table - Crear solicitud (con email)",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Crear solicitud (sin email)",
+            "node": "Data Table - Crear solicitud (sin email)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Crear solicitud (sin email)": {
+    "Data Table - Crear solicitud (sin email)": {
       "main": [
         [
           {
@@ -1011,7 +1011,7 @@
         ]
       ]
     },
-    "Crear solicitud (con email)": {
+    "Data Table - Crear solicitud (con email)": {
       "main": [
         [
           {
@@ -1033,7 +1033,7 @@
       "main": [
         [
           {
-            "node": "Enviar notificación al cliente",
+            "node": "Outlook - Enviar notificación al cliente",
             "type": "main",
             "index": 0
           }
@@ -1044,7 +1044,7 @@
       "main": [
         [
           {
-            "node": "Enviar notificación a mercadeo",
+            "node": "Outlook - Enviar notificación a mercadeo",
             "type": "main",
             "index": 0
           }
@@ -1091,7 +1091,7 @@
         ]
       ]
     },
-    "Enviar notificación a mercadeo": {
+    "Outlook - Enviar notificación a mercadeo": {
       "main": [
         [],
         [
@@ -1103,7 +1103,7 @@
         ]
       ]
     },
-    "Enviar notificación al cliente": {
+    "Outlook - Enviar notificación al cliente": {
       "main": [
         [],
         [
@@ -1119,12 +1119,12 @@
       "main": [
         [
           {
-            "node": "Registrar error - Extractor IA",
+            "node": "Data Table - Registrar error de extracción IA",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Enviar alerta - Extractor IA",
+            "node": "Outlook - Enviar alerta de extracción IA",
             "type": "main",
             "index": 0
           }
@@ -1135,12 +1135,12 @@
       "main": [
         [
           {
-            "node": "Registrar error - Solicitud sin email",
+            "node": "Data Table - Registrar error de solicitud sin email",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Enviar alerta - Solicitud sin email",
+            "node": "Outlook - Enviar alerta de solicitud sin email",
             "type": "main",
             "index": 0
           }
@@ -1151,19 +1151,19 @@
       "main": [
         [
           {
-            "node": "Registrar error - Solicitud con email",
+            "node": "Data Table - Registrar error de solicitud con email",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Enviar alerta - Solicitud con email",
+            "node": "Outlook - Enviar alerta de solicitud con email",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Nuevo correo": {
+    "Outlook - Nuevo correo recibido": {
       "main": [
         [
           {
@@ -1196,12 +1196,12 @@
       "main": [
         [
           {
-            "node": "Registrar error - Extractor IA",
+            "node": "Data Table - Registrar error de extracción IA",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Enviar alerta - Extractor IA",
+            "node": "Outlook - Enviar alerta de extracción IA",
             "type": "main",
             "index": 0
           }
@@ -1220,21 +1220,24 @@
   "staticData": {
     "node:Nuevo correo": {
       "lastTimeChecked": "2026-09-17T19:14:17.081Z"
+    },
+    "node:Outlook - Nuevo correo recibido": {
+      "lastTimeChecked": "2026-09-18T13:31:29.364Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "f7a7c21e-4af7-4d28-9c1d-eee186d5b0b3",
-  "activeVersionId": "f7a7c21e-4af7-4d28-9c1d-eee186d5b0b3",
-  "versionCounter": 448,
+  "versionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
+  "activeVersionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
+  "versionCounter": 456,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T19:14:17.208Z",
-    "createdAt": "2026-09-17T19:14:15.276Z",
-    "versionId": "f7a7c21e-4af7-4d28-9c1d-eee186d5b0b3",
+    "updatedAt": "2026-09-18T13:31:29.282Z",
+    "createdAt": "2026-09-18T13:31:29.282Z",
+    "versionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
     "workflowId": "w6h0qSblUESIpSVc",
     "nodes": [
       {
@@ -1261,7 +1264,7 @@
           896
         ],
         "id": "0fe1ee98-a884-47e0-b0fc-b1ef09f61bd5",
-        "name": "Nuevo correo",
+        "name": "Outlook - Nuevo correo recibido",
         "credentials": {
           "microsoftOutlookOAuth2Api": {
             "id": "iOA7XXDSHZojLhJz",
@@ -1429,7 +1432,7 @@
           432
         ],
         "id": "38e38a44-b5d9-41c8-b4bb-fdd38bf3f103",
-        "name": "Crear solicitud (con email)",
+        "name": "Data Table - Crear solicitud (con email)",
         "onError": "continueErrorOutput"
       },
       {
@@ -1558,7 +1561,7 @@
           880
         ],
         "id": "bd2ab68e-4a28-4df7-a865-4ae8cb357322",
-        "name": "Crear solicitud (sin email)",
+        "name": "Data Table - Crear solicitud (sin email)",
         "onError": "continueErrorOutput"
       },
       {
@@ -1603,7 +1606,7 @@
           784
         ],
         "id": "20037dbe-bdc1-4eca-a942-c4997aa22f0a",
-        "name": "Enviar notificación a mercadeo",
+        "name": "Outlook - Enviar notificación a mercadeo",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -1632,7 +1635,7 @@
           336
         ],
         "id": "48569337-156d-4beb-8b46-2597b1cd2e8f",
-        "name": "Enviar notificación al cliente",
+        "name": "Outlook - Enviar notificación al cliente",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -1717,19 +1720,19 @@
               {
                 "id": "66172420-8808-4e3e-8c83-679a763b6068",
                 "name": "fecha_recepcion",
-                "value": "={{ DateTime.fromISO($('Nuevo correo').item.json.receivedDateTime).setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+                "value": "={{ DateTime.fromISO($('Outlook - Nuevo correo recibido').item.json.receivedDateTime).setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}",
                 "type": "string"
               },
               {
                 "id": "0f76ee3a-f364-4d48-afb4-b27f0f48c4f3",
                 "name": "remitente",
-                "value": "={{ $('Nuevo correo').item.json.from.emailAddress.address }}",
+                "value": "={{ $('Outlook - Nuevo correo recibido').item.json.from.emailAddress.address }}",
                 "type": "string"
               },
               {
                 "id": "ee8f3f51-e47b-4c37-af2a-06ee25a87857",
                 "name": "asunto",
-                "value": "={{ $('Nuevo correo').item.json.subject }}",
+                "value": "={{ $('Outlook - Nuevo correo recibido').item.json.subject }}",
                 "type": "string"
               },
               {
@@ -1777,7 +1780,7 @@
       },
       {
         "parameters": {
-          "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Nuevo correo').item.json.from.emailAddress.address;\n  asunto = $('Nuevo correo').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Information Extractor';\nconst flujo = $workflow.name;\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló la extracción de datos (IA)</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> falló al procesar un correo entrante — esto pasa <strong>antes</strong> de generar el ID de solicitud, así que todavía no hay un registro asociado. Detalles del correo original:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle del error</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
+          "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Outlook - Nuevo correo recibido').item.json.from.emailAddress.address;\n  asunto = $('Outlook - Nuevo correo recibido').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Information Extractor';\nconst flujo = $workflow.name;\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló la extracción de datos (IA)</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> falló al procesar un correo entrante — esto pasa <strong>antes</strong> de generar el ID de solicitud, así que todavía no hay un registro asociado. Detalles del correo original:</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle del error</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -1873,7 +1876,7 @@
           1120
         ],
         "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
-        "name": "Registrar error - Extractor IA"
+        "name": "Data Table - Registrar error de extracción IA"
       },
       {
         "parameters": {
@@ -1891,7 +1894,7 @@
           1120
         ],
         "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
-        "name": "Enviar alerta - Extractor IA",
+        "name": "Outlook - Enviar alerta de extracción IA",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -1988,7 +1991,7 @@
           1008
         ],
         "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
-        "name": "Registrar error - Solicitud sin email"
+        "name": "Data Table - Registrar error de solicitud sin email"
       },
       {
         "parameters": {
@@ -2006,7 +2009,7 @@
           1008
         ],
         "id": "fb16513e-41dd-4c96-8fa8-2806727e5521",
-        "name": "Enviar alerta - Solicitud sin email",
+        "name": "Outlook - Enviar alerta de solicitud sin email",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -2090,7 +2093,7 @@
           544
         ],
         "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
-        "name": "Registrar error - Solicitud con email"
+        "name": "Data Table - Registrar error de solicitud con email"
       },
       {
         "parameters": {
@@ -2108,7 +2111,7 @@
           544
         ],
         "id": "1230166e-e6d9-4064-bc65-cf517b434f67",
-        "name": "Enviar alerta - Solicitud con email",
+        "name": "Outlook - Enviar alerta de solicitud con email",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -2192,7 +2195,7 @@
       },
       {
         "parameters": {
-          "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Nuevo correo').item.json.from.emailAddress.address;\n  asunto = $('Nuevo correo').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Validar extracción de IA';\nconst flujo = $workflow.name;\nconst tipoError = 'Correo sin datos extraíbles';\nconst mensajeError = 'El Information Extractor no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. No se generó ningún registro en Solicitudes_CCB para evitar guardar datos inventados.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#B8860B\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">ℹ️ Correo sin datos extraíbles</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> procesó el correo sin errores técnicos, pero no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. Para evitar crear un registro con datos inventados, <strong>no se generó ninguna solicitud</strong> en Solicitudes_CCB. Revisar si el correo es spam, está fuera de asunto, o si el dato relevante está en un formato que la IA no reconoció.</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
+          "jsCode": "let remitente = null;\nlet asunto = null;\ntry {\n  remitente = $('Outlook - Nuevo correo recibido').item.json.from.emailAddress.address;\n  asunto = $('Outlook - Nuevo correo recibido').item.json.subject;\n} catch (e) {\n  remitente = null;\n  asunto = null;\n}\n\nconst nodoFallido = 'Validar extracción de IA';\nconst flujo = $workflow.name;\nconst tipoError = 'Correo sin datos extraíbles';\nconst mensajeError = 'El Information Extractor no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. No se generó ningún registro en Solicitudes_CCB para evitar guardar datos inventados.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;box-shadow:0 6px 32px rgba(0,20,137,0.14);\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:32px 40px 28px 40px;background-image:linear-gradient(135deg,#001489 0%,#014392 60%,#009CDE 100%);\">\n<img src=\"https://prod.camarabaq.org.co/wp-content/uploads/2022/07/Logo-CCB-Blanco.png\" alt=\"CamaraBAQ\" width=\"140\" style=\"max-width:140px;margin:0 auto 14px auto;\" />\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#B8860B\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">ℹ️ Correo sin datos extraíbles</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px 24px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 20px 0;line-height:1.7;\">El <strong>Information Extractor</strong> procesó el correo sin errores técnicos, pero no encontró nombre, teléfono ni correo del cliente en el cuerpo del mensaje. Para evitar crear un registro con datos inventados, <strong>no se generó ninguna solicitud</strong> en Solicitudes_CCB. Revisar si el correo es spam, está fuera de asunto, o si el dato relevante está en un formato que la IA no reconoció.</p>\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-radius:10px;overflow:hidden;border:1px solid #D9E2EC;\">\n<tr><td bgcolor=\"#001489\" style=\"padding:10px 20px;\"><p style=\"font-size:10px;font-weight:700;color:#009CDE;text-transform:uppercase;letter-spacing:2px;margin:0;\">Detalle</p></td></tr>\n<tr><td bgcolor=\"#F2F5F9\" style=\"padding:16px 20px;\">\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Remitente:</strong> ${remitente || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Asunto:</strong> ${asunto || '(desconocido)'}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr></table>\n</td></tr>\n<tr><td bgcolor=\"#014392\" style=\"padding:24px 40px;\">\n<p style=\"font-size:11px;color:rgba(255,255,255,0.45);margin:0;line-height:1.5;\">Alerta generada automáticamente por el sistema de propuestas comerciales de CamaraBAQ.</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: null,\n    flujo,\n    tipo_error: tipoError,\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    remitente,\n    asunto,\n    emailBody\n  }\n};"
         },
         "id": "342a1902-865d-46f1-9747-97acdd9f3061",
         "name": "Preparar rechazo - Extracción sin datos",
@@ -2209,21 +2212,21 @@
         "main": [
           [
             {
-              "node": "Crear solicitud (con email)",
+              "node": "Data Table - Crear solicitud (con email)",
               "type": "main",
               "index": 0
             }
           ],
           [
             {
-              "node": "Crear solicitud (sin email)",
+              "node": "Data Table - Crear solicitud (sin email)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Crear solicitud (sin email)": {
+      "Data Table - Crear solicitud (sin email)": {
         "main": [
           [
             {
@@ -2241,7 +2244,7 @@
           ]
         ]
       },
-      "Crear solicitud (con email)": {
+      "Data Table - Crear solicitud (con email)": {
         "main": [
           [
             {
@@ -2263,7 +2266,7 @@
         "main": [
           [
             {
-              "node": "Enviar notificación al cliente",
+              "node": "Outlook - Enviar notificación al cliente",
               "type": "main",
               "index": 0
             }
@@ -2274,7 +2277,7 @@
         "main": [
           [
             {
-              "node": "Enviar notificación a mercadeo",
+              "node": "Outlook - Enviar notificación a mercadeo",
               "type": "main",
               "index": 0
             }
@@ -2321,7 +2324,7 @@
           ]
         ]
       },
-      "Enviar notificación a mercadeo": {
+      "Outlook - Enviar notificación a mercadeo": {
         "main": [
           [],
           [
@@ -2333,7 +2336,7 @@
           ]
         ]
       },
-      "Enviar notificación al cliente": {
+      "Outlook - Enviar notificación al cliente": {
         "main": [
           [],
           [
@@ -2349,12 +2352,12 @@
         "main": [
           [
             {
-              "node": "Registrar error - Extractor IA",
+              "node": "Data Table - Registrar error de extracción IA",
               "type": "main",
               "index": 0
             },
             {
-              "node": "Enviar alerta - Extractor IA",
+              "node": "Outlook - Enviar alerta de extracción IA",
               "type": "main",
               "index": 0
             }
@@ -2365,12 +2368,12 @@
         "main": [
           [
             {
-              "node": "Registrar error - Solicitud sin email",
+              "node": "Data Table - Registrar error de solicitud sin email",
               "type": "main",
               "index": 0
             },
             {
-              "node": "Enviar alerta - Solicitud sin email",
+              "node": "Outlook - Enviar alerta de solicitud sin email",
               "type": "main",
               "index": 0
             }
@@ -2381,19 +2384,19 @@
         "main": [
           [
             {
-              "node": "Registrar error - Solicitud con email",
+              "node": "Data Table - Registrar error de solicitud con email",
               "type": "main",
               "index": 0
             },
             {
-              "node": "Enviar alerta - Solicitud con email",
+              "node": "Outlook - Enviar alerta de solicitud con email",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Nuevo correo": {
+      "Outlook - Nuevo correo recibido": {
         "main": [
           [
             {
@@ -2426,12 +2429,12 @@
         "main": [
           [
             {
-              "node": "Registrar error - Extractor IA",
+              "node": "Data Table - Registrar error de extracción IA",
               "type": "main",
               "index": 0
             },
             {
-              "node": "Enviar alerta - Extractor IA",
+              "node": "Outlook - Enviar alerta de extracción IA",
               "type": "main",
               "index": 0
             }
@@ -2440,15 +2443,23 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": "Version f7a7c21e",
-    "description": "",
+    "name": null,
+    "description": null,
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T19:14:17.205Z",
-        "id": 2467,
+        "createdAt": "2026-09-18T13:31:29.337Z",
+        "id": 2494,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "f7a7c21e-4af7-4d28-9c1d-eee186d5b0b3",
+        "versionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-18T13:31:29.475Z",
+        "id": 2495,
+        "workflowId": "w6h0qSblUESIpSVc",
+        "versionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
