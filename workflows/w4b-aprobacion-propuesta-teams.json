@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T20:20:41.715Z",
+  "updatedAt": "2026-09-18T13:50:41.598Z",
   "createdAt": "2026-09-11T15:41:10.905Z",
   "id": "5RJdnHDQ8NuWZJG7",
   "name": "[SUB] CCB - Workflow 4B - Aprobación de Propuesta (Teams)",
@@ -28,7 +28,7 @@
         "limit": 1
       },
       "id": "w4b-leer-cotizacion",
-      "name": "Leer cotización",
+      "name": "Data Table - Leer cotización",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -57,7 +57,7 @@
         "limit": 1
       },
       "id": "w4b-leer-criterios",
-      "name": "Leer criterios",
+      "name": "Data Table - Leer criterios",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -86,7 +86,7 @@
         "limit": 1
       },
       "id": "w4b-leer-solicitud",
-      "name": "Leer solicitud",
+      "name": "Data Table - Leer solicitud",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -98,7 +98,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
+        "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
       },
       "id": "w4b-consolidar",
       "name": "Consolidar datos de la propuesta",
@@ -138,7 +138,7 @@
         }
       },
       "id": "w4b-teams",
-      "name": "Enviar mensaje Teams",
+      "name": "Teams - Enviar mensaje",
       "type": "n8n-nodes-base.microsoftTeams",
       "typeVersion": 2,
       "position": [
@@ -194,7 +194,7 @@
         "options": {}
       },
       "id": "w4b-reg-teams-err",
-      "name": "Registrar error - Teams",
+      "name": "Data Table - Registrar error",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -250,7 +250,7 @@
         }
       },
       "id": "w4b-alerta-teams-err",
-      "name": "Enviar alerta - Teams",
+      "name": "Outlook - Enviar alerta",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
@@ -350,29 +350,29 @@
     }
   ],
   "connections": {
-    "Leer cotización": {
+    "Data Table - Leer cotización": {
       "main": [
         [
           {
-            "node": "Leer criterios",
+            "node": "Data Table - Leer criterios",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer criterios": {
+    "Data Table - Leer criterios": {
       "main": [
         [
           {
-            "node": "Leer solicitud",
+            "node": "Data Table - Leer solicitud",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer solicitud": {
+    "Data Table - Leer solicitud": {
       "main": [
         [
           {
@@ -398,14 +398,14 @@
       "main": [
         [
           {
-            "node": "Enviar mensaje Teams",
+            "node": "Teams - Enviar mensaje",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Enviar mensaje Teams": {
+    "Teams - Enviar mensaje": {
       "main": [
         [],
         [
@@ -421,14 +421,14 @@
       "main": [
         [
           {
-            "node": "Registrar error - Teams",
+            "node": "Data Table - Registrar error",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - Teams": {
+    "Data Table - Registrar error": {
       "main": [
         [
           {
@@ -443,7 +443,7 @@
       "main": [
         [
           {
-            "node": "Enviar alerta - Teams",
+            "node": "Outlook - Enviar alerta",
             "type": "main",
             "index": 0
           }
@@ -465,7 +465,7 @@
       "main": [
         [
           {
-            "node": "Leer cotización",
+            "node": "Data Table - Leer cotización",
             "type": "main",
             "index": 0
           }
@@ -483,7 +483,7 @@
       "main": [
         [
           {
-            "node": "Registrar error - Teams",
+            "node": "Data Table - Registrar error",
             "type": "main",
             "index": 0
           }
@@ -503,15 +503,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "c16d42e2-9b44-41e4-a70d-b82097bf99e1",
-  "activeVersionId": "774f4065-6bab-4115-aae4-1f6169a005a9",
-  "versionCounter": 130,
+  "versionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
+  "activeVersionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
+  "versionCounter": 136,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T20:01:39.051Z",
-    "createdAt": "2026-09-17T20:01:39.051Z",
-    "versionId": "774f4065-6bab-4115-aae4-1f6169a005a9",
+    "updatedAt": "2026-09-18T13:50:41.600Z",
+    "createdAt": "2026-09-18T13:50:41.600Z",
+    "versionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
     "workflowId": "5RJdnHDQ8NuWZJG7",
     "nodes": [
       {
@@ -535,7 +535,7 @@
           "limit": 1
         },
         "id": "w4b-leer-cotizacion",
-        "name": "Leer cotización",
+        "name": "Data Table - Leer cotización",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -564,7 +564,7 @@
           "limit": 1
         },
         "id": "w4b-leer-criterios",
-        "name": "Leer criterios",
+        "name": "Data Table - Leer criterios",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -593,7 +593,7 @@
           "limit": 1
         },
         "id": "w4b-leer-solicitud",
-        "name": "Leer solicitud",
+        "name": "Data Table - Leer solicitud",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -605,7 +605,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
+          "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
         },
         "id": "w4b-consolidar",
         "name": "Consolidar datos de la propuesta",
@@ -645,7 +645,7 @@
           }
         },
         "id": "w4b-teams",
-        "name": "Enviar mensaje Teams",
+        "name": "Teams - Enviar mensaje",
         "type": "n8n-nodes-base.microsoftTeams",
         "typeVersion": 2,
         "position": [
@@ -701,7 +701,7 @@
           "options": {}
         },
         "id": "w4b-reg-teams-err",
-        "name": "Registrar error - Teams",
+        "name": "Data Table - Registrar error",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -757,7 +757,7 @@
           }
         },
         "id": "w4b-alerta-teams-err",
-        "name": "Enviar alerta - Teams",
+        "name": "Outlook - Enviar alerta",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
@@ -801,28 +801,20 @@
         "type": "n8n-nodes-base.executeWorkflowTrigger",
         "typeVersion": 1.1,
         "position": [
-          32,
-          -16
+          -144,
+          0
         ],
         "id": "5b5f08d2-7364-46e3-aa44-37453be42790",
         "name": "Recibir solicitud"
       },
       {
-        "id": "cc3ae01a-ad5d-482a-aa35-a5f1ac96f462",
-        "name": "Validar id_solicitud presente",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2.3,
-        "position": [
-          128,
-          -16
-        ],
         "parameters": {
           "conditions": {
             "options": {
-              "version": 2,
-              "leftValue": "",
               "caseSensitive": true,
-              "typeValidation": "loose"
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
             },
             "combinator": "and",
             "conditions": [
@@ -839,47 +831,55 @@
             ]
           },
           "options": {}
-        }
+        },
+        "id": "cc3ae01a-ad5d-482a-aa35-a5f1ac96f462",
+        "name": "Validar id_solicitud presente",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          32,
+          0
+        ]
       },
       {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en la solicitud recibida por W4-B.';\nconst emailBody = '<p>Error al notificar la propuesta para revisión en Teams.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W4-B-aprobacion-teams', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+        },
         "id": "281fc81b-4699-4650-8b5f-d4d67b804906",
         "name": "Preparar error - id_solicitud faltante",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
           64,
-          380
-        ],
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en la solicitud recibida por W4-B.';\nconst emailBody = '<p>Error al notificar la propuesta para revisión en Teams.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W4-B-aprobacion-teams', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
-        }
+          384
+        ]
       }
     ],
     "connections": {
-      "Leer cotización": {
+      "Data Table - Leer cotización": {
         "main": [
           [
             {
-              "node": "Leer criterios",
+              "node": "Data Table - Leer criterios",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer criterios": {
+      "Data Table - Leer criterios": {
         "main": [
           [
             {
-              "node": "Leer solicitud",
+              "node": "Data Table - Leer solicitud",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer solicitud": {
+      "Data Table - Leer solicitud": {
         "main": [
           [
             {
@@ -905,14 +905,14 @@
         "main": [
           [
             {
-              "node": "Enviar mensaje Teams",
+              "node": "Teams - Enviar mensaje",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Enviar mensaje Teams": {
+      "Teams - Enviar mensaje": {
         "main": [
           [],
           [
@@ -928,14 +928,14 @@
         "main": [
           [
             {
-              "node": "Registrar error - Teams",
+              "node": "Data Table - Registrar error",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - Teams": {
+      "Data Table - Registrar error": {
         "main": [
           [
             {
@@ -950,7 +950,7 @@
         "main": [
           [
             {
-              "node": "Enviar alerta - Teams",
+              "node": "Outlook - Enviar alerta",
               "type": "main",
               "index": 0
             }
@@ -972,7 +972,7 @@
         "main": [
           [
             {
-              "node": "Leer cotización",
+              "node": "Data Table - Leer cotización",
               "type": "main",
               "index": 0
             }
@@ -990,7 +990,7 @@
         "main": [
           [
             {
-              "node": "Registrar error - Teams",
+              "node": "Data Table - Registrar error",
               "type": "main",
               "index": 0
             }
@@ -1004,18 +1004,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T20:01:39.100Z",
-        "id": 2482,
+        "createdAt": "2026-09-18T13:50:41.655Z",
+        "id": 2506,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "774f4065-6bab-4115-aae4-1f6169a005a9",
+        "versionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T20:01:39.119Z",
-        "id": 2483,
+        "createdAt": "2026-09-18T13:50:41.679Z",
+        "id": 2507,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "774f4065-6bab-4115-aae4-1f6169a005a9",
+        "versionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
