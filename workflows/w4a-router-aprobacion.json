@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T20:01:03.950Z",
+  "updatedAt": "2026-09-18T13:49:47.112Z",
   "createdAt": "2026-09-11T15:42:01.882Z",
   "id": "7gmpPMBJtEb0W3J5",
   "name": "CCB - Workflow 4A - Router de Aprobación",
@@ -48,7 +48,7 @@
         "returnAll": true
       },
       "id": "w4a-leer",
-      "name": "Leer cotizaciones PROPUESTA_GENERADA",
+      "name": "Data Table - Leer cotizaciones PROPUESTA_GENERADA",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -84,7 +84,7 @@
         "options": {}
       },
       "id": "w4a-marcar",
-      "name": "Marcar EN_REVISION",
+      "name": "Data Table - Marcar EN_REVISION",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -103,7 +103,7 @@
         "workflowInputs": {
           "mappingMode": "defineBelow",
           "value": {
-            "id_solicitud": "={{ $json.id_solicitud || $('Leer cotizaciones PROPUESTA_GENERADA').item.json.id_solicitud }}"
+            "id_solicitud": "={{ $json.id_solicitud || $('Data Table - Leer cotizaciones PROPUESTA_GENERADA').item.json.id_solicitud }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -134,7 +134,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Marcar EN_REVISION';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W4-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W4-A (Router de Aprobación)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-A-router-aprobacion', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+        "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Data Table - Marcar EN_REVISION';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W4-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W4-A (Router de Aprobación)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-A-router-aprobacion', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
       },
       "id": "w4a-prep-error",
       "name": "Preparar error - Router",
@@ -167,7 +167,7 @@
         "options": {}
       },
       "id": "w4a-reg-error",
-      "name": "Registrar error - Router",
+      "name": "Data Table - Registrar error del router",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -186,7 +186,7 @@
         }
       },
       "id": "w4a-alerta",
-      "name": "Enviar alerta - Router",
+      "name": "Outlook - Enviar alerta del router",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
@@ -270,14 +270,14 @@
       "main": [
         [
           {
-            "node": "Leer cotizaciones PROPUESTA_GENERADA",
+            "node": "Data Table - Leer cotizaciones PROPUESTA_GENERADA",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Marcar EN_REVISION": {
+    "Data Table - Marcar EN_REVISION": {
       "main": [
         [
           {
@@ -299,25 +299,25 @@
       "main": [
         [
           {
-            "node": "Registrar error - Router",
+            "node": "Data Table - Registrar error del router",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - Router": {
+    "Data Table - Registrar error del router": {
       "main": [
         [
           {
-            "node": "Enviar alerta - Router",
+            "node": "Outlook - Enviar alerta del router",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer cotizaciones PROPUESTA_GENERADA": {
+    "Data Table - Leer cotizaciones PROPUESTA_GENERADA": {
       "main": [
         [
           {
@@ -332,7 +332,7 @@
       "main": [
         [
           {
-            "node": "Marcar EN_REVISION",
+            "node": "Data Table - Marcar EN_REVISION",
             "type": "main",
             "index": 0
           }
@@ -350,7 +350,7 @@
       "main": [
         [
           {
-            "node": "Registrar error - Router",
+            "node": "Data Table - Registrar error del router",
             "type": "main",
             "index": 0
           }
@@ -374,15 +374,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "4f308073-3ddf-4af0-8579-39eeecbd24a3",
-  "activeVersionId": "4f308073-3ddf-4af0-8579-39eeecbd24a3",
-  "versionCounter": 37,
+  "versionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
+  "activeVersionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
+  "versionCounter": 40,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T20:01:03.952Z",
-    "createdAt": "2026-09-17T20:01:03.952Z",
-    "versionId": "4f308073-3ddf-4af0-8579-39eeecbd24a3",
+    "updatedAt": "2026-09-18T13:49:47.113Z",
+    "createdAt": "2026-09-18T13:49:47.113Z",
+    "versionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
     "workflowId": "7gmpPMBJtEb0W3J5",
     "nodes": [
       {
@@ -426,7 +426,7 @@
           "returnAll": true
         },
         "id": "w4a-leer",
-        "name": "Leer cotizaciones PROPUESTA_GENERADA",
+        "name": "Data Table - Leer cotizaciones PROPUESTA_GENERADA",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -462,7 +462,7 @@
           "options": {}
         },
         "id": "w4a-marcar",
-        "name": "Marcar EN_REVISION",
+        "name": "Data Table - Marcar EN_REVISION",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -481,7 +481,7 @@
           "workflowInputs": {
             "mappingMode": "defineBelow",
             "value": {
-              "id_solicitud": "={{ $json.id_solicitud || $('Leer cotizaciones PROPUESTA_GENERADA').item.json.id_solicitud }}"
+              "id_solicitud": "={{ $json.id_solicitud || $('Data Table - Leer cotizaciones PROPUESTA_GENERADA').item.json.id_solicitud }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -512,7 +512,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Marcar EN_REVISION';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W4-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W4-A (Router de Aprobación)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-A-router-aprobacion', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+          "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Data Table - Marcar EN_REVISION';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W4-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W4-A (Router de Aprobación)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-A-router-aprobacion', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
         },
         "id": "w4a-prep-error",
         "name": "Preparar error - Router",
@@ -545,7 +545,7 @@
           "options": {}
         },
         "id": "w4a-reg-error",
-        "name": "Registrar error - Router",
+        "name": "Data Table - Registrar error del router",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -564,7 +564,7 @@
           }
         },
         "id": "w4a-alerta",
-        "name": "Enviar alerta - Router",
+        "name": "Outlook - Enviar alerta del router",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
@@ -648,14 +648,14 @@
         "main": [
           [
             {
-              "node": "Leer cotizaciones PROPUESTA_GENERADA",
+              "node": "Data Table - Leer cotizaciones PROPUESTA_GENERADA",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Marcar EN_REVISION": {
+      "Data Table - Marcar EN_REVISION": {
         "main": [
           [
             {
@@ -677,25 +677,25 @@
         "main": [
           [
             {
-              "node": "Registrar error - Router",
+              "node": "Data Table - Registrar error del router",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - Router": {
+      "Data Table - Registrar error del router": {
         "main": [
           [
             {
-              "node": "Enviar alerta - Router",
+              "node": "Outlook - Enviar alerta del router",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer cotizaciones PROPUESTA_GENERADA": {
+      "Data Table - Leer cotizaciones PROPUESTA_GENERADA": {
         "main": [
           [
             {
@@ -710,7 +710,7 @@
         "main": [
           [
             {
-              "node": "Marcar EN_REVISION",
+              "node": "Data Table - Marcar EN_REVISION",
               "type": "main",
               "index": 0
             }
@@ -728,7 +728,7 @@
         "main": [
           [
             {
-              "node": "Registrar error - Router",
+              "node": "Data Table - Registrar error del router",
               "type": "main",
               "index": 0
             }
@@ -742,18 +742,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T20:01:04.033Z",
-        "id": 2480,
+        "createdAt": "2026-09-18T13:49:47.163Z",
+        "id": 2500,
         "workflowId": "7gmpPMBJtEb0W3J5",
-        "versionId": "4f308073-3ddf-4af0-8579-39eeecbd24a3",
+        "versionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T20:01:04.076Z",
-        "id": 2481,
+        "createdAt": "2026-09-18T13:49:47.182Z",
+        "id": 2501,
         "workflowId": "7gmpPMBJtEb0W3J5",
-        "versionId": "4f308073-3ddf-4af0-8579-39eeecbd24a3",
+        "versionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
