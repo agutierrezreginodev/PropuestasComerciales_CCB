@@ -10,46 +10,53 @@
     { "id": "notificacion", "label": "Notificación Asesor" },
     { "id": "revision", "label": "Interfaz de Revisión" },
     { "id": "decision", "label": "Resolución Comercial" },
-    { "id": "ia_loop", "label": "Corrección IA con Whitelist" },
-    { "id": "excepciones", "label": "Excepciones y Cancelación", "variant": "exception" }
+    { "id": "excepciones", "label": "Excepciones y Cancelación", "variant": "exception" },
+    { "id": "ia_loop", "label": "Corrección IA con Whitelist" }
   ],
   "phases": [
     { "id": "alerta", "label": "Notificación", "fromCol": 0, "toCol": 1 },
     { "id": "inspeccion", "label": "Revisión Comercial", "fromCol": 2, "toCol": 3 },
     { "id": "resolucion", "label": "Decisión y Ajuste", "fromCol": 4, "toCol": 5, "variant": "emphasis" }
   ],
-  "mainPath": ["w4a_router", "w4b_teams", "w4c_consulta", "spa_revision", "w4d_decision", "cotiz_aprobada"],
+  "mainPath": ["w4a_router", "w4b_teams", "w4c_consulta", "validar_id_w4c", "spa_revision", "w4d_decision", "cotiz_aprobada"],
   "semanticChecks": {
     "allowedRoots": ["w4a_router"],
-    "allowedTerminals": ["cotiz_aprobada", "cotiz_cancelada", "escalar_manual", "resp_400_dec"]
+    "allowedTerminals": ["cotiz_aprobada", "cotiz_cancelada", "escalar_manual", "resp_400_dec", "resp_400_w4c", "error_calculo"]
   },
   "nodes": [
-    { "id": "w4a_router", "lane": "notificacion", "col": 0, "type": "backend", "label": "W4A Router", "sublabel": "Polling cada 15 min", "width": 120 },
-    { "id": "w4b_teams", "lane": "notificacion", "col": 1, "type": "messagebus", "label": "W4B Teams", "sublabel": "Link a revisión", "width": 115 },
-    { "id": "w4c_consulta", "lane": "revision", "col": 2, "type": "security", "label": "W4C Consulta", "sublabel": "API con Auth", "width": 120 },
-    { "id": "spa_revision", "lane": "revision", "col": 3, "type": "frontend", "label": "Página Revisión", "sublabel": "revision-propuesta", "tag": "3 opciones", "width": 135 },
-    { "id": "w4d_decision", "lane": "decision", "col": 4, "type": "security", "label": "W4D Decisión", "sublabel": "Valida X-CCB-Auth", "width": 130 },
-    { "id": "resp_400_dec", "lane": "excepciones", "col": 4, "type": "security", "label": "Rechazo HTTP 400", "sublabel": "Decisión no válida", "width": 135 },
-    { "id": "cotiz_aprobada", "lane": "decision", "col": 5, "type": "backend", "label": "Marca APROBADA", "sublabel": "Habilita W5 Envío", "tag": "Aprobada", "width": 135 },
-    { "id": "cotiz_cancelada", "lane": "excepciones", "col": 5, "type": "backend", "label": "Marca CANCELADA", "sublabel": "Termina cotización", "width": 135 },
-    { "id": "ia_correccion", "lane": "ia_loop", "col": 4, "type": "backend", "label": "W4D Asistente IA", "sublabel": "gpt-4o-mini + Whitelist", "width": 145 },
-    { "id": "escalar_manual", "lane": "ia_loop", "col": 5, "type": "security", "label": "REVISION MANUAL", "sublabel": "Tope 3 rondas", "tag": "Alerta Outlook", "width": 135 }
+    { "id": "w4a_router", "lane": "notificacion", "col": 0, "type": "backend", "label": "W4A Router", "sublabel": "Cada 15 min", "width": 105 },
+    { "id": "w4b_teams", "lane": "notificacion", "col": 1, "type": "messagebus", "label": "W4B Teams", "sublabel": "Link a revisión", "width": 110 },
+    { "id": "w4c_consulta", "lane": "revision", "col": 1, "type": "security", "label": "W4C Consulta", "sublabel": "Auth · CORS restringido", "width": 135 },
+    { "id": "validar_id_w4c", "lane": "revision", "col": 2, "type": "security", "label": "Validar id_solicitud presente", "sublabel": "antes de leer Data Tables", "width": 200 },
+    { "id": "spa_revision", "lane": "revision", "col": 3, "type": "frontend", "label": "Página Revisión", "sublabel": "revision-propuesta", "tag": "3 opciones", "width": 130 },
+    { "id": "w4d_decision", "lane": "decision", "col": 4, "type": "security", "label": "W4D Decisión", "sublabel": "Valida Auth", "width": 115 },
+    { "id": "resp_400_dec", "lane": "excepciones", "col": 4, "type": "security", "label": "Rechazo HTTP 400", "sublabel": "Decisión inválida", "width": 130 },
+    { "id": "resp_400_w4c", "lane": "excepciones", "col": 2, "type": "security", "label": "Responder error consulta", "sublabel": "HTTP 400 real", "width": 165 },
+    { "id": "cotiz_aprobada", "lane": "decision", "col": 5, "type": "backend", "label": "Marca APROBADA", "sublabel": "Habilita W5", "tag": "Aprobada", "width": 120 },
+    { "id": "cotiz_cancelada", "lane": "excepciones", "col": 3, "type": "backend", "label": "Marca CANCELADA", "sublabel": "Fin cotización", "width": 125 },
+    { "id": "ia_correccion", "lane": "ia_loop", "col": 4, "type": "backend", "label": "W4D Asistente IA", "sublabel": "gpt-4o-mini", "width": 130 },
+    { "id": "escalar_manual", "lane": "ia_loop", "col": 5, "type": "security", "label": "REVISION_MANUAL", "sublabel": "Tope de 3 rondas", "tag": "Alerta: tope", "width": 130 },
+    { "id": "error_calculo", "lane": "excepciones", "col": 5, "type": "security", "label": "ERROR_CALCULO", "sublabel": "Fallo técnico del motor", "tag": "Alerta: fallo", "width": 135 }
   ],
   "edges": [
     { "from": "w4a_router", "to": "w4b_teams", "label": "dispara revisión", "variant": "emphasis", "role": "main" },
     { "from": "w4b_teams", "to": "w4c_consulta", "label": "abre revisión", "variant": "emphasis", "role": "main" },
-    { "from": "w4c_consulta", "to": "spa_revision", "label": "carga resumen + PDF", "variant": "emphasis", "role": "main" },
+    { "from": "w4c_consulta", "to": "validar_id_w4c", "label": "extrae id_solicitud", "variant": "emphasis", "role": "main" },
+    { "from": "validar_id_w4c", "to": "spa_revision", "label": "id presente → carga resumen + PDF", "variant": "emphasis", "role": "main" },
+    { "from": "validar_id_w4c", "to": "resp_400_w4c", "label": "falta id_solicitud", "variant": "security", "role": "error" },
+    { "from": "w4c_consulta", "to": "resp_400_w4c", "label": "resguardo: Consolidar respuesta lanza excepción si falta el id", "variant": "security", "role": "error" },
     { "from": "spa_revision", "to": "w4d_decision", "label": "envía decisión", "variant": "emphasis", "role": "main" },
     { "from": "w4d_decision", "to": "cotiz_aprobada", "label": "Aprobar", "variant": "emphasis", "role": "main" },
     { "from": "w4d_decision", "to": "cotiz_cancelada", "label": "Cancelar", "variant": "security", "role": "branch" },
     { "from": "w4d_decision", "to": "resp_400_dec", "label": "valor no permitido", "variant": "security", "role": "error" },
     { "from": "w4d_decision", "to": "ia_correccion", "label": "Corregir criterios", "variant": "dashed", "role": "branch" },
     { "from": "ia_correccion", "to": "spa_revision", "label": "recalculado (ronda <=3)", "variant": "dashed", "role": "return" },
-    { "from": "ia_correccion", "to": "escalar_manual", "label": "4a ronda o falla", "variant": "security", "role": "error" }
+    { "from": "ia_correccion", "to": "escalar_manual", "label": "tope de 3 rondas alcanzado", "variant": "security", "role": "error" },
+    { "from": "ia_correccion", "to": "error_calculo", "label": "recálculo del motor falló", "variant": "security", "role": "error" }
   ],
   "cards": [
-    { "dot": "cyan", "title": "Revisión Web Externa", "items": ["Reemplaza las tarjetas sendAndWait de Teams que sufrían enlaces rotos", "Página estática en Vercel autenticada mediante cabeceras X-CCB-Auth", "Visualización directa del PDF persistido en el microservicio"] },
-    { "dot": "amber", "title": "Guardarraíles de IA", "items": ["gpt-4o-mini ajusta criterios bajo esquema JSON estricto", "Whitelist valida 18 sectores CIIU, tamaño y figura jurídica sin corrupción", "Loop acotado a 3 iteraciones antes de escalar a revisión manual"] },
-    { "dot": "rose", "title": "Seguridad y Trazabilidad", "items": ["Decisión validada contra enum estricto con respuesta 400 ante payloads anómalos", "Estado APROBADA habilita automáticamente el router de despacho a cliente", "CANCELADA concluye la cotización sin emitir comunicaciones externas"] }
+    { "dot": "cyan", "title": "Revisión Web Externa", "items": ["Reemplaza las tarjetas sendAndWait de Teams que sufrían enlaces rotos", "Página estática en Vercel autenticada con X-CCB-Auth; W4C solo acepta CORS desde revision-propuesta-ccb.vercel.app", "W4C valida que exista id_solicitud antes de tocar los Data Tables y responde 400 real si falta", "Visualización directa del PDF persistido en el microservicio"] },
+    { "dot": "amber", "title": "Guardarraíles de IA", "items": ["gpt-4o-mini ajusta criterios bajo esquema JSON estricto", "Whitelist valida 18 sectores CIIU, tamaño y figura jurídica sin corrupción", "Loop acotado a 3 iteraciones antes de escalar a REVISION_MANUAL", "Si el recálculo del motor falla por causa técnica, el estado es ERROR_CALCULO (distinto de agotar rondas)"] },
+    { "dot": "rose", "title": "Seguridad y Trazabilidad", "items": ["Decisión validada contra enum estricto con respuesta 400 ante payloads anómalos", "W4C tiene su propio camino de rechazo 400, independiente del de W4D", "Estado APROBADA habilita automáticamente el router de despacho a cliente", "CANCELADA concluye la cotización sin emitir comunicaciones externas"] }
   ]
 }

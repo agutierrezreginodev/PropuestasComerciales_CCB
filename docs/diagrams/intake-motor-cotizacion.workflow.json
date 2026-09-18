@@ -9,6 +9,7 @@
   "lanes": [
     { "id": "cliente", "label": "Cliente" },
     { "id": "intake", "label": "Intake y Validación" },
+    { "id": "validacion_gate", "label": "Compuerta de Validación" },
     { "id": "motor", "label": "Motor y Generación de PDF" },
     { "id": "excepciones", "label": "Excepciones y Rechazos", "variant": "exception" }
   ],
@@ -17,35 +18,43 @@
     { "id": "gatekeeping", "label": "Validación y Persistencia", "fromCol": 2, "toCol": 3 },
     { "id": "calculo", "label": "Cálculo y Generación de PDF", "fromCol": 4, "toCol": 5, "variant": "emphasis" }
   ],
-  "mainPath": ["form_web", "w2c_gate", "w2a_sub", "w3_motor", "micro_pdf"],
+  "mainPath": ["form_web", "w2c_gate", "validar_campos", "if_completo", "w2a_sub", "w3_motor", "micro_pdf"],
   "semanticChecks": {
     "allowedRoots": ["correo_in", "form_web"],
-    "allowedTerminals": ["micro_pdf", "resp_400", "error_rechazo"]
+    "allowedTerminals": ["micro_pdf", "responder_error_campos", "error_rechazo"]
   },
   "nodes": [
-    { "id": "correo_in", "lane": "intake", "col": 0, "type": "external", "label": "Correo entrante", "sublabel": "Outlook / Solicitudes CCB", "width": 150 },
-    { "id": "w1_extract", "lane": "intake", "col": 1, "type": "backend", "label": "W1 Extractor IA", "sublabel": "gpt-4o-mini extrae PII", "width": 140 },
+    { "id": "correo_in", "lane": "intake", "col": 0, "type": "external", "label": "Correo entrante", "sublabel": "Outlook CCB", "width": 115 },
+    { "id": "w1_extract", "lane": "intake", "col": 1, "type": "backend", "label": "W1 Extractor IA", "sublabel": "gpt-4o-mini", "width": 115 },
     { "id": "form_web", "lane": "cliente", "col": 1, "type": "frontend", "label": "Formulario Vercel", "sublabel": "informaciongeorreferenciada-ccb", "width": 160 },
-    { "id": "w2c_gate", "lane": "intake", "col": 2, "type": "security", "label": "W2C Webhook Auth", "sublabel": "X-CCB-Auth y valida campos", "width": 155 },
-    { "id": "resp_400", "lane": "excepciones", "col": 2, "type": "security", "label": "Rechazo HTTP 400", "sublabel": "Campos faltantes o inválidos", "width": 155 },
-    { "id": "w2a_sub", "lane": "motor", "col": 3, "type": "database", "label": "W2A Guardar Criterios", "sublabel": "Upsert Criterios_Cotizacion", "width": 165 },
-    { "id": "w3_motor", "lane": "motor", "col": 4, "type": "backend", "label": "W3 Motor Tarifario", "sublabel": "Consulta 4.108 empresas", "width": 150 },
-    { "id": "error_rechazo", "lane": "excepciones", "col": 4, "type": "security", "label": "Motor ok:false", "sublabel": "0 registros o plan inválido", "width": 150 },
-    { "id": "micro_pdf", "lane": "motor", "col": 5, "type": "cloud", "label": "Microservicio PDF", "sublabel": "Docker Puppeteer :3000", "tag": "PROPUESTA_GENERADA", "width": 160 }
+    { "id": "w2c_gate", "lane": "intake", "col": 2, "type": "security", "label": "W2C Webhook Auth", "sublabel": "X-CCB-Auth · CORS", "width": 135 },
+    { "id": "validar_campos", "lane": "intake", "col": 3, "type": "backend", "label": "Validar campos requeridos", "sublabel": "nombre, email, tel, RS", "width": 172 },
+    { "id": "if_completo", "lane": "validacion_gate", "col": 3, "type": "security", "label": "¿Completo?", "sublabel": "If: valido == true", "width": 140 },
+    { "id": "w2a_sub", "lane": "motor", "col": 3, "type": "database", "label": "W2A Guardar Criterios", "sublabel": "Upsert criterios", "width": 145 },
+    { "id": "w3_motor", "lane": "motor", "col": 4, "type": "backend", "label": "W3 Motor Tarifario", "sublabel": "4.108 empresas", "width": 135 },
+    { "id": "error_rechazo", "lane": "excepciones", "col": 4, "type": "security", "label": "Motor ok:false", "sublabel": "0 registros o inválido", "width": 135 },
+    { "id": "micro_pdf", "lane": "motor", "col": 5, "type": "cloud", "label": "Microservicio PDF", "sublabel": "Puppeteer :3000", "tag": "PROPUESTA_GENERADA", "width": 138 },
+    { "id": "preparar_error_campos", "lane": "excepciones", "col": 2, "type": "security", "label": "Preparar error", "sublabel": "Campos faltantes", "width": 125 },
+    { "id": "registrar_error_campos", "lane": "excepciones", "col": 3, "type": "database", "label": "Registrar error", "sublabel": "Data Table Errores_CCB", "width": 130 },
+    { "id": "responder_error_campos", "lane": "excepciones", "col": 5, "type": "security", "label": "Responder error", "sublabel": "HTTP 400 real", "width": 130 }
   ],
   "edges": [
     { "from": "correo_in", "to": "w1_extract", "label": "analiza correo", "variant": "emphasis", "role": "main" },
     { "from": "w1_extract", "to": "form_web", "label": "envía link de form", "variant": "emphasis", "role": "main" },
     { "from": "form_web", "to": "w2c_gate", "label": "POST con auth", "variant": "emphasis", "role": "main" },
-    { "from": "w2c_gate", "to": "w2a_sub", "label": "payload válido", "variant": "emphasis", "role": "main" },
-    { "from": "w2c_gate", "to": "resp_400", "label": "datos incompletos", "variant": "security", "role": "error" },
+    { "from": "w2c_gate", "to": "validar_campos", "label": "recibe payload", "variant": "emphasis", "role": "main" },
+    { "from": "validar_campos", "to": "if_completo", "label": "chequea campos", "variant": "emphasis", "role": "main" },
+    { "from": "if_completo", "to": "w2a_sub", "label": "completo", "variant": "emphasis", "role": "main" },
+    { "from": "if_completo", "to": "preparar_error_campos", "label": "campos faltantes", "variant": "security", "role": "error" },
+    { "from": "preparar_error_campos", "to": "registrar_error_campos", "label": "arma mensaje_error", "variant": "security", "role": "main" },
+    { "from": "registrar_error_campos", "to": "responder_error_campos", "label": "guarda en Errores_CCB", "variant": "security", "role": "main" },
     { "from": "w2a_sub", "to": "w3_motor", "label": "ejecuta motor", "variant": "emphasis", "role": "main" },
     { "from": "w3_motor", "to": "micro_pdf", "label": "HTML interpolado", "variant": "emphasis", "role": "main" },
-    { "from": "w3_motor", "to": "error_rechazo", "label": "cálculo rechazado", "variant": "security", "role": "error" }
+    { "from": "w3_motor", "to": "error_rechazo", "label": "rechazado o no reconocido", "variant": "security", "role": "error" }
   ],
   "cards": [
-    { "dot": "cyan", "title": "Entrada y Validación", "items": ["W1 extrae datos del cliente desde Outlook con gpt-4o-mini", "W2C exige cabecera X-CCB-Auth y rechaza con 400 si faltan campos obligatorios"] },
+    { "dot": "cyan", "title": "Entrada y Validación", "items": ["W1 extrae datos del cliente desde Outlook con gpt-4o-mini", "W2C exige cabecera X-CCB-Auth y CORS restringido a formulario-solicitud-ccb.vercel.app", "Validar campos requeridos corta antes de guardar y responde 400 real si faltan nombre, email, teléfono o razón social"] },
     { "dot": "emerald", "title": "Cálculo y Plantillas", "items": ["W3 cruza criterios con 4.108 empresas en SharePoint Excel", "El nodo Code sustituye 254 placeholders en la plantilla HTML A4", "Microservicio Puppeteer compila el PDF y lo almacena localmente"] },
-    { "dot": "rose", "title": "Control de Fallos", "items": ["El motor siempre devuelve respuesta estructurada al padre aun con ok:false", "0 empresas encontradas no genera fila basura en Cotizaciones_CCB", "Cualquier excepción técnica queda capturada en Errores_CCB"] }
+    { "dot": "rose", "title": "Control de Fallos", "items": ["El motor siempre devuelve respuesta estructurada al padre aun con ok:false", "0 empresas encontradas no genera fila basura en Cotizaciones_CCB", "Un servicio no reconocido por 'Enrutar por servicio' ya no se descarta en silencio: ahora responde ok:false explícito", "Cualquier excepción técnica queda capturada en Errores_CCB"] }
   ]
 }
