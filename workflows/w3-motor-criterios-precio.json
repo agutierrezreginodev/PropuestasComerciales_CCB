@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T21:09:23.528Z",
+  "updatedAt": "2026-09-18T13:32:53.201Z",
   "createdAt": "2026-09-07T18:48:54.850Z",
   "id": "cHOIOEFB5nbltN82",
   "name": "[SUB] CCB - Workflow 3 - Motor Criterios y Precio",
@@ -42,7 +42,7 @@
         400
       ],
       "id": "300dd969-ce10-4f13-91ed-56db6bca97f8",
-      "name": "Generar PDF (microservicio)",
+      "name": "HTTP - Generar PDF (microservicio)",
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 2000,
@@ -82,7 +82,7 @@
         "options": {}
       },
       "id": "f97f7b61-fbff-4e02-9449-9751749badac",
-      "name": "Leer BD (hoja BD)",
+      "name": "Excel - Leer BD (hoja BD)",
       "type": "n8n-nodes-base.microsoftExcel",
       "typeVersion": 2,
       "position": [
@@ -330,10 +330,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
+            "caseSensitive": true,
+            "typeValidation": "strict"
           },
           "conditions": [
             {
@@ -352,7 +352,7 @@
         "options": {}
       },
       "id": "243a2941-c6b6-4531-a458-79f198b268ac",
-      "name": "Filtrar solo ok=true",
+      "name": "IF - Cálculo exitoso (ok=true)",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
@@ -402,7 +402,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const idSolicitud = $('When Executed by Another Workflow').first().json.id_solicitud || null;\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\n\nreturn { json: {\n  ok: false,\n  error: 'Fallo leyendo la base de empresas (SharePoint/Excel): ' + mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'Leer BD (hoja BD)',\n  mensaje_error: mensajeError\n} };"
+        "jsCode": "const idSolicitud = $('When Executed by Another Workflow').first().json.id_solicitud || null;\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\n\nreturn { json: {\n  ok: false,\n  error: 'Fallo leyendo la base de empresas (SharePoint/Excel): ' + mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'Excel - Leer BD (hoja BD)',\n  mensaje_error: mensajeError\n} };"
       },
       "id": "aeead264-931f-4b39-a7d6-c445878a9872",
       "name": "Preparar error - Leer BD",
@@ -415,7 +415,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const idSolicitud = $('When Executed by Another Workflow').first().json.id_solicitud || null;\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\n\nreturn { json: {\n  ok: false,\n  error: 'Fallo generando el PDF (microservicio no disponible): ' + mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'Generar PDF (microservicio)',\n  mensaje_error: mensajeError\n} };"
+        "jsCode": "const idSolicitud = $('When Executed by Another Workflow').first().json.id_solicitud || null;\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\n\nreturn { json: {\n  ok: false,\n  error: 'Fallo generando el PDF (microservicio no disponible): ' + mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'HTTP - Generar PDF (microservicio)',\n  mensaje_error: mensajeError\n} };"
       },
       "id": "7b3c0ef1-79ba-44b7-afc2-aa2c1f8ff879",
       "name": "Preparar error - Generar PDF",
@@ -491,7 +491,7 @@
         "options": {}
       },
       "id": "2b600810-fd18-44ca-876f-af83f25a97c4",
-      "name": "Registrar error infra - Data Table",
+      "name": "Data Table - Registrar error infra (Entrada/BD)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -577,7 +577,7 @@
         "options": {}
       },
       "id": "853d6c8b-6ae7-4867-a29f-fdcaf60d1ed2",
-      "name": "Registrar error infra - Data Table1",
+      "name": "Data Table - Registrar error infra (PDF)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -678,14 +678,14 @@
       "main": [
         [
           {
-            "node": "Leer BD (hoja BD)",
+            "node": "Excel - Leer BD (hoja BD)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer BD (hoja BD)": {
+    "Excel - Leer BD (hoja BD)": {
       "main": [
         [
           {
@@ -746,14 +746,14 @@
       "main": [
         [
           {
-            "node": "Filtrar solo ok=true",
+            "node": "IF - Cálculo exitoso (ok=true)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Filtrar solo ok=true": {
+    "IF - Cálculo exitoso (ok=true)": {
       "main": [
         [
           {
@@ -819,14 +819,14 @@
       "main": [
         [
           {
-            "node": "Generar PDF (microservicio)",
+            "node": "HTTP - Generar PDF (microservicio)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Generar PDF (microservicio)": {
+    "HTTP - Generar PDF (microservicio)": {
       "main": [
         [
           {
@@ -848,7 +848,7 @@
       "main": [
         [
           {
-            "node": "Registrar error infra - Data Table",
+            "node": "Data Table - Registrar error infra (Entrada/BD)",
             "type": "main",
             "index": 0
           }
@@ -859,14 +859,14 @@
       "main": [
         [
           {
-            "node": "Registrar error infra - Data Table1",
+            "node": "Data Table - Registrar error infra (PDF)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error infra - Data Table": {
+    "Data Table - Registrar error infra (Entrada/BD)": {
       "main": [
         [
           {
@@ -888,7 +888,7 @@
         ]
       ]
     },
-    "Registrar error infra - Data Table1": {
+    "Data Table - Registrar error infra (PDF)": {
       "main": [
         [
           {
@@ -954,7 +954,7 @@
       "main": [
         [
           {
-            "node": "Registrar error infra - Data Table",
+            "node": "Data Table - Registrar error infra (Entrada/BD)",
             "type": "main",
             "index": 0
           }
@@ -987,15 +987,15 @@
       }
     ]
   },
-  "versionId": "ba795a8f-d24b-4520-bf5f-c474ccd49c41",
-  "activeVersionId": "dfaec8fb-cdea-4bf4-945b-18836110a415",
-  "versionCounter": 254,
+  "versionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
+  "activeVersionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
+  "versionCounter": 257,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T21:02:22.769Z",
-    "createdAt": "2026-09-17T21:02:22.769Z",
-    "versionId": "dfaec8fb-cdea-4bf4-945b-18836110a415",
+    "updatedAt": "2026-09-18T13:32:53.228Z",
+    "createdAt": "2026-09-18T13:32:53.228Z",
+    "versionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
     "workflowId": "cHOIOEFB5nbltN82",
     "nodes": [
       {
@@ -1033,7 +1033,7 @@
           400
         ],
         "id": "300dd969-ce10-4f13-91ed-56db6bca97f8",
-        "name": "Generar PDF (microservicio)",
+        "name": "HTTP - Generar PDF (microservicio)",
         "retryOnFail": true,
         "maxTries": 3,
         "waitBetweenTries": 2000,
@@ -1073,7 +1073,7 @@
           "options": {}
         },
         "id": "f97f7b61-fbff-4e02-9449-9751749badac",
-        "name": "Leer BD (hoja BD)",
+        "name": "Excel - Leer BD (hoja BD)",
         "type": "n8n-nodes-base.microsoftExcel",
         "typeVersion": 2,
         "position": [
@@ -1112,10 +1112,10 @@
               {
                 "conditions": {
                   "options": {
-                    "version": 2,
-                    "leftValue": "",
                     "caseSensitive": true,
-                    "typeValidation": "strict"
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
                   },
                   "conditions": [
                     {
@@ -1136,10 +1136,10 @@
               {
                 "conditions": {
                   "options": {
-                    "version": 2,
-                    "leftValue": "",
                     "caseSensitive": true,
-                    "typeValidation": "strict"
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
                   },
                   "conditions": [
                     {
@@ -1160,10 +1160,10 @@
               {
                 "conditions": {
                   "options": {
-                    "version": 2,
-                    "leftValue": "",
                     "caseSensitive": true,
-                    "typeValidation": "strict"
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
                   },
                   "conditions": [
                     {
@@ -1184,10 +1184,10 @@
               {
                 "conditions": {
                   "options": {
-                    "version": 2,
-                    "leftValue": "",
                     "caseSensitive": true,
-                    "typeValidation": "strict"
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
                   },
                   "conditions": [
                     {
@@ -1321,10 +1321,10 @@
         "parameters": {
           "conditions": {
             "options": {
-              "caseSensitive": true,
+              "version": 2,
               "leftValue": "",
-              "typeValidation": "strict",
-              "version": 2
+              "caseSensitive": true,
+              "typeValidation": "strict"
             },
             "conditions": [
               {
@@ -1343,7 +1343,7 @@
           "options": {}
         },
         "id": "243a2941-c6b6-4531-a458-79f198b268ac",
-        "name": "Filtrar solo ok=true",
+        "name": "IF - Cálculo exitoso (ok=true)",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.2,
         "position": [
@@ -1393,7 +1393,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const idSolicitud = $('When Executed by Another Workflow').first().json.id_solicitud || null;\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\n\nreturn { json: {\n  ok: false,\n  error: 'Fallo leyendo la base de empresas (SharePoint/Excel): ' + mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'Leer BD (hoja BD)',\n  mensaje_error: mensajeError\n} };"
+          "jsCode": "const idSolicitud = $('When Executed by Another Workflow').first().json.id_solicitud || null;\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\n\nreturn { json: {\n  ok: false,\n  error: 'Fallo leyendo la base de empresas (SharePoint/Excel): ' + mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'Excel - Leer BD (hoja BD)',\n  mensaje_error: mensajeError\n} };"
         },
         "id": "aeead264-931f-4b39-a7d6-c445878a9872",
         "name": "Preparar error - Leer BD",
@@ -1406,7 +1406,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const idSolicitud = $('When Executed by Another Workflow').first().json.id_solicitud || null;\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\n\nreturn { json: {\n  ok: false,\n  error: 'Fallo generando el PDF (microservicio no disponible): ' + mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'Generar PDF (microservicio)',\n  mensaje_error: mensajeError\n} };"
+          "jsCode": "const idSolicitud = $('When Executed by Another Workflow').first().json.id_solicitud || null;\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\n\nreturn { json: {\n  ok: false,\n  error: 'Fallo generando el PDF (microservicio no disponible): ' + mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'HTTP - Generar PDF (microservicio)',\n  mensaje_error: mensajeError\n} };"
         },
         "id": "7b3c0ef1-79ba-44b7-afc2-aa2c1f8ff879",
         "name": "Preparar error - Generar PDF",
@@ -1482,7 +1482,7 @@
           "options": {}
         },
         "id": "2b600810-fd18-44ca-876f-af83f25a97c4",
-        "name": "Registrar error infra - Data Table",
+        "name": "Data Table - Registrar error infra (Entrada/BD)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1568,7 +1568,7 @@
           "options": {}
         },
         "id": "853d6c8b-6ae7-4867-a29f-fdcaf60d1ed2",
-        "name": "Registrar error infra - Data Table1",
+        "name": "Data Table - Registrar error infra (PDF)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1591,6 +1591,9 @@
         ]
       },
       {
+        "parameters": {
+          "jsCode": "const servicio = $json.servicio;\nreturn {\n  json: {\n    ...$json,\n    ok: false,\n    error: `El servicio '${servicio}' no coincide con ninguno de los 4 servicios soportados (Informacion Georreferenciada, Zonificacion y Rutero, Ubicacion de Nuevo Negocio, Informacion en Linea).`\n  }\n};"
+        },
         "id": "3c0a012c-a570-4461-aeec-d57ad61460f9",
         "name": "Preparar error - Servicio no reconocido",
         "type": "n8n-nodes-base.code",
@@ -1598,12 +1601,12 @@
         "position": [
           -1920,
           928
-        ],
-        "parameters": {
-          "jsCode": "const servicio = $json.servicio;\nreturn {\n  json: {\n    ...$json,\n    ok: false,\n    error: `El servicio '${servicio}' no coincide con ninguno de los 4 servicios soportados (Informacion Georreferenciada, Zonificacion y Rutero, Ubicacion de Nuevo Negocio, Informacion en Linea).`\n  }\n};"
-        }
+        ]
       },
       {
+        "parameters": {
+          "jsCode": "// Validacion temprana de entrada (extension F2-01 a W3) -- corre ANTES de 'Normalizar Criterios' y\n// 'Leer BD (hoja BD)' para no gastar una lectura de SharePoint/Excel ni calcular nada con datos\n// incompletos. Campos minimos derivados de evidencia real: los checks duros dentro de\n// 'Calcular Conteo y Precio' (Falta tipo_organizacion / visitas_por_asesor / incluye_rutas ambiguo /\n// num_niveles / plan_deseado o consultas_mensuales+numero_usuarios) y de lo que\n// 'Preparar criterios para motor - <tipo>' (W2A) realmente envia por servicio.\nfunction normalize(s) {\n  return (s ?? '').toString().toUpperCase()\n    .normalize('NFD').replace(/[̀-ͯ]/g, '')\n    .trim();\n}\n\nconst tipoServicio = normalize($json.tipo_servicio);\nconst idSolicitud = $json.id_solicitud;\n\nfunction rechazar(campo, mensaje) {\n  return { json: { ...$json, valido: false, campo_faltante: campo, mensaje_error: mensaje } };\n}\n\nif (!idSolicitud) {\n  return rechazar('id_solicitud', 'Falta \"id_solicitud\" en la entrada recibida por el motor (W3).');\n}\nif (!tipoServicio) {\n  return rechazar('tipo_servicio', 'Falta \"tipo_servicio\" en la entrada recibida por el motor (W3).');\n}\n\nconst esGeo = tipoServicio.includes('GEORREFERENCIADA') || tipoServicio === 'GEO';\nconst esZonif = tipoServicio.includes('ZONIFICACI') || tipoServicio === 'ZONIF';\nconst esUbic = tipoServicio.includes('UBICACI') || tipoServicio === 'UBIC';\nconst esInfoLinea = (tipoServicio.includes('INFORMACI') && tipoServicio.includes('NEA')) || tipoServicio === 'INFOLINEA';\n\nif (!esGeo && !esZonif && !esUbic && !esInfoLinea) {\n  return rechazar('tipo_servicio', '\"tipo_servicio\" (\"' + $json.tipo_servicio + '\") no coincide con ninguno de los 4 servicios que reconoce \"Calcular Conteo y Precio\".');\n}\n\nconst tieneOverride = $json.total_registros !== null && $json.total_registros !== undefined && $json.total_registros !== '';\n\nif (esGeo) {\n  if (!tieneOverride && !$json.tipo_organizacion) {\n    return rechazar('tipo_organizacion', 'Informacion Georreferenciada requiere \"tipo_organizacion\" (o \"total_registros\" como override): sin ninguno de los dos, \"Calcular Conteo y Precio\" falla con \"Falta tipo_organizacion\".');\n  }\n} else if (esZonif) {\n  if (!tieneOverride) {\n    return rechazar('total_registros', 'Zonificacion y Rutero requiere \"total_registros\": este servicio no envia tipo_organizacion, asi que sin este dato el motor no puede contar empresas.');\n  }\n  if (!$json.visitas_por_asesor) {\n    return rechazar('visitas_por_asesor', 'Zonificacion y Rutero requiere \"visitas_por_asesor\" (> 0) para calcular el numero de zonas.');\n  }\n  if ($json.incluye_rutas === undefined || $json.incluye_rutas === null || $json.incluye_rutas === '') {\n    return rechazar('incluye_rutas', 'Zonificacion y Rutero requiere \"incluye_rutas\" (si/no) para calcular el valor de rutas.');\n  }\n} else if (esUbic) {\n  if (!tieneOverride) {\n    return rechazar('total_registros', 'Ubicacion de Nuevo Negocio requiere \"total_registros\": este servicio no envia tipo_organizacion, asi que sin este dato el motor no puede contar empresas.');\n  }\n  if (!$json.num_niveles) {\n    return rechazar('num_niveles', 'Ubicacion de Nuevo Negocio requiere \"num_niveles\" para calcular el numero de niveles de analisis.');\n  }\n} else if (esInfoLinea) {\n  const yaSabePlan = $json.ya_sabe_plan === true || $json.ya_sabe_plan === 'true';\n  const planDeseado = ($json.plan_deseado || '').toString().trim();\n  const tieneConsultasYUsuarios =\n    $json.consultas_mensuales !== undefined && $json.consultas_mensuales !== null && $json.consultas_mensuales !== '' &&\n    $json.numero_usuarios !== undefined && $json.numero_usuarios !== null && $json.numero_usuarios !== '';\n  if (!(yaSabePlan && planDeseado) && !tieneConsultasYUsuarios) {\n    return rechazar('plan_deseado', 'Informacion en Linea requiere \"plan_deseado\" (con \"ya_sabe_plan\"=true) o, en su defecto, \"consultas_mensuales\" + \"numero_usuarios\".');\n  }\n}\n\nreturn { json: { ...$json, valido: true } };"
+        },
         "id": "b1c2d3e4-2001-4a11-9a11-200000000001",
         "name": "Validar entrada - Motor Criterios y Precio",
         "type": "n8n-nodes-base.code",
@@ -1611,27 +1614,16 @@
         "position": [
           -3296,
           560
-        ],
-        "parameters": {
-          "jsCode": "// Validacion temprana de entrada (extension F2-01 a W3) -- corre ANTES de 'Normalizar Criterios' y\n// 'Leer BD (hoja BD)' para no gastar una lectura de SharePoint/Excel ni calcular nada con datos\n// incompletos. Campos minimos derivados de evidencia real: los checks duros dentro de\n// 'Calcular Conteo y Precio' (Falta tipo_organizacion / visitas_por_asesor / incluye_rutas ambiguo /\n// num_niveles / plan_deseado o consultas_mensuales+numero_usuarios) y de lo que\n// 'Preparar criterios para motor - <tipo>' (W2A) realmente envia por servicio.\nfunction normalize(s) {\n  return (s ?? '').toString().toUpperCase()\n    .normalize('NFD').replace(/[̀-ͯ]/g, '')\n    .trim();\n}\n\nconst tipoServicio = normalize($json.tipo_servicio);\nconst idSolicitud = $json.id_solicitud;\n\nfunction rechazar(campo, mensaje) {\n  return { json: { ...$json, valido: false, campo_faltante: campo, mensaje_error: mensaje } };\n}\n\nif (!idSolicitud) {\n  return rechazar('id_solicitud', 'Falta \"id_solicitud\" en la entrada recibida por el motor (W3).');\n}\nif (!tipoServicio) {\n  return rechazar('tipo_servicio', 'Falta \"tipo_servicio\" en la entrada recibida por el motor (W3).');\n}\n\nconst esGeo = tipoServicio.includes('GEORREFERENCIADA') || tipoServicio === 'GEO';\nconst esZonif = tipoServicio.includes('ZONIFICACI') || tipoServicio === 'ZONIF';\nconst esUbic = tipoServicio.includes('UBICACI') || tipoServicio === 'UBIC';\nconst esInfoLinea = (tipoServicio.includes('INFORMACI') && tipoServicio.includes('NEA')) || tipoServicio === 'INFOLINEA';\n\nif (!esGeo && !esZonif && !esUbic && !esInfoLinea) {\n  return rechazar('tipo_servicio', '\"tipo_servicio\" (\"' + $json.tipo_servicio + '\") no coincide con ninguno de los 4 servicios que reconoce \"Calcular Conteo y Precio\".');\n}\n\nconst tieneOverride = $json.total_registros !== null && $json.total_registros !== undefined && $json.total_registros !== '';\n\nif (esGeo) {\n  if (!tieneOverride && !$json.tipo_organizacion) {\n    return rechazar('tipo_organizacion', 'Informacion Georreferenciada requiere \"tipo_organizacion\" (o \"total_registros\" como override): sin ninguno de los dos, \"Calcular Conteo y Precio\" falla con \"Falta tipo_organizacion\".');\n  }\n} else if (esZonif) {\n  if (!tieneOverride) {\n    return rechazar('total_registros', 'Zonificacion y Rutero requiere \"total_registros\": este servicio no envia tipo_organizacion, asi que sin este dato el motor no puede contar empresas.');\n  }\n  if (!$json.visitas_por_asesor) {\n    return rechazar('visitas_por_asesor', 'Zonificacion y Rutero requiere \"visitas_por_asesor\" (> 0) para calcular el numero de zonas.');\n  }\n  if ($json.incluye_rutas === undefined || $json.incluye_rutas === null || $json.incluye_rutas === '') {\n    return rechazar('incluye_rutas', 'Zonificacion y Rutero requiere \"incluye_rutas\" (si/no) para calcular el valor de rutas.');\n  }\n} else if (esUbic) {\n  if (!tieneOverride) {\n    return rechazar('total_registros', 'Ubicacion de Nuevo Negocio requiere \"total_registros\": este servicio no envia tipo_organizacion, asi que sin este dato el motor no puede contar empresas.');\n  }\n  if (!$json.num_niveles) {\n    return rechazar('num_niveles', 'Ubicacion de Nuevo Negocio requiere \"num_niveles\" para calcular el numero de niveles de analisis.');\n  }\n} else if (esInfoLinea) {\n  const yaSabePlan = $json.ya_sabe_plan === true || $json.ya_sabe_plan === 'true';\n  const planDeseado = ($json.plan_deseado || '').toString().trim();\n  const tieneConsultasYUsuarios =\n    $json.consultas_mensuales !== undefined && $json.consultas_mensuales !== null && $json.consultas_mensuales !== '' &&\n    $json.numero_usuarios !== undefined && $json.numero_usuarios !== null && $json.numero_usuarios !== '';\n  if (!(yaSabePlan && planDeseado) && !tieneConsultasYUsuarios) {\n    return rechazar('plan_deseado', 'Informacion en Linea requiere \"plan_deseado\" (con \"ya_sabe_plan\"=true) o, en su defecto, \"consultas_mensuales\" + \"numero_usuarios\".');\n  }\n}\n\nreturn { json: { ...$json, valido: true } };"
-        }
+        ]
       },
       {
-        "id": "b1c2d3e4-2002-4a11-9a11-200000000002",
-        "name": "¿Entrada válida? - Motor Criterios y Precio",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2.2,
-        "position": [
-          -3184,
-          560
-        ],
         "parameters": {
           "conditions": {
             "options": {
-              "version": 2,
-              "leftValue": "",
               "caseSensitive": true,
-              "typeValidation": "strict"
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
             },
             "conditions": [
               {
@@ -1648,20 +1640,28 @@
             "combinator": "and"
           },
           "options": {}
-        }
+        },
+        "id": "b1c2d3e4-2002-4a11-9a11-200000000002",
+        "name": "¿Entrada válida? - Motor Criterios y Precio",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -3184,
+          560
+        ]
       },
       {
+        "parameters": {
+          "jsCode": "const idSolicitud = $json.id_solicitud || '(sin id)';\nconst campoFaltante = $json.campo_faltante || '(no especificado)';\nconst mensajeError = $json.mensaje_error || 'Falló la validación de campos mínimos de entrada en el motor (W3).';\n\nreturn { json: {\n  ok: false,\n  error: mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'Validar entrada - Motor Criterios y Precio',\n  mensaje_error: mensajeError,\n  campo_faltante: campoFaltante\n} };"
+        },
         "id": "b1c2d3e4-2003-4a11-9a11-200000000003",
         "name": "Preparar error - Validación de entrada (Motor)",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
           -3184,
-          760
-        ],
-        "parameters": {
-          "jsCode": "const idSolicitud = $json.id_solicitud || '(sin id)';\nconst campoFaltante = $json.campo_faltante || '(no especificado)';\nconst mensajeError = $json.mensaje_error || 'Falló la validación de campos mínimos de entrada en el motor (W3).';\n\nreturn { json: {\n  ok: false,\n  error: mensajeError,\n  id_solicitud: idSolicitud,\n  nodo_fallido: 'Validar entrada - Motor Criterios y Precio',\n  mensaje_error: mensajeError,\n  campo_faltante: campoFaltante\n} };"
-        }
+          768
+        ]
       }
     ],
     "connections": {
@@ -1669,14 +1669,14 @@
         "main": [
           [
             {
-              "node": "Leer BD (hoja BD)",
+              "node": "Excel - Leer BD (hoja BD)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer BD (hoja BD)": {
+      "Excel - Leer BD (hoja BD)": {
         "main": [
           [
             {
@@ -1737,14 +1737,14 @@
         "main": [
           [
             {
-              "node": "Filtrar solo ok=true",
+              "node": "IF - Cálculo exitoso (ok=true)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Filtrar solo ok=true": {
+      "IF - Cálculo exitoso (ok=true)": {
         "main": [
           [
             {
@@ -1810,14 +1810,14 @@
         "main": [
           [
             {
-              "node": "Generar PDF (microservicio)",
+              "node": "HTTP - Generar PDF (microservicio)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Generar PDF (microservicio)": {
+      "HTTP - Generar PDF (microservicio)": {
         "main": [
           [
             {
@@ -1839,7 +1839,7 @@
         "main": [
           [
             {
-              "node": "Registrar error infra - Data Table",
+              "node": "Data Table - Registrar error infra (Entrada/BD)",
               "type": "main",
               "index": 0
             }
@@ -1850,14 +1850,14 @@
         "main": [
           [
             {
-              "node": "Registrar error infra - Data Table1",
+              "node": "Data Table - Registrar error infra (PDF)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error infra - Data Table": {
+      "Data Table - Registrar error infra (Entrada/BD)": {
         "main": [
           [
             {
@@ -1879,7 +1879,7 @@
           ]
         ]
       },
-      "Registrar error infra - Data Table1": {
+      "Data Table - Registrar error infra (PDF)": {
         "main": [
           [
             {
@@ -1945,7 +1945,7 @@
         "main": [
           [
             {
-              "node": "Registrar error infra - Data Table",
+              "node": "Data Table - Registrar error infra (Entrada/BD)",
               "type": "main",
               "index": 0
             }
@@ -1959,18 +1959,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T21:02:22.957Z",
-        "id": 2486,
+        "createdAt": "2026-09-18T13:32:53.462Z",
+        "id": 2498,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "dfaec8fb-cdea-4bf4-945b-18836110a415",
+        "versionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T21:02:23.018Z",
-        "id": 2487,
+        "createdAt": "2026-09-18T13:32:53.514Z",
+        "id": 2499,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "dfaec8fb-cdea-4bf4-945b-18836110a415",
+        "versionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
