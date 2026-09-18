@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:31:19.673Z",
+  "updatedAt": "2026-09-18T13:52:48.129Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -83,7 +83,7 @@
         "limit": 1
       },
       "id": "e85b218c-ee48-4f03-aff1-1aa6d91f70cc",
-      "name": "Leer cotización",
+      "name": "Data Table - Leer cotización",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -113,7 +113,7 @@
         "limit": 1
       },
       "id": "48cc9fce-186e-45ad-aa75-cf71cec69715",
-      "name": "Leer criterios",
+      "name": "Data Table - Leer criterios",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -143,7 +143,7 @@
         "limit": 1
       },
       "id": "82842f57-c375-4525-aadc-75dbe5ab3d10",
-      "name": "Leer solicitud",
+      "name": "Data Table - Leer solicitud",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -155,7 +155,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
+        "jsCode": "const q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
       },
       "id": "4c70404a-cf07-48dc-882c-8d8ec665ae6b",
       "name": "Consolidar datos y decisión",
@@ -170,10 +170,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "loose",
-            "version": 2
+            "caseSensitive": true,
+            "typeValidation": "loose"
           },
           "combinator": "and",
           "conditions": [
@@ -191,7 +191,7 @@
         "options": {}
       },
       "id": "bcc48f31-11f5-4c81-87de-9c991c39cda0",
-      "name": "¿Aprobar?",
+      "name": "IF - ¿Decisión es aprobar?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
@@ -228,7 +228,7 @@
         "options": {}
       },
       "id": "10f107aa-83c7-49b8-bea7-f867a5778266",
-      "name": "Aprobar - Marcar APROBADA",
+      "name": "Data Table - Marcar APROBADA",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -254,10 +254,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "loose",
-            "version": 2
+            "caseSensitive": true,
+            "typeValidation": "loose"
           },
           "combinator": "and",
           "conditions": [
@@ -275,7 +275,7 @@
         "options": {}
       },
       "id": "a9a720fc-3498-40a1-a509-16b59b0ed165",
-      "name": "¿Cancelar?",
+      "name": "IF - ¿Decisión es cancelar?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
@@ -312,7 +312,7 @@
         "options": {}
       },
       "id": "48cd1869-c128-4bfa-972e-62053fd4c0be",
-      "name": "Cancelar - Marcar CANCELADA",
+      "name": "Data Table - Marcar CANCELADA",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -338,10 +338,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "loose",
-            "version": 2
+            "caseSensitive": true,
+            "typeValidation": "loose"
           },
           "combinator": "and",
           "conditions": [
@@ -359,7 +359,7 @@
         "options": {}
       },
       "id": "c2c29387-7d07-4e4e-8682-b1cd0ddf4777",
-      "name": "¿Solicitar correcciones?",
+      "name": "IF - ¿Decisión es solicitar correcciones?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
@@ -403,7 +403,7 @@
         "options": {}
       },
       "id": "618d89f1-fb78-40c6-acc7-c20fa8fd249a",
-      "name": "Registrar error - No reconocida",
+      "name": "Data Table - Registrar error (decisión no reconocida)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -430,10 +430,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "loose",
-            "version": 2
+            "caseSensitive": true,
+            "typeValidation": "loose"
           },
           "combinator": "and",
           "conditions": [
@@ -451,7 +451,7 @@
         "options": {}
       },
       "id": "98350229-ba94-4d0b-9279-884502826904",
-      "name": "¿Se agotaron las rondas? (>=3)",
+      "name": "IF - ¿Rondas de corrección >= 3?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
@@ -502,7 +502,7 @@
         "options": {}
       },
       "id": "9080ddd7-b2cc-4684-8283-6bbced10ee58",
-      "name": "Marcar REVISION_MANUAL - Tope",
+      "name": "Data Table - Marcar REVISION_MANUAL (tope)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -520,7 +520,7 @@
         }
       },
       "id": "b9531726-9172-4942-b9b8-a0d9f5ab64d1",
-      "name": "Enviar alerta - Tope",
+      "name": "Outlook - Enviar alerta (tope rondas)",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
@@ -703,10 +703,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "caseSensitive": true,
+            "version": 2,
             "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
+            "caseSensitive": true,
+            "typeValidation": "strict"
           },
           "combinator": "and",
           "conditions": [
@@ -725,7 +725,7 @@
         "options": {}
       },
       "id": "5201a9ef-1df5-4a0c-b211-9dad1726f905",
-      "name": "¿ok recálculo?",
+      "name": "IF - ¿Recálculo exitoso (ok)?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
@@ -754,7 +754,7 @@
         "limit": 1
       },
       "id": "f1931cd8-4da1-443b-9799-309947dc6dc4",
-      "name": "Releer cotización",
+      "name": "Data Table - Releer cotización",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -792,7 +792,7 @@
         "options": {}
       },
       "id": "866f961a-96d8-4cad-b079-63f5ef1dceef",
-      "name": "Guardar ronda + comentario",
+      "name": "Data Table - Guardar ronda y comentario",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -829,7 +829,7 @@
         }
       },
       "id": "52d8c83b-371c-4993-aa80-b87e5ed2ad66",
-      "name": "Enviar mensaje Teams",
+      "name": "Teams - Enviar mensaje (corrección)",
       "type": "n8n-nodes-base.microsoftTeams",
       "typeVersion": 2,
       "position": [
@@ -866,7 +866,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams';\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enviar mensaje Teams', mensaje_error: mensaje } };"
+        "jsCode": "const j = $json;\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams';\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Teams - Enviar mensaje (corrección)', mensaje_error: mensaje } };"
       },
       "id": "54d2b4a3-ade7-45b1-a3be-f6915fcbbc17",
       "name": "Preparar error - Teams envío",
@@ -899,7 +899,7 @@
         "options": {}
       },
       "id": "cd00c18e-4e50-4e01-b7a5-63cd1bef1f7a",
-      "name": "Registrar error - Teams envío",
+      "name": "Data Table - Registrar error (envío Teams)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -958,7 +958,7 @@
         "options": {}
       },
       "id": "552ddb9b-5a0a-47c2-be10-8d8bc23f0067",
-      "name": "Registrar error - Recálculo",
+      "name": "Data Table - Registrar error (recálculo)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -995,7 +995,7 @@
         "options": {}
       },
       "id": "20596eff-c580-4a01-bec9-c60235537c16",
-      "name": "Marcar ERROR_CALCULO",
+      "name": "Data Table - Marcar ERROR_CALCULO",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -1013,7 +1013,7 @@
         }
       },
       "id": "b5a358f6-81fe-471e-859e-992a47e1a409",
-      "name": "Enviar alerta - Recálculo",
+      "name": "Outlook - Enviar alerta (recálculo fallido)",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
@@ -1125,7 +1125,7 @@
     },
     {
       "id": "c54f4c93-dd7a-4674-b5c5-a712ce9d30bb",
-      "name": "Registrar error - Rechazo temprano",
+      "name": "Data Table - Registrar error (rechazo temprano)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -1183,29 +1183,29 @@
         ]
       ]
     },
-    "Leer cotización": {
+    "Data Table - Leer cotización": {
       "main": [
         [
           {
-            "node": "Leer criterios",
+            "node": "Data Table - Leer criterios",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer criterios": {
+    "Data Table - Leer criterios": {
       "main": [
         [
           {
-            "node": "Leer solicitud",
+            "node": "Data Table - Leer solicitud",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer solicitud": {
+    "Data Table - Leer solicitud": {
       "main": [
         [
           {
@@ -1220,32 +1220,32 @@
       "main": [
         [
           {
-            "node": "¿Aprobar?",
+            "node": "IF - ¿Decisión es aprobar?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "¿Aprobar?": {
+    "IF - ¿Decisión es aprobar?": {
       "main": [
         [
           {
-            "node": "Aprobar - Marcar APROBADA",
+            "node": "Data Table - Marcar APROBADA",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "¿Cancelar?",
+            "node": "IF - ¿Decisión es cancelar?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Aprobar - Marcar APROBADA": {
+    "Data Table - Marcar APROBADA": {
       "main": [
         [
           {
@@ -1267,25 +1267,25 @@
         ]
       ]
     },
-    "¿Cancelar?": {
+    "IF - ¿Decisión es cancelar?": {
       "main": [
         [
           {
-            "node": "Cancelar - Marcar CANCELADA",
+            "node": "Data Table - Marcar CANCELADA",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "¿Solicitar correcciones?",
+            "node": "IF - ¿Decisión es solicitar correcciones?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Cancelar - Marcar CANCELADA": {
+    "Data Table - Marcar CANCELADA": {
       "main": [
         [
           {
@@ -1307,11 +1307,11 @@
         ]
       ]
     },
-    "¿Solicitar correcciones?": {
+    "IF - ¿Decisión es solicitar correcciones?": {
       "main": [
         [
           {
-            "node": "¿Se agotaron las rondas? (>=3)",
+            "node": "IF - ¿Rondas de corrección >= 3?",
             "type": "main",
             "index": 0
           }
@@ -1329,14 +1329,14 @@
       "main": [
         [
           {
-            "node": "Registrar error - No reconocida",
+            "node": "Data Table - Registrar error (decisión no reconocida)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - No reconocida": {
+    "Data Table - Registrar error (decisión no reconocida)": {
       "main": [
         [
           {
@@ -1358,7 +1358,7 @@
         ]
       ]
     },
-    "¿Se agotaron las rondas? (>=3)": {
+    "IF - ¿Rondas de corrección >= 3?": {
       "main": [
         [
           {
@@ -1380,25 +1380,25 @@
       "main": [
         [
           {
-            "node": "Marcar REVISION_MANUAL - Tope",
+            "node": "Data Table - Marcar REVISION_MANUAL (tope)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Marcar REVISION_MANUAL - Tope": {
+    "Data Table - Marcar REVISION_MANUAL (tope)": {
       "main": [
         [
           {
-            "node": "Enviar alerta - Tope",
+            "node": "Outlook - Enviar alerta (tope rondas)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Enviar alerta - Tope": {
+    "Outlook - Enviar alerta (tope rondas)": {
       "main": [
         [
           {
@@ -1490,18 +1490,18 @@
       "main": [
         [
           {
-            "node": "¿ok recálculo?",
+            "node": "IF - ¿Recálculo exitoso (ok)?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "¿ok recálculo?": {
+    "IF - ¿Recálculo exitoso (ok)?": {
       "main": [
         [
           {
-            "node": "Releer cotización",
+            "node": "Data Table - Releer cotización",
             "type": "main",
             "index": 0
           }
@@ -1515,18 +1515,18 @@
         ]
       ]
     },
-    "Releer cotización": {
+    "Data Table - Releer cotización": {
       "main": [
         [
           {
-            "node": "Guardar ronda + comentario",
+            "node": "Data Table - Guardar ronda y comentario",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Guardar ronda + comentario": {
+    "Data Table - Guardar ronda y comentario": {
       "main": [
         [
           {
@@ -1541,14 +1541,14 @@
       "main": [
         [
           {
-            "node": "Enviar mensaje Teams",
+            "node": "Teams - Enviar mensaje (corrección)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Enviar mensaje Teams": {
+    "Teams - Enviar mensaje (corrección)": {
       "main": [
         [
           {
@@ -1581,14 +1581,14 @@
       "main": [
         [
           {
-            "node": "Registrar error - Teams envío",
+            "node": "Data Table - Registrar error (envío Teams)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - Teams envío": {
+    "Data Table - Registrar error (envío Teams)": {
       "main": [
         [
           {
@@ -1614,36 +1614,36 @@
       "main": [
         [
           {
-            "node": "Registrar error - Recálculo",
+            "node": "Data Table - Registrar error (recálculo)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - Recálculo": {
+    "Data Table - Registrar error (recálculo)": {
       "main": [
         [
           {
-            "node": "Marcar ERROR_CALCULO",
+            "node": "Data Table - Marcar ERROR_CALCULO",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Marcar ERROR_CALCULO": {
+    "Data Table - Marcar ERROR_CALCULO": {
       "main": [
         [
           {
-            "node": "Enviar alerta - Recálculo",
+            "node": "Outlook - Enviar alerta (recálculo fallido)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Enviar alerta - Recálculo": {
+    "Outlook - Enviar alerta (recálculo fallido)": {
       "main": [
         [
           {
@@ -1680,7 +1680,7 @@
       "main": [
         [
           {
-            "node": "Leer cotización",
+            "node": "Data Table - Leer cotización",
             "type": "main",
             "index": 0
           }
@@ -1698,14 +1698,14 @@
       "main": [
         [
           {
-            "node": "Registrar error - Rechazo temprano",
+            "node": "Data Table - Registrar error (rechazo temprano)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - Rechazo temprano": {
+    "Data Table - Registrar error (rechazo temprano)": {
       "main": [
         [
           {
@@ -1729,15 +1729,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
-  "activeVersionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
-  "versionCounter": 154,
+  "versionId": "afbac0d5-3c84-4069-80c6-e29c1d55559b",
+  "activeVersionId": "afbac0d5-3c84-4069-80c6-e29c1d55559b",
+  "versionCounter": 175,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T14:31:19.675Z",
-    "createdAt": "2026-09-17T14:31:19.675Z",
-    "versionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
+    "updatedAt": "2026-09-18T13:52:48.131Z",
+    "createdAt": "2026-09-18T13:52:48.131Z",
+    "versionId": "afbac0d5-3c84-4069-80c6-e29c1d55559b",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -1816,7 +1816,7 @@
           "limit": 1
         },
         "id": "e85b218c-ee48-4f03-aff1-1aa6d91f70cc",
-        "name": "Leer cotización",
+        "name": "Data Table - Leer cotización",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1846,7 +1846,7 @@
           "limit": 1
         },
         "id": "48cc9fce-186e-45ad-aa75-cf71cec69715",
-        "name": "Leer criterios",
+        "name": "Data Table - Leer criterios",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1876,7 +1876,7 @@
           "limit": 1
         },
         "id": "82842f57-c375-4525-aadc-75dbe5ab3d10",
-        "name": "Leer solicitud",
+        "name": "Data Table - Leer solicitud",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1888,7 +1888,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const q = $('Leer cotización').first().json || {};\nconst c = $('Leer criterios').first().json || {};\nconst s = $('Leer solicitud').first().json || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
+          "jsCode": "const q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
         },
         "id": "4c70404a-cf07-48dc-882c-8d8ec665ae6b",
         "name": "Consolidar datos y decisión",
@@ -1903,10 +1903,10 @@
         "parameters": {
           "conditions": {
             "options": {
-              "caseSensitive": true,
+              "version": 2,
               "leftValue": "",
-              "typeValidation": "loose",
-              "version": 2
+              "caseSensitive": true,
+              "typeValidation": "loose"
             },
             "combinator": "and",
             "conditions": [
@@ -1924,7 +1924,7 @@
           "options": {}
         },
         "id": "bcc48f31-11f5-4c81-87de-9c991c39cda0",
-        "name": "¿Aprobar?",
+        "name": "IF - ¿Decisión es aprobar?",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
@@ -1961,7 +1961,7 @@
           "options": {}
         },
         "id": "10f107aa-83c7-49b8-bea7-f867a5778266",
-        "name": "Aprobar - Marcar APROBADA",
+        "name": "Data Table - Marcar APROBADA",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -1987,10 +1987,10 @@
         "parameters": {
           "conditions": {
             "options": {
-              "caseSensitive": true,
+              "version": 2,
               "leftValue": "",
-              "typeValidation": "loose",
-              "version": 2
+              "caseSensitive": true,
+              "typeValidation": "loose"
             },
             "combinator": "and",
             "conditions": [
@@ -2008,7 +2008,7 @@
           "options": {}
         },
         "id": "a9a720fc-3498-40a1-a509-16b59b0ed165",
-        "name": "¿Cancelar?",
+        "name": "IF - ¿Decisión es cancelar?",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
@@ -2045,7 +2045,7 @@
           "options": {}
         },
         "id": "48cd1869-c128-4bfa-972e-62053fd4c0be",
-        "name": "Cancelar - Marcar CANCELADA",
+        "name": "Data Table - Marcar CANCELADA",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2071,10 +2071,10 @@
         "parameters": {
           "conditions": {
             "options": {
-              "caseSensitive": true,
+              "version": 2,
               "leftValue": "",
-              "typeValidation": "loose",
-              "version": 2
+              "caseSensitive": true,
+              "typeValidation": "loose"
             },
             "combinator": "and",
             "conditions": [
@@ -2092,7 +2092,7 @@
           "options": {}
         },
         "id": "c2c29387-7d07-4e4e-8682-b1cd0ddf4777",
-        "name": "¿Solicitar correcciones?",
+        "name": "IF - ¿Decisión es solicitar correcciones?",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
@@ -2136,7 +2136,7 @@
           "options": {}
         },
         "id": "618d89f1-fb78-40c6-acc7-c20fa8fd249a",
-        "name": "Registrar error - No reconocida",
+        "name": "Data Table - Registrar error (decisión no reconocida)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2163,10 +2163,10 @@
         "parameters": {
           "conditions": {
             "options": {
-              "caseSensitive": true,
+              "version": 2,
               "leftValue": "",
-              "typeValidation": "loose",
-              "version": 2
+              "caseSensitive": true,
+              "typeValidation": "loose"
             },
             "combinator": "and",
             "conditions": [
@@ -2184,7 +2184,7 @@
           "options": {}
         },
         "id": "98350229-ba94-4d0b-9279-884502826904",
-        "name": "¿Se agotaron las rondas? (>=3)",
+        "name": "IF - ¿Rondas de corrección >= 3?",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
@@ -2235,7 +2235,7 @@
           "options": {}
         },
         "id": "9080ddd7-b2cc-4684-8283-6bbced10ee58",
-        "name": "Marcar REVISION_MANUAL - Tope",
+        "name": "Data Table - Marcar REVISION_MANUAL (tope)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2253,7 +2253,7 @@
           }
         },
         "id": "b9531726-9172-4942-b9b8-a0d9f5ab64d1",
-        "name": "Enviar alerta - Tope",
+        "name": "Outlook - Enviar alerta (tope rondas)",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
@@ -2436,10 +2436,10 @@
         "parameters": {
           "conditions": {
             "options": {
-              "caseSensitive": true,
+              "version": 2,
               "leftValue": "",
-              "typeValidation": "strict",
-              "version": 2
+              "caseSensitive": true,
+              "typeValidation": "strict"
             },
             "combinator": "and",
             "conditions": [
@@ -2458,7 +2458,7 @@
           "options": {}
         },
         "id": "5201a9ef-1df5-4a0c-b211-9dad1726f905",
-        "name": "¿ok recálculo?",
+        "name": "IF - ¿Recálculo exitoso (ok)?",
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
@@ -2487,7 +2487,7 @@
           "limit": 1
         },
         "id": "f1931cd8-4da1-443b-9799-309947dc6dc4",
-        "name": "Releer cotización",
+        "name": "Data Table - Releer cotización",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2525,7 +2525,7 @@
           "options": {}
         },
         "id": "866f961a-96d8-4cad-b079-63f5ef1dceef",
-        "name": "Guardar ronda + comentario",
+        "name": "Data Table - Guardar ronda y comentario",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2562,7 +2562,7 @@
           }
         },
         "id": "52d8c83b-371c-4993-aa80-b87e5ed2ad66",
-        "name": "Enviar mensaje Teams",
+        "name": "Teams - Enviar mensaje (corrección)",
         "type": "n8n-nodes-base.microsoftTeams",
         "typeVersion": 2,
         "position": [
@@ -2599,7 +2599,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams';\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enviar mensaje Teams', mensaje_error: mensaje } };"
+          "jsCode": "const j = $json;\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams';\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Teams - Enviar mensaje (corrección)', mensaje_error: mensaje } };"
         },
         "id": "54d2b4a3-ade7-45b1-a3be-f6915fcbbc17",
         "name": "Preparar error - Teams envío",
@@ -2632,7 +2632,7 @@
           "options": {}
         },
         "id": "cd00c18e-4e50-4e01-b7a5-63cd1bef1f7a",
-        "name": "Registrar error - Teams envío",
+        "name": "Data Table - Registrar error (envío Teams)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2691,7 +2691,7 @@
           "options": {}
         },
         "id": "552ddb9b-5a0a-47c2-be10-8d8bc23f0067",
-        "name": "Registrar error - Recálculo",
+        "name": "Data Table - Registrar error (recálculo)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2728,7 +2728,7 @@
           "options": {}
         },
         "id": "20596eff-c580-4a01-bec9-c60235537c16",
-        "name": "Marcar ERROR_CALCULO",
+        "name": "Data Table - Marcar ERROR_CALCULO",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2746,7 +2746,7 @@
           }
         },
         "id": "b5a358f6-81fe-471e-859e-992a47e1a409",
-        "name": "Enviar alerta - Recálculo",
+        "name": "Outlook - Enviar alerta (recálculo fallido)",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
@@ -2858,7 +2858,7 @@
       },
       {
         "id": "c54f4c93-dd7a-4674-b5c5-a712ce9d30bb",
-        "name": "Registrar error - Rechazo temprano",
+        "name": "Data Table - Registrar error (rechazo temprano)",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -2916,29 +2916,29 @@
           ]
         ]
       },
-      "Leer cotización": {
+      "Data Table - Leer cotización": {
         "main": [
           [
             {
-              "node": "Leer criterios",
+              "node": "Data Table - Leer criterios",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer criterios": {
+      "Data Table - Leer criterios": {
         "main": [
           [
             {
-              "node": "Leer solicitud",
+              "node": "Data Table - Leer solicitud",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer solicitud": {
+      "Data Table - Leer solicitud": {
         "main": [
           [
             {
@@ -2953,32 +2953,32 @@
         "main": [
           [
             {
-              "node": "¿Aprobar?",
+              "node": "IF - ¿Decisión es aprobar?",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "¿Aprobar?": {
+      "IF - ¿Decisión es aprobar?": {
         "main": [
           [
             {
-              "node": "Aprobar - Marcar APROBADA",
+              "node": "Data Table - Marcar APROBADA",
               "type": "main",
               "index": 0
             }
           ],
           [
             {
-              "node": "¿Cancelar?",
+              "node": "IF - ¿Decisión es cancelar?",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Aprobar - Marcar APROBADA": {
+      "Data Table - Marcar APROBADA": {
         "main": [
           [
             {
@@ -3000,25 +3000,25 @@
           ]
         ]
       },
-      "¿Cancelar?": {
+      "IF - ¿Decisión es cancelar?": {
         "main": [
           [
             {
-              "node": "Cancelar - Marcar CANCELADA",
+              "node": "Data Table - Marcar CANCELADA",
               "type": "main",
               "index": 0
             }
           ],
           [
             {
-              "node": "¿Solicitar correcciones?",
+              "node": "IF - ¿Decisión es solicitar correcciones?",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Cancelar - Marcar CANCELADA": {
+      "Data Table - Marcar CANCELADA": {
         "main": [
           [
             {
@@ -3040,11 +3040,11 @@
           ]
         ]
       },
-      "¿Solicitar correcciones?": {
+      "IF - ¿Decisión es solicitar correcciones?": {
         "main": [
           [
             {
-              "node": "¿Se agotaron las rondas? (>=3)",
+              "node": "IF - ¿Rondas de corrección >= 3?",
               "type": "main",
               "index": 0
             }
@@ -3062,14 +3062,14 @@
         "main": [
           [
             {
-              "node": "Registrar error - No reconocida",
+              "node": "Data Table - Registrar error (decisión no reconocida)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - No reconocida": {
+      "Data Table - Registrar error (decisión no reconocida)": {
         "main": [
           [
             {
@@ -3091,7 +3091,7 @@
           ]
         ]
       },
-      "¿Se agotaron las rondas? (>=3)": {
+      "IF - ¿Rondas de corrección >= 3?": {
         "main": [
           [
             {
@@ -3113,25 +3113,25 @@
         "main": [
           [
             {
-              "node": "Marcar REVISION_MANUAL - Tope",
+              "node": "Data Table - Marcar REVISION_MANUAL (tope)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Marcar REVISION_MANUAL - Tope": {
+      "Data Table - Marcar REVISION_MANUAL (tope)": {
         "main": [
           [
             {
-              "node": "Enviar alerta - Tope",
+              "node": "Outlook - Enviar alerta (tope rondas)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Enviar alerta - Tope": {
+      "Outlook - Enviar alerta (tope rondas)": {
         "main": [
           [
             {
@@ -3223,18 +3223,18 @@
         "main": [
           [
             {
-              "node": "¿ok recálculo?",
+              "node": "IF - ¿Recálculo exitoso (ok)?",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "¿ok recálculo?": {
+      "IF - ¿Recálculo exitoso (ok)?": {
         "main": [
           [
             {
-              "node": "Releer cotización",
+              "node": "Data Table - Releer cotización",
               "type": "main",
               "index": 0
             }
@@ -3248,18 +3248,18 @@
           ]
         ]
       },
-      "Releer cotización": {
+      "Data Table - Releer cotización": {
         "main": [
           [
             {
-              "node": "Guardar ronda + comentario",
+              "node": "Data Table - Guardar ronda y comentario",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Guardar ronda + comentario": {
+      "Data Table - Guardar ronda y comentario": {
         "main": [
           [
             {
@@ -3274,14 +3274,14 @@
         "main": [
           [
             {
-              "node": "Enviar mensaje Teams",
+              "node": "Teams - Enviar mensaje (corrección)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Enviar mensaje Teams": {
+      "Teams - Enviar mensaje (corrección)": {
         "main": [
           [
             {
@@ -3314,14 +3314,14 @@
         "main": [
           [
             {
-              "node": "Registrar error - Teams envío",
+              "node": "Data Table - Registrar error (envío Teams)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - Teams envío": {
+      "Data Table - Registrar error (envío Teams)": {
         "main": [
           [
             {
@@ -3347,36 +3347,36 @@
         "main": [
           [
             {
-              "node": "Registrar error - Recálculo",
+              "node": "Data Table - Registrar error (recálculo)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - Recálculo": {
+      "Data Table - Registrar error (recálculo)": {
         "main": [
           [
             {
-              "node": "Marcar ERROR_CALCULO",
+              "node": "Data Table - Marcar ERROR_CALCULO",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Marcar ERROR_CALCULO": {
+      "Data Table - Marcar ERROR_CALCULO": {
         "main": [
           [
             {
-              "node": "Enviar alerta - Recálculo",
+              "node": "Outlook - Enviar alerta (recálculo fallido)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Enviar alerta - Recálculo": {
+      "Outlook - Enviar alerta (recálculo fallido)": {
         "main": [
           [
             {
@@ -3413,7 +3413,7 @@
         "main": [
           [
             {
-              "node": "Leer cotización",
+              "node": "Data Table - Leer cotización",
               "type": "main",
               "index": 0
             }
@@ -3431,14 +3431,14 @@
         "main": [
           [
             {
-              "node": "Registrar error - Rechazo temprano",
+              "node": "Data Table - Registrar error (rechazo temprano)",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - Rechazo temprano": {
+      "Data Table - Registrar error (rechazo temprano)": {
         "main": [
           [
             {
@@ -3456,18 +3456,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T14:31:19.783Z",
-        "id": 2448,
+        "createdAt": "2026-09-18T13:52:48.228Z",
+        "id": 2520,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
+        "versionId": "afbac0d5-3c84-4069-80c6-e29c1d55559b",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T14:31:19.813Z",
-        "id": 2449,
+        "createdAt": "2026-09-18T13:52:48.267Z",
+        "id": 2521,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "dce08484-942c-4ac9-8969-9ff63fc1c46b",
+        "versionId": "afbac0d5-3c84-4069-80c6-e29c1d55559b",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
