@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T19:50:46.673Z",
+  "updatedAt": "2026-09-18T13:58:29.905Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -48,7 +48,7 @@
         "returnAll": true
       },
       "id": "w5a-leer",
-      "name": "Leer cotizaciones APROBADA",
+      "name": "Data Table - Leer cotizaciones APROBADA",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -84,7 +84,7 @@
         "options": {}
       },
       "id": "w5a-marcar",
-      "name": "Marcar EN_ENVIO",
+      "name": "Data Table - Marcar EN_ENVIO",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -103,7 +103,7 @@
         "workflowInputs": {
           "mappingMode": "defineBelow",
           "value": {
-            "id_solicitud": "={{ $json.id_solicitud || $('Leer cotizaciones APROBADA').item.json.id_solicitud }}"
+            "id_solicitud": "={{ $json.id_solicitud || $('Data Table - Leer cotizaciones APROBADA').item.json.id_solicitud }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -134,7 +134,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Marcar EN_ENVIO';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W5-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-A-router-envio', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+        "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Data Table - Marcar EN_ENVIO';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W5-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-A-router-envio', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
       },
       "id": "w5a-prep-error",
       "name": "Preparar error - Router",
@@ -167,7 +167,7 @@
         "options": {}
       },
       "id": "w5a-reg-error",
-      "name": "Registrar error - Router",
+      "name": "Data Table - Registrar error del router",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
@@ -186,7 +186,7 @@
         }
       },
       "id": "w5a-alerta",
-      "name": "Enviar alerta - Router",
+      "name": "Outlook - Enviar alerta del router",
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
@@ -271,14 +271,14 @@
       "main": [
         [
           {
-            "node": "Leer cotizaciones APROBADA",
+            "node": "Data Table - Leer cotizaciones APROBADA",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Marcar EN_ENVIO": {
+    "Data Table - Marcar EN_ENVIO": {
       "main": [
         [
           {
@@ -300,25 +300,25 @@
       "main": [
         [
           {
-            "node": "Registrar error - Router",
+            "node": "Data Table - Registrar error del router",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar error - Router": {
+    "Data Table - Registrar error del router": {
       "main": [
         [
           {
-            "node": "Enviar alerta - Router",
+            "node": "Outlook - Enviar alerta del router",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Leer cotizaciones APROBADA": {
+    "Data Table - Leer cotizaciones APROBADA": {
       "main": [
         [
           {
@@ -333,7 +333,7 @@
       "main": [
         [
           {
-            "node": "Marcar EN_ENVIO",
+            "node": "Data Table - Marcar EN_ENVIO",
             "type": "main",
             "index": 0
           }
@@ -351,7 +351,7 @@
       "main": [
         [
           {
-            "node": "Registrar error - Router",
+            "node": "Data Table - Registrar error del router",
             "type": "main",
             "index": 0
           }
@@ -375,15 +375,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
-  "activeVersionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
-  "versionCounter": 33,
+  "versionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
+  "activeVersionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
+  "versionCounter": 36,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T19:50:46.675Z",
-    "createdAt": "2026-09-17T19:50:46.675Z",
-    "versionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
+    "updatedAt": "2026-09-18T13:58:29.907Z",
+    "createdAt": "2026-09-18T13:58:29.907Z",
+    "versionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -427,7 +427,7 @@
           "returnAll": true
         },
         "id": "w5a-leer",
-        "name": "Leer cotizaciones APROBADA",
+        "name": "Data Table - Leer cotizaciones APROBADA",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -463,7 +463,7 @@
           "options": {}
         },
         "id": "w5a-marcar",
-        "name": "Marcar EN_ENVIO",
+        "name": "Data Table - Marcar EN_ENVIO",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -482,7 +482,7 @@
           "workflowInputs": {
             "mappingMode": "defineBelow",
             "value": {
-              "id_solicitud": "={{ $json.id_solicitud || $('Leer cotizaciones APROBADA').item.json.id_solicitud }}"
+              "id_solicitud": "={{ $json.id_solicitud || $('Data Table - Leer cotizaciones APROBADA').item.json.id_solicitud }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -513,7 +513,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Marcar EN_ENVIO';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W5-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-A-router-envio', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+          "jsCode": "const j = $json;\nconst nodo = (j.node && j.node.name) || 'Data Table - Marcar EN_ENVIO';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido en el router W5-A';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>. La fila puede haber quedado sin despachar — revisar manualmente.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-A-router-envio', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
         },
         "id": "w5a-prep-error",
         "name": "Preparar error - Router",
@@ -546,7 +546,7 @@
           "options": {}
         },
         "id": "w5a-reg-error",
-        "name": "Registrar error - Router",
+        "name": "Data Table - Registrar error del router",
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
@@ -565,7 +565,7 @@
           }
         },
         "id": "w5a-alerta",
-        "name": "Enviar alerta - Router",
+        "name": "Outlook - Enviar alerta del router",
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
@@ -650,14 +650,14 @@
         "main": [
           [
             {
-              "node": "Leer cotizaciones APROBADA",
+              "node": "Data Table - Leer cotizaciones APROBADA",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Marcar EN_ENVIO": {
+      "Data Table - Marcar EN_ENVIO": {
         "main": [
           [
             {
@@ -679,25 +679,25 @@
         "main": [
           [
             {
-              "node": "Registrar error - Router",
+              "node": "Data Table - Registrar error del router",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Registrar error - Router": {
+      "Data Table - Registrar error del router": {
         "main": [
           [
             {
-              "node": "Enviar alerta - Router",
+              "node": "Outlook - Enviar alerta del router",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Leer cotizaciones APROBADA": {
+      "Data Table - Leer cotizaciones APROBADA": {
         "main": [
           [
             {
@@ -712,7 +712,7 @@
         "main": [
           [
             {
-              "node": "Marcar EN_ENVIO",
+              "node": "Data Table - Marcar EN_ENVIO",
               "type": "main",
               "index": 0
             }
@@ -730,7 +730,7 @@
         "main": [
           [
             {
-              "node": "Registrar error - Router",
+              "node": "Data Table - Registrar error del router",
               "type": "main",
               "index": 0
             }
@@ -744,18 +744,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T19:50:46.726Z",
-        "id": 2478,
+        "createdAt": "2026-09-18T13:58:29.962Z",
+        "id": 2522,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
+        "versionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T19:50:46.748Z",
-        "id": 2479,
+        "createdAt": "2026-09-18T13:58:30.370Z",
+        "id": 2523,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "76b7d053-6d62-46d3-a400-28c919a86e26",
+        "versionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
