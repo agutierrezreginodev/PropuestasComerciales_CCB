@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:16:49.033Z",
+  "updatedAt": "2026-09-18T12:31:39.501Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB - Workflow 6 - Finalizador de Cotizaciones",
@@ -63,7 +63,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        480,
+        720,
         0
       ]
     },
@@ -98,7 +98,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        720,
+        960,
         0
       ],
       "onError": "continueErrorOutput"
@@ -134,7 +134,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        992,
+        1232,
         0
       ],
       "onError": "continueErrorOutput"
@@ -222,6 +222,54 @@
         48,
         224
       ]
+    },
+    {
+      "id": "f3e1a9d2-6b47-4c1a-9e5d-2a7c8b1f0d34",
+      "name": "Validar id_solicitud presente",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.id_solicitud }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "a7c4e1b8-3d92-4f6a-b1e0-5c9a2d8f4e17",
+      "name": "Preparar error - id_solicitud faltante",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        420
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila ENVIADA de Cotizaciones_CCB (previo al filtro de 30+ días sin respuesta).';\nconst emailBody = '<p>Error en <b>W6 (Finalizador de Cotizaciones)</b>: se encontró una fila ENVIADA sin <code>id_solicitud</code> en Cotizaciones_CCB, no se evaluó ni se marcó FINALIZADA.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W6-finalizador', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+      }
     }
   ],
   "connections": {
@@ -230,17 +278,6 @@
         [
           {
             "node": "Leer cotizaciones ENVIADA",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Leer cotizaciones ENVIADA": {
-      "main": [
-        [
-          {
-            "node": "Filtrar 30+ dias sin respuesta",
             "type": "main",
             "index": 0
           }
@@ -309,6 +346,46 @@
           }
         ]
       ]
+    },
+    "Leer cotizaciones ENVIADA": {
+      "main": [
+        [
+          {
+            "node": "Validar id_solicitud presente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar id_solicitud presente": {
+      "main": [
+        [
+          {
+            "node": "Filtrar 30+ dias sin respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - id_solicitud faltante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - id_solicitud faltante": {
+      "main": [
+        [
+          {
+            "node": "Registrar error - Finalizador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -327,15 +404,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
-  "activeVersionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
-  "versionCounter": 22,
+  "versionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
+  "activeVersionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
+  "versionCounter": 25,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T13:53:42.763Z",
-    "createdAt": "2026-09-17T13:53:42.763Z",
-    "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
+    "updatedAt": "2026-09-18T12:31:39.503Z",
+    "createdAt": "2026-09-18T12:31:39.503Z",
+    "versionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
@@ -394,7 +471,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          480,
+          720,
           0
         ]
       },
@@ -429,7 +506,7 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          720,
+          960,
           0
         ],
         "onError": "continueErrorOutput"
@@ -465,7 +542,7 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          992,
+          1232,
           0
         ],
         "onError": "continueErrorOutput"
@@ -553,6 +630,54 @@
           48,
           224
         ]
+      },
+      {
+        "id": "f3e1a9d2-6b47-4c1a-9e5d-2a7c8b1f0d34",
+        "name": "Validar id_solicitud presente",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          480,
+          0
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "loose"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.id_solicitud }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "a7c4e1b8-3d92-4f6a-b1e0-5c9a2d8f4e17",
+        "name": "Preparar error - id_solicitud faltante",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          480,
+          420
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila ENVIADA de Cotizaciones_CCB (previo al filtro de 30+ días sin respuesta).';\nconst emailBody = '<p>Error en <b>W6 (Finalizador de Cotizaciones)</b>: se encontró una fila ENVIADA sin <code>id_solicitud</code> en Cotizaciones_CCB, no se evaluó ni se marcó FINALIZADA.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W6-finalizador', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
+        }
       }
     ],
     "connections": {
@@ -561,17 +686,6 @@
           [
             {
               "node": "Leer cotizaciones ENVIADA",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Leer cotizaciones ENVIADA": {
-        "main": [
-          [
-            {
-              "node": "Filtrar 30+ dias sin respuesta",
               "type": "main",
               "index": 0
             }
@@ -640,6 +754,46 @@
             }
           ]
         ]
+      },
+      "Leer cotizaciones ENVIADA": {
+        "main": [
+          [
+            {
+              "node": "Validar id_solicitud presente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar id_solicitud presente": {
+        "main": [
+          [
+            {
+              "node": "Filtrar 30+ dias sin respuesta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - id_solicitud faltante",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - id_solicitud faltante": {
+        "main": [
+          [
+            {
+              "node": "Registrar error - Finalizador",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -648,34 +802,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T13:53:42.808Z",
-        "id": 2406,
+        "createdAt": "2026-09-18T12:31:39.550Z",
+        "id": 2490,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
+        "versionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T13:53:42.826Z",
-        "id": 2407,
+        "createdAt": "2026-09-18T12:31:39.576Z",
+        "id": 2491,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:49.077Z",
-        "id": 2428,
-        "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:49.095Z",
-        "id": 2429,
-        "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "fd8a46ec-729d-42fd-b26e-62418ecc6b54",
+        "versionId": "e91fd185-687c-4fa8-91cd-634a724909b2",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
