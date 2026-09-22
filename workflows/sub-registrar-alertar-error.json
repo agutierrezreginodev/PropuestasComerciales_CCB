@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T19:29:41.426Z",
+  "updatedAt": "2026-09-22T19:50:48.433Z",
   "createdAt": "2026-09-22T19:27:26.926Z",
   "id": "2dY1kaT7I5a0eP2w",
   "name": "[SUB] - CCB - Registrar y Alertar Error",
@@ -8,6 +8,9 @@
   "isArchived": false,
   "nodes": [
     {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
       "id": "sub-error-trigger",
       "name": "When Executed by Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
@@ -15,12 +18,13 @@
       "position": [
         -480,
         0
-      ],
-      "parameters": {
-        "inputSource": "passthrough"
-      }
+      ]
     },
     {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = j.mensaje_error || 'Error sin mensaje';\nconst emailBody = j.emailBody || '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
+      },
       "id": "sub-error-normalizar",
       "name": "Normalizar entrada de error",
       "type": "n8n-nodes-base.code",
@@ -28,55 +32,9 @@
       "position": [
         -240,
         0
-      ],
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = j.mensaje_error || 'Error sin mensaje';\nconst emailBody = j.emailBody || '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
-      }
+      ]
     },
     {
-      "id": "sub-error-if-alertar",
-      "name": "¿Enviar alerta?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        0,
-        0
-      ],
-      "parameters": {
-        "conditions": {
-          "options": {
-            "version": 2,
-            "leftValue": "",
-            "caseSensitive": true,
-            "typeValidation": "loose"
-          },
-          "combinator": "and",
-          "conditions": [
-            {
-              "id": "c1",
-              "leftValue": "={{ $json.alertar }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ]
-        },
-        "options": {}
-      }
-    },
-    {
-      "id": "sub-error-registrar",
-      "name": "Data Table - Registrar error",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        240,
-        -160
-      ],
       "parameters": {
         "dataTableId": {
           "__rl": true,
@@ -96,18 +54,18 @@
         },
         "options": {}
       },
-      "onError": "continueRegularOutput",
-      "alwaysOutputData": true
+      "id": "sub-error-registrar",
+      "name": "Data Table - Registrar error",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        0
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
     },
     {
-      "id": "sub-error-alerta",
-      "name": "Outlook - Enviar alerta",
-      "type": "n8n-nodes-base.microsoftOutlook",
-      "typeVersion": 2,
-      "position": [
-        480,
-        -160
-      ],
       "parameters": {
         "toRecipients": "dev-alerts@example.com",
         "subject": "={{ $json.subject }}",
@@ -116,28 +74,37 @@
           "bodyContentType": "html"
         }
       },
+      "id": "sub-error-alerta",
+      "name": "Outlook - Enviar alerta",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        384,
+        0
+      ],
+      "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162",
       "credentials": {
         "microsoftOutlookOAuth2Api": {
           "id": "iOA7XXDSHZojLhJz",
           "name": "INT-ServiciosInformacion Microsoft Outlook"
         }
       },
-      "onError": "continueRegularOutput",
-      "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162"
+      "onError": "continueRegularOutput"
     },
     {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Re-emite el item normalizado para que el llamador pueda continuar (respuestas webhook, returns).\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nreturn { json: get('Normalizar entrada de error') };"
+      },
       "id": "sub-error-devolver",
       "name": "Devolver item al llamador",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         720,
-        0
+        16
       ],
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// Re-emite el item normalizado para que el llamador pueda continuar (respuestas webhook, returns).\nreturn { json: { ...$json } };"
-      }
+      "alwaysOutputData": true
     }
   ],
   "connections": {
@@ -167,25 +134,7 @@
       "main": [
         [
           {
-            "node": "¿Enviar alerta?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "¿Enviar alerta?": {
-      "main": [
-        [
-          {
             "node": "Outlook - Enviar alerta",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Devolver item al llamador",
             "type": "main",
             "index": 0
           }
@@ -207,23 +156,40 @@
   "settings": {
     "saveDataErrorExecution": "all",
     "saveDataSuccessExecution": "all",
-    "saveManualExecutions": true
+    "saveManualExecutions": true,
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": null,
   "meta": null,
-  "pinData": null,
-  "versionId": "aaff9ca0-fdd1-407d-b0a4-2c1369bc126a",
-  "activeVersionId": "aaff9ca0-fdd1-407d-b0a4-2c1369bc126a",
-  "versionCounter": 5,
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id_solicitud": "TEST-F4-01",
+          "workflow_origen": "prueba-manual",
+          "nodo_fallido": "Piloto F4-01",
+          "mensaje_error": "Prueba del subflujo compartido",
+          "emailBody": "<p>Prueba del subflujo compartido F4-01</p>"
+        }
+      }
+    ]
+  },
+  "versionId": "7b588b36-df0a-40c4-bfca-e08c69135196",
+  "activeVersionId": "578553c5-9cd5-4f8c-9c43-ecaa859b0518",
+  "versionCounter": 15,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T19:28:57.066Z",
-    "createdAt": "2026-09-22T19:28:57.066Z",
-    "versionId": "aaff9ca0-fdd1-407d-b0a4-2c1369bc126a",
+    "updatedAt": "2026-09-22T19:49:06.912Z",
+    "createdAt": "2026-09-22T19:49:06.912Z",
+    "versionId": "578553c5-9cd5-4f8c-9c43-ecaa859b0518",
     "workflowId": "2dY1kaT7I5a0eP2w",
     "nodes": [
       {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
         "id": "sub-error-trigger",
         "name": "When Executed by Another Workflow",
         "type": "n8n-nodes-base.executeWorkflowTrigger",
@@ -231,12 +197,13 @@
         "position": [
           -480,
           0
-        ],
-        "parameters": {
-          "inputSource": "passthrough"
-        }
+        ]
       },
       {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = j.mensaje_error || 'Error sin mensaje';\nconst emailBody = j.emailBody || '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
+        },
         "id": "sub-error-normalizar",
         "name": "Normalizar entrada de error",
         "type": "n8n-nodes-base.code",
@@ -244,55 +211,9 @@
         "position": [
           -240,
           0
-        ],
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = j.mensaje_error || 'Error sin mensaje';\nconst emailBody = j.emailBody || '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
-        }
+        ]
       },
       {
-        "id": "sub-error-if-alertar",
-        "name": "¿Enviar alerta?",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2.3,
-        "position": [
-          0,
-          0
-        ],
-        "parameters": {
-          "conditions": {
-            "options": {
-              "version": 2,
-              "leftValue": "",
-              "caseSensitive": true,
-              "typeValidation": "loose"
-            },
-            "combinator": "and",
-            "conditions": [
-              {
-                "id": "c1",
-                "leftValue": "={{ $json.alertar }}",
-                "rightValue": true,
-                "operator": {
-                  "type": "boolean",
-                  "operation": "true",
-                  "singleValue": true
-                }
-              }
-            ]
-          },
-          "options": {}
-        }
-      },
-      {
-        "id": "sub-error-registrar",
-        "name": "Data Table - Registrar error",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          240,
-          -160
-        ],
         "parameters": {
           "dataTableId": {
             "__rl": true,
@@ -312,18 +233,18 @@
           },
           "options": {}
         },
-        "onError": "continueRegularOutput",
-        "alwaysOutputData": true
+        "id": "sub-error-registrar",
+        "name": "Data Table - Registrar error",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          16,
+          0
+        ],
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
       },
       {
-        "id": "sub-error-alerta",
-        "name": "Outlook - Enviar alerta",
-        "type": "n8n-nodes-base.microsoftOutlook",
-        "typeVersion": 2,
-        "position": [
-          480,
-          -160
-        ],
         "parameters": {
           "toRecipients": "dev-alerts@example.com",
           "subject": "={{ $json.subject }}",
@@ -332,28 +253,37 @@
             "bodyContentType": "html"
           }
         },
+        "id": "sub-error-alerta",
+        "name": "Outlook - Enviar alerta",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          480,
+          -160
+        ],
+        "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162",
         "credentials": {
           "microsoftOutlookOAuth2Api": {
             "id": "iOA7XXDSHZojLhJz",
             "name": "INT-ServiciosInformacion Microsoft Outlook"
           }
         },
-        "onError": "continueRegularOutput",
-        "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162"
+        "onError": "continueRegularOutput"
       },
       {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Re-emite el item normalizado para que el llamador pueda continuar (respuestas webhook, returns).\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nreturn { json: get('Normalizar entrada de error') };"
+        },
         "id": "sub-error-devolver",
         "name": "Devolver item al llamador",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
           720,
-          0
+          16
         ],
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "// Re-emite el item normalizado para que el llamador pueda continuar (respuestas webhook, returns).\nreturn { json: { ...$json } };"
-        }
+        "alwaysOutputData": true
       }
     ],
     "connections": {
@@ -383,25 +313,7 @@
         "main": [
           [
             {
-              "node": "¿Enviar alerta?",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "¿Enviar alerta?": {
-        "main": [
-          [
-            {
               "node": "Outlook - Enviar alerta",
-              "type": "main",
-              "index": 0
-            }
-          ],
-          [
-            {
-              "node": "Devolver item al llamador",
               "type": "main",
               "index": 0
             }
@@ -426,10 +338,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T19:29:41.853Z",
-        "id": 2609,
+        "createdAt": "2026-09-22T19:49:06.953Z",
+        "id": 2614,
         "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "aaff9ca0-fdd1-407d-b0a4-2c1369bc126a",
+        "versionId": "578553c5-9cd5-4f8c-9c43-ecaa859b0518",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-22T19:49:06.973Z",
+        "id": 2615,
+        "workflowId": "2dY1kaT7I5a0eP2w",
+        "versionId": "578553c5-9cd5-4f8c-9c43-ecaa859b0518",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
