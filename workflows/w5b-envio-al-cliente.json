@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:09:01.744Z",
+  "updatedAt": "2026-09-22T20:18:14.724Z",
   "createdAt": "2026-09-11T18:19:42.906Z",
   "id": "XWBHgbmtBubA4gqx",
   "name": "[SUB] CCB - Workflow 5B - Envío al Cliente",
@@ -35,7 +35,10 @@
         224,
         -64
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -65,7 +68,10 @@
         448,
         -64
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -95,7 +101,10 @@
         672,
         -64
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -333,7 +342,10 @@
       "position": [
         896,
         288
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -369,7 +381,10 @@
       "position": [
         1120,
         288
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -448,7 +463,10 @@
         1056,
         640
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -503,7 +521,10 @@
         }
       },
       "onError": "continueRegularOutput",
-      "notes": "MODO PRUEBA (15/09): redirigido a Adrian para grabación de demo. Restaurar a asesor@example.com antes de producción real."
+      "notes": "MODO PRUEBA (15/09): redirigido a Adrian para grabación de demo. Restaurar a asesor@example.com antes de producción real.",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -869,15 +890,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "a7e611a7-8fe8-4ec3-8c5b-c75c116254e5",
-  "activeVersionId": "a7e611a7-8fe8-4ec3-8c5b-c75c116254e5",
-  "versionCounter": 123,
+  "versionId": "8287027f-baa7-42ec-a222-7289a48b070e",
+  "activeVersionId": "8287027f-baa7-42ec-a222-7289a48b070e",
+  "versionCounter": 126,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:09:01.746Z",
-    "createdAt": "2026-09-22T20:09:01.746Z",
-    "versionId": "a7e611a7-8fe8-4ec3-8c5b-c75c116254e5",
+    "updatedAt": "2026-09-22T20:18:14.726Z",
+    "createdAt": "2026-09-22T20:18:14.726Z",
+    "versionId": "8287027f-baa7-42ec-a222-7289a48b070e",
     "workflowId": "XWBHgbmtBubA4gqx",
     "nodes": [
       {
@@ -908,7 +929,10 @@
           224,
           -64
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -938,7 +962,10 @@
           448,
           -64
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -968,7 +995,10 @@
           672,
           -64
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1206,7 +1236,10 @@
         "position": [
           896,
           288
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1242,7 +1275,10 @@
         "position": [
           1120,
           288
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1321,7 +1357,10 @@
           1056,
           640
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1376,7 +1415,10 @@
           }
         },
         "onError": "continueRegularOutput",
-        "notes": "MODO PRUEBA (15/09): redirigido a Adrian para grabación de demo. Restaurar a asesor@example.com antes de producción real."
+        "notes": "MODO PRUEBA (15/09): redirigido a Adrian para grabación de demo. Restaurar a asesor@example.com antes de producción real.",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1736,18 +1778,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:09:01.810Z",
-        "id": 2626,
+        "createdAt": "2026-09-22T20:18:14.789Z",
+        "id": 2644,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "a7e611a7-8fe8-4ec3-8c5b-c75c116254e5",
+        "versionId": "8287027f-baa7-42ec-a222-7289a48b070e",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:09:01.834Z",
-        "id": 2627,
+        "createdAt": "2026-09-22T20:18:14.806Z",
+        "id": 2645,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "a7e611a7-8fe8-4ec3-8c5b-c75c116254e5",
+        "versionId": "8287027f-baa7-42ec-a222-7289a48b070e",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

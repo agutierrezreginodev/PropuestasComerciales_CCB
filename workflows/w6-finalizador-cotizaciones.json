@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T19:29:49.000Z",
+  "updatedAt": "2026-09-22T20:17:13.806Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB - Workflow 6 - Finalizador de Cotizaciones",
@@ -52,7 +52,10 @@
       "position": [
         240,
         0
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -101,7 +104,10 @@
         960,
         0
       ],
-      "onError": "continueErrorOutput"
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -137,7 +143,10 @@
         1232,
         0
       ],
-      "onError": "continueErrorOutput"
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -359,15 +368,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "7d743191-5d52-47c3-8665-31e799727d5a",
-  "activeVersionId": "7d743191-5d52-47c3-8665-31e799727d5a",
-  "versionCounter": 45,
+  "versionId": "002c3485-3c98-442a-aed3-40766c8e43df",
+  "activeVersionId": "002c3485-3c98-442a-aed3-40766c8e43df",
+  "versionCounter": 48,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T19:29:49.003Z",
-    "createdAt": "2026-09-22T19:29:49.003Z",
-    "versionId": "7d743191-5d52-47c3-8665-31e799727d5a",
+    "updatedAt": "2026-09-22T20:17:13.807Z",
+    "createdAt": "2026-09-22T20:17:13.807Z",
+    "versionId": "002c3485-3c98-442a-aed3-40766c8e43df",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
@@ -415,7 +424,10 @@
         "position": [
           240,
           0
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -464,7 +476,10 @@
           960,
           0
         ],
-        "onError": "continueErrorOutput"
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -500,7 +515,10 @@
           1232,
           0
         ],
-        "onError": "continueErrorOutput"
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -712,18 +730,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T19:29:49.127Z",
-        "id": 2610,
+        "createdAt": "2026-09-22T20:17:13.843Z",
+        "id": 2636,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "7d743191-5d52-47c3-8665-31e799727d5a",
+        "versionId": "002c3485-3c98-442a-aed3-40766c8e43df",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T19:29:49.203Z",
-        "id": 2611,
+        "createdAt": "2026-09-22T20:17:13.860Z",
+        "id": 2637,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "7d743191-5d52-47c3-8665-31e799727d5a",
+        "versionId": "002c3485-3c98-442a-aed3-40766c8e43df",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

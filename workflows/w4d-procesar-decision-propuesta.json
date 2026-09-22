@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:09:58.548Z",
+  "updatedAt": "2026-09-22T20:18:13.637Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -90,7 +90,10 @@
         -512,
         512
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -120,7 +123,10 @@
         -272,
         512
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -150,7 +156,10 @@
         -32,
         512
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -234,7 +243,10 @@
       "position": [
         736,
         176
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -318,7 +330,10 @@
       "position": [
         976,
         624
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -508,7 +523,10 @@
       "position": [
         1936,
         768
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -534,7 +552,10 @@
           "name": "INT-ServiciosInformacion Microsoft Outlook"
         }
       },
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -764,7 +785,10 @@
       "position": [
         2976,
         896
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -802,7 +826,10 @@
       "position": [
         3216,
         896
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -975,7 +1002,10 @@
         3680,
         1168
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -1694,15 +1724,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
-  "activeVersionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
-  "versionCounter": 181,
+  "versionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
+  "activeVersionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
+  "versionCounter": 184,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:09:58.549Z",
-    "createdAt": "2026-09-22T20:09:58.549Z",
-    "versionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
+    "updatedAt": "2026-09-22T20:18:13.639Z",
+    "createdAt": "2026-09-22T20:18:13.639Z",
+    "versionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -1788,7 +1818,10 @@
           -512,
           512
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1818,7 +1851,10 @@
           -272,
           512
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1848,7 +1884,10 @@
           -32,
           512
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1932,7 +1971,10 @@
         "position": [
           736,
           176
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -2016,7 +2058,10 @@
         "position": [
           976,
           624
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -2206,7 +2251,10 @@
         "position": [
           1936,
           768
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -2232,7 +2280,10 @@
             "name": "INT-ServiciosInformacion Microsoft Outlook"
           }
         },
-        "onError": "continueRegularOutput"
+        "onError": "continueRegularOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -2462,7 +2513,10 @@
         "position": [
           2976,
           896
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -2500,7 +2554,10 @@
         "position": [
           3216,
           896
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -2673,7 +2730,10 @@
           3680,
           1168
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -3386,18 +3446,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:09:58.621Z",
-        "id": 2628,
+        "createdAt": "2026-09-22T20:18:13.701Z",
+        "id": 2642,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
+        "versionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:09:58.649Z",
-        "id": 2629,
+        "createdAt": "2026-09-22T20:18:13.732Z",
+        "id": 2643,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
+        "versionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:07:22.733Z",
+  "updatedAt": "2026-09-22T20:17:49.873Z",
   "createdAt": "2026-09-11T15:41:10.905Z",
   "id": "5RJdnHDQ8NuWZJG7",
   "name": "[SUB] CCB - Workflow 4B - Aprobación de Propuesta (Teams)",
@@ -34,7 +34,10 @@
       "position": [
         224,
         -16
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -63,7 +66,10 @@
       "position": [
         448,
         -16
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -93,7 +99,10 @@
         672,
         -16
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -207,7 +216,10 @@
         464,
         224
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -456,15 +468,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "f4bde2ce-b8b6-4f20-b571-17b96420feb7",
-  "activeVersionId": "f4bde2ce-b8b6-4f20-b571-17b96420feb7",
-  "versionCounter": 143,
+  "versionId": "4bce6160-d819-459a-9924-136a313ec98a",
+  "activeVersionId": "4bce6160-d819-459a-9924-136a313ec98a",
+  "versionCounter": 146,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:07:22.735Z",
-    "createdAt": "2026-09-22T20:07:22.735Z",
-    "versionId": "f4bde2ce-b8b6-4f20-b571-17b96420feb7",
+    "updatedAt": "2026-09-22T20:17:49.886Z",
+    "createdAt": "2026-09-22T20:17:49.886Z",
+    "versionId": "4bce6160-d819-459a-9924-136a313ec98a",
     "workflowId": "5RJdnHDQ8NuWZJG7",
     "nodes": [
       {
@@ -494,7 +506,10 @@
         "position": [
           224,
           -16
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -523,7 +538,10 @@
         "position": [
           448,
           -16
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -553,7 +571,10 @@
           672,
           -16
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -667,7 +688,10 @@
           464,
           224
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -910,18 +934,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:07:22.788Z",
-        "id": 2624,
+        "createdAt": "2026-09-22T20:17:50.207Z",
+        "id": 2638,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "f4bde2ce-b8b6-4f20-b571-17b96420feb7",
+        "versionId": "4bce6160-d819-459a-9924-136a313ec98a",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:07:22.804Z",
-        "id": 2625,
+        "createdAt": "2026-09-22T20:17:50.238Z",
+        "id": 2639,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "f4bde2ce-b8b6-4f20-b571-17b96420feb7",
+        "versionId": "4bce6160-d819-459a-9924-136a313ec98a",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

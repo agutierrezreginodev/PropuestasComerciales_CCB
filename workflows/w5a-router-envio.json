@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:01:33.741Z",
+  "updatedAt": "2026-09-22T20:17:12.707Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -54,7 +54,10 @@
       "position": [
         240,
         0
-      ]
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -91,7 +94,10 @@
         720,
         0
       ],
-      "onError": "continueErrorOutput"
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -129,7 +135,10 @@
         960,
         0
       ],
-      "notes": "waitForSubWorkflow=false: el envío corre en background y no bloquea el router."
+      "notes": "waitForSubWorkflow=false: el envío corre en background y no bloquea el router.",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -328,15 +337,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
-  "activeVersionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
-  "versionCounter": 39,
+  "versionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
+  "activeVersionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
+  "versionCounter": 42,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:01:33.744Z",
-    "createdAt": "2026-09-22T20:01:33.744Z",
-    "versionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
+    "updatedAt": "2026-09-22T20:17:12.709Z",
+    "createdAt": "2026-09-22T20:17:12.709Z",
+    "versionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -386,7 +395,10 @@
         "position": [
           240,
           0
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -423,7 +435,10 @@
           720,
           0
         ],
-        "onError": "continueErrorOutput"
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -461,7 +476,10 @@
           960,
           0
         ],
-        "notes": "waitForSubWorkflow=false: el envío corre en background y no bloquea el router."
+        "notes": "waitForSubWorkflow=false: el envío corre en background y no bloquea el router.",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -650,18 +668,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:01:33.790Z",
-        "id": 2616,
+        "createdAt": "2026-09-22T20:17:12.748Z",
+        "id": 2634,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
+        "versionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:01:33.815Z",
-        "id": 2617,
+        "createdAt": "2026-09-22T20:17:12.765Z",
+        "id": 2635,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
+        "versionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

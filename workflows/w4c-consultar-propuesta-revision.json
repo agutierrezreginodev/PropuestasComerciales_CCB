@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T14:14:25.886Z",
+  "updatedAt": "2026-09-22T20:17:51.099Z",
   "createdAt": "2026-09-15T15:09:07.764Z",
   "id": "KuLSIzBZgaRIjuSu",
   "name": "CCB - Workflow 4C - Consultar Propuesta para Revisión",
@@ -74,7 +74,10 @@
         -64,
         -112
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -104,7 +107,10 @@
         208,
         -112
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -134,7 +140,10 @@
         448,
         -112
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -406,15 +415,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "658e3996-772d-4757-9a3a-4ed3c68b42d5",
-  "activeVersionId": "658e3996-772d-4757-9a3a-4ed3c68b42d5",
-  "versionCounter": 43,
+  "versionId": "9cb8e1cc-e868-4830-ae53-c60855974096",
+  "activeVersionId": "9cb8e1cc-e868-4830-ae53-c60855974096",
+  "versionCounter": 46,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T14:19:24.957Z",
-    "createdAt": "2026-09-18T14:14:25.887Z",
-    "versionId": "658e3996-772d-4757-9a3a-4ed3c68b42d5",
+    "updatedAt": "2026-09-22T20:17:51.100Z",
+    "createdAt": "2026-09-22T20:17:51.100Z",
+    "versionId": "9cb8e1cc-e868-4830-ae53-c60855974096",
     "workflowId": "KuLSIzBZgaRIjuSu",
     "nodes": [
       {
@@ -484,7 +493,10 @@
           -64,
           -112
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -514,7 +526,10 @@
           208,
           -112
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -544,7 +559,10 @@
           448,
           -112
         ],
-        "alwaysOutputData": true
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -805,15 +823,23 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": "Version 658e3996",
-    "description": "",
-    "autosaved": true,
+    "name": null,
+    "description": null,
+    "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T14:19:24.950Z",
-        "id": 2547,
+        "createdAt": "2026-09-22T20:17:51.140Z",
+        "id": 2640,
         "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "658e3996-772d-4757-9a3a-4ed3c68b42d5",
+        "versionId": "9cb8e1cc-e868-4830-ae53-c60855974096",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-22T20:17:51.160Z",
+        "id": 2641,
+        "workflowId": "KuLSIzBZgaRIjuSu",
+        "versionId": "9cb8e1cc-e868-4830-ae53-c60855974096",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
