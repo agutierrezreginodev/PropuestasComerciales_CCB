@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:18:13.637Z",
+  "updatedAt": "2026-09-22T20:24:12.106Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -1168,6 +1168,63 @@
           "waitForSubWorkflow": true
         }
       }
+    },
+    {
+      "id": "w4d-if-reenvio",
+      "name": "IF - ¿Comentario ya procesado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3120,
+        816
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.comentario_fausto }}",
+              "rightValue": "={{ $('Consolidar datos y decisión').first().json.Comentario }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.comentario_fausto }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "w4d-confirmar-reenvio",
+      "name": "Confirmar reenvío - ya procesado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3120,
+        640
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Tus comentarios ya fueron procesados. No se consumió una ronda nueva.' } };"
+      }
     }
   ],
   "connections": {
@@ -1521,17 +1578,6 @@
         ]
       ]
     },
-    "Data Table - Releer cotización": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Guardar ronda y comentario",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Data Table - Guardar ronda y comentario": {
       "main": [
         [
@@ -1710,6 +1756,46 @@
           }
         ]
       ]
+    },
+    "Data Table - Releer cotización": {
+      "main": [
+        [
+          {
+            "node": "IF - ¿Comentario ya procesado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Comentario ya procesado?": {
+      "main": [
+        [
+          {
+            "node": "Confirmar reenvío - ya procesado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Data Table - Guardar ronda y comentario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar reenvío - ya procesado": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1724,15 +1810,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
-  "activeVersionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
-  "versionCounter": 184,
+  "versionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
+  "activeVersionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
+  "versionCounter": 187,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:18:13.639Z",
-    "createdAt": "2026-09-22T20:18:13.639Z",
-    "versionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
+    "updatedAt": "2026-09-22T20:24:12.107Z",
+    "createdAt": "2026-09-22T20:24:12.107Z",
+    "versionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -2896,6 +2982,63 @@
             "waitForSubWorkflow": true
           }
         }
+      },
+      {
+        "id": "w4d-if-reenvio",
+        "name": "IF - ¿Comentario ya procesado?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          3120,
+          816
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "loose"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.comentario_fausto }}",
+                "rightValue": "={{ $('Consolidar datos y decisión').first().json.Comentario }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "c2",
+                "leftValue": "={{ $json.comentario_fausto }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "w4d-confirmar-reenvio",
+        "name": "Confirmar reenvío - ya procesado",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3120,
+          640
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Tus comentarios ya fueron procesados. No se consumió una ronda nueva.' } };"
+        }
       }
     ],
     "connections": {
@@ -3249,17 +3392,6 @@
           ]
         ]
       },
-      "Data Table - Releer cotización": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Guardar ronda y comentario",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Data Table - Guardar ronda y comentario": {
         "main": [
           [
@@ -3438,6 +3570,46 @@
             }
           ]
         ]
+      },
+      "Data Table - Releer cotización": {
+        "main": [
+          [
+            {
+              "node": "IF - ¿Comentario ya procesado?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Comentario ya procesado?": {
+        "main": [
+          [
+            {
+              "node": "Confirmar reenvío - ya procesado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Data Table - Guardar ronda y comentario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar reenvío - ya procesado": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -3446,18 +3618,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:18:13.701Z",
-        "id": 2642,
+        "createdAt": "2026-09-22T20:24:12.175Z",
+        "id": 2652,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
+        "versionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:18:13.732Z",
-        "id": 2643,
+        "createdAt": "2026-09-22T20:24:12.201Z",
+        "id": 2653,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "eebfee73-a9c5-4834-94f5-f8796c0f474a",
+        "versionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

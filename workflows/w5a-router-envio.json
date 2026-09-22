@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:17:12.707Z",
+  "updatedAt": "2026-09-22T20:20:15.239Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -138,7 +138,8 @@
       "notes": "waitForSubWorkflow=false: el envío corre en background y no bloquea el router.",
       "retryOnFail": true,
       "maxTries": 5,
-      "waitBetweenTries": 5000
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -237,6 +238,77 @@
           "waitForSubWorkflow": true
         }
       }
+    },
+    {
+      "id": "w5a-prep-despacho-err",
+      "name": "Preparar error - Despacho falló",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        160
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\nconst nodo = 'Despachar a W5-B';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido al despachar a W5-B';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>. El despacho a W5-B falló — la fila se revirtió a APROBADA y se reintentará en el próximo ciclo. Revisar manualmente si el fallo persiste.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-A-router-envio', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+      }
+    },
+    {
+      "id": "w5a-revertir-despacho",
+      "name": "Data Table - Revertir a APROBADA (fallo despacho)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1392,
+        160
+      ],
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "APROBADA"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "id": "w5a-ejecutar-reg-alertar-despacho",
+      "name": "Ejecutar Registrar-y-Alertar (Despacho)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1584,
+        160
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
     }
   ],
   "connections": {
@@ -319,6 +391,40 @@
           }
         ]
       ]
+    },
+    "Despachar a W5-B": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Preparar error - Despacho falló",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Despacho falló": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Revertir a APROBADA (fallo despacho)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Revertir a APROBADA (fallo despacho)": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar (Despacho)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -337,15 +443,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
-  "activeVersionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
-  "versionCounter": 42,
+  "versionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
+  "activeVersionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
+  "versionCounter": 45,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:17:12.709Z",
-    "createdAt": "2026-09-22T20:17:12.709Z",
-    "versionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
+    "updatedAt": "2026-09-22T20:20:15.241Z",
+    "createdAt": "2026-09-22T20:20:15.241Z",
+    "versionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -479,7 +585,8 @@
         "notes": "waitForSubWorkflow=false: el envío corre en background y no bloquea el router.",
         "retryOnFail": true,
         "maxTries": 5,
-        "waitBetweenTries": 5000
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -578,6 +685,77 @@
             "waitForSubWorkflow": true
           }
         }
+      },
+      {
+        "id": "w5a-prep-despacho-err",
+        "name": "Preparar error - Despacho falló",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1200,
+          160
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst nodo = 'Despachar a W5-B';\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Error desconocido al despachar a W5-B';\nconst id = j.id_solicitud || 'N/A';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>. El despacho a W5-B falló — la fila se revirtió a APROBADA y se reintentará en el próximo ciclo. Revisar manualmente si el fallo persiste.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-A-router-envio', nodo_fallido: nodo, mensaje_error: mensaje, emailBody } };"
+        }
+      },
+      {
+        "id": "w5a-revertir-despacho",
+        "name": "Data Table - Revertir a APROBADA (fallo despacho)",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          1392,
+          160
+        ],
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "APROBADA"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "alwaysOutputData": true
+      },
+      {
+        "id": "w5a-ejecutar-reg-alertar-despacho",
+        "name": "Ejecutar Registrar-y-Alertar (Despacho)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1584,
+          160
+        ],
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        }
       }
     ],
     "connections": {
@@ -660,6 +838,40 @@
             }
           ]
         ]
+      },
+      "Despachar a W5-B": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Preparar error - Despacho falló",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Despacho falló": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Revertir a APROBADA (fallo despacho)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Revertir a APROBADA (fallo despacho)": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar (Despacho)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -668,18 +880,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:17:12.748Z",
-        "id": 2634,
+        "createdAt": "2026-09-22T20:20:15.278Z",
+        "id": 2646,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
+        "versionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:17:12.765Z",
-        "id": 2635,
+        "createdAt": "2026-09-22T20:20:15.295Z",
+        "id": 2647,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "a32604fb-7706-4eba-b8a8-c4e620fb4720",
+        "versionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:18:14.724Z",
+  "updatedAt": "2026-09-22T20:22:01.928Z",
   "createdAt": "2026-09-11T18:19:42.906Z",
   "id": "XWBHgbmtBubA4gqx",
   "name": "[SUB] CCB - Workflow 5B - Envío al Cliente",
@@ -182,7 +182,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Calcula el tamano del PDF para decidir adjunto vs link (limite ~4MB).\n// OJO: n8n guarda el binario en el filesystem ('database') y expone 'bytes' numerico;\n// 'fileSize' puede venir como string humana (\"1 MB\"). El dato fiable es 'bytes'.\nconst b = ($input.item.binary && $input.item.binary.data) || {};\nconst fromBytes = Number(b.bytes) || 0;\nconst fromB64 = (typeof b.data === 'string' && b.data !== 'database') ? Math.floor((b.data.length * 3) / 4) : 0;\nconst tamano = fromBytes || fromB64 || 0;\nconst LIMITE = 4 * 1024 * 1024;\nreturn { json: { ...$json, tamano_bytes: tamano, adjuntar: tamano > 0 && tamano <= LIMITE }, binary: $input.item.binary };"
+        "jsCode": "// Calcula el tamano del PDF para decidir adjunto vs link (limite ~4MB).\n// OJO: n8n guarda el binario en el filesystem ('database') y expone 'bytes' numerico;\n// 'fileSize' puede venir como string humana (\"1 MB\"). El dato fiable es 'bytes'.\nconst b = ($input.item.binary && $input.item.binary.data) || {};\nconst fromBytes = Number(b.bytes) || 0;\nconst fromB64 = (typeof b.data === 'string' && b.data !== 'database') ? Math.floor((b.data.length * 3) / 4) : 0;\nconst tamano = fromBytes || fromB64 || 0;\nconst LIMITE = 4 * 1024 * 1024;\nif (tamano === 0) {\n  throw new Error('PDF vacio o corrupto (0 bytes) — no se adjunta ni se envia como solo link');\n}\nreturn { json: { ...$json, tamano_bytes: tamano, adjuntar: tamano > 0 && tamano <= LIMITE }, binary: $input.item.binary };"
       },
       "id": "w5b-evaluar",
       "name": "Evaluar adjunto",
@@ -191,7 +191,8 @@
       "position": [
         -16,
         288
-      ]
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -528,7 +529,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst idFaltante = get('Preparar error - id_solicitud faltante');\nconst origen = idFaltante.nodo_fallido ? idFaltante : (datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : email));\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || get('Consolidar datos del envío').id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, workflow_origen: 'W5-B-envio-cliente', flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml, emailBody: alertHtml } };"
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst corrupto = get('Preparar error - PDF corrupto');\nconst idFaltante = get('Preparar error - id_solicitud faltante');\nconst origen = idFaltante.nodo_fallido ? idFaltante : (datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : (corrupto.nodo_fallido ? corrupto : email)));\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || get('Consolidar datos del envío').id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, workflow_origen: 'W5-B-envio-cliente', flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml, emailBody: alertHtml } };"
       },
       "id": "w5b-prep-alerta-consolidada",
       "name": "Preparar alerta de fallo - Envío",
@@ -606,6 +607,20 @@
         "options": {
           "waitForSubWorkflow": true
         }
+      }
+    },
+    {
+      "id": "w5b-prep-err-pdf-corrupto",
+      "name": "Preparar error - PDF corrupto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        768
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || 'PDF vacío o corrupto (0 bytes)';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'El PDF descargado está vacío o corrupto (0 bytes): ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Evaluar adjunto', mensaje_error: mensaje, emailBody } };"
       }
     }
   ],
@@ -695,6 +710,13 @@
         [
           {
             "node": "Preparar correo al cliente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - PDF corrupto",
             "type": "main",
             "index": 0
           }
@@ -876,6 +898,17 @@
           }
         ]
       ]
+    },
+    "Preparar error - PDF corrupto": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Marcar ERROR_ENVIO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -890,15 +923,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "8287027f-baa7-42ec-a222-7289a48b070e",
-  "activeVersionId": "8287027f-baa7-42ec-a222-7289a48b070e",
-  "versionCounter": 126,
+  "versionId": "9555b5fc-4334-4b72-83a6-56e81e15679a",
+  "activeVersionId": "9555b5fc-4334-4b72-83a6-56e81e15679a",
+  "versionCounter": 129,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:18:14.726Z",
-    "createdAt": "2026-09-22T20:18:14.726Z",
-    "versionId": "8287027f-baa7-42ec-a222-7289a48b070e",
+    "updatedAt": "2026-09-22T20:22:01.929Z",
+    "createdAt": "2026-09-22T20:22:01.929Z",
+    "versionId": "9555b5fc-4334-4b72-83a6-56e81e15679a",
     "workflowId": "XWBHgbmtBubA4gqx",
     "nodes": [
       {
@@ -1076,7 +1109,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// Calcula el tamano del PDF para decidir adjunto vs link (limite ~4MB).\n// OJO: n8n guarda el binario en el filesystem ('database') y expone 'bytes' numerico;\n// 'fileSize' puede venir como string humana (\"1 MB\"). El dato fiable es 'bytes'.\nconst b = ($input.item.binary && $input.item.binary.data) || {};\nconst fromBytes = Number(b.bytes) || 0;\nconst fromB64 = (typeof b.data === 'string' && b.data !== 'database') ? Math.floor((b.data.length * 3) / 4) : 0;\nconst tamano = fromBytes || fromB64 || 0;\nconst LIMITE = 4 * 1024 * 1024;\nreturn { json: { ...$json, tamano_bytes: tamano, adjuntar: tamano > 0 && tamano <= LIMITE }, binary: $input.item.binary };"
+          "jsCode": "// Calcula el tamano del PDF para decidir adjunto vs link (limite ~4MB).\n// OJO: n8n guarda el binario en el filesystem ('database') y expone 'bytes' numerico;\n// 'fileSize' puede venir como string humana (\"1 MB\"). El dato fiable es 'bytes'.\nconst b = ($input.item.binary && $input.item.binary.data) || {};\nconst fromBytes = Number(b.bytes) || 0;\nconst fromB64 = (typeof b.data === 'string' && b.data !== 'database') ? Math.floor((b.data.length * 3) / 4) : 0;\nconst tamano = fromBytes || fromB64 || 0;\nconst LIMITE = 4 * 1024 * 1024;\nif (tamano === 0) {\n  throw new Error('PDF vacio o corrupto (0 bytes) — no se adjunta ni se envia como solo link');\n}\nreturn { json: { ...$json, tamano_bytes: tamano, adjuntar: tamano > 0 && tamano <= LIMITE }, binary: $input.item.binary };"
         },
         "id": "w5b-evaluar",
         "name": "Evaluar adjunto",
@@ -1085,7 +1118,8 @@
         "position": [
           -16,
           288
-        ]
+        ],
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1422,7 +1456,7 @@
       },
       {
         "parameters": {
-          "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst idFaltante = get('Preparar error - id_solicitud faltante');\nconst origen = idFaltante.nodo_fallido ? idFaltante : (datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : email));\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || get('Consolidar datos del envío').id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, workflow_origen: 'W5-B-envio-cliente', flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml, emailBody: alertHtml } };"
+          "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst datos = get('Preparar error - Datos incompletos');\nconst pdf = get('Preparar error - Descarga PDF');\nconst email = get('Preparar error - Envío email');\nconst corrupto = get('Preparar error - PDF corrupto');\nconst idFaltante = get('Preparar error - id_solicitud faltante');\nconst origen = idFaltante.nodo_fallido ? idFaltante : (datos.nodo_fallido ? datos : (pdf.nodo_fallido ? pdf : (corrupto.nodo_fallido ? corrupto : email)));\n\nconst flujo = $workflow.name;\nconst idSolicitud = origen.id_solicitud || get('Consolidar datos del envío').id_solicitud || 'N/A';\nconst nodoFallido = origen.nodo_fallido || 'Envío al cliente';\nconst tipoError = 'Validación de envío al cliente';\nconst mensajeError = origen.mensaje_error || 'Error desconocido';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst alertHtml = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Falló el envío al cliente</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">La propuesta quedó en ERROR_ENVIO y no se reintenta automáticamente.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn { json: { id_solicitud: idSolicitud, workflow_origen: 'W5-B-envio-cliente', flujo, tipo_error: tipoError, nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, alertHtml, emailBody: alertHtml } };"
         },
         "id": "w5b-prep-alerta-consolidada",
         "name": "Preparar alerta de fallo - Envío",
@@ -1500,6 +1534,20 @@
           "options": {
             "waitForSubWorkflow": true
           }
+        }
+      },
+      {
+        "id": "w5b-prep-err-pdf-corrupto",
+        "name": "Preparar error - PDF corrupto",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          160,
+          768
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Patrón de error estándar del pipeline.\nconst j = $json;\nconst detalle = (j.error && (j.error.message || j.error.description)) || 'PDF vacío o corrupto (0 bytes)';\nconst id = $('Consolidar datos del envío').first().json.id_solicitud || 'N/A';\nconst mensaje = 'El PDF descargado está vacío o corrupto (0 bytes): ' + detalle;\nconst emailBody = '<p>Error al enviar la propuesta al cliente.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W5-B-envio-cliente', nodo_fallido: 'Evaluar adjunto', mensaje_error: mensaje, emailBody } };"
         }
       }
     ],
@@ -1589,6 +1637,13 @@
           [
             {
               "node": "Preparar correo al cliente",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - PDF corrupto",
               "type": "main",
               "index": 0
             }
@@ -1770,6 +1825,17 @@
             }
           ]
         ]
+      },
+      "Preparar error - PDF corrupto": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Marcar ERROR_ENVIO",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -1778,18 +1844,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:18:14.789Z",
-        "id": 2644,
+        "createdAt": "2026-09-22T20:22:02.037Z",
+        "id": 2650,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "8287027f-baa7-42ec-a222-7289a48b070e",
+        "versionId": "9555b5fc-4334-4b72-83a6-56e81e15679a",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:18:14.806Z",
-        "id": 2645,
+        "createdAt": "2026-09-22T20:22:02.080Z",
+        "id": 2651,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "8287027f-baa7-42ec-a222-7289a48b070e",
+        "versionId": "9555b5fc-4334-4b72-83a6-56e81e15679a",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

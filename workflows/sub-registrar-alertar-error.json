@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T19:50:48.433Z",
+  "updatedAt": "2026-09-22T20:21:15.527Z",
   "createdAt": "2026-09-22T19:27:26.926Z",
   "id": "2dY1kaT7I5a0eP2w",
   "name": "[SUB] - CCB - Registrar y Alertar Error",
@@ -52,7 +52,25 @@
           },
           "matchingColumns": []
         },
-        "options": {}
+        "options": {},
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            },
+            {
+              "keyName": "workflow_origen",
+              "keyValue": "={{ $json.workflow_origen }}"
+            },
+            {
+              "keyName": "nodo_fallido",
+              "keyValue": "={{ $json.nodo_fallido }}"
+            }
+          ]
+        }
       },
       "id": "sub-error-registrar",
       "name": "Data Table - Registrar error",
@@ -79,7 +97,7 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        384,
+        240,
         0
       ],
       "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162",
@@ -101,8 +119,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        720,
-        16
+        464,
+        0
       ],
       "alwaysOutputData": true
     }
@@ -175,15 +193,15 @@
       }
     ]
   },
-  "versionId": "7b588b36-df0a-40c4-bfca-e08c69135196",
-  "activeVersionId": "578553c5-9cd5-4f8c-9c43-ecaa859b0518",
-  "versionCounter": 15,
+  "versionId": "9dfd9b23-b603-42ae-8701-b6a1800bcbfe",
+  "activeVersionId": "9dfd9b23-b603-42ae-8701-b6a1800bcbfe",
+  "versionCounter": 19,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T19:49:06.912Z",
-    "createdAt": "2026-09-22T19:49:06.912Z",
-    "versionId": "578553c5-9cd5-4f8c-9c43-ecaa859b0518",
+    "updatedAt": "2026-09-22T20:21:15.528Z",
+    "createdAt": "2026-09-22T20:21:15.528Z",
+    "versionId": "9dfd9b23-b603-42ae-8701-b6a1800bcbfe",
     "workflowId": "2dY1kaT7I5a0eP2w",
     "nodes": [
       {
@@ -231,7 +249,25 @@
             },
             "matchingColumns": []
           },
-          "options": {}
+          "options": {},
+          "operation": "upsert",
+          "matchType": "allConditions",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              },
+              {
+                "keyName": "workflow_origen",
+                "keyValue": "={{ $json.workflow_origen }}"
+              },
+              {
+                "keyName": "nodo_fallido",
+                "keyValue": "={{ $json.nodo_fallido }}"
+              }
+            ]
+          }
         },
         "id": "sub-error-registrar",
         "name": "Data Table - Registrar error",
@@ -258,8 +294,8 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          480,
-          -160
+          240,
+          0
         ],
         "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162",
         "credentials": {
@@ -280,8 +316,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          720,
-          16
+          464,
+          0
         ],
         "alwaysOutputData": true
       }
@@ -338,18 +374,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T19:49:06.953Z",
-        "id": 2614,
+        "createdAt": "2026-09-22T20:21:15.569Z",
+        "id": 2648,
         "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "578553c5-9cd5-4f8c-9c43-ecaa859b0518",
+        "versionId": "9dfd9b23-b603-42ae-8701-b6a1800bcbfe",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T19:49:06.973Z",
-        "id": 2615,
+        "createdAt": "2026-09-22T20:21:15.590Z",
+        "id": 2649,
         "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "578553c5-9cd5-4f8c-9c43-ecaa859b0518",
+        "versionId": "9dfd9b23-b603-42ae-8701-b6a1800bcbfe",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
