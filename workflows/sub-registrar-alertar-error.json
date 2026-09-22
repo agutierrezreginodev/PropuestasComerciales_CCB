@@ -1,0 +1,438 @@
+{
+  "updatedAt": "2026-09-22T19:29:41.426Z",
+  "createdAt": "2026-09-22T19:27:26.926Z",
+  "id": "2dY1kaT7I5a0eP2w",
+  "name": "[SUB] - CCB - Registrar y Alertar Error",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "sub-error-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        0
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    },
+    {
+      "id": "sub-error-normalizar",
+      "name": "Normalizar entrada de error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = j.mensaje_error || 'Error sin mensaje';\nconst emailBody = j.emailBody || '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
+      }
+    },
+    {
+      "id": "sub-error-if-alertar",
+      "name": "¿Enviar alerta?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.alertar }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "sub-error-registrar",
+      "name": "Data Table - Registrar error",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        -160
+      ],
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "id": "sub-error-alerta",
+      "name": "Outlook - Enviar alerta",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -160
+      ],
+      "parameters": {
+        "toRecipients": "dev-alerts@example.com",
+        "subject": "={{ $json.subject }}",
+        "bodyContent": "={{ $json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162"
+    },
+    {
+      "id": "sub-error-devolver",
+      "name": "Devolver item al llamador",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Re-emite el item normalizado para que el llamador pueda continuar (respuestas webhook, returns).\nreturn { json: { ...$json } };"
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Normalizar entrada de error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar entrada de error": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Registrar error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Registrar error": {
+      "main": [
+        [
+          {
+            "node": "¿Enviar alerta?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar alerta?": {
+      "main": [
+        [
+          {
+            "node": "Outlook - Enviar alerta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Devolver item al llamador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outlook - Enviar alerta": {
+      "main": [
+        [
+          {
+            "node": "Devolver item al llamador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "aaff9ca0-fdd1-407d-b0a4-2c1369bc126a",
+  "activeVersionId": "aaff9ca0-fdd1-407d-b0a4-2c1369bc126a",
+  "versionCounter": 5,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-22T19:28:57.066Z",
+    "createdAt": "2026-09-22T19:28:57.066Z",
+    "versionId": "aaff9ca0-fdd1-407d-b0a4-2c1369bc126a",
+    "workflowId": "2dY1kaT7I5a0eP2w",
+    "nodes": [
+      {
+        "id": "sub-error-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -480,
+          0
+        ],
+        "parameters": {
+          "inputSource": "passthrough"
+        }
+      },
+      {
+        "id": "sub-error-normalizar",
+        "name": "Normalizar entrada de error",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -240,
+          0
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = j.mensaje_error || 'Error sin mensaje';\nconst emailBody = j.emailBody || '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
+        }
+      },
+      {
+        "id": "sub-error-if-alertar",
+        "name": "¿Enviar alerta?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          0,
+          0
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "loose"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.alertar }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "sub-error-registrar",
+        "name": "Data Table - Registrar error",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          -160
+        ],
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "onError": "continueRegularOutput",
+        "alwaysOutputData": true
+      },
+      {
+        "id": "sub-error-alerta",
+        "name": "Outlook - Enviar alerta",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          480,
+          -160
+        ],
+        "parameters": {
+          "toRecipients": "dev-alerts@example.com",
+          "subject": "={{ $json.subject }}",
+          "bodyContent": "={{ $json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput",
+        "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162"
+      },
+      {
+        "id": "sub-error-devolver",
+        "name": "Devolver item al llamador",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          720,
+          0
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Re-emite el item normalizado para que el llamador pueda continuar (respuestas webhook, returns).\nreturn { json: { ...$json } };"
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Normalizar entrada de error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalizar entrada de error": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Registrar error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Registrar error": {
+        "main": [
+          [
+            {
+              "node": "¿Enviar alerta?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "¿Enviar alerta?": {
+        "main": [
+          [
+            {
+              "node": "Outlook - Enviar alerta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Devolver item al llamador",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Outlook - Enviar alerta": {
+        "main": [
+          [
+            {
+              "node": "Devolver item al llamador",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-22T19:29:41.853Z",
+        "id": 2609,
+        "workflowId": "2dY1kaT7I5a0eP2w",
+        "versionId": "aaff9ca0-fdd1-407d-b0a4-2c1369bc126a",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}
