@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T14:08:45.419Z",
+  "updatedAt": "2026-09-22T20:06:03.227Z",
   "createdAt": "2026-09-10T20:16:16.917Z",
   "id": "VChcasvisGKekezR",
   "name": "[SUB] CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio",
@@ -625,63 +625,6 @@
     },
     {
       "parameters": {
-        "dataTableId": {
-          "__rl": true,
-          "value": "lO46Xkqj0TTedLjI",
-          "mode": "list",
-          "cachedResultName": "Errores_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "id_solicitud": "={{ $json.id_solicitud }}",
-            "workflow_origen": "={{ $json.workflow_origen }}",
-            "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
-          },
-          "matchingColumns": []
-        },
-        "options": {}
-      },
-      "id": "sw-guardar-inc-motor",
-      "name": "Data Table - Guardar Incidencia Motor",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        608,
-        1104
-      ],
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
-        "toRecipients": "dev-alerts@example.com",
-        "subject": "={{ '⚠️ Motor rechazó el cálculo - nodo: ' + $json.nodo_fallido }}",
-        "bodyContent": "={{ $json.emailBody }}",
-        "additionalFields": {
-          "bodyContentType": "html"
-        }
-      },
-      "id": "sw-alerta-motor",
-      "name": "Outlook - Enviar Alerta Motor",
-      "type": "n8n-nodes-base.microsoftOutlook",
-      "typeVersion": 2,
-      "position": [
-        832,
-        1104
-      ],
-      "webhookId": "648e0804-134f-43df-9274-9bde6a537660",
-      "credentials": {
-        "microsoftOutlookOAuth2Api": {
-          "id": "iOA7XXDSHZojLhJz",
-          "name": "INT-ServiciosInformacion Microsoft Outlook"
-        }
-      },
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
         "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\n\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst nodoFallido = $json.error?.node?.name || $json.error?.name || 'Guardar criterios';\nconst flujo = $workflow.name;\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Error guardando criterios</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">Falló el guardado de criterios o cotización (Sub-workflow Guardar Criterios y Cotizar Servicio).</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: idSolicitud,\n    flujo,\n    tipo_error: tipoError,\n    workflow_origen: 'workflow-formulario',\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    emailBody\n  }\n};"
       },
       "id": "sw-prep-error-guardado",
@@ -692,66 +635,6 @@
         624,
         1504
       ]
-    },
-    {
-      "parameters": {
-        "dataTableId": {
-          "__rl": true,
-          "value": "lO46Xkqj0TTedLjI",
-          "mode": "list",
-          "cachedResultName": "Errores_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "id_solicitud": "={{ $json.id_solicitud }}",
-            "workflow_origen": "={{ $json.workflow_origen }}",
-            "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
-          },
-          "matchingColumns": []
-        },
-        "options": {}
-      },
-      "id": "sw-guardar-inc",
-      "name": "Data Table - Guardar Incidencia Guardado de Criterios",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        -832,
-        1504
-      ],
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
-        "toRecipients": "dev-alerts@example.com",
-        "subject": "={{ '⚠️ Error guardando criterios - nodo: ' + $json.nodo_fallido }}",
-        "bodyContent": "={{ $json.emailBody }}",
-        "additionalFields": {
-          "bodyContentType": "html"
-        }
-      },
-      "id": "sw-alerta-guardado",
-      "name": "Outlook - Enviar Alerta Guardado de Criterios",
-      "type": "n8n-nodes-base.microsoftOutlook",
-      "typeVersion": 2,
-      "position": [
-        -592,
-        1504
-      ],
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 2000,
-      "webhookId": "a0ecd9c0-c77a-49bc-a13a-b8fb4e2860b6",
-      "credentials": {
-        "microsoftOutlookOAuth2Api": {
-          "id": "iOA7XXDSHZojLhJz",
-          "name": "INT-ServiciosInformacion Microsoft Outlook"
-        }
-      },
-      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -907,6 +790,48 @@
         -1056,
         1504
       ]
+    },
+    {
+      "id": "w2a-ejecutar-reg-alertar-motor",
+      "name": "Ejecutar Registrar-y-Alertar (Motor)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        1104
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "w2a-ejecutar-reg-alertar-guardado",
+      "name": "Ejecutar Registrar-y-Alertar (Guardado)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -832,
+        1504
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
     }
   ],
   "connections": {
@@ -1105,72 +1030,6 @@
         ]
       ]
     },
-    "Preparar error - Motor rechazó la propuesta": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Guardar Incidencia Motor",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Guardar Incidencia Motor": {
-      "main": [
-        [
-          {
-            "node": "Outlook - Enviar Alerta Motor",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Outlook - Enviar Alerta Motor": {
-      "main": [
-        [
-          {
-            "node": "Consolidar resultado de error",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Preparar error - Guardado de criterios": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Guardar Incidencia Guardado de Criterios",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Guardar Incidencia Guardado de Criterios": {
-      "main": [
-        [
-          {
-            "node": "Outlook - Enviar Alerta Guardado de Criterios",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Outlook - Enviar Alerta Guardado de Criterios": {
-      "main": [
-        [
-          {
-            "node": "Consolidar resultado de error",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Consolidar resultado de error": {
       "main": [
         [
@@ -1251,11 +1110,55 @@
         ]
       ]
     },
+    "Preparar error - Motor rechazó la propuesta": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar (Motor)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Guardado de criterios": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar (Guardado)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Preparar error - Validación de entrada (Guardar Criterios)": {
       "main": [
         [
           {
-            "node": "Data Table - Guardar Incidencia Guardado de Criterios",
+            "node": "Ejecutar Registrar-y-Alertar (Guardado)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Registrar-y-Alertar (Motor)": {
+      "main": [
+        [
+          {
+            "node": "Consolidar resultado de error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Registrar-y-Alertar (Guardado)": {
+      "main": [
+        [
+          {
+            "node": "Consolidar resultado de error",
             "type": "main",
             "index": 0
           }
@@ -1275,15 +1178,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "af194ecd-8784-4b34-9c12-a158c055724f",
-  "activeVersionId": "af194ecd-8784-4b34-9c12-a158c055724f",
-  "versionCounter": 119,
+  "versionId": "f18995cd-e6c3-41ba-8e65-22f846bec3cb",
+  "activeVersionId": "f18995cd-e6c3-41ba-8e65-22f846bec3cb",
+  "versionCounter": 122,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T14:08:46.831Z",
-    "createdAt": "2026-09-18T14:08:45.421Z",
-    "versionId": "af194ecd-8784-4b34-9c12-a158c055724f",
+    "updatedAt": "2026-09-22T20:06:03.229Z",
+    "createdAt": "2026-09-22T20:06:03.229Z",
+    "versionId": "f18995cd-e6c3-41ba-8e65-22f846bec3cb",
     "workflowId": "VChcasvisGKekezR",
     "nodes": [
       {
@@ -1904,63 +1807,6 @@
       },
       {
         "parameters": {
-          "dataTableId": {
-            "__rl": true,
-            "value": "lO46Xkqj0TTedLjI",
-            "mode": "list",
-            "cachedResultName": "Errores_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-          },
-          "columns": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "id_solicitud": "={{ $json.id_solicitud }}",
-              "workflow_origen": "={{ $json.workflow_origen }}",
-              "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
-            },
-            "matchingColumns": []
-          },
-          "options": {}
-        },
-        "id": "sw-guardar-inc-motor",
-        "name": "Data Table - Guardar Incidencia Motor",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          608,
-          1104
-        ],
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
-          "toRecipients": "dev-alerts@example.com",
-          "subject": "={{ '⚠️ Motor rechazó el cálculo - nodo: ' + $json.nodo_fallido }}",
-          "bodyContent": "={{ $json.emailBody }}",
-          "additionalFields": {
-            "bodyContentType": "html"
-          }
-        },
-        "id": "sw-alerta-motor",
-        "name": "Outlook - Enviar Alerta Motor",
-        "type": "n8n-nodes-base.microsoftOutlook",
-        "typeVersion": 2,
-        "position": [
-          832,
-          1104
-        ],
-        "webhookId": "648e0804-134f-43df-9274-9bde6a537660",
-        "credentials": {
-          "microsoftOutlookOAuth2Api": {
-            "id": "iOA7XXDSHZojLhJz",
-            "name": "INT-ServiciosInformacion Microsoft Outlook"
-          }
-        },
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
           "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\n\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst nodoFallido = $json.error?.node?.name || $json.error?.name || 'Guardar criterios';\nconst flujo = $workflow.name;\nconst tipoError = $json.error?.name || $json.error?.type || 'Error desconocido';\nconst mensajeError = $json.error?.message || JSON.stringify($json.error || {}) || 'Error sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\n\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Error guardando criterios</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">Falló el guardado de criterios o cotización (Sub-workflow Guardar Criterios y Cotizar Servicio).</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\n\nreturn {\n  json: {\n    id_solicitud: idSolicitud,\n    flujo,\n    tipo_error: tipoError,\n    workflow_origen: 'workflow-formulario',\n    nodo_fallido: nodoFallido,\n    mensaje_error: mensajeError,\n    fecha_error: fechaError,\n    emailBody\n  }\n};"
         },
         "id": "sw-prep-error-guardado",
@@ -1971,66 +1817,6 @@
           624,
           1504
         ]
-      },
-      {
-        "parameters": {
-          "dataTableId": {
-            "__rl": true,
-            "value": "lO46Xkqj0TTedLjI",
-            "mode": "list",
-            "cachedResultName": "Errores_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-          },
-          "columns": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "id_solicitud": "={{ $json.id_solicitud }}",
-              "workflow_origen": "={{ $json.workflow_origen }}",
-              "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
-            },
-            "matchingColumns": []
-          },
-          "options": {}
-        },
-        "id": "sw-guardar-inc",
-        "name": "Data Table - Guardar Incidencia Guardado de Criterios",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          -832,
-          1504
-        ],
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
-          "toRecipients": "dev-alerts@example.com",
-          "subject": "={{ '⚠️ Error guardando criterios - nodo: ' + $json.nodo_fallido }}",
-          "bodyContent": "={{ $json.emailBody }}",
-          "additionalFields": {
-            "bodyContentType": "html"
-          }
-        },
-        "id": "sw-alerta-guardado",
-        "name": "Outlook - Enviar Alerta Guardado de Criterios",
-        "type": "n8n-nodes-base.microsoftOutlook",
-        "typeVersion": 2,
-        "position": [
-          -592,
-          1504
-        ],
-        "retryOnFail": true,
-        "maxTries": 3,
-        "waitBetweenTries": 2000,
-        "webhookId": "a0ecd9c0-c77a-49bc-a13a-b8fb4e2860b6",
-        "credentials": {
-          "microsoftOutlookOAuth2Api": {
-            "id": "iOA7XXDSHZojLhJz",
-            "name": "INT-ServiciosInformacion Microsoft Outlook"
-          }
-        },
-        "onError": "continueRegularOutput"
       },
       {
         "parameters": {
@@ -2186,6 +1972,48 @@
           -1056,
           1504
         ]
+      },
+      {
+        "id": "w2a-ejecutar-reg-alertar-motor",
+        "name": "Ejecutar Registrar-y-Alertar (Motor)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          608,
+          1104
+        ],
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        }
+      },
+      {
+        "id": "w2a-ejecutar-reg-alertar-guardado",
+        "name": "Ejecutar Registrar-y-Alertar (Guardado)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -832,
+          1504
+        ],
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        }
       }
     ],
     "connections": {
@@ -2384,72 +2212,6 @@
           ]
         ]
       },
-      "Preparar error - Motor rechazó la propuesta": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Guardar Incidencia Motor",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Guardar Incidencia Motor": {
-        "main": [
-          [
-            {
-              "node": "Outlook - Enviar Alerta Motor",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Outlook - Enviar Alerta Motor": {
-        "main": [
-          [
-            {
-              "node": "Consolidar resultado de error",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Preparar error - Guardado de criterios": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Guardar Incidencia Guardado de Criterios",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Guardar Incidencia Guardado de Criterios": {
-        "main": [
-          [
-            {
-              "node": "Outlook - Enviar Alerta Guardado de Criterios",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Outlook - Enviar Alerta Guardado de Criterios": {
-        "main": [
-          [
-            {
-              "node": "Consolidar resultado de error",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Consolidar resultado de error": {
         "main": [
           [
@@ -2530,11 +2292,55 @@
           ]
         ]
       },
+      "Preparar error - Motor rechazó la propuesta": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar (Motor)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Guardado de criterios": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar (Guardado)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
       "Preparar error - Validación de entrada (Guardar Criterios)": {
         "main": [
           [
             {
-              "node": "Data Table - Guardar Incidencia Guardado de Criterios",
+              "node": "Ejecutar Registrar-y-Alertar (Guardado)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Registrar-y-Alertar (Motor)": {
+        "main": [
+          [
+            {
+              "node": "Consolidar resultado de error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Registrar-y-Alertar (Guardado)": {
+        "main": [
+          [
+            {
+              "node": "Consolidar resultado de error",
               "type": "main",
               "index": 0
             }
@@ -2543,15 +2349,23 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": "Version af194ecd",
-    "description": "",
-    "autosaved": true,
+    "name": null,
+    "description": null,
+    "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T14:08:46.827Z",
-        "id": 2539,
+        "createdAt": "2026-09-22T20:06:03.294Z",
+        "id": 2622,
         "workflowId": "VChcasvisGKekezR",
-        "versionId": "af194ecd-8784-4b34-9c12-a158c055724f",
+        "versionId": "f18995cd-e6c3-41ba-8e65-22f846bec3cb",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-22T20:06:03.312Z",
+        "id": 2623,
+        "workflowId": "VChcasvisGKekezR",
+        "versionId": "f18995cd-e6c3-41ba-8e65-22f846bec3cb",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
