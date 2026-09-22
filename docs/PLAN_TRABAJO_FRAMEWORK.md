@@ -146,13 +146,15 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 
 | ID | Tarea | Alcance | Esf. | Cómo se verifica | Hecho |
 |---|---|---|---|---|---|
-| F4-01 | Crear `[SUB] - CCB - Registrar y Alertar Error` y reemplazar con él el patrón replicado en los 12 flujos | los 12 (triplicado en W1, tres bloques en W5B) | ▪▪▪ | El patrón existe en un solo lugar; los errores se siguen registrando y alertando igual | ☐ |
+| F4-01 | Crear `[SUB] - CCB - Registrar y Alertar Error` y reemplazar con él el patrón replicado en los 12 flujos | los 12 (triplicado en W1, tres bloques en W5B) | ▪▪▪ | El patrón existe en un solo lugar; los errores se siguen registrando y alertando igual | 🔄 **en curso (22/09)** — subflujo creado (`2dY1kaT7I5a0eP2w`, publicado) y **W6 migrado como piloto** (commit `e8177dd`); pendiente verificación con ejecución real antes de escalar |
 | F4-02 | Crear `[SUB] - CCB - Leer Contexto Propuesta` para el bloque de tres lecturas duplicado idéntico | W4B, W4C, W4D | ▪▪ | Los tres flujos leen el contexto invocando el mismo subflujo | ☐ |
 | F4-03 | Partir el flujo de decisión en subflujos por rama: aprobar, cancelar, corregir con IA | W4D (43 nodos, 5 ramas) | ▪▪▪ | Ningún lienzo supera 20 nodos; los tres caminos siguen funcionando de punta a punta | ☐ |
 | F4-04 | Extraer la lógica repetida de consolidación de criterios (4 copias con ~90% de código idéntico) | W2B | ▪▪ | La lógica vive en un solo lugar; las cuatro ramas de servicio siguen cotizando igual | ☐ |
 | F4-05 | Evaluar separar la generación de PDF del cálculo de precio | W3 | ▪▪ | Decisión documentada; si se separa, ambos flujos bajo el umbral de nodos | ☐ |
 
 **Criterio de cierre:** ningún flujo por encima de 20 nodos y ningún bloque lógico duplicado entre flujos.
+
+> **Nota — F4-01 en curso (22/09):** el subflujo compartido `[SUB] - CCB - Registrar y Alertar Error` (`2dY1kaT7I5a0eP2w`) ya existe, publicado y validado (0 errores/0 warnings). Su contrato de entrada tolera la divergencia real del patrón (ver re-auditoría del 22/09, sección 4.2 punto 8): recibe `{ id_solicitud, workflow_origen, nodo_fallido, mensaje_error, emailBody, subject?, alertar? }` con defaults para los campos ausentes (W1 y W3 no emiten `workflow_origen`; W5B/catch-all usan `alertHtml` en vez de `emailBody`). Registra siempre en `Errores_CCB` y condiciona la alerta Outlook a `alertar !== false`. **W6 migrado como piloto** (commit `e8177dd`): sus dos `Preparar error` ahora invocan el subflujo en vez de duplicar Data Table+Outlook (10 nodos, antes 11). **Pendiente:** verificación con ejecución real de W6 antes de escalar al resto de flujos — la regla de oro del proyecto aplica igual acá.
 
 ---
 
