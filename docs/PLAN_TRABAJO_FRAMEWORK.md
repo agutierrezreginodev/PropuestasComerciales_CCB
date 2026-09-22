@@ -261,3 +261,28 @@ Ninguna impide llegar a 90, pero conviene tenerlas a la vista:
 | Sin token de MCP a nivel de instancia | Pruebas oficiales con datos fijados | Pruebas manuales con la matriz de casos interna |
 | Sin instancia de *staging* | Probar fuera de producción | Límite real: Testing no llega a 15/15 sin esto |
 | Microservicio de PDF sobre túnel temporal | Estabilidad del camino crítico | Deploy con dominio propio y proxy inverso |
+| **Frontends en cuenta Vercel equivocada (Muttu)** | Deploy del fix F3-09 (idempotencia del formulario) — el fix está commiteado pero no publicado | Migración Vercel: replicar en `agutierrezreginodev` → verificar → liberar dominio → eliminar en Muttu (plan completo en §Migración Vercel) |
+
+---
+
+## Migración Vercel — plan de acción
+
+> **Contexto (22/09):** los proyectos `formulario-solicitud-ccb` y `revision-propuesta-ccb` se crearon por error en el equipo **Muttu** (orgId `team_UF3EtORaOMPzlT6Lz64g3rB7`), sin repo conectado. Deberían estar en la cuenta personal `agutierrezreginodev` (los repos GitHub ya están ahí). La transferencia de proyectos de Vercel solo se hace a un **Team**, y crear el Team en la cuenta destino exige método de pago — opción descartada por el usuario. **Decisión: replicar en la cuenta personal y eliminar en Muttu para liberar los dominios.**
+
+> **⚠️ Orden obligatorio — no eliminar en Muttu antes de tener el reemplazo verificado** (el formulario público y la página de revisión están en producción; eliminarlos primero los deja caídos).
+
+### Pasos
+
+| # | Paso | Quién | Cómo se verifica | Estado |
+|---|---|---|---|---|
+| M1 | Login en Vercel con la cuenta personal `agutierrezreginodev` | usuario | `vercel whoami` muestra `agutierrezreginodev` | ☐ |
+| M2 | Replicar `formulario-solicitud-ccb` en la cuenta personal (deploy desde repo local, incluye fix F3-09) | orquestador | Deploy exitoso; dominio temporal `formulario-solicitud-ccb-*.vercel.app` responde | ☐ |
+| M3 | Replicar `revision-propuesta-ccb` en la cuenta personal | orquestador | Deploy exitoso; dominio temporal `revision-propuesta-ccb-*.vercel.app` responde | ☐ |
+| M4 | Verificar funcionalidad de ambos en los dominios temporales (formulario envía, revisión carga) | usuario | Prueba real de envío + carga de propuesta | ☐ |
+| M5 | Actualizar CORS en n8n: W2C `allowedOrigins` → dominio temporal nuevo del formulario; W4C → dominio temporal nuevo de revisión | orquestador | `curl` con `Origin` variado refleja el origen nuevo | ☐ |
+| M6 | Eliminar los proyectos en Muttu (libera los dominios `.vercel.app` originales) | orquestador (tras M4) | `vercel project remove` x2; dominios originales dejan de responder | ☐ |
+| M7 | Recuperar los dominios originales en la cuenta personal (`vercel alias` / domains) | orquestador | `formulario-solicitud-ccb.vercel.app` y `revision-propuesta-ccb.vercel.app` apuntan a los proyectos nuevos | ☐ |
+| M8 | Re-ajustar CORS en n8n a los dominios originales (si difieren de los temporales) | orquestador | CORS vuelve a apuntar a los dominios canónicos | ☐ |
+| M9 | Conectar repos GitHub a los proyectos Vercel para auto-deploy en el futuro | orquestador | Push a `agutierrezreginodev/formulario-solicitud-ccb` dispara deploy | ☐ |
+
+> **Nota:** el fix F3-09 (idempotencia del formulario con `sessionStorage`, commit `df1a8a3` en repo aparte) queda publicado cuando se complete M2 — es el desbloqueo principal de esta migración.
