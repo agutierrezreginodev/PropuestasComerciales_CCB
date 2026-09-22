@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T14:12:37.665Z",
+  "updatedAt": "2026-09-22T20:44:13.180Z",
   "createdAt": "2026-09-07T18:48:54.850Z",
   "id": "cHOIOEFB5nbltN82",
   "name": "[SUB] CCB - Workflow 3 - Motor Criterios y Precio",
@@ -44,8 +44,8 @@
       "id": "300dd969-ce10-4f13-91ed-56db6bca97f8",
       "name": "HTTP - Generar PDF (microservicio)",
       "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 2000,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
       "alwaysOutputData": true,
       "onError": "continueErrorOutput"
     },
@@ -976,15 +976,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "d9e090e9-c6cd-4fa6-8b79-9339eefb8d22",
-  "activeVersionId": "d9e090e9-c6cd-4fa6-8b79-9339eefb8d22",
-  "versionCounter": 286,
+  "versionId": "db3e5253-e7cf-48f2-bdeb-d6e2102fdc95",
+  "activeVersionId": "db3e5253-e7cf-48f2-bdeb-d6e2102fdc95",
+  "versionCounter": 289,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T14:12:42.968Z",
-    "createdAt": "2026-09-18T14:12:37.679Z",
-    "versionId": "d9e090e9-c6cd-4fa6-8b79-9339eefb8d22",
+    "updatedAt": "2026-09-22T20:44:13.189Z",
+    "createdAt": "2026-09-22T20:44:13.189Z",
+    "versionId": "db3e5253-e7cf-48f2-bdeb-d6e2102fdc95",
     "workflowId": "cHOIOEFB5nbltN82",
     "nodes": [
       {
@@ -1024,8 +1024,8 @@
         "id": "300dd969-ce10-4f13-91ed-56db6bca97f8",
         "name": "HTTP - Generar PDF (microservicio)",
         "retryOnFail": true,
-        "maxTries": 3,
-        "waitBetweenTries": 2000,
+        "maxTries": 5,
+        "waitBetweenTries": 5000,
         "alwaysOutputData": true,
         "onError": "continueErrorOutput"
       },
@@ -1943,15 +1943,23 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": "Version d9e090e9",
-    "description": "",
-    "autosaved": true,
+    "name": null,
+    "description": null,
+    "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T14:12:42.963Z",
-        "id": 2541,
+        "createdAt": "2026-09-22T20:44:13.547Z",
+        "id": 2658,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "d9e090e9-c6cd-4fa6-8b79-9339eefb8d22",
+        "versionId": "db3e5253-e7cf-48f2-bdeb-d6e2102fdc95",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-22T20:44:13.846Z",
+        "id": 2659,
+        "workflowId": "cHOIOEFB5nbltN82",
+        "versionId": "db3e5253-e7cf-48f2-bdeb-d6e2102fdc95",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
