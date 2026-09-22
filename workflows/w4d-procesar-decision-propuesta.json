@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T18:24:42.426Z",
+  "updatedAt": "2026-09-22T20:09:58.548Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -942,37 +942,6 @@
     },
     {
       "parameters": {
-        "dataTableId": {
-          "__rl": true,
-          "value": "lO46Xkqj0TTedLjI",
-          "mode": "list",
-          "cachedResultName": "Errores_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "id_solicitud": "={{ $json.id_solicitud }}",
-            "workflow_origen": "={{ $json.workflow_origen }}",
-            "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
-          },
-          "matchingColumns": []
-        },
-        "options": {}
-      },
-      "id": "552ddb9b-5a0a-47c2-be10-8d8bc23f0067",
-      "name": "Data Table - Registrar error (recálculo)",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        3440,
-        1168
-      ],
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
         "operation": "update",
         "dataTableId": {
           "__rl": true,
@@ -1005,33 +974,8 @@
       "position": [
         3680,
         1168
-      ]
-    },
-    {
-      "parameters": {
-        "toRecipients": "dev-alerts@example.com",
-        "subject": "={{ '[Propuesta CCB] Recálculo falló — ' + $('Preparar error - Recálculo falló').first().json.id_solicitud }}",
-        "bodyContent": "={{ $('Preparar error - Recálculo falló').first().json.emailBody }}",
-        "additionalFields": {
-          "bodyContentType": "html"
-        }
-      },
-      "id": "b5a358f6-81fe-471e-859e-992a47e1a409",
-      "name": "Outlook - Enviar alerta (recálculo fallido)",
-      "type": "n8n-nodes-base.microsoftOutlook",
-      "typeVersion": 2,
-      "position": [
-        3696,
-        1168
       ],
-      "webhookId": "890daad7-202e-4846-a653-1dd09eeefa56",
-      "credentials": {
-        "microsoftOutlookOAuth2Api": {
-          "id": "iOA7XXDSHZojLhJz",
-          "name": "INT-ServiciosInformacion Microsoft Outlook"
-        }
-      },
-      "onError": "continueRegularOutput"
+      "alwaysOutputData": true
     },
     {
       "parameters": {
@@ -1171,6 +1115,27 @@
         "responseBody": "={{ { ok: false, error: $json.mensaje_error } }}",
         "options": {
           "responseCode": 400
+        }
+      }
+    },
+    {
+      "id": "w4d-ejecutar-reg-alertar-rec",
+      "name": "Ejecutar Registrar-y-Alertar (Recálculo)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        3968,
+        1168
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
         }
       }
     }
@@ -1621,50 +1586,6 @@
         ]
       ]
     },
-    "Preparar error - Recálculo falló": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Registrar error (recálculo)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Registrar error (recálculo)": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Marcar ERROR_CALCULO",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Marcar ERROR_CALCULO": {
-      "main": [
-        [
-          {
-            "node": "Outlook - Enviar alerta (recálculo fallido)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Outlook - Enviar alerta (recálculo fallido)": {
-      "main": [
-        [
-          {
-            "node": "Confirmar error recálculo",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Confirmar error recálculo": {
       "main": [
         [
@@ -1726,6 +1647,39 @@
           }
         ]
       ]
+    },
+    "Preparar error - Recálculo falló": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Marcar ERROR_CALCULO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Marcar ERROR_CALCULO": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar (Recálculo)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Registrar-y-Alertar (Recálculo)": {
+      "main": [
+        [
+          {
+            "node": "Confirmar error recálculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1740,15 +1694,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "b8a632f8-ad73-4fe8-8b19-5ea3a641c2b7",
-  "activeVersionId": "b8a632f8-ad73-4fe8-8b19-5ea3a641c2b7",
-  "versionCounter": 178,
+  "versionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
+  "activeVersionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
+  "versionCounter": 181,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T18:24:42.428Z",
-    "createdAt": "2026-09-22T18:24:42.428Z",
-    "versionId": "b8a632f8-ad73-4fe8-8b19-5ea3a641c2b7",
+    "updatedAt": "2026-09-22T20:09:58.549Z",
+    "createdAt": "2026-09-22T20:09:58.549Z",
+    "versionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -2686,37 +2640,6 @@
       },
       {
         "parameters": {
-          "dataTableId": {
-            "__rl": true,
-            "value": "lO46Xkqj0TTedLjI",
-            "mode": "list",
-            "cachedResultName": "Errores_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-          },
-          "columns": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "id_solicitud": "={{ $json.id_solicitud }}",
-              "workflow_origen": "={{ $json.workflow_origen }}",
-              "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
-            },
-            "matchingColumns": []
-          },
-          "options": {}
-        },
-        "id": "552ddb9b-5a0a-47c2-be10-8d8bc23f0067",
-        "name": "Data Table - Registrar error (recálculo)",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          3440,
-          1168
-        ],
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
           "operation": "update",
           "dataTableId": {
             "__rl": true,
@@ -2749,33 +2672,8 @@
         "position": [
           3680,
           1168
-        ]
-      },
-      {
-        "parameters": {
-          "toRecipients": "dev-alerts@example.com",
-          "subject": "={{ '[Propuesta CCB] Recálculo falló — ' + $('Preparar error - Recálculo falló').first().json.id_solicitud }}",
-          "bodyContent": "={{ $('Preparar error - Recálculo falló').first().json.emailBody }}",
-          "additionalFields": {
-            "bodyContentType": "html"
-          }
-        },
-        "id": "b5a358f6-81fe-471e-859e-992a47e1a409",
-        "name": "Outlook - Enviar alerta (recálculo fallido)",
-        "type": "n8n-nodes-base.microsoftOutlook",
-        "typeVersion": 2,
-        "position": [
-          3696,
-          1168
         ],
-        "webhookId": "890daad7-202e-4846-a653-1dd09eeefa56",
-        "credentials": {
-          "microsoftOutlookOAuth2Api": {
-            "id": "iOA7XXDSHZojLhJz",
-            "name": "INT-ServiciosInformacion Microsoft Outlook"
-          }
-        },
-        "onError": "continueRegularOutput"
+        "alwaysOutputData": true
       },
       {
         "parameters": {
@@ -2915,6 +2813,27 @@
           "responseBody": "={{ { ok: false, error: $json.mensaje_error } }}",
           "options": {
             "responseCode": 400
+          }
+        }
+      },
+      {
+        "id": "w4d-ejecutar-reg-alertar-rec",
+        "name": "Ejecutar Registrar-y-Alertar (Recálculo)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          3968,
+          1168
+        ],
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
           }
         }
       }
@@ -3365,50 +3284,6 @@
           ]
         ]
       },
-      "Preparar error - Recálculo falló": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Registrar error (recálculo)",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Registrar error (recálculo)": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Marcar ERROR_CALCULO",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Marcar ERROR_CALCULO": {
-        "main": [
-          [
-            {
-              "node": "Outlook - Enviar alerta (recálculo fallido)",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Outlook - Enviar alerta (recálculo fallido)": {
-        "main": [
-          [
-            {
-              "node": "Confirmar error recálculo",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Confirmar error recálculo": {
         "main": [
           [
@@ -3470,6 +3345,39 @@
             }
           ]
         ]
+      },
+      "Preparar error - Recálculo falló": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Marcar ERROR_CALCULO",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Marcar ERROR_CALCULO": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar (Recálculo)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Registrar-y-Alertar (Recálculo)": {
+        "main": [
+          [
+            {
+              "node": "Confirmar error recálculo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -3478,18 +3386,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T18:24:42.506Z",
-        "id": 2605,
+        "createdAt": "2026-09-22T20:09:58.621Z",
+        "id": 2628,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "b8a632f8-ad73-4fe8-8b19-5ea3a641c2b7",
+        "versionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T18:24:42.530Z",
-        "id": 2606,
+        "createdAt": "2026-09-22T20:09:58.649Z",
+        "id": 2629,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "b8a632f8-ad73-4fe8-8b19-5ea3a641c2b7",
+        "versionId": "c940e269-f6b5-4fcd-a3bb-30185b7d023b",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
