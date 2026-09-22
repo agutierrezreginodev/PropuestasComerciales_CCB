@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T13:58:29.905Z",
+  "updatedAt": "2026-09-22T20:01:33.741Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -147,63 +147,6 @@
     },
     {
       "parameters": {
-        "dataTableId": {
-          "__rl": true,
-          "value": "lO46Xkqj0TTedLjI",
-          "mode": "list",
-          "cachedResultName": "Errores_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "id_solicitud": "={{ $json.id_solicitud }}",
-            "workflow_origen": "={{ $json.workflow_origen }}",
-            "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
-          },
-          "matchingColumns": []
-        },
-        "options": {}
-      },
-      "id": "w5a-reg-error",
-      "name": "Data Table - Registrar error del router",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        720,
-        272
-      ],
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
-        "toRecipients": "dev-alerts@example.com",
-        "subject": "={{ '[Propuesta CCB] Error en router W5-A — ' + $json.id_solicitud }}",
-        "bodyContent": "={{ $json.emailBody }}",
-        "additionalFields": {
-          "bodyContentType": "html"
-        }
-      },
-      "id": "w5a-alerta",
-      "name": "Outlook - Enviar alerta del router",
-      "type": "n8n-nodes-base.microsoftOutlook",
-      "typeVersion": 2,
-      "position": [
-        960,
-        272
-      ],
-      "webhookId": "403a6784-a866-47ac-8f5c-a7e6482819f1",
-      "credentials": {
-        "microsoftOutlookOAuth2Api": {
-          "id": "iOA7XXDSHZojLhJz",
-          "name": "INT-ServiciosInformacion Microsoft Outlook"
-        }
-      },
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
         "content": "### W5-A — Router de Envío\n\n- Cada 15 min: busca cotizaciones APROBADA, las marca EN_ENVIO y dispara W5-B (fire-and-forget).\n- El marcado previo es anti-duplicado: si W5-B falla, la fila queda EN_ENVIO/ERROR_ENVIO para revisión manual.\n- Publicar W5-B ANTES de activar este (n8n 2.84 lo exige).",
         "height": 208,
         "width": 352
@@ -264,6 +207,27 @@
         "mode": "runOnceForEachItem",
         "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila APROBADA de Cotizaciones_CCB.';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>: se encontró una fila APROBADA sin <code>id_solicitud</code>, no se despachó a W5-B.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W5-A-router-envio', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
       }
+    },
+    {
+      "id": "w5a-ejecutar-reg-alertar",
+      "name": "Ejecutar Registrar-y-Alertar",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1088,
+        272
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
     }
   ],
   "connections": {
@@ -290,28 +254,6 @@
         [
           {
             "node": "Preparar error - Router",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Preparar error - Router": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Registrar error del router",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Registrar error del router": {
-      "main": [
-        [
-          {
-            "node": "Outlook - Enviar alerta del router",
             "type": "main",
             "index": 0
           }
@@ -347,11 +289,22 @@
         ]
       ]
     },
+    "Preparar error - Router": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Preparar error - id_solicitud faltante": {
       "main": [
         [
           {
-            "node": "Data Table - Registrar error del router",
+            "node": "Ejecutar Registrar-y-Alertar",
             "type": "main",
             "index": 0
           }
@@ -375,15 +328,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
-  "activeVersionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
-  "versionCounter": 36,
+  "versionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
+  "activeVersionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
+  "versionCounter": 39,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T13:58:29.907Z",
-    "createdAt": "2026-09-18T13:58:29.907Z",
-    "versionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
+    "updatedAt": "2026-09-22T20:01:33.744Z",
+    "createdAt": "2026-09-22T20:01:33.744Z",
+    "versionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -526,63 +479,6 @@
       },
       {
         "parameters": {
-          "dataTableId": {
-            "__rl": true,
-            "value": "lO46Xkqj0TTedLjI",
-            "mode": "list",
-            "cachedResultName": "Errores_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-          },
-          "columns": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "id_solicitud": "={{ $json.id_solicitud }}",
-              "workflow_origen": "={{ $json.workflow_origen }}",
-              "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
-            },
-            "matchingColumns": []
-          },
-          "options": {}
-        },
-        "id": "w5a-reg-error",
-        "name": "Data Table - Registrar error del router",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          720,
-          272
-        ],
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
-          "toRecipients": "dev-alerts@example.com",
-          "subject": "={{ '[Propuesta CCB] Error en router W5-A — ' + $json.id_solicitud }}",
-          "bodyContent": "={{ $json.emailBody }}",
-          "additionalFields": {
-            "bodyContentType": "html"
-          }
-        },
-        "id": "w5a-alerta",
-        "name": "Outlook - Enviar alerta del router",
-        "type": "n8n-nodes-base.microsoftOutlook",
-        "typeVersion": 2,
-        "position": [
-          960,
-          272
-        ],
-        "webhookId": "403a6784-a866-47ac-8f5c-a7e6482819f1",
-        "credentials": {
-          "microsoftOutlookOAuth2Api": {
-            "id": "iOA7XXDSHZojLhJz",
-            "name": "INT-ServiciosInformacion Microsoft Outlook"
-          }
-        },
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
           "content": "### W5-A — Router de Envío\n\n- Cada 15 min: busca cotizaciones APROBADA, las marca EN_ENVIO y dispara W5-B (fire-and-forget).\n- El marcado previo es anti-duplicado: si W5-B falla, la fila queda EN_ENVIO/ERROR_ENVIO para revisión manual.\n- Publicar W5-B ANTES de activar este (n8n 2.84 lo exige).",
           "height": 208,
           "width": 352
@@ -643,6 +539,27 @@
           "mode": "runOnceForEachItem",
           "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila APROBADA de Cotizaciones_CCB.';\nconst emailBody = '<p>Error en <b>W5-A (Router de Envío)</b>: se encontró una fila APROBADA sin <code>id_solicitud</code>, no se despachó a W5-B.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W5-A-router-envio', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
         }
+      },
+      {
+        "id": "w5a-ejecutar-reg-alertar",
+        "name": "Ejecutar Registrar-y-Alertar",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1088,
+          272
+        ],
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        }
       }
     ],
     "connections": {
@@ -669,28 +586,6 @@
           [
             {
               "node": "Preparar error - Router",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Preparar error - Router": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Registrar error del router",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Registrar error del router": {
-        "main": [
-          [
-            {
-              "node": "Outlook - Enviar alerta del router",
               "type": "main",
               "index": 0
             }
@@ -726,11 +621,22 @@
           ]
         ]
       },
+      "Preparar error - Router": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
       "Preparar error - id_solicitud faltante": {
         "main": [
           [
             {
-              "node": "Data Table - Registrar error del router",
+              "node": "Ejecutar Registrar-y-Alertar",
               "type": "main",
               "index": 0
             }
@@ -744,18 +650,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T13:58:29.962Z",
-        "id": 2522,
+        "createdAt": "2026-09-22T20:01:33.790Z",
+        "id": 2616,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
+        "versionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-18T13:58:30.370Z",
-        "id": 2523,
+        "createdAt": "2026-09-22T20:01:33.815Z",
+        "id": 2617,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "62fe8367-ea77-426f-9268-deb55e7d4e10",
+        "versionId": "64bb77aa-a37d-4b34-8050-344d74de85d3",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

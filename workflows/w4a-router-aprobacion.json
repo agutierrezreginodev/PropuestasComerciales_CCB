@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T13:49:47.112Z",
+  "updatedAt": "2026-09-22T20:01:44.448Z",
   "createdAt": "2026-09-11T15:42:01.882Z",
   "id": "7gmpPMBJtEb0W3J5",
   "name": "CCB - Workflow 4A - Router de Aprobación",
@@ -147,63 +147,6 @@
     },
     {
       "parameters": {
-        "dataTableId": {
-          "__rl": true,
-          "value": "lO46Xkqj0TTedLjI",
-          "mode": "list",
-          "cachedResultName": "Errores_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "id_solicitud": "={{ $json.id_solicitud }}",
-            "workflow_origen": "={{ $json.workflow_origen }}",
-            "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
-          },
-          "matchingColumns": []
-        },
-        "options": {}
-      },
-      "id": "w4a-reg-error",
-      "name": "Data Table - Registrar error del router",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        720,
-        272
-      ],
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
-        "toRecipients": "dev-alerts@example.com",
-        "subject": "={{ '[Propuesta CCB] Error en router W4-A — ' + $json.id_solicitud }}",
-        "bodyContent": "={{ $json.emailBody }}",
-        "additionalFields": {
-          "bodyContentType": "html"
-        }
-      },
-      "id": "w4a-alerta",
-      "name": "Outlook - Enviar alerta del router",
-      "type": "n8n-nodes-base.microsoftOutlook",
-      "typeVersion": 2,
-      "position": [
-        960,
-        272
-      ],
-      "webhookId": "d87fc779-bb1b-4e5f-a2ee-7b4029df352d",
-      "credentials": {
-        "microsoftOutlookOAuth2Api": {
-          "id": "iOA7XXDSHZojLhJz",
-          "name": "INT-ServiciosInformacion Microsoft Outlook"
-        }
-      },
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
         "content": "### W4-A — Router de Aprobación\n\n- Cada 15 min: busca cotizaciones en PROPUESTA_GENERADA, las marca EN_REVISION y despacha fire-and-forget a W4-B.\n- El marcado previo es anti-duplicado: si W4-B no arranca, la fila queda EN_REVISION para intervención manual.\n- Activar recién cuando W4-B esté probado.",
         "width": 460
       },
@@ -263,6 +206,27 @@
         "mode": "runOnceForEachItem",
         "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila PROPUESTA_GENERADA de Cotizaciones_CCB.';\nconst emailBody = '<p>Error en <b>W4-A (Router de Aprobación)</b>: se encontró una fila PROPUESTA_GENERADA sin <code>id_solicitud</code>, no se despachó a W4-B.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W4-A-router-aprobacion', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
       }
+    },
+    {
+      "id": "w4a-ejecutar-reg-alertar",
+      "name": "Ejecutar Registrar-y-Alertar",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1088,
+        272
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
     }
   ],
   "connections": {
@@ -289,28 +253,6 @@
         [
           {
             "node": "Preparar error - Router",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Preparar error - Router": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Registrar error del router",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Registrar error del router": {
-      "main": [
-        [
-          {
-            "node": "Outlook - Enviar alerta del router",
             "type": "main",
             "index": 0
           }
@@ -346,11 +288,22 @@
         ]
       ]
     },
+    "Preparar error - Router": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Preparar error - id_solicitud faltante": {
       "main": [
         [
           {
-            "node": "Data Table - Registrar error del router",
+            "node": "Ejecutar Registrar-y-Alertar",
             "type": "main",
             "index": 0
           }
@@ -374,15 +327,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
-  "activeVersionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
-  "versionCounter": 40,
+  "versionId": "ebdaf072-db65-48a4-b142-7aed07d54f7d",
+  "activeVersionId": "ebdaf072-db65-48a4-b142-7aed07d54f7d",
+  "versionCounter": 43,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T13:49:47.113Z",
-    "createdAt": "2026-09-18T13:49:47.113Z",
-    "versionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
+    "updatedAt": "2026-09-22T20:01:44.449Z",
+    "createdAt": "2026-09-22T20:01:44.449Z",
+    "versionId": "ebdaf072-db65-48a4-b142-7aed07d54f7d",
     "workflowId": "7gmpPMBJtEb0W3J5",
     "nodes": [
       {
@@ -525,63 +478,6 @@
       },
       {
         "parameters": {
-          "dataTableId": {
-            "__rl": true,
-            "value": "lO46Xkqj0TTedLjI",
-            "mode": "list",
-            "cachedResultName": "Errores_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
-          },
-          "columns": {
-            "mappingMode": "defineBelow",
-            "value": {
-              "id_solicitud": "={{ $json.id_solicitud }}",
-              "workflow_origen": "={{ $json.workflow_origen }}",
-              "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
-            },
-            "matchingColumns": []
-          },
-          "options": {}
-        },
-        "id": "w4a-reg-error",
-        "name": "Data Table - Registrar error del router",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          720,
-          272
-        ],
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
-          "toRecipients": "dev-alerts@example.com",
-          "subject": "={{ '[Propuesta CCB] Error en router W4-A — ' + $json.id_solicitud }}",
-          "bodyContent": "={{ $json.emailBody }}",
-          "additionalFields": {
-            "bodyContentType": "html"
-          }
-        },
-        "id": "w4a-alerta",
-        "name": "Outlook - Enviar alerta del router",
-        "type": "n8n-nodes-base.microsoftOutlook",
-        "typeVersion": 2,
-        "position": [
-          960,
-          272
-        ],
-        "webhookId": "d87fc779-bb1b-4e5f-a2ee-7b4029df352d",
-        "credentials": {
-          "microsoftOutlookOAuth2Api": {
-            "id": "iOA7XXDSHZojLhJz",
-            "name": "INT-ServiciosInformacion Microsoft Outlook"
-          }
-        },
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
           "content": "### W4-A — Router de Aprobación\n\n- Cada 15 min: busca cotizaciones en PROPUESTA_GENERADA, las marca EN_REVISION y despacha fire-and-forget a W4-B.\n- El marcado previo es anti-duplicado: si W4-B no arranca, la fila queda EN_REVISION para intervención manual.\n- Activar recién cuando W4-B esté probado.",
           "width": 460
         },
@@ -641,6 +537,27 @@
           "mode": "runOnceForEachItem",
           "jsCode": "// Patrón de error estándar del pipeline.\nconst mensaje = 'Falta id_solicitud en una fila PROPUESTA_GENERADA de Cotizaciones_CCB.';\nconst emailBody = '<p>Error en <b>W4-A (Router de Aprobación)</b>: se encontró una fila PROPUESTA_GENERADA sin <code>id_solicitud</code>, no se despachó a W4-B.</p><ul><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: '', workflow_origen: 'W4-A-router-aprobacion', nodo_fallido: 'Validar id_solicitud presente', mensaje_error: mensaje, emailBody } };"
         }
+      },
+      {
+        "id": "w4a-ejecutar-reg-alertar",
+        "name": "Ejecutar Registrar-y-Alertar",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1088,
+          272
+        ],
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        }
       }
     ],
     "connections": {
@@ -667,28 +584,6 @@
           [
             {
               "node": "Preparar error - Router",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Preparar error - Router": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Registrar error del router",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Registrar error del router": {
-        "main": [
-          [
-            {
-              "node": "Outlook - Enviar alerta del router",
               "type": "main",
               "index": 0
             }
@@ -724,11 +619,22 @@
           ]
         ]
       },
+      "Preparar error - Router": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
       "Preparar error - id_solicitud faltante": {
         "main": [
           [
             {
-              "node": "Data Table - Registrar error del router",
+              "node": "Ejecutar Registrar-y-Alertar",
               "type": "main",
               "index": 0
             }
@@ -742,18 +648,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T13:49:47.163Z",
-        "id": 2500,
+        "createdAt": "2026-09-22T20:01:44.488Z",
+        "id": 2618,
         "workflowId": "7gmpPMBJtEb0W3J5",
-        "versionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
+        "versionId": "ebdaf072-db65-48a4-b142-7aed07d54f7d",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-18T13:49:47.182Z",
-        "id": 2501,
+        "createdAt": "2026-09-22T20:01:44.517Z",
+        "id": 2619,
         "workflowId": "7gmpPMBJtEb0W3J5",
-        "versionId": "841bfe9c-9a2f-4b30-b850-449ca775caa5",
+        "versionId": "ebdaf072-db65-48a4-b142-7aed07d54f7d",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
