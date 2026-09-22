@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T14:10:11.938Z",
+  "updatedAt": "2026-09-22T18:22:31.648Z",
   "createdAt": "2026-09-15T13:24:42.298Z",
   "id": "u6KCMnLwFOp6Ja0N",
   "name": "CCB - Workflow 2C - Recepción Formulario Externo (Georreferenciada)",
@@ -93,7 +93,10 @@
         176,
         -16
       ],
-      "onError": "continueErrorOutput"
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -351,33 +354,33 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "66682a7c-77b2-4404-ae7a-54e055711d3a",
-  "activeVersionId": "c0f1e8a2-ea94-4b23-9e00-0abbbc5425b0",
-  "versionCounter": 62,
+  "versionId": "48034e20-5022-458e-a8e4-e5643d220288",
+  "activeVersionId": "48034e20-5022-458e-a8e4-e5643d220288",
+  "versionCounter": 65,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-17T14:57:04.882Z",
-    "createdAt": "2026-09-17T14:57:04.882Z",
-    "versionId": "c0f1e8a2-ea94-4b23-9e00-0abbbc5425b0",
+    "updatedAt": "2026-09-22T18:22:31.651Z",
+    "createdAt": "2026-09-22T18:22:31.651Z",
+    "versionId": "48034e20-5022-458e-a8e4-e5643d220288",
     "workflowId": "u6KCMnLwFOp6Ja0N",
     "nodes": [
       {
         "parameters": {
           "httpMethod": "POST",
           "path": "solicitud-georreferenciada",
+          "authentication": "headerAuth",
           "responseMode": "responseNode",
           "options": {
             "allowedOrigins": "https://formulario-solicitud-ccb.vercel.app"
-          },
-          "authentication": "headerAuth"
+          }
         },
         "id": "f1a2b3c4-1111-4a11-8a11-000000000001",
         "name": "Webhook - Solicitud Georreferenciada",
         "type": "n8n-nodes-base.webhook",
         "typeVersion": 2.1,
         "position": [
-          -528,
+          -720,
           16
         ],
         "webhookId": "cd5215b8-91b1-41b3-8c99-40e606514e61",
@@ -398,8 +401,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -288,
-          16
+          -96,
+          0
         ],
         "onError": "continueErrorOutput"
       },
@@ -445,10 +448,13 @@
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.2,
         "position": [
-          -16,
-          0
+          176,
+          -16
         ],
-        "onError": "continueErrorOutput"
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -463,8 +469,8 @@
         "type": "n8n-nodes-base.respondToWebhook",
         "typeVersion": 1.5,
         "position": [
-          256,
-          -16
+          448,
+          -32
         ]
       },
       {
@@ -480,40 +486,32 @@
         "type": "n8n-nodes-base.respondToWebhook",
         "typeVersion": 1.5,
         "position": [
-          -16,
-          240
+          176,
+          208
         ]
       },
       {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const b = $json.body || $json;\nconst requeridos = ['nombre', 'email', 'telefono', 'razon_social'];\nconst faltantes = requeridos.filter((campo) => !b[campo] || String(b[campo]).trim() === '');\nreturn { json: { ...$json, valido: faltantes.length === 0, campos_faltantes: faltantes } };"
+        },
         "id": "d083d2fb-b95c-47ad-870c-af920520e194",
         "name": "Validar campos requeridos",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -528,
-          200
-        ],
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "const b = $json.body || $json;\nconst requeridos = ['nombre', 'email', 'telefono', 'razon_social'];\nconst faltantes = requeridos.filter((campo) => !b[campo] || String(b[campo]).trim() === '');\nreturn { json: { ...$json, valido: faltantes.length === 0, campos_faltantes: faltantes } };"
-        }
+          -544,
+          16
+        ]
       },
       {
-        "id": "aaaa31e9-8286-4cc1-a46c-a41b311b5379",
-        "name": "Validar campos requeridos - ¿completo?",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2.3,
-        "position": [
-          -368,
-          200
-        ],
         "parameters": {
           "conditions": {
             "options": {
-              "version": 2,
-              "leftValue": "",
               "caseSensitive": true,
-              "typeValidation": "loose"
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
             },
             "combinator": "and",
             "conditions": [
@@ -530,31 +528,31 @@
             ]
           },
           "options": {}
-        }
+        },
+        "id": "aaaa31e9-8286-4cc1-a46c-a41b311b5379",
+        "name": "Validar campos requeridos - ¿completo?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -352,
+          16
+        ]
       },
       {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\nconst b = j.body || j;\nconst mensaje = 'Faltan campos requeridos en la solicitud: ' + (j.campos_faltantes || []).join(', ');\nreturn { json: {\n  id_solicitud: b.id_solicitud || '',\n  workflow_origen: 'W2C-recepcion-formulario-externo',\n  nodo_fallido: 'Validar campos requeridos',\n  mensaje_error: mensaje,\n  ok: false,\n  error: mensaje\n} };"
+        },
         "id": "2bf94acd-195d-48b9-92b6-9db90e2dd495",
         "name": "Preparar error - Campos requeridos",
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -208,
-          400
-        ],
-        "parameters": {
-          "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst b = j.body || j;\nconst mensaje = 'Faltan campos requeridos en la solicitud: ' + (j.campos_faltantes || []).join(', ');\nreturn { json: {\n  id_solicitud: b.id_solicitud || '',\n  workflow_origen: 'W2C-recepcion-formulario-externo',\n  nodo_fallido: 'Validar campos requeridos',\n  mensaje_error: mensaje,\n  ok: false,\n  error: mensaje\n} };"
-        }
+          -64,
+          384
+        ]
       },
       {
-        "id": "3145d94e-babc-445c-8bdf-b112401a2a4b",
-        "name": "Registrar error - Campos requeridos",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          32,
-          400
-        ],
         "parameters": {
           "dataTableId": {
             "__rl": true,
@@ -574,24 +572,32 @@
           },
           "options": {}
         },
+        "id": "3145d94e-babc-445c-8bdf-b112401a2a4b",
+        "name": "Registrar error - Campos requeridos",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          176,
+          384
+        ],
         "onError": "continueRegularOutput"
       },
       {
-        "id": "9edbbfe9-e0aa-46a7-8cc1-bf5279ddf06b",
-        "name": "Responder error - Campos requeridos",
-        "type": "n8n-nodes-base.respondToWebhook",
-        "typeVersion": 1.5,
-        "position": [
-          272,
-          400
-        ],
         "parameters": {
           "respondWith": "json",
           "responseBody": "={{ { ok: false, error: $json.mensaje_error } }}",
           "options": {
             "responseCode": 400
           }
-        }
+        },
+        "id": "9edbbfe9-e0aa-46a7-8cc1-bf5279ddf06b",
+        "name": "Responder error - Campos requeridos",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.5,
+        "position": [
+          416,
+          384
+        ]
       }
     ],
     "connections": {
@@ -700,18 +706,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-17T14:57:04.943Z",
-        "id": 2454,
+        "createdAt": "2026-09-22T18:22:31.746Z",
+        "id": 2603,
         "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "c0f1e8a2-ea94-4b23-9e00-0abbbc5425b0",
+        "versionId": "48034e20-5022-458e-a8e4-e5643d220288",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-17T14:57:04.967Z",
-        "id": 2455,
+        "createdAt": "2026-09-22T18:22:31.787Z",
+        "id": 2604,
         "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "c0f1e8a2-ea94-4b23-9e00-0abbbc5425b0",
+        "versionId": "48034e20-5022-458e-a8e4-e5643d220288",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

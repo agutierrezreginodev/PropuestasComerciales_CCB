@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T14:04:06.760Z",
+  "updatedAt": "2026-09-22T18:22:28.815Z",
   "createdAt": "2026-09-04T15:37:43.940Z",
   "id": "w6h0qSblUESIpSVc",
   "name": "CCB - Workflow 1 - Extracción información del cliente",
@@ -200,7 +200,10 @@
       ],
       "id": "38e38a44-b5d9-41c8-b4bb-fdd38bf3f103",
       "name": "Data Table - Crear solicitud (con email)",
-      "onError": "continueErrorOutput"
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -329,7 +332,10 @@
       ],
       "id": "bd2ab68e-4a28-4df7-a865-4ae8cb357322",
       "name": "Data Table - Crear solicitud (sin email)",
-      "onError": "continueErrorOutput"
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -643,7 +649,10 @@
         1120
       ],
       "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
-      "name": "Data Table - Registrar error de extracción IA"
+      "name": "Data Table - Registrar error de extracción IA",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -758,7 +767,10 @@
         1024
       ],
       "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
-      "name": "Data Table - Registrar error de solicitud sin email"
+      "name": "Data Table - Registrar error de solicitud sin email",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -860,7 +872,10 @@
         640
       ],
       "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
-      "name": "Data Table - Registrar error de solicitud con email"
+      "name": "Data Table - Registrar error de solicitud con email",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -1222,22 +1237,22 @@
       "lastTimeChecked": "2026-09-17T19:14:17.081Z"
     },
     "node:Outlook - Nuevo correo recibido": {
-      "lastTimeChecked": "2026-09-18T14:04:17.634Z"
+      "lastTimeChecked": "2026-09-22T18:22:28.899Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "51b190a2-26a7-4df3-be48-a4a845b00518",
-  "activeVersionId": "51b190a2-26a7-4df3-be48-a4a845b00518",
-  "versionCounter": 474,
+  "versionId": "85820aec-48f8-4308-ba21-4ee4b79e7a4c",
+  "activeVersionId": "85820aec-48f8-4308-ba21-4ee4b79e7a4c",
+  "versionCounter": 478,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T14:04:18.152Z",
-    "createdAt": "2026-09-18T14:04:06.771Z",
-    "versionId": "51b190a2-26a7-4df3-be48-a4a845b00518",
+    "updatedAt": "2026-09-22T18:22:28.817Z",
+    "createdAt": "2026-09-22T18:22:28.817Z",
+    "versionId": "85820aec-48f8-4308-ba21-4ee4b79e7a4c",
     "workflowId": "w6h0qSblUESIpSVc",
     "nodes": [
       {
@@ -1433,7 +1448,10 @@
         ],
         "id": "38e38a44-b5d9-41c8-b4bb-fdd38bf3f103",
         "name": "Data Table - Crear solicitud (con email)",
-        "onError": "continueErrorOutput"
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1562,7 +1580,10 @@
         ],
         "id": "bd2ab68e-4a28-4df7-a865-4ae8cb357322",
         "name": "Data Table - Crear solicitud (sin email)",
-        "onError": "continueErrorOutput"
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1876,7 +1897,10 @@
           1120
         ],
         "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
-        "name": "Data Table - Registrar error de extracción IA"
+        "name": "Data Table - Registrar error de extracción IA",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -1991,7 +2015,10 @@
           1024
         ],
         "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
-        "name": "Data Table - Registrar error de solicitud sin email"
+        "name": "Data Table - Registrar error de solicitud sin email",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -2093,7 +2120,10 @@
           640
         ],
         "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
-        "name": "Data Table - Registrar error de solicitud con email"
+        "name": "Data Table - Registrar error de solicitud con email",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
       },
       {
         "parameters": {
@@ -2443,15 +2473,23 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": "Version 51b190a2",
-    "description": "",
-    "autosaved": true,
+    "name": null,
+    "description": null,
+    "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T14:04:18.146Z",
-        "id": 2535,
+        "createdAt": "2026-09-22T18:22:28.880Z",
+        "id": 2601,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "51b190a2-26a7-4df3-be48-a4a845b00518",
+        "versionId": "85820aec-48f8-4308-ba21-4ee4b79e7a4c",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-22T18:22:29.080Z",
+        "id": 2602,
+        "workflowId": "w6h0qSblUESIpSVc",
+        "versionId": "85820aec-48f8-4308-ba21-4ee4b79e7a4c",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
