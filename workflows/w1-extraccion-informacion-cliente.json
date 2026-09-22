@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T13:31:29.280Z",
+  "updatedAt": "2026-09-18T14:04:06.760Z",
   "createdAt": "2026-09-04T15:37:43.940Z",
   "id": "w6h0qSblUESIpSVc",
   "name": "CCB - Workflow 1 - Extracción información del cliente",
@@ -27,7 +27,7 @@
       "type": "n8n-nodes-base.microsoftOutlookTrigger",
       "typeVersion": 1,
       "position": [
-        -1072,
+        -1008,
         896
       ],
       "id": "0fe1ee98-a884-47e0-b0fc-b1ef09f61bd5",
@@ -67,8 +67,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -32,
-        656
+        0,
+        736
       ],
       "id": "941f8da6-8160-4802-8f2b-7cfc93a186aa",
       "name": "¿Tiene el correo del cliente?"
@@ -195,8 +195,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        192,
-        432
+        224,
+        528
       ],
       "id": "38e38a44-b5d9-41c8-b4bb-fdd38bf3f103",
       "name": "Data Table - Crear solicitud (con email)",
@@ -324,8 +324,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        192,
-        880
+        224,
+        912
       ],
       "id": "bd2ab68e-4a28-4df7-a865-4ae8cb357322",
       "name": "Data Table - Crear solicitud (sin email)",
@@ -338,8 +338,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        416,
-        784
+        448,
+        816
       ],
       "id": "21fdbf0a-aa41-4a58-a19b-6224983c9c1d",
       "name": "Preparar email para mercadeo"
@@ -351,8 +351,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        416,
-        336
+        448,
+        432
       ],
       "id": "da3c7ba9-def4-4a6e-bed4-116fa792342f",
       "name": "Preparar correo para el cliente"
@@ -369,8 +369,8 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        624,
-        784
+        656,
+        816
       ],
       "id": "20037dbe-bdc1-4eca-a942-c4997aa22f0a",
       "name": "Outlook - Enviar notificación a mercadeo",
@@ -398,8 +398,8 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        624,
-        336
+        656,
+        432
       ],
       "id": "48569337-156d-4beb-8b46-2597b1cd2e8f",
       "name": "Outlook - Enviar notificación al cliente",
@@ -425,7 +425,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
       "position": [
-        -848,
+        -784,
         1088
       ],
       "id": "04037367-ae34-4e02-acac-1f4d5433d5cd",
@@ -464,7 +464,7 @@
       "type": "@n8n/n8n-nodes-langchain.informationExtractor",
       "typeVersion": 1.2,
       "position": [
-        -848,
+        -784,
         896
       ],
       "id": "294b00c9-5ebd-4ba4-be18-119b899b6763",
@@ -539,8 +539,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -240,
-        656
+        -208,
+        736
       ],
       "id": "29110928-a25a-42d4-a8fa-1a6fe7a71b8b",
       "name": "Consolidar datos de la solicitud"
@@ -565,8 +565,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        416,
-        1008
+        448,
+        1024
       ],
       "id": "74521c77-81fd-4590-b47d-583cfe8e0acc",
       "name": "Preparar error - Solicitud sin email"
@@ -639,7 +639,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -176,
+        -144,
         1120
       ],
       "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
@@ -657,7 +657,7 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        16,
+        48,
         1120
       ],
       "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
@@ -680,8 +680,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        416,
-        544
+        448,
+        640
       ],
       "id": "c90cc077-2d79-4f36-bac0-9257320ce2a1",
       "name": "Preparar error - Solicitud con email"
@@ -754,8 +754,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        624,
-        1008
+        656,
+        1024
       ],
       "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
       "name": "Data Table - Registrar error de solicitud sin email"
@@ -772,8 +772,8 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        816,
-        1008
+        848,
+        1024
       ],
       "id": "fb16513e-41dd-4c96-8fa8-2806727e5521",
       "name": "Outlook - Enviar alerta de solicitud sin email",
@@ -856,8 +856,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        624,
-        544
+        656,
+        640
       ],
       "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
       "name": "Data Table - Registrar error de solicitud con email"
@@ -874,8 +874,8 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        816,
-        544
+        848,
+        640
       ],
       "id": "1230166e-e6d9-4064-bc65-cf517b434f67",
       "name": "Outlook - Enviar alerta de solicitud con email",
@@ -893,8 +893,8 @@
     {
       "parameters": {
         "content": "## W1 — Extracción de información del cliente\nEntrada: cualquier correo (de mercadeo o directo de un cliente) que una regla nativa de Outlook mueve a la carpeta 'Solicitudes CCB' por palabras clave en el asunto (ya no se filtra por remitente en n8n). El **Information Extractor** (IA) saca nombre/teléfono/email del cuerpo del correo.\n\nSi no hay email de contacto, se le pide al asesor conseguirlo por teléfono y responder el correo (rama 'sin email') — el ID de solicitud viaja en la referencia [REF:...] del asunto.\n\n**Salida:** registro en Solicitudes_CCB (Data Table) + notificación al cliente o a mercadeo.\n**F2-07 (17/09):** antes de consolidar, '¿Extracción tiene datos mínimos?' exige que el Information Extractor haya devuelto al menos nombre, teléfono o email — si los tres vienen vacíos (correo sin datos extraíbles: spam, fuera de asunto, etc.) se corta ahí, sin crear registro en Solicitudes_CCB, y se registra/alerta igual que un fallo técnico del extractor.\n\n**Errores:** 2 ramas ad-hoc por nodo (Preparar error → Data Table → alerta), además del errorWorkflow centralizado ya asignado como red de respaldo (catch-all).",
-        "height": 260,
-        "width": 580,
+        "height": 324,
+        "width": 708,
         "color": 4
       },
       "id": "d9a1efcf-5c90-4312-9b30-abfd1b5a3e8d",
@@ -902,8 +902,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1024,
-        528
+        -1040,
+        512
       ]
     },
     {
@@ -969,7 +969,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -608,
+        -496,
         1280
       ]
     }
@@ -1222,22 +1222,22 @@
       "lastTimeChecked": "2026-09-17T19:14:17.081Z"
     },
     "node:Outlook - Nuevo correo recibido": {
-      "lastTimeChecked": "2026-09-18T13:31:29.364Z"
+      "lastTimeChecked": "2026-09-18T14:04:17.634Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
-  "activeVersionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
-  "versionCounter": 456,
+  "versionId": "51b190a2-26a7-4df3-be48-a4a845b00518",
+  "activeVersionId": "51b190a2-26a7-4df3-be48-a4a845b00518",
+  "versionCounter": 474,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T13:31:29.282Z",
-    "createdAt": "2026-09-18T13:31:29.282Z",
-    "versionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
+    "updatedAt": "2026-09-18T14:04:18.152Z",
+    "createdAt": "2026-09-18T14:04:06.771Z",
+    "versionId": "51b190a2-26a7-4df3-be48-a4a845b00518",
     "workflowId": "w6h0qSblUESIpSVc",
     "nodes": [
       {
@@ -1260,7 +1260,7 @@
         "type": "n8n-nodes-base.microsoftOutlookTrigger",
         "typeVersion": 1,
         "position": [
-          -1072,
+          -1008,
           896
         ],
         "id": "0fe1ee98-a884-47e0-b0fc-b1ef09f61bd5",
@@ -1300,8 +1300,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
-          -32,
-          656
+          0,
+          736
         ],
         "id": "941f8da6-8160-4802-8f2b-7cfc93a186aa",
         "name": "¿Tiene el correo del cliente?"
@@ -1428,8 +1428,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          192,
-          432
+          224,
+          528
         ],
         "id": "38e38a44-b5d9-41c8-b4bb-fdd38bf3f103",
         "name": "Data Table - Crear solicitud (con email)",
@@ -1557,8 +1557,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          192,
-          880
+          224,
+          912
         ],
         "id": "bd2ab68e-4a28-4df7-a865-4ae8cb357322",
         "name": "Data Table - Crear solicitud (sin email)",
@@ -1571,8 +1571,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          416,
-          784
+          448,
+          816
         ],
         "id": "21fdbf0a-aa41-4a58-a19b-6224983c9c1d",
         "name": "Preparar email para mercadeo"
@@ -1584,8 +1584,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          416,
-          336
+          448,
+          432
         ],
         "id": "da3c7ba9-def4-4a6e-bed4-116fa792342f",
         "name": "Preparar correo para el cliente"
@@ -1602,8 +1602,8 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          624,
-          784
+          656,
+          816
         ],
         "id": "20037dbe-bdc1-4eca-a942-c4997aa22f0a",
         "name": "Outlook - Enviar notificación a mercadeo",
@@ -1631,8 +1631,8 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          624,
-          336
+          656,
+          432
         ],
         "id": "48569337-156d-4beb-8b46-2597b1cd2e8f",
         "name": "Outlook - Enviar notificación al cliente",
@@ -1658,7 +1658,7 @@
         "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
         "typeVersion": 1,
         "position": [
-          -848,
+          -784,
           1088
         ],
         "id": "04037367-ae34-4e02-acac-1f4d5433d5cd",
@@ -1697,7 +1697,7 @@
         "type": "@n8n/n8n-nodes-langchain.informationExtractor",
         "typeVersion": 1.2,
         "position": [
-          -848,
+          -784,
           896
         ],
         "id": "294b00c9-5ebd-4ba4-be18-119b899b6763",
@@ -1772,8 +1772,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -240,
-          656
+          -208,
+          736
         ],
         "id": "29110928-a25a-42d4-a8fa-1a6fe7a71b8b",
         "name": "Consolidar datos de la solicitud"
@@ -1798,8 +1798,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          416,
-          1008
+          448,
+          1024
         ],
         "id": "74521c77-81fd-4590-b47d-583cfe8e0acc",
         "name": "Preparar error - Solicitud sin email"
@@ -1872,7 +1872,7 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          -176,
+          -144,
           1120
         ],
         "id": "67c8ba99-f9f3-49c1-9204-2e07e50f7772",
@@ -1890,7 +1890,7 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          16,
+          48,
           1120
         ],
         "id": "e1106e4c-ae5c-495e-bcab-609a498d3cf7",
@@ -1913,8 +1913,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          416,
-          544
+          448,
+          640
         ],
         "id": "c90cc077-2d79-4f36-bac0-9257320ce2a1",
         "name": "Preparar error - Solicitud con email"
@@ -1987,8 +1987,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          624,
-          1008
+          656,
+          1024
         ],
         "id": "ce6f5381-b4ba-4fec-9c2a-15c57ae44617",
         "name": "Data Table - Registrar error de solicitud sin email"
@@ -2005,8 +2005,8 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          816,
-          1008
+          848,
+          1024
         ],
         "id": "fb16513e-41dd-4c96-8fa8-2806727e5521",
         "name": "Outlook - Enviar alerta de solicitud sin email",
@@ -2089,8 +2089,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          624,
-          544
+          656,
+          640
         ],
         "id": "e442e91b-1779-4cde-ab98-4c6af860d5bd",
         "name": "Data Table - Registrar error de solicitud con email"
@@ -2107,8 +2107,8 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          816,
-          544
+          848,
+          640
         ],
         "id": "1230166e-e6d9-4064-bc65-cf517b434f67",
         "name": "Outlook - Enviar alerta de solicitud con email",
@@ -2126,8 +2126,8 @@
       {
         "parameters": {
           "content": "## W1 — Extracción de información del cliente\nEntrada: cualquier correo (de mercadeo o directo de un cliente) que una regla nativa de Outlook mueve a la carpeta 'Solicitudes CCB' por palabras clave en el asunto (ya no se filtra por remitente en n8n). El **Information Extractor** (IA) saca nombre/teléfono/email del cuerpo del correo.\n\nSi no hay email de contacto, se le pide al asesor conseguirlo por teléfono y responder el correo (rama 'sin email') — el ID de solicitud viaja en la referencia [REF:...] del asunto.\n\n**Salida:** registro en Solicitudes_CCB (Data Table) + notificación al cliente o a mercadeo.\n**F2-07 (17/09):** antes de consolidar, '¿Extracción tiene datos mínimos?' exige que el Information Extractor haya devuelto al menos nombre, teléfono o email — si los tres vienen vacíos (correo sin datos extraíbles: spam, fuera de asunto, etc.) se corta ahí, sin crear registro en Solicitudes_CCB, y se registra/alerta igual que un fallo técnico del extractor.\n\n**Errores:** 2 ramas ad-hoc por nodo (Preparar error → Data Table → alerta), además del errorWorkflow centralizado ya asignado como red de respaldo (catch-all).",
-          "height": 260,
-          "width": 580,
+          "height": 324,
+          "width": 708,
           "color": 4
         },
         "id": "d9a1efcf-5c90-4312-9b30-abfd1b5a3e8d",
@@ -2135,8 +2135,8 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -1024,
-          528
+          -1040,
+          512
         ]
       },
       {
@@ -2202,7 +2202,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -608,
+          -496,
           1280
         ]
       }
@@ -2443,23 +2443,15 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": null,
-    "description": null,
-    "autosaved": false,
+    "name": "Version 51b190a2",
+    "description": "",
+    "autosaved": true,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T13:31:29.337Z",
-        "id": 2494,
+        "createdAt": "2026-09-18T14:04:18.146Z",
+        "id": 2535,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-18T13:31:29.475Z",
-        "id": 2495,
-        "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "2511240c-f09c-4d9c-b500-0e3b05bf5631",
+        "versionId": "51b190a2-26a7-4df3-be48-a4a845b00518",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

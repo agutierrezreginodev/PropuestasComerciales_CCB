@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T13:50:41.598Z",
+  "updatedAt": "2026-09-18T14:13:20.865Z",
   "createdAt": "2026-09-11T15:41:10.905Z",
   "id": "5RJdnHDQ8NuWZJG7",
   "name": "[SUB] CCB - Workflow 4B - Aprobación de Propuesta (Teams)",
@@ -143,7 +143,7 @@
       "typeVersion": 2,
       "position": [
         1328,
-        -16
+        0
       ],
       "webhookId": "9f1c7a2b-4d3e-4f5a-8b6c-1d2e3f4a5b6c",
       "retryOnFail": true,
@@ -270,7 +270,7 @@
       "parameters": {
         "content": "### W4-B — Notificación de Propuesta (Teams)\n\nSimplificado 15/09: ya NO maneja la decisión de Asesor CCB (aprobar/corregir/cancelar). Solo arma los datos de la propuesta y manda un mensaje simple de Teams con un link a la página de revisión propia (revision-propuesta-ccb.vercel.app).\n\n- chatId: chat 1:1 con Asesor CCB.\n- La decisión completa (aprobar/corregir con IA/cancelar, tope de 3 rondas) vive en **W4-C** (consulta, GET) y **W4-D** (decisión, POST) — workflows nuevos, disparados por la página web, no por este.\n- Si falla el envío de Teams: log + alerta + REVISION_MANUAL (igual que antes).",
         "height": 260,
-        "width": 720
+        "width": 592
       },
       "id": "w4b-nota",
       "name": "Nota - W4-B",
@@ -503,15 +503,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
-  "activeVersionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
-  "versionCounter": 136,
+  "versionId": "1e5a640e-503c-4cfb-8f51-feadac7b945b",
+  "activeVersionId": "1e5a640e-503c-4cfb-8f51-feadac7b945b",
+  "versionCounter": 140,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T13:50:41.600Z",
-    "createdAt": "2026-09-18T13:50:41.600Z",
-    "versionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
+    "updatedAt": "2026-09-18T14:13:24.130Z",
+    "createdAt": "2026-09-18T14:13:20.866Z",
+    "versionId": "1e5a640e-503c-4cfb-8f51-feadac7b945b",
     "workflowId": "5RJdnHDQ8NuWZJG7",
     "nodes": [
       {
@@ -650,7 +650,7 @@
         "typeVersion": 2,
         "position": [
           1328,
-          -16
+          0
         ],
         "webhookId": "9f1c7a2b-4d3e-4f5a-8b6c-1d2e3f4a5b6c",
         "retryOnFail": true,
@@ -777,7 +777,7 @@
         "parameters": {
           "content": "### W4-B — Notificación de Propuesta (Teams)\n\nSimplificado 15/09: ya NO maneja la decisión de Asesor CCB (aprobar/corregir/cancelar). Solo arma los datos de la propuesta y manda un mensaje simple de Teams con un link a la página de revisión propia (revision-propuesta-ccb.vercel.app).\n\n- chatId: chat 1:1 con Asesor CCB.\n- La decisión completa (aprobar/corregir con IA/cancelar, tope de 3 rondas) vive en **W4-C** (consulta, GET) y **W4-D** (decisión, POST) — workflows nuevos, disparados por la página web, no por este.\n- Si falla el envío de Teams: log + alerta + REVISION_MANUAL (igual que antes).",
           "height": 260,
-          "width": 720
+          "width": 592
         },
         "id": "w4b-nota",
         "name": "Nota - W4-B",
@@ -999,23 +999,15 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": null,
-    "description": null,
-    "autosaved": false,
+    "name": "Version 1e5a640e",
+    "description": "",
+    "autosaved": true,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T13:50:41.655Z",
-        "id": 2506,
+        "createdAt": "2026-09-18T14:13:24.126Z",
+        "id": 2543,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-18T13:50:41.679Z",
-        "id": 2507,
-        "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "0c523020-6e0d-4b4b-a9a1-7ea129bc53dc",
+        "versionId": "1e5a640e-503c-4cfb-8f51-feadac7b945b",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

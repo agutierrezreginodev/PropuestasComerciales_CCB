@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T13:32:53.201Z",
+  "updatedAt": "2026-09-18T14:12:37.665Z",
   "createdAt": "2026-09-07T18:48:54.850Z",
   "id": "cHOIOEFB5nbltN82",
   "name": "[SUB] CCB - Workflow 3 - Motor Criterios y Precio",
@@ -14,8 +14,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -3296,
-        400
+        -3712,
+        384
       ],
       "id": "271346e7-4cf8-41a2-8f4f-416615d55360",
       "name": "When Executed by Another Workflow"
@@ -38,8 +38,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1376,
-        400
+        -1264,
+        336
       ],
       "id": "300dd969-ce10-4f13-91ed-56db6bca97f8",
       "name": "HTTP - Generar PDF (microservicio)",
@@ -59,8 +59,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3088,
-        400
+        -3056,
+        368
       ]
     },
     {
@@ -86,8 +86,8 @@
       "type": "n8n-nodes-base.microsoftExcel",
       "typeVersion": 2,
       "position": [
-        -2880,
-        400
+        -2848,
+        368
       ],
       "alwaysOutputData": true,
       "retryOnFail": true,
@@ -110,8 +110,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2656,
-        400
+        -2624,
+        352
       ]
     },
     {
@@ -226,8 +226,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -2256,
-        384
+        -2144,
+        320
       ]
     },
     {
@@ -250,8 +250,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1920,
-        112
+        -1808,
+        48
       ]
     },
     {
@@ -274,8 +274,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1920,
-        304
+        -1808,
+        240
       ]
     },
     {
@@ -298,8 +298,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1920,
-        528
+        -1808,
+        464
       ]
     },
     {
@@ -322,18 +322,18 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1920,
-        720
+        -1808,
+        656
       ]
     },
     {
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "strict"
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
           },
           "conditions": [
             {
@@ -356,15 +356,15 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2464,
-        400
+        -2416,
+        352
       ]
     },
     {
       "parameters": {
         "content": "## W3 — Motor de Criterios y Precio\nSub-workflow invocado por W2 (Execute Workflow). Normaliza criterios → lee la BD real de empresas (Excel) → calcula conteo y precio → filtra solo ok=true → enruta por servicio (Switch) a la plantilla HTML correspondiente → genera el PDF vía el microservicio (Puppeteer detrás de ngrok — ver pendiente de deploy estable).",
-        "height": 220,
-        "width": 436,
+        "height": 188,
+        "width": 420,
         "color": 4
       },
       "id": "c24a5034-e59a-4292-9469-1ed509d0f554",
@@ -372,8 +372,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2896,
-        144
+        -3488,
+        48
       ]
     },
     {
@@ -383,8 +383,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -2384,
-        688
+        -2432,
+        592
       ]
     },
     {
@@ -396,8 +396,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1568,
-        400
+        -1456,
+        336
       ]
     },
     {
@@ -409,8 +409,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3008,
-        688
+        -3056,
+        592
       ]
     },
     {
@@ -422,8 +422,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1360,
-        736
+        -1456,
+        656
       ]
     },
     {
@@ -495,8 +495,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -2784,
-        688
+        -2832,
+        592
       ]
     },
     {
@@ -508,8 +508,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2576,
-        688
+        -2624,
+        592
       ]
     },
     {
@@ -581,8 +581,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -1152,
-        736
+        -1248,
+        656
       ]
     },
     {
@@ -595,8 +595,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1152,
-        400
+        -1072,
+        320
       ]
     },
     {
@@ -608,8 +608,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1920,
-        928
+        -1808,
+        864
       ]
     },
     {
@@ -621,8 +621,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3296,
-        560
+        -3520,
+        384
       ]
     },
     {
@@ -655,8 +655,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -3184,
-        560
+        -3312,
+        384
       ]
     },
     {
@@ -668,8 +668,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3184,
-        768
+        -3056,
+        752
       ]
     }
   ],
@@ -975,27 +975,16 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "When Executed by Another Workflow": [
-      {
-        "json": {
-          "id_solicitud": "SOL-TEST-0002",
-          "tipo_servicio": "Zonificacion y Rutero",
-          "total_registros": 340,
-          "incluye_rutas": true
-        }
-      }
-    ]
-  },
-  "versionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
-  "activeVersionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
-  "versionCounter": 257,
+  "pinData": {},
+  "versionId": "d9e090e9-c6cd-4fa6-8b79-9339eefb8d22",
+  "activeVersionId": "d9e090e9-c6cd-4fa6-8b79-9339eefb8d22",
+  "versionCounter": 286,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T13:32:53.228Z",
-    "createdAt": "2026-09-18T13:32:53.228Z",
-    "versionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
+    "updatedAt": "2026-09-18T14:12:42.968Z",
+    "createdAt": "2026-09-18T14:12:37.679Z",
+    "versionId": "d9e090e9-c6cd-4fa6-8b79-9339eefb8d22",
     "workflowId": "cHOIOEFB5nbltN82",
     "nodes": [
       {
@@ -1005,8 +994,8 @@
         "type": "n8n-nodes-base.executeWorkflowTrigger",
         "typeVersion": 1.1,
         "position": [
-          -3296,
-          400
+          -3712,
+          384
         ],
         "id": "271346e7-4cf8-41a2-8f4f-416615d55360",
         "name": "When Executed by Another Workflow"
@@ -1029,8 +1018,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.2,
         "position": [
-          -1376,
-          400
+          -1264,
+          336
         ],
         "id": "300dd969-ce10-4f13-91ed-56db6bca97f8",
         "name": "HTTP - Generar PDF (microservicio)",
@@ -1050,8 +1039,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -3088,
-          400
+          -3056,
+          368
         ]
       },
       {
@@ -1077,8 +1066,8 @@
         "type": "n8n-nodes-base.microsoftExcel",
         "typeVersion": 2,
         "position": [
-          -2880,
-          400
+          -2848,
+          368
         ],
         "alwaysOutputData": true,
         "retryOnFail": true,
@@ -1101,8 +1090,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -2656,
-          400
+          -2624,
+          352
         ]
       },
       {
@@ -1217,8 +1206,8 @@
         "type": "n8n-nodes-base.switch",
         "typeVersion": 3.2,
         "position": [
-          -2256,
-          384
+          -2144,
+          320
         ]
       },
       {
@@ -1241,8 +1230,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -1920,
-          112
+          -1808,
+          48
         ]
       },
       {
@@ -1265,8 +1254,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -1920,
-          304
+          -1808,
+          240
         ]
       },
       {
@@ -1289,8 +1278,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -1920,
-          528
+          -1808,
+          464
         ]
       },
       {
@@ -1313,18 +1302,18 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -1920,
-          720
+          -1808,
+          656
         ]
       },
       {
         "parameters": {
           "conditions": {
             "options": {
-              "version": 2,
-              "leftValue": "",
               "caseSensitive": true,
-              "typeValidation": "strict"
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
             },
             "conditions": [
               {
@@ -1347,15 +1336,15 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.2,
         "position": [
-          -2464,
-          400
+          -2416,
+          352
         ]
       },
       {
         "parameters": {
           "content": "## W3 — Motor de Criterios y Precio\nSub-workflow invocado por W2 (Execute Workflow). Normaliza criterios → lee la BD real de empresas (Excel) → calcula conteo y precio → filtra solo ok=true → enruta por servicio (Switch) a la plantilla HTML correspondiente → genera el PDF vía el microservicio (Puppeteer detrás de ngrok — ver pendiente de deploy estable).",
-          "height": 220,
-          "width": 436,
+          "height": 188,
+          "width": 420,
           "color": 4
         },
         "id": "c24a5034-e59a-4292-9469-1ed509d0f554",
@@ -1363,8 +1352,8 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -2896,
-          144
+          -3488,
+          48
         ]
       },
       {
@@ -1374,8 +1363,8 @@
         "type": "n8n-nodes-base.noOp",
         "typeVersion": 1,
         "position": [
-          -2384,
-          688
+          -2432,
+          592
         ]
       },
       {
@@ -1387,8 +1376,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -1568,
-          400
+          -1456,
+          336
         ]
       },
       {
@@ -1400,8 +1389,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -3008,
-          688
+          -3056,
+          592
         ]
       },
       {
@@ -1413,8 +1402,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -1360,
-          736
+          -1456,
+          656
         ]
       },
       {
@@ -1486,8 +1475,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          -2784,
-          688
+          -2832,
+          592
         ]
       },
       {
@@ -1499,8 +1488,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -2576,
-          688
+          -2624,
+          592
         ]
       },
       {
@@ -1572,8 +1561,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          -1152,
-          736
+          -1248,
+          656
         ]
       },
       {
@@ -1586,8 +1575,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -1152,
-          400
+          -1072,
+          320
         ]
       },
       {
@@ -1599,8 +1588,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -1920,
-          928
+          -1808,
+          864
         ]
       },
       {
@@ -1612,8 +1601,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -3296,
-          560
+          -3520,
+          384
         ]
       },
       {
@@ -1646,8 +1635,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.2,
         "position": [
-          -3184,
-          560
+          -3312,
+          384
         ]
       },
       {
@@ -1659,8 +1648,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -3184,
-          768
+          -3056,
+          752
         ]
       }
     ],
@@ -1954,23 +1943,15 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": null,
-    "description": null,
-    "autosaved": false,
+    "name": "Version d9e090e9",
+    "description": "",
+    "autosaved": true,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T13:32:53.462Z",
-        "id": 2498,
+        "createdAt": "2026-09-18T14:12:42.963Z",
+        "id": 2541,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-18T13:32:53.514Z",
-        "id": 2499,
-        "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "044bb9e7-ab35-415b-b91a-00aba7214cc8",
+        "versionId": "d9e090e9-c6cd-4fa6-8b79-9339eefb8d22",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

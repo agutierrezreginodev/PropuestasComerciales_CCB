@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-18T13:32:30.481Z",
+  "updatedAt": "2026-09-18T14:08:45.419Z",
   "createdAt": "2026-09-10T20:16:16.917Z",
   "id": "VChcasvisGKekezR",
   "name": "[SUB] CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio",
@@ -16,8 +16,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -832,
-        592
+        -1280,
+        976
       ]
     },
     {
@@ -27,10 +27,10 @@
             {
               "conditions": {
                 "options": {
-                  "version": 3,
-                  "leftValue": "",
                   "caseSensitive": true,
-                  "typeValidation": "strict"
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
                 },
                 "conditions": [
                   {
@@ -51,10 +51,10 @@
             {
               "conditions": {
                 "options": {
-                  "version": 3,
-                  "leftValue": "",
                   "caseSensitive": true,
-                  "typeValidation": "strict"
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
                 },
                 "conditions": [
                   {
@@ -75,10 +75,10 @@
             {
               "conditions": {
                 "options": {
-                  "version": 3,
-                  "leftValue": "",
                   "caseSensitive": true,
-                  "typeValidation": "strict"
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
                 },
                 "conditions": [
                   {
@@ -99,10 +99,10 @@
             {
               "conditions": {
                 "options": {
-                  "version": 3,
-                  "leftValue": "",
                   "caseSensitive": true,
-                  "typeValidation": "strict"
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
                 },
                 "conditions": [
                   {
@@ -129,8 +129,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -608,
-        560
+        -1056,
+        944
       ]
     },
     {
@@ -204,8 +204,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -208,
-        272
+        -624,
+        656
       ],
       "onError": "continueErrorOutput"
     },
@@ -266,8 +266,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -208,
-        496
+        -624,
+        880
       ],
       "onError": "continueErrorOutput"
     },
@@ -328,8 +328,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -208,
-        720
+        -624,
+        1104
       ],
       "onError": "continueErrorOutput"
     },
@@ -390,8 +390,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        -208,
-        944
+        -624,
+        1328
       ],
       "onError": "continueErrorOutput"
     },
@@ -404,8 +404,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        464,
-        160
+        -336,
+        560
       ]
     },
     {
@@ -417,8 +417,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        464,
-        384
+        -336,
+        784
       ]
     },
     {
@@ -430,8 +430,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        464,
-        608
+        -336,
+        1008
       ]
     },
     {
@@ -443,8 +443,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        464,
-        832
+        -336,
+        1232
       ]
     },
     {
@@ -471,8 +471,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        752,
-        496
+        -48,
+        896
       ],
       "onError": "continueErrorOutput"
     },
@@ -480,10 +480,10 @@
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "strict"
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
           },
           "conditions": [
             {
@@ -506,8 +506,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1200,
-        496
+        368,
+        896
       ]
     },
     {
@@ -558,8 +558,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        1472,
-        160
+        672,
+        560
       ],
       "onError": "continueErrorOutput"
     },
@@ -606,8 +606,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1712,
-        144
+        912,
+        544
       ]
     },
     {
@@ -619,8 +619,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1200,
-        704
+        368,
+        1104
       ]
     },
     {
@@ -649,8 +649,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        1440,
-        704
+        608,
+        1104
       ],
       "onError": "continueRegularOutput"
     },
@@ -668,8 +668,8 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        1664,
-        704
+        832,
+        1104
       ],
       "webhookId": "648e0804-134f-43df-9274-9bde6a537660",
       "credentials": {
@@ -689,8 +689,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        272,
-        1200
+        624,
+        1504
       ]
     },
     {
@@ -719,8 +719,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        704,
-        1040
+        -832,
+        1504
       ],
       "onError": "continueRegularOutput"
     },
@@ -738,8 +738,8 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        944,
-        1040
+        -592,
+        1504
       ],
       "retryOnFail": true,
       "maxTries": 3,
@@ -762,8 +762,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1184,
-        1040
+        -352,
+        1504
       ]
     },
     {
@@ -803,8 +803,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1424,
-        1040
+        -112,
+        1504
       ]
     },
     {
@@ -818,8 +818,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1088,
-        128
+        -96,
+        416
       ]
     },
     {
@@ -831,8 +831,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        976,
-        496
+        176,
+        896
       ]
     },
     {
@@ -842,8 +842,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -1040,
-        592
+        -1280,
+        512
       ],
       "id": "20238d45-a96c-4508-bfa8-329a7f23a9a5",
       "name": "Recibir solicitud"
@@ -857,8 +857,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -928,
-        784
+        -1072,
+        512
       ]
     },
     {
@@ -891,8 +891,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -704,
-        784
+        -880,
+        512
       ]
     },
     {
@@ -904,8 +904,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -704,
-        1360
+        -1056,
+        1504
       ]
     }
   ],
@@ -1274,30 +1274,16 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "Recibir solicitud": [
-      {
-        "json": {
-          "servicio": "Información Georreferenciada",
-          "id_solicitud": "SOL-TEST-0001",
-          "criterios": {
-            "razon_social": "Empresa Prueba SAS",
-            "nombre_solicitante": "Juan Pérez",
-            "email_solicitante": "juan@example.com"
-          }
-        }
-      }
-    ]
-  },
-  "versionId": "c51d3098-6161-4f2f-bb77-ea4d3bd4de6d",
-  "activeVersionId": "c51d3098-6161-4f2f-bb77-ea4d3bd4de6d",
-  "versionCounter": 81,
+  "pinData": {},
+  "versionId": "af194ecd-8784-4b34-9c12-a158c055724f",
+  "activeVersionId": "af194ecd-8784-4b34-9c12-a158c055724f",
+  "versionCounter": 119,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-18T13:32:30.483Z",
-    "createdAt": "2026-09-18T13:32:30.483Z",
-    "versionId": "c51d3098-6161-4f2f-bb77-ea4d3bd4de6d",
+    "updatedAt": "2026-09-18T14:08:46.831Z",
+    "createdAt": "2026-09-18T14:08:45.421Z",
+    "versionId": "af194ecd-8784-4b34-9c12-a158c055724f",
     "workflowId": "VChcasvisGKekezR",
     "nodes": [
       {
@@ -1309,8 +1295,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -832,
-          592
+          -1280,
+          976
         ]
       },
       {
@@ -1320,10 +1306,10 @@
               {
                 "conditions": {
                   "options": {
-                    "version": 3,
-                    "leftValue": "",
                     "caseSensitive": true,
-                    "typeValidation": "strict"
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
                   },
                   "conditions": [
                     {
@@ -1344,10 +1330,10 @@
               {
                 "conditions": {
                   "options": {
-                    "version": 3,
-                    "leftValue": "",
                     "caseSensitive": true,
-                    "typeValidation": "strict"
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
                   },
                   "conditions": [
                     {
@@ -1368,10 +1354,10 @@
               {
                 "conditions": {
                   "options": {
-                    "version": 3,
-                    "leftValue": "",
                     "caseSensitive": true,
-                    "typeValidation": "strict"
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
                   },
                   "conditions": [
                     {
@@ -1392,10 +1378,10 @@
               {
                 "conditions": {
                   "options": {
-                    "version": 3,
-                    "leftValue": "",
                     "caseSensitive": true,
-                    "typeValidation": "strict"
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 3
                   },
                   "conditions": [
                     {
@@ -1422,8 +1408,8 @@
         "type": "n8n-nodes-base.switch",
         "typeVersion": 3.2,
         "position": [
-          -608,
-          560
+          -1056,
+          944
         ]
       },
       {
@@ -1497,8 +1483,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          -208,
-          272
+          -624,
+          656
         ],
         "onError": "continueErrorOutput"
       },
@@ -1559,8 +1545,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          -208,
-          496
+          -624,
+          880
         ],
         "onError": "continueErrorOutput"
       },
@@ -1621,8 +1607,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          -208,
-          720
+          -624,
+          1104
         ],
         "onError": "continueErrorOutput"
       },
@@ -1683,8 +1669,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          -208,
-          944
+          -624,
+          1328
         ],
         "onError": "continueErrorOutput"
       },
@@ -1697,8 +1683,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          464,
-          160
+          -336,
+          560
         ]
       },
       {
@@ -1710,8 +1696,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          464,
-          384
+          -336,
+          784
         ]
       },
       {
@@ -1723,8 +1709,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          464,
-          608
+          -336,
+          1008
         ]
       },
       {
@@ -1736,8 +1722,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          464,
-          832
+          -336,
+          1232
         ]
       },
       {
@@ -1764,8 +1750,8 @@
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.2,
         "position": [
-          752,
-          496
+          -48,
+          896
         ],
         "onError": "continueErrorOutput"
       },
@@ -1773,10 +1759,10 @@
         "parameters": {
           "conditions": {
             "options": {
-              "version": 2,
-              "leftValue": "",
               "caseSensitive": true,
-              "typeValidation": "strict"
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
             },
             "conditions": [
               {
@@ -1799,8 +1785,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.2,
         "position": [
-          1200,
-          496
+          368,
+          896
         ]
       },
       {
@@ -1851,8 +1837,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          1472,
-          160
+          672,
+          560
         ],
         "onError": "continueErrorOutput"
       },
@@ -1899,8 +1885,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          1712,
-          144
+          912,
+          544
         ]
       },
       {
@@ -1912,8 +1898,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1200,
-          704
+          368,
+          1104
         ]
       },
       {
@@ -1942,8 +1928,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          1440,
-          704
+          608,
+          1104
         ],
         "onError": "continueRegularOutput"
       },
@@ -1961,8 +1947,8 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          1664,
-          704
+          832,
+          1104
         ],
         "webhookId": "648e0804-134f-43df-9274-9bde6a537660",
         "credentials": {
@@ -1982,8 +1968,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          272,
-          1200
+          624,
+          1504
         ]
       },
       {
@@ -2012,8 +1998,8 @@
         "type": "n8n-nodes-base.dataTable",
         "typeVersion": 1.1,
         "position": [
-          704,
-          1040
+          -832,
+          1504
         ],
         "onError": "continueRegularOutput"
       },
@@ -2031,8 +2017,8 @@
         "type": "n8n-nodes-base.microsoftOutlook",
         "typeVersion": 2,
         "position": [
-          944,
-          1040
+          -592,
+          1504
         ],
         "retryOnFail": true,
         "maxTries": 3,
@@ -2055,8 +2041,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          1184,
-          1040
+          -352,
+          1504
         ]
       },
       {
@@ -2096,8 +2082,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          1424,
-          1040
+          -112,
+          1504
         ]
       },
       {
@@ -2111,8 +2097,8 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -1088,
-          128
+          -96,
+          416
         ]
       },
       {
@@ -2124,8 +2110,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          976,
-          496
+          176,
+          896
         ]
       },
       {
@@ -2135,8 +2121,8 @@
         "type": "n8n-nodes-base.executeWorkflowTrigger",
         "typeVersion": 1.1,
         "position": [
-          -1040,
-          592
+          -1280,
+          512
         ],
         "id": "20238d45-a96c-4508-bfa8-329a7f23a9a5",
         "name": "Recibir solicitud"
@@ -2150,8 +2136,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -928,
-          784
+          -1072,
+          512
         ]
       },
       {
@@ -2184,8 +2170,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.2,
         "position": [
-          -704,
-          784
+          -880,
+          512
         ]
       },
       {
@@ -2197,8 +2183,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -704,
-          1360
+          -1056,
+          1504
         ]
       }
     ],
@@ -2557,23 +2543,15 @@
       }
     },
     "authors": "Adrian Gutierrez",
-    "name": null,
-    "description": null,
-    "autosaved": false,
+    "name": "Version af194ecd",
+    "description": "",
+    "autosaved": true,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-18T13:32:30.566Z",
-        "id": 2496,
+        "createdAt": "2026-09-18T14:08:46.827Z",
+        "id": 2539,
         "workflowId": "VChcasvisGKekezR",
-        "versionId": "c51d3098-6161-4f2f-bb77-ea4d3bd4de6d",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-18T13:32:30.599Z",
-        "id": 2497,
-        "workflowId": "VChcasvisGKekezR",
-        "versionId": "c51d3098-6161-4f2f-bb77-ea4d3bd4de6d",
+        "versionId": "af194ecd-8784-4b34-9c12-a158c055724f",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
