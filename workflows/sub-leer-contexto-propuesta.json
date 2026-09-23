@@ -1,0 +1,448 @@
+{
+  "updatedAt": "2026-09-23T13:49:39.977Z",
+  "createdAt": "2026-09-23T13:49:39.140Z",
+  "id": "GELWpskp0aYJ2zPg",
+  "name": "[SUB] - CCB - Leer Contexto Propuesta",
+  "description": "Subflujo compartido que lee el contexto de una propuesta (cotización, criterios y solicitud) por id_solicitud y lo devuelve en un solo item. Sistema: n8n Data Tables. Área propietaria: Servicios de Información CCB.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "sub-ctx-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// F4-02: el id de la propuesta puede venir en el item, en el body del webhook o en la query.\nconst j = $('When Executed by Another Workflow').first().json || {};\nconst id = j.id_solicitud || (j.body && j.body.id_solicitud) || (j.query && j.query.id_solicitud) || '';\nif (!id) { throw new Error('Leer Contexto Propuesta: falta id_solicitud.'); }\nreturn { json: { id_solicitud: id } };"
+      },
+      "id": "5ceca0ef-3d32-49d2-9092-eb2d25b041b9",
+      "name": "Resolver id_solicitud",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## [SUB] - CCB - Leer Contexto Propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
+        "height": 380,
+        "width": 520,
+        "color": 4
+      },
+      "id": "d8e283fd-cfa6-4c09-9551-6a6c2c44c7d2",
+      "name": "Nota - Leer Contexto Propuesta",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "limit": 1,
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Resolver id_solicitud').first().json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "63f95235-4884-4b6e-b6a2-ecbd091b04c8",
+      "name": "Data Table - Leer cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        0
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "limit": 1,
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Resolver id_solicitud').first().json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "7c03b62c-56c3-486e-834f-278b00c7a78c",
+      "name": "Data Table - Leer criterios",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        0
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "limit": 1,
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Resolver id_solicitud').first().json.id_solicitud }}"
+            }
+          ]
+        }
+      },
+      "id": "f7f541a4-d0b1-4446-b2ff-b364d1b10532",
+      "name": "Data Table - Leer solicitud",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        0
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Devuelve las tres lecturas en un solo item, siempre con la misma forma (aunque falte alguna).\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst id = get('Resolver id_solicitud').id_solicitud || '';\nreturn { json: { id_solicitud: id, cotizacion: get('Data Table - Leer cotización'),\n                 criterios: get('Data Table - Leer criterios'), solicitud: get('Data Table - Leer solicitud') } };"
+      },
+      "id": "c60efd8e-a457-4aed-94e3-8238a513ecb4",
+      "name": "Devolver contexto de la propuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Resolver id_solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resolver id_solicitud": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer cotización": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer criterios": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer solicitud": {
+      "main": [
+        [
+          {
+            "node": "Devolver contexto de la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "ec5f920c-39f0-4e6b-9df1-9e970cfd68fa",
+  "activeVersionId": "ec5f920c-39f0-4e6b-9df1-9e970cfd68fa",
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T13:49:39.140Z",
+    "createdAt": "2026-09-23T13:49:39.140Z",
+    "versionId": "ec5f920c-39f0-4e6b-9df1-9e970cfd68fa",
+    "workflowId": "GELWpskp0aYJ2zPg",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "sub-ctx-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -560,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// F4-02: el id de la propuesta puede venir en el item, en el body del webhook o en la query.\nconst j = $('When Executed by Another Workflow').first().json || {};\nconst id = j.id_solicitud || (j.body && j.body.id_solicitud) || (j.query && j.query.id_solicitud) || '';\nif (!id) { throw new Error('Leer Contexto Propuesta: falta id_solicitud.'); }\nreturn { json: { id_solicitud: id } };"
+        },
+        "id": "5ceca0ef-3d32-49d2-9092-eb2d25b041b9",
+        "name": "Resolver id_solicitud",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -320,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## [SUB] - CCB - Leer Contexto Propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
+          "height": 380,
+          "width": 520,
+          "color": 4
+        },
+        "id": "d8e283fd-cfa6-4c09-9551-6a6c2c44c7d2",
+        "name": "Nota - Leer Contexto Propuesta",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -560,
+          -320
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "limit": 1,
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Resolver id_solicitud').first().json.id_solicitud }}"
+              }
+            ]
+          }
+        },
+        "id": "63f95235-4884-4b6e-b6a2-ecbd091b04c8",
+        "name": "Data Table - Leer cotización",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          -80,
+          0
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "limit": 1,
+          "dataTableId": {
+            "__rl": true,
+            "value": "ldABWugJR1GcFFyy",
+            "mode": "list",
+            "cachedResultName": "Criterios_Cotizacion",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Resolver id_solicitud').first().json.id_solicitud }}"
+              }
+            ]
+          }
+        },
+        "id": "7c03b62c-56c3-486e-834f-278b00c7a78c",
+        "name": "Data Table - Leer criterios",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          160,
+          0
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "limit": 1,
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Resolver id_solicitud').first().json.id_solicitud }}"
+              }
+            ]
+          }
+        },
+        "id": "f7f541a4-d0b1-4446-b2ff-b364d1b10532",
+        "name": "Data Table - Leer solicitud",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          0
+        ],
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Devuelve las tres lecturas en un solo item, siempre con la misma forma (aunque falte alguna).\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst id = get('Resolver id_solicitud').id_solicitud || '';\nreturn { json: { id_solicitud: id, cotizacion: get('Data Table - Leer cotización'),\n                 criterios: get('Data Table - Leer criterios'), solicitud: get('Data Table - Leer solicitud') } };"
+        },
+        "id": "c60efd8e-a457-4aed-94e3-8238a513ecb4",
+        "name": "Devolver contexto de la propuesta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          640,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Resolver id_solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Resolver id_solicitud": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer cotización",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer cotización": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer criterios": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer solicitud": {
+        "main": [
+          [
+            {
+              "node": "Devolver contexto de la propuesta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T13:49:40.385Z",
+        "id": 2737,
+        "workflowId": "GELWpskp0aYJ2zPg",
+        "versionId": "ec5f920c-39f0-4e6b-9df1-9e970cfd68fa",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

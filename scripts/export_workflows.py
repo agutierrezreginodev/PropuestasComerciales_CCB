@@ -44,6 +44,7 @@ WORKFLOWS = {
     "sub-registrar-alertar-error": "2dY1kaT7I5a0eP2w",
     "sub-leer-configuracion": "Hgy02eqPhnsdJvkq",
     "ops-monitoreo-pipeline": "ZwBFTBhwS9pjS69X",
+    "sub-leer-contexto-propuesta": "GELWpskp0aYJ2zPg",
 }
 
 # Literal replacements — see README.md "Anonimización" for the documented table.

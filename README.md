@@ -23,8 +23,12 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 | `XWBHgbmtBubA4gqx` | CCB - Workflow 5B - Envío al Cliente | [`workflows/w5b-envio-al-cliente.json`](workflows/w5b-envio-al-cliente.json) |
 | `mPwl4qUb0zQkmDHN` | CCB - Workflow 6 - Finalizador de Cotizaciones | [`workflows/w6-finalizador-cotizaciones.json`](workflows/w6-finalizador-cotizaciones.json) |
 | `Dh2lAQTzyoZBpXie` | CCB - Error Workflow (catch-all) | [`workflows/error-workflow-catchall.json`](workflows/error-workflow-catchall.json) |
+| `2dY1kaT7I5a0eP2w` | [SUB] - CCB - Registrar y Alertar Error | [`workflows/sub-registrar-alertar-error.json`](workflows/sub-registrar-alertar-error.json) |
+| `Hgy02eqPhnsdJvkq` | [SUB] - CCB - Leer Configuración | [`workflows/sub-leer-configuracion.json`](workflows/sub-leer-configuracion.json) |
+| `GELWpskp0aYJ2zPg` | [SUB] - CCB - Leer Contexto Propuesta | [`workflows/sub-leer-contexto-propuesta.json`](workflows/sub-leer-contexto-propuesta.json) |
+| `ZwBFTBhwS9pjS69X` | [OPS] - CCB - Monitoreo del pipeline | [`workflows/ops-monitoreo-pipeline.json`](workflows/ops-monitoreo-pipeline.json) |
 
-El snapshot está **completo**: los 12 workflows del pipeline definitivo más el Error Workflow catch-all. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
+El snapshot está **completo**: los 12 workflows del pipeline definitivo (11 activos + W2B retirado), el Error Workflow catch-all, los tres subflujos compartidos y el flujo de monitoreo operativo. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
 
 ## Pipeline completo — Información Georreferenciada
 
@@ -71,6 +75,7 @@ Los 12 workflows se evaluaron contra el marco *Arquitectura e Ingeniería de Aut
 
 - **[Informe de auditoría (2026-09-16)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-16.md)** — procedimiento reproducible paso a paso, resultado consolidado, desglose por dimensión y ficha por flujo con lo que cumple, lo que no y sus pendientes.
 - **[Plan de remediación](docs/PLAN_REMEDIACION.md)** — la estrategia: las 8 fases para pasar de 53,6 a ≥90/100, con ganancia estimada, esfuerzo y dependencias externas.
+- **[Estado de progreso (2026-09-23)](docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md)** — qué fases se cerraron, artefactos nuevos, verificación real y pendientes.
 - **[Plan de trabajo](docs/PLAN_TRABAJO_FRAMEWORK.md)** — el tablero de ejecución: 50 tareas atómicas con el nodo exacto sobre el que se actúa, cómo se verifica cada una y el seguimiento de puntaje por flujo.
 
 Resultado: promedio **53,6/100**, ningún flujo sobre el umbral de 90. Tres flujos en clasificación *Crítico* y nueve en *Requiere refactorización*. Los hallazgos son sistemáticos (autenticación de endpoints, validación de entradas, documentación, configuración centralizada), no defectos aislados. Ningún workflow fue modificado durante la auditoría.
@@ -100,7 +105,7 @@ Además, el bloque `shared` que n8n incluye en cada export (metadata de propieda
 
 **Qué NO se anonimizó (a propósito):** IDs de workflow, IDs de Data Table, ID del proyecto de n8n, IDs y nombres de credenciales. Son identificadores internos de n8n, no secretos explotables por sí solos, y modificarlos habría roto el valor del snapshot como respaldo fiel de lo que corre en producción. Tampoco se tocó la columna `comentario_fausto` de una Data Table: es un nombre de campo del esquema de datos, y renombrarlo en el snapshot lo dejaría inconsistente con la base real.
 
-**Mantenimiento:** el proceso está automatizado en [`scripts/export_workflows.py`](scripts/export_workflows.py). Exporta los 13 flujos desde la instancia, elimina el bloque `shared`, aplica exactamente la tabla de reemplazos de arriba y **termina con código de error si sobrevive algún correo fuera de los dominios de reemplazo**, para que una fuga no pueda colarse en un commit sin que nadie lo note.
+**Mantenimiento:** el proceso está automatizado en [`scripts/export_workflows.py`](scripts/export_workflows.py). Exporta los 17 workflows desde la instancia, elimina el bloque `shared`, aplica exactamente la tabla de reemplazos de arriba y **termina con código de error si sobrevive algún correo fuera de los dominios de reemplazo**, para que una fuga no pueda colarse en un commit sin que nadie lo note.
 
 ```bash
 N8N_API_URL="https://<instancia>" N8N_API_KEY="<clave>" python3 scripts/export_workflows.py
@@ -114,6 +119,6 @@ Ese historial reemplazó a la rama publicada el 16/09/2026, y las ramas que aún
 
 > ⚠️ Queda un residuo conocido: GitHub conserva los commits huérfanos y las referencias internas de los pull requests, así que los commits antiguos siguen siendo consultables por su identificador directo. Cerrar eso requiere solicitar a GitHub Support la purga de referencias y la recolección de basura del repositorio. Los datos involucrados son un correo interno y un nombre propio — no credenciales.
 
-**Última actualización:** 2026-09-16 (tarde) — se completó el snapshot con los 7 workflows que faltaban (4A, 4B, 4C, 4D, 5A, 5B y 6), se re-exportaron los 6 existentes desde el estado vivo, se automatizó el proceso en `scripts/export_workflows.py`, se amplió la tabla de anonimización con tres identificadores nuevos, y se publicó la auditoría de buenas prácticas de los 12 flujos junto con su plan de remediación y el plan de trabajo para ejecutarlo. También se reemplazó la rama publicada por el historial sin PII.
+**Última actualización:** 2026-09-23 — Fase 5 (configuración centralizada en la Data Table `Configuracion_CCB`), Fase 6 (timeouts, límites de lectura, enmascarado de PII, marca de tiempo de errores y flujo horario de monitoreo de las 4 métricas del framework), F4-02 (subflujo compartido de contexto de propuesta) y F7-01/F7-02 (guardarraíles de la corrección asistida por IA). Se agregaron tres subflujos y un flujo operativo al snapshot, y se corrigieron notas de nodo que llevaban valores reales.
 
 **Actualización previa:** 2026-09-16 (mañana) — se re-exportaron Workflow 1 (fixes de extracción por IA y filtro de correo), Workflow 3 (mapeos de organización jurídica y ubicación geográfica, corrección de género en "todos"), Error Workflow catch-all (campo de tipo de error agregado), y el formulario legacy (Workflow 2); se agregaron los workflows nuevos del formulario de Información Georreferenciada (Workflow 2C y Workflow 2A); y se corrigió la exposición de datos personales descrita arriba.
