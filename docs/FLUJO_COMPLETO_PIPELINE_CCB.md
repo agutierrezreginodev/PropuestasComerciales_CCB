@@ -1,0 +1,292 @@
+# El pipeline CCB de punta a punta
+
+**Para qué sirve este documento.** Explica **todo** el recorrido de una propuesta comercial: quién interviene, qué ve
+cada persona, qué hace el sistema en cada paso, qué pasa cuando algo falla y cómo se opera el conjunto. Un lector nuevo
+puede entender el pipeline sin abrir n8n.
+
+**Qué es el pipeline.** Automatiza la venta de los servicios de información de la Cámara de Comercio de Barranquilla: desde
+que un lead pide información hasta que la propuesta se envía, se aprueba, se cierra o se cancela — con el cálculo de
+precios, la generación del PDF, la aprobación interna y el envío al cliente.
+
+**Los números.** 27 flujos activos en n8n (12 principales + 13 subflujos + 2 operativos), 6 tablas de datos, 3 webhooks
+públicos autenticados y 2 páginas web. Puntaje de la última auditoría de buenas prácticas: **87,7/100**
+([re-auditoría del 23/09](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md)).
+
+---
+
+## 1. El recorrido en una página
+
+```
+  LEAD (correo de mercadeo / contacto directo)
+        │
+        ▼
+  W1 · Extracción información del cliente ──► envía el link del formulario
+        │
+        ▼
+  📄 Formulario  informaciongeorreferenciada-ccb.vercel.app      ← lo completa el CLIENTE
+        │  POST /webhook/solicitud-georreferenciada  (con cabecera X-CCB-Auth)
+        ▼
+  W2C · Recepción del formulario externo  (valida campos obligatorios → 400 si faltan)
+        │
+        ▼
+  W2A · Guardar criterios y cotizar  ──►  [SUB] Invocar Motor y Guardar Cotización ──► W3
+        │                                                                              │
+        │                                                          W3 · Motor de cálculo
+        │                                                              + [SUB] Generar PDF
+        │                                                                              │
+        ▼                                                                              ▼
+  Cotizaciones_CCB  (estado PROPUESTA_GENERADA)  ◄────────────────────────  pdf_url del PDF
+        │
+        ▼
+  W4A · Router de aprobación ──► W4B · Aprobación (Teams) ──► aviso al APROBADOR con el enlace
+        │
+        ▼
+  📄 Página de revisión  revision-propuesta-ccb.vercel.app       ← decide el ASESOR
+        │  GET  /webhook/consultar-propuesta   (W4C · muestra el contexto y el PDF)
+        │  POST /webhook/decidir-propuesta     (W4D · registra la decisión)
+        ▼
+  W4D · Procesar decisión  ── tres ramas ──┐
+        │                                  ├── APROBAR   → estado APROBADA
+        │                                  ├── CANCELAR  → estado CANCELADA
+        │                                  └── CORREGIR  → rama de IA con 3 guardarraíles
+        ▼
+  W5A · Router de envío ──► W5B · Envío al cliente ──► [SUB] Enviar propuesta al cliente
+        │                                                     (correo + PDF al CLIENTE)
+        │                                              ──► [SUB] Cerrar envío
+        │                                                     (estado ENVIADA + aviso interno)
+        ▼
+  W6 · Finalizador de Cotizaciones  (cierre automático a los 30+ días)
+
+  ── Red de respaldo transversal ──
+  [SUB] Registrar y Alertar Error  (lo llaman los flujos que fallan: fila + correo)
+  catch-all  (errorWorkflow de los 11 flujos principales: fallos no capturados)
+  [OPS] Monitoreo del pipeline  (cada hora: 4 métricas + aviso por umbral)
+  [OPS] Regresión del pipeline  (los lunes 6:00: prueba los caminos críticos)
+```
+
+---
+
+## 2. Los actores
+
+| Actor | Qué hace | Qué ve |
+|---|---|---|
+| **Cliente / lead** | Pide información y completa el formulario | El correo con el link y, al final, la propuesta en PDF |
+| **Asesor comercial** (Fausto) | Revisa la propuesta y decide: aprobar, cancelar o pedir correcciones | El aviso de Teams y la página de revisión (con el PDF) |
+| **Aprobador** | Autoriza (o rechaza) que la IA ajuste los criterios antes de recalcular | El mensaje de Teams con el ajuste propuesto y el enlace a la página |
+| **Equipo técnico** | Recibe las alertas de error y el resumen de la regresión | Los correos de alerta, `Errores_CCB` y `Metricas_CCB` |
+| **Sistema (n8n)** | Ejecuta, calcula, genera el PDF, notifica y registra | — |
+
+---
+
+## 3. El recorrido paso a paso
+
+### Etapa 1 — El lead y el formulario
+
+1. Llega un lead por correo de mercadeo o contacto directo. **W1** (`Extracción información del cliente`) lo procesa y le
+   envía el enlace del formulario.
+2. El cliente completa el formulario en `informaciongeorreferenciada-ccb.vercel.app`. La página llama al webhook
+   `solicitud-georreferenciada` con la cabecera de autenticación.
+3. **W2C** (`Recepción Formulario Externo`) valida que estén los campos obligatorios: si falta alguno responde **400** con
+   el detalle, sin tocar la base. Si están, sigue.
+4. **W2A** (`Guardar Criterios y Cotizar Servicio`) guarda los criterios del cliente y llama al subflujo
+   `[SUB] Invocar Motor y Guardar Cotización`, que invoca a **W3** y guarda el resultado.
+5. **W3** (`Motor Criterios y Precio`) calcula el precio con el motor de criterios y llama a
+   `[SUB] Generar PDF de Propuesta`, que pide el PDF al microservicio y devuelve la `pdf_url`.
+6. Queda una fila en **`Cotizaciones_CCB`** con `estado = PROPUESTA_GENERADA`, el valor, el IVA, el total y la `pdf_url`.
+
+**Si algo falla:** el error se registra y se avisa (ver §5). El cliente no recibe nada roto: la página muestra el error.
+
+### Etapa 2 — La aprobación interna
+
+7. **W4A** (`Router de Aprobación`) detecta las cotizaciones en `PROPUESTA_GENERADA`.
+8. **W4B** (`Aprobación de Propuesta (Teams)`) avisa al asesor por Teams con el enlace a la página de revisión. Lee el
+   contexto de la propuesta con `[SUB] Leer Contexto Propuesta` y el chat desde la configuración.
+9. El asesor abre `revision-propuesta-ccb.vercel.app`, que consulta **W4C** (`Consultar Propuesta para Revisión`, webhook
+   `consultar-propuesta`) y muestra los datos, los criterios y el PDF.
+
+### Etapa 3 — La decisión (las tres ramas)
+
+10. El asesor decide en la página. **W4D** (`Procesar Decisión de Propuesta`) recibe la decisión por el webhook
+    `decidir-propuesta`, valida que sea reconocible (si no, **400**) y responde **antes** de cualquier espera.
+
+| Rama | Qué hace | Estado final |
+|---|---|---|
+| **Aprobar** | `[SUB] W4D Aprobar`: guarda el comentario del asesor | `APROBADA` |
+| **Cancelar** | `[SUB] W4D Cancelar`: guarda el comentario | `CANCELADA` |
+| **Pedir correcciones** | `[SUB] W4D Corrección IA` (ver abajo) | `EN_REVISION` (ronda +1) o `REVISION_MANUAL` |
+
+**La rama de correcciones, en orden, con sus tres guardarraíles:**
+
+1. Si ya hay **3 rondas** → `[SUB] W4D Revisión Manual` con motivo `tope` (no consume ronda).
+2. Si el interruptor `ia_correccion_habilitada` está en **falso** → Revisión Manual con motivo `ia_desactivada`
+   (no llama al modelo).
+3. La IA ajusta los criterios y declara su **confianza**. Cada valor se valida contra las listas cerradas y los inválidos
+   se descartan.
+4. Si la confianza es **baja** → Revisión Manual con motivo `confianza_baja` (no se aplica nada).
+5. Se pide **aprobación humana por Teams** (`sendAndWait`, hasta 24 h) con el ajuste propuesto y el enlace.
+6. Aprobada → se recalcula con **W3** y sigue `[SUB] W4D Cierre de Corrección` (guarda la ronda, sube a `EN_REVISION` y
+   avisa por Teams). Rechazada, sin respuesta o fallo de envío → Revisión Manual con motivo `aprobacion_rechazada`.
+
+Ninguno de los caminos a Revisión Manual **consume una ronda de corrección**.
+
+### Etapa 4 — El envío al cliente
+
+11. **W5A** (`Router de Envío`) toma las cotizaciones aprobadas.
+12. **W5B** (`Envío al Cliente`) llama a `[SUB] Enviar propuesta al cliente`: correo con el PDF al cliente y luego
+    `[SUB] Cerrar envío`, que marca `ENVIADA` en `Cotizaciones_CCB` (con `fecha_envio` y `enviado_a`) y en
+    `Solicitudes_CCB`, y avisa internamente al asesor.
+13. Si el envío falla, `[SUB] Cerrar error de envío` registra el fallo y **el asesor igual recibe respuesta** (nadie queda
+    sin contestación).
+
+### Etapa 5 — El cierre
+
+14. **W6** (`Finalizador de Cotizaciones`) cierra automáticamente las cotizaciones que llevan **30+ días** sin moverse.
+
+---
+
+## 4. Los estados de una propuesta
+
+```
+PROPUESTA_GENERADA ──► (el asesor decide)
+        │
+        ├── APROBADA ──► ENVIADA ──► (cierre a los 30+ días)
+        ├── CANCELADA
+        ├── EN_REVISION  (corrección con IA aplicada; ronda +1, hasta 3)
+        ├── REVISION_MANUAL  (tope, IA apagada, confianza baja o aprobación rechazada)
+        └── ERROR_CALCULO  (el motor rechazó el recálculo)
+```
+
+`EN_REVISION` vuelve a la página de revisión: el asesor puede aprobar, cancelar o pedir otra corrección (hasta el tope).
+
+---
+
+## 5. Cuando algo falla
+
+**Tres capas, en orden:**
+
+1. **Reintentos.** Todos los nodos de red reintentan 5 veces cada 5 segundos; los dos nodos HTTP tienen timeout de 60 s.
+2. **Subflujo compartido `[SUB] Registrar y Alertar Error`.** Lo llaman los flujos que detectan un fallo: escribe una fila
+   en **`Errores_CCB`** con `id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error` (con los datos personales
+   enmascarados: `<correo>`, `<url>`, `<num>`) y `error_timestamp` en hora de Bogotá, y manda el correo de alerta. Devuelve
+   el item al llamador, así **el flujo que falló no se corta**.
+3. **Catch-all.** El `errorWorkflow` de los 11 flujos principales captura lo que no se detectó arriba y registra el
+   incidente (conserva el historial: no hace *upsert*, inserta).
+
+**Cómo se diagnostica un error, en 4 pasos:**
+
+1. Llega el correo de alerta → anota el `id_solicitud` y el nodo.
+2. Busca la fila en `Errores_CCB` por ese id → ahí está el mensaje enmascarado y la hora.
+3. Abre la ejecución en n8n (o consulta `GET /api/v1/executions?workflowId=...`) y mira el nodo que falló.
+4. Causas habituales: el **túnel del microservicio de PDF caído** (es el punto más frágil), el **motor de cálculo
+   rechazando** el caso, o **Teams/Outlook** sin credencial válida.
+
+**Lo que no se ve solo:** si el **correo de alerta** falla, la ejecución igual queda en `success` (el nodo tiene
+`onError: continueRegularOutput`). Es un hueco conocido y declarado en la re-auditoría.
+
+---
+
+## 6. Las tablas de datos
+
+| Tabla | ID | Qué guarda | Quién escribe | Quién lee |
+|---|---|---|---|---|
+| **Configuracion_CCB** | `8ChPkhKrjag6Jkcs` | 12 claves: correos, URL del microservicio, chat de Teams, interruptor de IA, URL de revisión, URL de la API | Se edita a mano | Todos (por `[SUB] Leer Configuración`) |
+| **Solicitudes_CCB** | `u5gFYvTfuQRX71u5` | La solicitud del cliente | W2C / W2A | W4B, W4C, W5B |
+| **Criterios_Cotizacion** | `ldABWugJR1GcFFyy` | Los criterios de cotización (sector, registros, plan…) | W2A / W4D | W3, W4D, W5B |
+| **Cotizaciones_CCB** | `YAvQTqzsgJWjacVZ` | La propuesta: valores, `pdf_url`, estado, ronda, comentario, envío | W2A (motor), W4D, W5B, W6 | W4A, W4C, W4D, W5A, W5B, W6 |
+| **Errores_CCB** | `lO46Xkqj0TTedLjI` | Un registro por incidente, con marca de tiempo | Subflujo de error + catch-all | El monitor y el diagnóstico humano |
+| **Metricas_CCB** | `W3oJ4a8h0TAPO9ji` | Las 4 métricas del framework + el semáforo de la regresión | El monitor y la regresión | El equipo técnico |
+
+**Las 12 claves de configuración:** `asesor_nombre`, `asesor_email`, `asesor_telefono`, `alertas_email`,
+`notificacion_envio_email`, `microservicio_pdf_url`, `teams_chat_aprobacion`, `teams_chat_aprobacion_produccion`,
+`metricas_url`, `ia_correccion_habilitada`, `revision_url`, `n8n_api_url`.
+
+> **Dos claves están en modo prueba** (`teams_chat_aprobacion` y `notificacion_envio_email`): apuntan a un chat y a un
+> buzón de prueba por decisión del proyecto. `teams_chat_aprobacion_produccion` ya tiene el chat real del aprobador,
+> listo para el cambio.
+
+---
+
+## 7. El mapa técnico: los 27 flujos
+
+### Los 12 principales (lo que hace el negocio)
+
+| Flujo | ID | Rol |
+|---|---|---|
+| W1 · Extracción información del cliente | `w6h0qSblUESIpSVc` | Lead → link del formulario |
+| W2A · Guardar Criterios y Cotizar | `VChcasvisGKekezR` | Guarda criterios e invoca el motor |
+| W2C · Recepción Formulario Externo | `u6KCMnLwFOp6Ja0N` | Webhook del formulario (valida y responde) |
+| W3 · Motor Criterios y Precio | `cHOIOEFB5nbltN82` | Calcula y genera el PDF |
+| W4A · Router de Aprobación | `7gmpPMBJtEb0W3J5` | Detecta propuestas por aprobar |
+| W4B · Aprobación de Propuesta (Teams) | `5RJdnHDQ8NuWZJG7` | Avisa al asesor |
+| W4C · Consultar Propuesta para Revisión | `KuLSIzBZgaRIjuSu` | Webhook de consulta de la página |
+| W4D · Procesar Decisión de Propuesta | `W0TDH4b0tHCNOzFQ` | Webhook de decisión + router de ramas |
+| W5A · Router de Envío | `gvIn6mbAn2Y1bMRR` | Detecta aprobadas por enviar |
+| W5B · Envío al Cliente | `XWBHgbmtBubA4gqx` | Envía y cierra el envío |
+| W6 · Finalizador de Cotizaciones | `mPwl4qUb0zQkmDHN` | Cierre a los 30+ días |
+| Error Workflow (catch-all) | `Dh2lAQTzyoZBpXie` | Red de respaldo de fallos no capturados |
+
+### Los 13 subflujos (piezas reutilizables)
+
+| Subflujo | ID | Lo llaman |
+|---|---|---|
+| Registrar y Alertar Error | `2dY1kaT7I5a0eP2w` | 8 flujos + la regresión |
+| Leer Configuración | `Hgy02eqPhnsdJvkq` | 9 flujos |
+| Leer Contexto Propuesta | `GELWpskp0aYJ2zPg` | W4B, W4C, W4D, W5B |
+| Generar PDF de Propuesta | `DF3emCmBBBB2HA3i` | W3 |
+| Invocar Motor y Guardar Cotización | `MHWlUApSFT6gpBHs` | W2A |
+| Enviar propuesta al cliente | `AnPJGVWylmKEYWmJ` | W5B |
+| Cerrar envío | `1Zzkrg3dTkTrddgp` | W5B |
+| Cerrar error de envío | `D2d9Og6UUvq13TJA` | W5B |
+| W4D Aprobar / Cancelar | `8j6BCwXkgJCccyO1` / `Jgf514VxDINJ8ra3` | W4D |
+| W4D Revisión Manual | `iNSErCHs2iw33emJ` | W4D (4 motivos) |
+| W4D Corrección IA | `3NAcLF4jaZ1JBw0A` | W4D |
+| W4D Cierre de Corrección | `POeFkqQp8e4cGfY3` | W4D |
+
+### Los 2 operativos (no procesan propuestas)
+
+| Flujo | ID | Rol |
+|---|---|---|
+| Monitoreo del pipeline | `ZwBFTBhwS9pjS69X` | Cada hora: 4 métricas + aviso por umbral |
+| Regresión del pipeline | `GVE3iNQ80y5Q9FEw` | Lunes 6:00: prueba los caminos críticos y publica el semáforo |
+
+Detalle de cada flujo (por qué se creó, cómo funciona, con qué se relaciona): [FLUJOS_PIPELINE_CCB.md](FLUJOS_PIPELINE_CCB.md).
+
+---
+
+## 8. Cómo se opera (tareas frecuentes)
+
+| Necesito… | Qué hago |
+|---|---|
+| **Cambiar un destinatario, una URL o el chat de Teams** | Editar la fila correspondiente en `Configuracion_CCB`. **No se toca ningún workflow.** |
+| **Apagar la corrección con IA** | Poner `ia_correccion_habilitada` en `false`. Las correcciones pasan a revisión manual y el resto sigue igual. |
+| **Ver el estado del pipeline** | `Metricas_CCB` (las 4 métricas + `regresion_pipeline`) o el correo del monitor. |
+| **Probar que todo sigue funcionando** | Lanzar a mano `[OPS] CCB - Regresión del pipeline` (o esperar el lunes). Deja el semáforo en `Metricas_CCB`. |
+| **Investigar un error** | El correo de alerta → `Errores_CCB` → la ejecución en n8n (§5). |
+| **Ver el PDF de una propuesta** | La columna `pdf_url` de `Cotizaciones_CCB`. |
+| **Saber quién consumió una ronda** | La columna `ronda_correccion` de `Cotizaciones_CCB` (máximo 3) y el comentario en `comentario_fausto`. |
+
+**Retención:** los flujos de alta frecuencia (W4A, W5A, W6 y el monitor) **no guardan los datos de las ejecuciones
+exitosas** (sí los de error), para que la base no crezca sin control.
+
+---
+
+## 9. Lo que depende de terceros
+
+| Dependencia | Riesgo | Qué hacer si falla |
+|---|---|---|
+| **Microservicio de PDF** (túnel ngrok) | Es el punto más frágil: si el túnel cae, no se generan PDFs | Reiniciar el túnel y actualizar `microservicio_pdf_url` |
+| **Motor de cálculo (W3)** | Si rechaza un caso, la propuesta queda en `ERROR_CALCULO` | Revisar los criterios; el error queda registrado |
+| **Teams / Outlook** (credenciales OAuth) | Si la credencial vence, no salen avisos ni correos | Renovar la credencial en n8n |
+| **n8n (instancia)** | La retención a nivel de instancia y el `/metrics` sin autenticar dependen de Tecnología | — |
+
+---
+
+## 10. Documentos relacionados
+
+| Documento | Qué contiene |
+|---|---|
+| [FLUJOS_PIPELINE_CCB.md](FLUJOS_PIPELINE_CCB.md) | Ficha de cada flujo nuevo: por qué, cómo y con qué se relaciona |
+| [TESTING_PIPELINE_CCB.md](TESTING_PIPELINE_CCB.md) | Los 5 niveles de prueba, el protocolo de datos descartables y el checklist por cambio |
+| [AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md) | Puntaje por flujo y por dimensión, y lo que falta para cruzar 90 |
+| [COMPARATIVO_DEMO_VS_ACTUAL.md](COMPARATIVO_DEMO_VS_ACTUAL.md) | Qué cambió respecto del demo que se grabó |
+| [PLAN_TRABAJO_FRAMEWORK.md](PLAN_TRABAJO_FRAMEWORK.md) | El plan de remediación con su evidencia |

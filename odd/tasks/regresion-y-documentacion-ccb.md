@@ -34,7 +34,7 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 | **R2** | Verificar con tráfico real la ruta de error compartida (`[SUB] CCB - Registrar y Alertar Error`) | Una ejecución real que falle deja fila en `Errores_CCB` con `error_timestamp` y mensaje enmascarado, envía el correo de alerta y **no corta** el flujo que la invoca | ☑ 23/09 — ejecución `422821` |
 | **R3** | Construir `[OPS] CCB - Regresión del pipeline` | El flujo corre los caminos críticos con filas descartables, publica un semáforo por camino, borra sus filas y reporta por correo | ☑ 23/09 — flujo `GVE3iNQ80y5Q9FEw`, **4/4 casos ok** |
 | **R4** | Probar la rama de **rechazo/expiración** de la aprobación de IA (F7-03) | Rechazo real en Teams → motivo `aprobacion_rechazada`, revisión manual y **sin consumir ronda** | ☐ pendiente (requiere un clic del usuario) |
-| **R5** | Documentar el flujo completo | `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`: el recorrido de negocio de punta a punta (quién interviene, qué ve, qué pasa en cada rama) + el mapa técnico de los 26 flujos y las 6 tablas; un lector nuevo puede seguirlo sin abrir n8n | ☐ pendiente |
+| **R5** | Documentar el flujo completo | `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`: el recorrido de negocio de punta a punta + el mapa técnico de los 27 flujos y las 6 tablas | ☑ 23/09 — publicado (10 secciones) |
 | **R6** | Limpiar la fila basura de `Cotizaciones_CCB` (`id 21`) | Borrada con `dryRun` previo y confirmación del usuario; la tabla queda sin filas nulas | ☐ pendiente (requiere confirmación) |
 | **R7** | Re-auditoría final | Puntaje nuevo publicado con la evidencia de R1–R5 | ☐ pendiente |
 | **R8** | Sincronizar entrega | Snapshot, README, tablero, estado y memoria al día; un commit por unidad de trabajo | ☐ pendiente |
@@ -51,6 +51,16 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
   permite borrar filas.
 
 ## Evidencia
+
+### R5 — El pipeline de punta a punta · 23/09
+
+`docs/FLUJO_COMPLETO_PIPELINE_CCB.md`, enlazado desde el README. Diez secciones: el recorrido en una página (diagrama),
+los actores, las cinco etapas paso a paso con lo que ve cada persona, las tres ramas de la decisión (con los tres
+guardarraíles de la IA), los estados de una propuesta, las tres capas de manejo de error y el diagnóstico en 4 pasos, las
+6 tablas y las 12 claves de configuración, el mapa de los 27 flujos, la operación del día a día (cómo cambiar un
+destinatario, apagar la IA, lanzar la regresión), las dependencias de terceros y los documentos relacionados.
+
+Incluye el hueco conocido declarado: si el correo de alerta falla, la ejecución queda en `success` y nadie se entera.
 
 _(se completa al cerrar cada tarea: id de ejecución, filas afectadas, correo recibido y commit)_
 
