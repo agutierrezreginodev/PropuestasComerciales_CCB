@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:42:02.450Z",
+  "updatedAt": "2026-09-23T13:53:38.991Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -64,107 +64,8 @@
     },
     {
       "parameters": {
-        "operation": "get",
-        "dataTableId": {
-          "__rl": true,
-          "value": "YAvQTqzsgJWjacVZ",
-          "mode": "list",
-          "cachedResultName": "Cotizaciones_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
-        },
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "id_solicitud",
-              "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
-            }
-          ]
-        },
-        "limit": 1
-      },
-      "id": "e85b218c-ee48-4f03-aff1-1aa6d91f70cc",
-      "name": "Data Table - Leer cotización",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        -512,
-        512
-      ],
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "maxTries": 5,
-      "waitBetweenTries": 5000
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "dataTableId": {
-          "__rl": true,
-          "value": "ldABWugJR1GcFFyy",
-          "mode": "list",
-          "cachedResultName": "Criterios_Cotizacion",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
-        },
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "id_solicitud",
-              "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
-            }
-          ]
-        },
-        "limit": 1
-      },
-      "id": "48cc9fce-186e-45ad-aa75-cf71cec69715",
-      "name": "Data Table - Leer criterios",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        -272,
-        512
-      ],
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "maxTries": 5,
-      "waitBetweenTries": 5000
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "dataTableId": {
-          "__rl": true,
-          "value": "u5gFYvTfuQRX71u5",
-          "mode": "list",
-          "cachedResultName": "Solicitudes_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
-        },
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "id_solicitud",
-              "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
-            }
-          ]
-        },
-        "limit": 1
-      },
-      "id": "82842f57-c375-4525-aadc-75dbe5ab3d10",
-      "name": "Data Table - Leer solicitud",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        -32,
-        512
-      ],
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "maxTries": 5,
-      "waitBetweenTries": 5000
-    },
-    {
-      "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
+        "jsCode": "const ctx = $('Ejecutar Leer Contexto Propuesta').first().json || {};\nconst q = ctx.cotizacion || {};\nconst c = ctx.criterios || {};\nconst s = ctx.solicitud || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
       },
       "id": "4c70404a-cf07-48dc-882c-8d8ec665ae6b",
       "name": "Consolidar datos y decisión",
@@ -666,7 +567,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const base = $('Preparar corrección IA').first().json;\nconst raw = $json;\nconst out = (raw && typeof raw.output === 'object' && raw.output !== null) ? raw.output\n  : (raw && typeof raw.response === 'object' && raw.response !== null) ? raw.response\n  : (raw || {});\nconst ajustes = out.criterios_ajustados || {};\nconst criterios = { ...base.criterios };\nconst aplicadas = {};\nconst rechazadas = {};\n\n// Valores permitidos por clave -- si la IA escribe algo fuera de esta lista para una clave\n// controlada, se descarta el ajuste en vez de aplicarlo (evita corromper el criterio en\n// silencio, p.ej. valores de organizacion_juridica escritos por error en tamano_empresa).\nconst VALORES_VALIDOS = {\n  organizacion_juridica: ['Personas Jurídicas', 'Personas Naturales', 'Establecimientos', 'Entidades sin ánimo de lucro'],\n  tamano_empresa: ['Microempresas', 'Pequeñas empresas', 'Medianas empresas', 'Grandes empresas'],\n  actividad_economica: ['Agropecuario', 'Minero', 'Industria', 'Electricidad, gas, vapor y aire acondicionado', 'Agua', 'Construcción', 'Comercio al por mayor y al por menor', 'Transporte', 'Alojamiento y restaurantes', 'Información y comunicaciones', 'Financiero', 'Inmobiliarias', 'Profesionales, científicas y técnicas', 'Servicios administrativos y de apoyo', 'Educación', 'Salud', 'Artísticas, de entretenimiento y recreación', 'Otras actividades de servicios', 'Todas las actividades económicas']\n};\n\nfunction esValorValido(clave, valor) {\n  const permitidos = VALORES_VALIDOS[clave];\n  if (!permitidos) return true;\n  const partes = String(valor).split(';').map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return false;\n  return partes.every(p => permitidos.includes(p));\n}\n\nfor (const [k, v] of Object.entries(ajustes)) {\n  if (!Object.prototype.hasOwnProperty.call(criterios, k)) continue;\n  if (esValorValido(k, v)) { criterios[k] = v; aplicadas[k] = v; }\n  else { rechazadas[k] = v; }\n}\n\nconst huboRechazos = Object.keys(rechazadas).length > 0;\nconst avisoRechazo = huboRechazos\n  ? ' [AVISO: se descartaron ajustes invalidos para: ' + Object.keys(rechazadas).join(', ') + ' -- valor(es) no reconocido(s): ' + JSON.stringify(rechazadas) + ']'\n  : '';\n\nreturn { json: { id_solicitud: base.id_solicitud, servicio: base.servicio, criterios, criterios_ajustados_aplicados: aplicadas, criterios_ajustados_rechazados: rechazadas, resumen_cambios: (out.resumen_cambios || '') + avisoRechazo, comentario: base.Comentario || '' } };"
+        "jsCode": "const base = $('Preparar corrección IA').first().json;\nconst raw = $json;\nconst out = (raw && typeof raw.output === 'object' && raw.output !== null) ? raw.output\n  : (raw && typeof raw.response === 'object' && raw.response !== null) ? raw.response\n  : (raw || {});\nconst ajustes = out.criterios_ajustados || {};\nconst criterios = { ...base.criterios };\nconst aplicadas = {};\nconst rechazadas = {};\n\n// Valores permitidos por clave -- si la IA escribe algo fuera de esta lista para una clave\n// controlada, se descarta el ajuste en vez de aplicarlo (evita corromper el criterio en\n// silencio, p.ej. valores de organizacion_juridica escritos por error en tamano_empresa).\nconst VALORES_VALIDOS = {\n  organizacion_juridica: ['Personas Jurídicas', 'Personas Naturales', 'Establecimientos', 'Entidades sin ánimo de lucro'],\n  tamano_empresa: ['Microempresas', 'Pequeñas empresas', 'Medianas empresas', 'Grandes empresas'],\n  actividad_economica: ['Agropecuario', 'Minero', 'Industria', 'Electricidad, gas, vapor y aire acondicionado', 'Agua', 'Construcción', 'Comercio al por mayor y al por menor', 'Transporte', 'Alojamiento y restaurantes', 'Información y comunicaciones', 'Financiero', 'Inmobiliarias', 'Profesionales, científicas y técnicas', 'Servicios administrativos y de apoyo', 'Educación', 'Salud', 'Artísticas, de entretenimiento y recreación', 'Otras actividades de servicios', 'Todas las actividades económicas']\n};\n\nfunction esValorValido(clave, valor) {\n  const permitidos = VALORES_VALIDOS[clave];\n  if (!permitidos) return true;\n  const partes = String(valor).split(';').map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return false;\n  return partes.every(p => permitidos.includes(p));\n}\n\nfor (const [k, v] of Object.entries(ajustes)) {\n  if (!Object.prototype.hasOwnProperty.call(criterios, k)) continue;\n  if (esValorValido(k, v)) { criterios[k] = v; aplicadas[k] = v; }\n  else { rechazadas[k] = v; }\n}\n\nconst huboRechazos = Object.keys(rechazadas).length > 0;\nconst avisoRechazo = huboRechazos\n  ? ' [AVISO: se descartaron ajustes invalidos para: ' + Object.keys(rechazadas).join(', ') + ' -- valor(es) no reconocido(s): ' + JSON.stringify(rechazadas) + ']'\n  : '';\n\n// F7-01: la confianza declarada por la IA viaja con el resultado para poder enrutar a revisión manual.\nreturn { json: { id_solicitud: base.id_solicitud, servicio: base.servicio, criterios, criterios_ajustados_aplicados: aplicadas, criterios_ajustados_rechazados: rechazadas, resumen_cambios: (out.resumen_cambios || '') + avisoRechazo, comentario: base.Comentario || '', confianza: out.confianza || '' } };"
       },
       "id": "9bbd410a-676b-4ccc-852b-3b88839220d9",
       "name": "Aplicar correcciones",
@@ -1249,6 +1150,188 @@
         -400,
         208
       ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GELWpskp0aYJ2zPg",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Leer Contexto Propuesta"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "ad64b621-d9f9-4721-99e4-3348dd571c2b",
+      "name": "Ejecutar Leer Contexto Propuesta",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ String($('Ejecutar Leer Configuración').first().json._config.ia_correccion_habilitada || 'true') }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7f5db526-5fc9-4a0d-84a4-c57349d54801",
+      "name": "IF - ¿Corrección IA habilitada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ String($json.confianza || '') }}",
+              "rightValue": "baja",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ef4370cc-2b7a-4684-966f-ae219ae7126f",
+      "name": "IF - ¿Confianza suficiente?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// F7-01 / F7-02: la corrección no se aplica automáticamente; la propuesta pasa a revisión manual\n// sin consumir una ronda. El motivo depende de si la IA está desactivada o si declaró confianza baja.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst cfg = (() => { try { return $('Ejecutar Leer Configuración').first().json._config || {}; } catch (e) { return {}; } })();\nconst base = get('Consolidar datos y decisión');\nconst conf = String($json.confianza || '');\nconst iaHabilitada = String(cfg.ia_correccion_habilitada || 'true') !== 'false';\nconst motivo = !iaHabilitada\n  ? 'La corrección asistida por IA está desactivada por configuración.'\n  : ('La IA interpretó el pedido con confianza ' + (conf || 'baja') + '; no se aplicó ningún ajuste automáticamente.');\nconst resumen = $json.resumen_cambios || '(sin resumen)';\nconst id = $json.id_solicitud || base.id_solicitud || '';\nconst comentario = $json.comentario || base.Comentario || '';\nconst asunto = '[Propuesta CCB] Corrección pendiente de revisión manual — ' + (base.servicio || $json.servicio || 'servicio') + ' (' + id + ')';\nconst cuerpo = '<p>La solicitud de correcciones <b>no se aplicó automáticamente</b>.</p><ul>'\n  + '<li><b>Solicitud:</b> ' + id + '</li>'\n  + '<li><b>Motivo:</b> ' + motivo + '</li>'\n  + '<li><b>Interpretación de la IA:</b> ' + resumen + '</li>'\n  + '<li><b>Comentario del asesor:</b> ' + (comentario || '(sin comentario)') + '</li></ul>'\n  + '<p>La propuesta queda en <b>revisión manual</b> y <b>no consumió una ronda</b> de corrección.</p>';\nreturn { json: { ...$json, id_solicitud: id, Comentario: comentario,\n                 _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
+      },
+      "id": "b93530b6-d2dd-43d0-a08e-596293b75c62",
+      "name": "Preparar aviso - Revisión manual",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [],
+          "value": {
+            "estado": "REVISION_MANUAL",
+            "comentario_fausto": "={{ $json.Comentario }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "5c624ac7-0913-4cf7-9791-c8e44664f594",
+      "name": "Data Table - Marcar REVISION_MANUAL (revisión manual)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1728,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Ejecutar Leer Configuración').first().json._config.alertas_email }}",
+        "subject": "={{ $json._aviso_asunto }}",
+        "bodyContent": "={{ $json._aviso_cuerpo }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "f0d6747e-9ee6-439b-bd86-45bb068900bb",
+      "name": "Outlook - Enviar alerta (revisión manual)",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1952,
+        416
+      ],
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "webhookId": "cde7c21c-ebe1-4b6f-8f74-b7291a591872"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'La corrección quedó pendiente de revisión manual; no se consumió una ronda.' } };"
+      },
+      "id": "905d2d96-fc85-461f-bbb7-e7cad490251f",
+      "name": "Confirmar aviso - Revisión manual",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        416
+      ]
     }
   ],
   "connections": {
@@ -1257,39 +1340,6 @@
         [
           {
             "node": "Ejecutar Leer Configuración",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Leer cotización": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Leer criterios",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Leer criterios": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Leer solicitud",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Leer solicitud": {
-      "main": [
-        [
-          {
-            "node": "Consolidar datos y decisión",
             "type": "main",
             "index": 0
           }
@@ -1449,7 +1499,7 @@
         ],
         [
           {
-            "node": "Preparar corrección IA",
+            "node": "IF - ¿Corrección IA habilitada?",
             "type": "main",
             "index": 0
           }
@@ -1559,7 +1609,7 @@
       "main": [
         [
           {
-            "node": "Re-invocar motor",
+            "node": "IF - ¿Confianza suficiente?",
             "type": "main",
             "index": 0
           }
@@ -1712,7 +1762,7 @@
       "main": [
         [
           {
-            "node": "Data Table - Leer cotización",
+            "node": "Ejecutar Leer Contexto Propuesta",
             "type": "main",
             "index": 0
           }
@@ -1831,6 +1881,97 @@
           }
         ]
       ]
+    },
+    "Ejecutar Leer Contexto Propuesta": {
+      "main": [
+        [
+          {
+            "node": "Consolidar datos y decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Corrección IA habilitada?": {
+      "main": [
+        [
+          {
+            "node": "Preparar corrección IA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar aviso - Revisión manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Confianza suficiente?": {
+      "main": [
+        [
+          {
+            "node": "Re-invocar motor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar aviso - Revisión manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar aviso - Revisión manual": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Marcar REVISION_MANUAL (revisión manual)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Marcar REVISION_MANUAL (revisión manual)": {
+      "main": [
+        [
+          {
+            "node": "Outlook - Enviar alerta (revisión manual)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outlook - Enviar alerta (revisión manual)": {
+      "main": [
+        [
+          {
+            "node": "Confirmar aviso - Revisión manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmar aviso - Revisión manual": {
+      "main": [
+        [
+          {
+            "node": "Responder decisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1845,15 +1986,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "62c158c0-5746-4c24-8db6-73af468531b0",
-  "activeVersionId": "62c158c0-5746-4c24-8db6-73af468531b0",
-  "versionCounter": 205,
+  "versionId": "ea20928d-3c25-4433-aa35-cd784a6769da",
+  "activeVersionId": "ea20928d-3c25-4433-aa35-cd784a6769da",
+  "versionCounter": 211,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:42:02.452Z",
-    "createdAt": "2026-09-23T13:42:02.452Z",
-    "versionId": "62c158c0-5746-4c24-8db6-73af468531b0",
+    "updatedAt": "2026-09-23T13:53:38.993Z",
+    "createdAt": "2026-09-23T13:53:38.993Z",
+    "versionId": "ea20928d-3c25-4433-aa35-cd784a6769da",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -1913,107 +2054,8 @@
       },
       {
         "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "YAvQTqzsgJWjacVZ",
-            "mode": "list",
-            "cachedResultName": "Cotizaciones_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        },
-        "id": "e85b218c-ee48-4f03-aff1-1aa6d91f70cc",
-        "name": "Data Table - Leer cotización",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          -512,
-          512
-        ],
-        "alwaysOutputData": true,
-        "retryOnFail": true,
-        "maxTries": 5,
-        "waitBetweenTries": 5000
-      },
-      {
-        "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "ldABWugJR1GcFFyy",
-            "mode": "list",
-            "cachedResultName": "Criterios_Cotizacion",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        },
-        "id": "48cc9fce-186e-45ad-aa75-cf71cec69715",
-        "name": "Data Table - Leer criterios",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          -272,
-          512
-        ],
-        "alwaysOutputData": true,
-        "retryOnFail": true,
-        "maxTries": 5,
-        "waitBetweenTries": 5000
-      },
-      {
-        "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "u5gFYvTfuQRX71u5",
-            "mode": "list",
-            "cachedResultName": "Solicitudes_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $('Extraer decisión del body').item.json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        },
-        "id": "82842f57-c375-4525-aadc-75dbe5ab3d10",
-        "name": "Data Table - Leer solicitud",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          -32,
-          512
-        ],
-        "alwaysOutputData": true,
-        "retryOnFail": true,
-        "maxTries": 5,
-        "waitBetweenTries": 5000
-      },
-      {
-        "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
+          "jsCode": "const ctx = $('Ejecutar Leer Contexto Propuesta').first().json || {};\nconst q = ctx.cotizacion || {};\nconst c = ctx.criterios || {};\nconst s = ctx.solicitud || {};\nconst entrada = $('Extraer decisión del body').first().json;\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || entrada.id_solicitud,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud,\n  Decision: entrada.Decision,\n  Comentario: entrada.Comentario\n} };"
         },
         "id": "4c70404a-cf07-48dc-882c-8d8ec665ae6b",
         "name": "Consolidar datos y decisión",
@@ -2515,7 +2557,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const base = $('Preparar corrección IA').first().json;\nconst raw = $json;\nconst out = (raw && typeof raw.output === 'object' && raw.output !== null) ? raw.output\n  : (raw && typeof raw.response === 'object' && raw.response !== null) ? raw.response\n  : (raw || {});\nconst ajustes = out.criterios_ajustados || {};\nconst criterios = { ...base.criterios };\nconst aplicadas = {};\nconst rechazadas = {};\n\n// Valores permitidos por clave -- si la IA escribe algo fuera de esta lista para una clave\n// controlada, se descarta el ajuste en vez de aplicarlo (evita corromper el criterio en\n// silencio, p.ej. valores de organizacion_juridica escritos por error en tamano_empresa).\nconst VALORES_VALIDOS = {\n  organizacion_juridica: ['Personas Jurídicas', 'Personas Naturales', 'Establecimientos', 'Entidades sin ánimo de lucro'],\n  tamano_empresa: ['Microempresas', 'Pequeñas empresas', 'Medianas empresas', 'Grandes empresas'],\n  actividad_economica: ['Agropecuario', 'Minero', 'Industria', 'Electricidad, gas, vapor y aire acondicionado', 'Agua', 'Construcción', 'Comercio al por mayor y al por menor', 'Transporte', 'Alojamiento y restaurantes', 'Información y comunicaciones', 'Financiero', 'Inmobiliarias', 'Profesionales, científicas y técnicas', 'Servicios administrativos y de apoyo', 'Educación', 'Salud', 'Artísticas, de entretenimiento y recreación', 'Otras actividades de servicios', 'Todas las actividades económicas']\n};\n\nfunction esValorValido(clave, valor) {\n  const permitidos = VALORES_VALIDOS[clave];\n  if (!permitidos) return true;\n  const partes = String(valor).split(';').map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return false;\n  return partes.every(p => permitidos.includes(p));\n}\n\nfor (const [k, v] of Object.entries(ajustes)) {\n  if (!Object.prototype.hasOwnProperty.call(criterios, k)) continue;\n  if (esValorValido(k, v)) { criterios[k] = v; aplicadas[k] = v; }\n  else { rechazadas[k] = v; }\n}\n\nconst huboRechazos = Object.keys(rechazadas).length > 0;\nconst avisoRechazo = huboRechazos\n  ? ' [AVISO: se descartaron ajustes invalidos para: ' + Object.keys(rechazadas).join(', ') + ' -- valor(es) no reconocido(s): ' + JSON.stringify(rechazadas) + ']'\n  : '';\n\nreturn { json: { id_solicitud: base.id_solicitud, servicio: base.servicio, criterios, criterios_ajustados_aplicados: aplicadas, criterios_ajustados_rechazados: rechazadas, resumen_cambios: (out.resumen_cambios || '') + avisoRechazo, comentario: base.Comentario || '' } };"
+          "jsCode": "const base = $('Preparar corrección IA').first().json;\nconst raw = $json;\nconst out = (raw && typeof raw.output === 'object' && raw.output !== null) ? raw.output\n  : (raw && typeof raw.response === 'object' && raw.response !== null) ? raw.response\n  : (raw || {});\nconst ajustes = out.criterios_ajustados || {};\nconst criterios = { ...base.criterios };\nconst aplicadas = {};\nconst rechazadas = {};\n\n// Valores permitidos por clave -- si la IA escribe algo fuera de esta lista para una clave\n// controlada, se descarta el ajuste en vez de aplicarlo (evita corromper el criterio en\n// silencio, p.ej. valores de organizacion_juridica escritos por error en tamano_empresa).\nconst VALORES_VALIDOS = {\n  organizacion_juridica: ['Personas Jurídicas', 'Personas Naturales', 'Establecimientos', 'Entidades sin ánimo de lucro'],\n  tamano_empresa: ['Microempresas', 'Pequeñas empresas', 'Medianas empresas', 'Grandes empresas'],\n  actividad_economica: ['Agropecuario', 'Minero', 'Industria', 'Electricidad, gas, vapor y aire acondicionado', 'Agua', 'Construcción', 'Comercio al por mayor y al por menor', 'Transporte', 'Alojamiento y restaurantes', 'Información y comunicaciones', 'Financiero', 'Inmobiliarias', 'Profesionales, científicas y técnicas', 'Servicios administrativos y de apoyo', 'Educación', 'Salud', 'Artísticas, de entretenimiento y recreación', 'Otras actividades de servicios', 'Todas las actividades económicas']\n};\n\nfunction esValorValido(clave, valor) {\n  const permitidos = VALORES_VALIDOS[clave];\n  if (!permitidos) return true;\n  const partes = String(valor).split(';').map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return false;\n  return partes.every(p => permitidos.includes(p));\n}\n\nfor (const [k, v] of Object.entries(ajustes)) {\n  if (!Object.prototype.hasOwnProperty.call(criterios, k)) continue;\n  if (esValorValido(k, v)) { criterios[k] = v; aplicadas[k] = v; }\n  else { rechazadas[k] = v; }\n}\n\nconst huboRechazos = Object.keys(rechazadas).length > 0;\nconst avisoRechazo = huboRechazos\n  ? ' [AVISO: se descartaron ajustes invalidos para: ' + Object.keys(rechazadas).join(', ') + ' -- valor(es) no reconocido(s): ' + JSON.stringify(rechazadas) + ']'\n  : '';\n\n// F7-01: la confianza declarada por la IA viaja con el resultado para poder enrutar a revisión manual.\nreturn { json: { id_solicitud: base.id_solicitud, servicio: base.servicio, criterios, criterios_ajustados_aplicados: aplicadas, criterios_ajustados_rechazados: rechazadas, resumen_cambios: (out.resumen_cambios || '') + avisoRechazo, comentario: base.Comentario || '', confianza: out.confianza || '' } };"
         },
         "id": "9bbd410a-676b-4ccc-852b-3b88839220d9",
         "name": "Aplicar correcciones",
@@ -3098,6 +3140,188 @@
           -400,
           208
         ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "GELWpskp0aYJ2zPg",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Leer Contexto Propuesta"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "ad64b621-d9f9-4721-99e4-3348dd571c2b",
+        "name": "Ejecutar Leer Contexto Propuesta",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -272,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": false,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ String($('Ejecutar Leer Configuración').first().json._config.ia_correccion_habilitada || 'true') }}",
+                "rightValue": "false",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7f5db526-5fc9-4a0d-84a4-c57349d54801",
+        "name": "IF - ¿Corrección IA habilitada?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1264,
+          416
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": false,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ String($json.confianza || '') }}",
+                "rightValue": "baja",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ef4370cc-2b7a-4684-966f-ae219ae7126f",
+        "name": "IF - ¿Confianza suficiente?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1264,
+          -16
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// F7-01 / F7-02: la corrección no se aplica automáticamente; la propuesta pasa a revisión manual\n// sin consumir una ronda. El motivo depende de si la IA está desactivada o si declaró confianza baja.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst cfg = (() => { try { return $('Ejecutar Leer Configuración').first().json._config || {}; } catch (e) { return {}; } })();\nconst base = get('Consolidar datos y decisión');\nconst conf = String($json.confianza || '');\nconst iaHabilitada = String(cfg.ia_correccion_habilitada || 'true') !== 'false';\nconst motivo = !iaHabilitada\n  ? 'La corrección asistida por IA está desactivada por configuración.'\n  : ('La IA interpretó el pedido con confianza ' + (conf || 'baja') + '; no se aplicó ningún ajuste automáticamente.');\nconst resumen = $json.resumen_cambios || '(sin resumen)';\nconst id = $json.id_solicitud || base.id_solicitud || '';\nconst comentario = $json.comentario || base.Comentario || '';\nconst asunto = '[Propuesta CCB] Corrección pendiente de revisión manual — ' + (base.servicio || $json.servicio || 'servicio') + ' (' + id + ')';\nconst cuerpo = '<p>La solicitud de correcciones <b>no se aplicó automáticamente</b>.</p><ul>'\n  + '<li><b>Solicitud:</b> ' + id + '</li>'\n  + '<li><b>Motivo:</b> ' + motivo + '</li>'\n  + '<li><b>Interpretación de la IA:</b> ' + resumen + '</li>'\n  + '<li><b>Comentario del asesor:</b> ' + (comentario || '(sin comentario)') + '</li></ul>'\n  + '<p>La propuesta queda en <b>revisión manual</b> y <b>no consumió una ronda</b> de corrección.</p>';\nreturn { json: { ...$json, id_solicitud: id, Comentario: comentario,\n                 _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
+        },
+        "id": "b93530b6-d2dd-43d0-a08e-596293b75c62",
+        "name": "Preparar aviso - Revisión manual",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1504,
+          416
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [],
+            "value": {
+              "estado": "REVISION_MANUAL",
+              "comentario_fausto": "={{ $json.Comentario }}"
+            }
+          },
+          "options": {}
+        },
+        "id": "5c624ac7-0913-4cf7-9791-c8e44664f594",
+        "name": "Data Table - Marcar REVISION_MANUAL (revisión manual)",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          1728,
+          416
+        ]
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $('Ejecutar Leer Configuración').first().json._config.alertas_email }}",
+          "subject": "={{ $json._aviso_asunto }}",
+          "bodyContent": "={{ $json._aviso_cuerpo }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "f0d6747e-9ee6-439b-bd86-45bb068900bb",
+        "name": "Outlook - Enviar alerta (revisión manual)",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          1952,
+          416
+        ],
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "webhookId": "cde7c21c-ebe1-4b6f-8f74-b7291a591872"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'La corrección quedó pendiente de revisión manual; no se consumió una ronda.' } };"
+        },
+        "id": "905d2d96-fc85-461f-bbb7-e7cad490251f",
+        "name": "Confirmar aviso - Revisión manual",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2176,
+          416
+        ]
       }
     ],
     "connections": {
@@ -3106,39 +3330,6 @@
           [
             {
               "node": "Ejecutar Leer Configuración",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Leer cotización": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Leer criterios",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Leer criterios": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Leer solicitud",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Leer solicitud": {
-        "main": [
-          [
-            {
-              "node": "Consolidar datos y decisión",
               "type": "main",
               "index": 0
             }
@@ -3298,7 +3489,7 @@
           ],
           [
             {
-              "node": "Preparar corrección IA",
+              "node": "IF - ¿Corrección IA habilitada?",
               "type": "main",
               "index": 0
             }
@@ -3408,7 +3599,7 @@
         "main": [
           [
             {
-              "node": "Re-invocar motor",
+              "node": "IF - ¿Confianza suficiente?",
               "type": "main",
               "index": 0
             }
@@ -3561,7 +3752,7 @@
         "main": [
           [
             {
-              "node": "Data Table - Leer cotización",
+              "node": "Ejecutar Leer Contexto Propuesta",
               "type": "main",
               "index": 0
             }
@@ -3680,6 +3871,97 @@
             }
           ]
         ]
+      },
+      "Ejecutar Leer Contexto Propuesta": {
+        "main": [
+          [
+            {
+              "node": "Consolidar datos y decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Corrección IA habilitada?": {
+        "main": [
+          [
+            {
+              "node": "Preparar corrección IA",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar aviso - Revisión manual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Confianza suficiente?": {
+        "main": [
+          [
+            {
+              "node": "Re-invocar motor",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar aviso - Revisión manual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar aviso - Revisión manual": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Marcar REVISION_MANUAL (revisión manual)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Marcar REVISION_MANUAL (revisión manual)": {
+        "main": [
+          [
+            {
+              "node": "Outlook - Enviar alerta (revisión manual)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Outlook - Enviar alerta (revisión manual)": {
+        "main": [
+          [
+            {
+              "node": "Confirmar aviso - Revisión manual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Confirmar aviso - Revisión manual": {
+        "main": [
+          [
+            {
+              "node": "Responder decisión",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -3688,18 +3970,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:42:02.533Z",
-        "id": 2728,
+        "createdAt": "2026-09-23T13:53:39.077Z",
+        "id": 2745,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "62c158c0-5746-4c24-8db6-73af468531b0",
+        "versionId": "ea20928d-3c25-4433-aa35-cd784a6769da",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:42:02.565Z",
-        "id": 2729,
+        "createdAt": "2026-09-23T13:53:39.105Z",
+        "id": 2746,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "62c158c0-5746-4c24-8db6-73af468531b0",
+        "versionId": "ea20928d-3c25-4433-aa35-cd784a6769da",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:33:42.473Z",
+  "updatedAt": "2026-09-23T13:50:27.325Z",
   "createdAt": "2026-09-11T15:41:10.905Z",
   "id": "5RJdnHDQ8NuWZJG7",
   "name": "[SUB] CCB - Workflow 4B - Aprobación de Propuesta (Teams)",
@@ -9,105 +9,8 @@
   "nodes": [
     {
       "parameters": {
-        "operation": "get",
-        "dataTableId": {
-          "__rl": true,
-          "value": "YAvQTqzsgJWjacVZ",
-          "mode": "list",
-          "cachedResultName": "Cotizaciones_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
-        },
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "id_solicitud",
-              "keyValue": "={{ $json.id_solicitud }}"
-            }
-          ]
-        },
-        "limit": 1
-      },
-      "id": "w4b-leer-cotizacion",
-      "name": "Data Table - Leer cotización",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        224,
-        -16
-      ],
-      "retryOnFail": true,
-      "maxTries": 5,
-      "waitBetweenTries": 5000
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "dataTableId": {
-          "__rl": true,
-          "value": "ldABWugJR1GcFFyy",
-          "mode": "list",
-          "cachedResultName": "Criterios_Cotizacion",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
-        },
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "id_solicitud",
-              "keyValue": "={{ $json.id_solicitud }}"
-            }
-          ]
-        },
-        "limit": 1
-      },
-      "id": "w4b-leer-criterios",
-      "name": "Data Table - Leer criterios",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        448,
-        -16
-      ],
-      "retryOnFail": true,
-      "maxTries": 5,
-      "waitBetweenTries": 5000
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "dataTableId": {
-          "__rl": true,
-          "value": "u5gFYvTfuQRX71u5",
-          "mode": "list",
-          "cachedResultName": "Solicitudes_CCB",
-          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
-        },
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "id_solicitud",
-              "keyValue": "={{ $json.id_solicitud }}"
-            }
-          ]
-        },
-        "limit": 1
-      },
-      "id": "w4b-leer-solicitud",
-      "name": "Data Table - Leer solicitud",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        672,
-        -16
-      ],
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "maxTries": 5,
-      "waitBetweenTries": 5000
-    },
-    {
-      "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
+        "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst ctx = $('Ejecutar Leer Contexto Propuesta').first().json || {};\nconst q = ctx.cotizacion || {};\nconst c = ctx.criterios || {};\nconst s = ctx.solicitud || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
       },
       "id": "w4b-consolidar",
       "name": "Consolidar datos de la propuesta",
@@ -344,42 +247,30 @@
         -400,
         0
       ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GELWpskp0aYJ2zPg",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Leer Contexto Propuesta"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "135a47e0-6058-47c5-a5f6-c17ee40d182a",
+      "name": "Ejecutar Leer Contexto Propuesta",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        0
+      ]
     }
   ],
   "connections": {
-    "Data Table - Leer cotización": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Leer criterios",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Leer criterios": {
-      "main": [
-        [
-          {
-            "node": "Data Table - Leer solicitud",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Data Table - Leer solicitud": {
-      "main": [
-        [
-          {
-            "node": "Consolidar datos de la propuesta",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Consolidar datos de la propuesta": {
       "main": [
         [
@@ -440,7 +331,7 @@
       "main": [
         [
           {
-            "node": "Data Table - Leer cotización",
+            "node": "Ejecutar Leer Contexto Propuesta",
             "type": "main",
             "index": 0
           }
@@ -486,6 +377,17 @@
           }
         ]
       ]
+    },
+    "Ejecutar Leer Contexto Propuesta": {
+      "main": [
+        [
+          {
+            "node": "Consolidar datos de la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -500,118 +402,21 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "33286017-6b68-4e1e-b19a-953538d5fc76",
-  "activeVersionId": "33286017-6b68-4e1e-b19a-953538d5fc76",
-  "versionCounter": 161,
+  "versionId": "aef2be82-0654-46f2-b5f3-37e7d1947aef",
+  "activeVersionId": "aef2be82-0654-46f2-b5f3-37e7d1947aef",
+  "versionCounter": 164,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:33:42.474Z",
-    "createdAt": "2026-09-23T13:33:42.474Z",
-    "versionId": "33286017-6b68-4e1e-b19a-953538d5fc76",
+    "updatedAt": "2026-09-23T13:50:27.328Z",
+    "createdAt": "2026-09-23T13:50:27.328Z",
+    "versionId": "aef2be82-0654-46f2-b5f3-37e7d1947aef",
     "workflowId": "5RJdnHDQ8NuWZJG7",
     "nodes": [
       {
         "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "YAvQTqzsgJWjacVZ",
-            "mode": "list",
-            "cachedResultName": "Cotizaciones_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        },
-        "id": "w4b-leer-cotizacion",
-        "name": "Data Table - Leer cotización",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          224,
-          -16
-        ],
-        "retryOnFail": true,
-        "maxTries": 5,
-        "waitBetweenTries": 5000
-      },
-      {
-        "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "ldABWugJR1GcFFyy",
-            "mode": "list",
-            "cachedResultName": "Criterios_Cotizacion",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/ldABWugJR1GcFFyy"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        },
-        "id": "w4b-leer-criterios",
-        "name": "Data Table - Leer criterios",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          448,
-          -16
-        ],
-        "retryOnFail": true,
-        "maxTries": 5,
-        "waitBetweenTries": 5000
-      },
-      {
-        "parameters": {
-          "operation": "get",
-          "dataTableId": {
-            "__rl": true,
-            "value": "u5gFYvTfuQRX71u5",
-            "mode": "list",
-            "cachedResultName": "Solicitudes_CCB",
-            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
-          },
-          "filters": {
-            "conditions": [
-              {
-                "keyName": "id_solicitud",
-                "keyValue": "={{ $json.id_solicitud }}"
-              }
-            ]
-          },
-          "limit": 1
-        },
-        "id": "w4b-leer-solicitud",
-        "name": "Data Table - Leer solicitud",
-        "type": "n8n-nodes-base.dataTable",
-        "typeVersion": 1.1,
-        "position": [
-          672,
-          -16
-        ],
-        "alwaysOutputData": true,
-        "retryOnFail": true,
-        "maxTries": 5,
-        "waitBetweenTries": 5000
-      },
-      {
-        "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst q = $('Data Table - Leer cotización').first().json || {};\nconst c = $('Data Table - Leer criterios').first().json || {};\nconst s = $('Data Table - Leer solicitud').first().json || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
+          "jsCode": "// Junta cotizacion + criterios + solicitud en un objeto plano para el resto del flujo.\nconst ctx = $('Ejecutar Leer Contexto Propuesta').first().json || {};\nconst q = ctx.cotizacion || {};\nconst c = ctx.criterios || {};\nconst s = ctx.solicitud || {};\nconst { id: _qi, createdAt: _qc, updatedAt: _qu, ...quote } = q;\nconst { id: _ci, createdAt: _cc, updatedAt: _cu, ...criterios } = c;\nconst { id: _si, createdAt: _sc, updatedAt: _su, ...solicitud } = s;\nreturn { json: {\n  id_solicitud: quote.id_solicitud || criterios.id_solicitud || null,\n  servicio: quote.servicio || criterios.servicio || '',\n  estado: quote.estado || '',\n  total_registros: quote.total_registros,\n  valor: quote.valor, iva: quote.iva, valor_total: quote.valor_total,\n  pdf_url: quote.pdf_url || null,\n  ronda_correccion: Number(quote.ronda_correccion) || 0,\n  nombre_cliente: solicitud.nombre_cliente || criterios.nombre_solicitante || '',\n  razon_social: criterios.razon_social || '',\n  email_cliente: solicitud.email_cliente || '',\n  criterios, solicitud\n} };"
         },
         "id": "w4b-consolidar",
         "name": "Consolidar datos de la propuesta",
@@ -848,42 +653,30 @@
           -400,
           0
         ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "GELWpskp0aYJ2zPg",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Leer Contexto Propuesta"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "135a47e0-6058-47c5-a5f6-c17ee40d182a",
+        "name": "Ejecutar Leer Contexto Propuesta",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          272,
+          0
+        ]
       }
     ],
     "connections": {
-      "Data Table - Leer cotización": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Leer criterios",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Leer criterios": {
-        "main": [
-          [
-            {
-              "node": "Data Table - Leer solicitud",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Data Table - Leer solicitud": {
-        "main": [
-          [
-            {
-              "node": "Consolidar datos de la propuesta",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
       "Consolidar datos de la propuesta": {
         "main": [
           [
@@ -944,7 +737,7 @@
         "main": [
           [
             {
-              "node": "Data Table - Leer cotización",
+              "node": "Ejecutar Leer Contexto Propuesta",
               "type": "main",
               "index": 0
             }
@@ -990,6 +783,17 @@
             }
           ]
         ]
+      },
+      "Ejecutar Leer Contexto Propuesta": {
+        "main": [
+          [
+            {
+              "node": "Consolidar datos de la propuesta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -998,18 +802,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:33:42.521Z",
-        "id": 2701,
+        "createdAt": "2026-09-23T13:50:27.506Z",
+        "id": 2739,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "33286017-6b68-4e1e-b19a-953538d5fc76",
+        "versionId": "aef2be82-0654-46f2-b5f3-37e7d1947aef",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:33:42.537Z",
-        "id": 2702,
+        "createdAt": "2026-09-23T13:50:27.560Z",
+        "id": 2740,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "33286017-6b68-4e1e-b19a-953538d5fc76",
+        "versionId": "aef2be82-0654-46f2-b5f3-37e7d1947aef",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

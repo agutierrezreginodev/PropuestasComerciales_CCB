@@ -32,12 +32,12 @@ y el estado global en [`docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](../../doc
 | 5 | Observabilidad: límite/paginación en lecturas sin tope | F6-02 | ☑ | 100 filas por ciclo en las 3 colas | `be0ac78` |
 | 6 | Observabilidad: enmascarar PII antes de logs y alertas | F6-03 | ☑ | `limpiar()` en subflujo de error, catch-all y W4D; W2C verificado | `be0ac78` |
 | 6b | Observabilidad: sellar `error_timestamp` y monitorear las 4 métricas | F6-05 | ☑ | Flujo `[OPS]` horario verificado + 8 nodos de error sellados | `ops-monitoreo` |
-| 7 | Arquitectura: subflujo `[SUB] - CCB - Leer Contexto Propuesta` | F4-02 | ☐ | W4B/W4C/W4D leen el contexto por el mismo subflujo | — |
-| 8 | Arquitectura: dictamen sobre separar PDF de cálculo de precio | F4-05 | ☐ | Decisión documentada | — |
+| 7 | Arquitectura: subflujo `[SUB] - CCB - Leer Contexto Propuesta` | F4-02 | ☑ | W4B 14→12, W4C 12→10, W4D 50→48; verificado con datos reales | `f4-02` |
+| 8 | Arquitectura: dictamen sobre separar PDF de cálculo de precio | F4-05 | ☑ | Dictamen: separar en sesión dedicada con PDF real; binario no consumido aguas abajo (verificado) | `f4-05` |
 | 9 | Arquitectura: partir W4D en subflujos por rama | F4-03 | ☐ | Ningún lienzo supera 20 nodos; las 3 ramas funcionan | — |
-| 10 | Guardarraíles de IA: `confianza: baja` → revisión humana | F7-01 | ☐ | Corrección dudosa queda detenida | — |
-| 11 | Guardarraíles de IA: kill switch de la corrección asistida | F7-02 | ☐ | Interruptor apagado → revisión manual, resto normal | — |
-| 12 | Guardarraíles de IA: aprobación humana antes del recálculo | F7-03 | ☐ | Ninguna ronda se consume sin autorización | — |
+| 10 | Guardarraíles de IA: `confianza: baja` → revisión humana | F7-01 | ☑ | `IF - ¿Confianza suficiente?` → revisión manual sin consumir ronda | `f7-01-02` |
+| 11 | Guardarraíles de IA: kill switch de la corrección asistida | F7-02 | ☑ | Clave `ia_correccion_habilitada` en `Configuracion_CCB` | `f7-01-02` |
+| 12 | Guardarraíles de IA: aprobación humana antes del recálculo | F7-03 | 🔶 | Dos caminos (Teams `sendAndWait` vs. página de revisión): decisión del usuario pendiente | — |
 | 13 | Catch-all con diseño propio | F4-01 (pendiente) | ☐ | Contrato adaptado, sin perder fidelidad de diagnóstico | — |
 | 14 | Cierre documental: re-auditoría, tablero y estado actualizados | — | ☐ | Puntaje nuevo anotado y docs sincronizados | — |
 
@@ -70,6 +70,21 @@ y el estado global en [`docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](../../doc
 - **Hallazgo de motor verificado:** n8n **no** resuelve `$('nodo')` hacia una rama hermana (`Node 'X' hasn't been executed`). Es la razón de que el patrón sea un subflujo ancestro y no un nodo colgante. Queda documentado en el plan.
 - Limpieza asociada: notas de nodo de W4B/W4D/W5B reescritas sin valores reales; el chatId real de producción quedó guardado en la tabla (no en el repo) y el nodo `Notificar a Fausto - Envío` pasó a `Notificar a asesor - Envío`.
 - Pendiente de verificación real por flujo: la corrida de punta a punta de cada consumidor (regla de oro). El subflujo en sí ya está verificado.
+
+### Unidad 7-8 — Arquitectura (F4-02, F4-05) — 23/09
+
+- `[SUB] - CCB - Leer Contexto Propuesta` = `GELWpskp0aYJ2zPg`: resuelve `id_solicitud` (item/body/query) y devuelve `{ id_solicitud, cotizacion, criterios, solicitud }` en un solo item; las 3 lecturas con `alwaysOutputData` para que un dato faltante no corte la cadena.
+- Migrados los 3 llamadores: W4B 14→12, W4C 12→10, W4D 50→48. Sin referencias residuales a los nodos viejos.
+- **Verificado con datos reales**: subflujo ejecutado con un `id_solicitud` real (devolvió cotización + criterios y `null` en solicitud inexistente).
+- F4-05 dictaminado: separar la etapa de PDF (W3 quedaría en 17 nodos); el binario del PDF no lo consume nadie aguas abajo (verificado). Se ejecuta en sesión dedicada con generación de PDF real.
+
+### Unidad 10-11 — Guardarraíles de IA (F7-01, F7-02) — 23/09
+
+- `IF - ¿Corrección IA habilitada?` lee `ia_correccion_habilitada` de `Configuracion_CCB`; en `false` la corrección va a revisión manual.
+- `IF - ¿Confianza suficiente?` usa la `confianza` del parser, que **se perdía** en `Aplicar correcciones` (corregido); con `baja` no se aplica el ajuste y la propuesta queda en `REVISION_MANUAL`.
+- Ambos caminos avisan al asesor con motivo + interpretación de la IA + comentario, y **no consumen ronda**. W4D pasó de 48 a 54 nodos (F4-03 los va a redistribuir).
+- **Verificado**: lógica del nodo nuevo probada con `node` sobre el código extraído y los dos casos reales.
+- F7-03 queda con dos caminos documentados y pendiente de decisión del usuario.
 
 ## Cierre de tareas sin trabajo de código
 
