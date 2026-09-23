@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:20:15.239Z",
+  "updatedAt": "2026-09-23T13:37:28.025Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -45,7 +45,8 @@
             }
           ]
         },
-        "returnAll": true
+        "returnAll": true,
+        "limit": 100
       },
       "id": "w5a-leer",
       "name": "Data Table - Leer cotizaciones APROBADA",
@@ -443,15 +444,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
-  "activeVersionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
-  "versionCounter": 45,
+  "versionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
+  "activeVersionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
+  "versionCounter": 48,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:20:15.241Z",
-    "createdAt": "2026-09-22T20:20:15.241Z",
-    "versionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
+    "updatedAt": "2026-09-23T13:37:28.027Z",
+    "createdAt": "2026-09-23T13:37:28.027Z",
+    "versionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -492,7 +493,8 @@
               }
             ]
           },
-          "returnAll": true
+          "returnAll": true,
+          "limit": 100
         },
         "id": "w5a-leer",
         "name": "Data Table - Leer cotizaciones APROBADA",
@@ -880,18 +882,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:20:15.278Z",
-        "id": 2646,
+        "createdAt": "2026-09-23T13:37:28.080Z",
+        "id": 2711,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
+        "versionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:20:15.295Z",
-        "id": 2647,
+        "createdAt": "2026-09-23T13:37:28.096Z",
+        "id": 2712,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "30c56254-fbce-4e3f-908e-b9dd26439d26",
+        "versionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

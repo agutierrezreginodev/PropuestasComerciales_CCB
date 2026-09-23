@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:31:27.365Z",
+  "updatedAt": "2026-09-23T13:38:10.268Z",
   "createdAt": "2026-09-22T19:27:26.926Z",
   "id": "2dY1kaT7I5a0eP2w",
   "name": "[SUB] - CCB - Registrar y Alertar Error",
@@ -23,7 +23,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = j.mensaje_error || 'Error sin mensaje';\nconst emailBody = j.emailBody || '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
+        "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\n\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\n\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = limpiar(j.mensaje_error || 'Error sin mensaje').slice(0, 300);\nconst emailBody = j.emailBody ? limpiar(j.emailBody) : '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
       },
       "id": "sub-error-normalizar",
       "name": "Normalizar entrada de error",
@@ -225,15 +225,15 @@
       }
     ]
   },
-  "versionId": "02a5df85-f9b0-47e5-8fb0-4803b357dc36",
-  "activeVersionId": "02a5df85-f9b0-47e5-8fb0-4803b357dc36",
-  "versionCounter": 28,
+  "versionId": "beac6923-04a8-4b1e-9f00-1bd8efc43eec",
+  "activeVersionId": "beac6923-04a8-4b1e-9f00-1bd8efc43eec",
+  "versionCounter": 34,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:31:27.366Z",
-    "createdAt": "2026-09-23T13:31:27.366Z",
-    "versionId": "02a5df85-f9b0-47e5-8fb0-4803b357dc36",
+    "updatedAt": "2026-09-23T13:38:02.070Z",
+    "createdAt": "2026-09-23T13:38:02.070Z",
+    "versionId": "beac6923-04a8-4b1e-9f00-1bd8efc43eec",
     "workflowId": "2dY1kaT7I5a0eP2w",
     "nodes": [
       {
@@ -252,7 +252,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = j.mensaje_error || 'Error sin mensaje';\nconst emailBody = j.emailBody || '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
+          "jsCode": "// Contrato de entrada del subflujo compartido de error.\n// Campos esperados del llamador: id_solicitud, workflow_origen, nodo_fallido, mensaje_error.\n// Opcionales: emailBody (HTML), subject, alertar (bool).\nconst j = $json;\n\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\n\nconst nodo = j.nodo_fallido || 'desconocido';\nconst id = j.id_solicitud || '';\nconst origen = j.workflow_origen || 'desconocido';\nconst mensaje = limpiar(j.mensaje_error || 'Error sin mensaje').slice(0, 300);\nconst emailBody = j.emailBody ? limpiar(j.emailBody) : '<p>Error en <b>' + origen + '</b>.</p><ul><li><b>Nodo:</b> ' + nodo + '</li><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nconst subject = j.subject || ('[Propuesta CCB] Error en ' + origen + ' — ' + (id || 'sin id'));\nconst alertar = j.alertar !== false;\nreturn { json: { id_solicitud: id, workflow_origen: origen, nodo_fallido: nodo, mensaje_error: mensaje, emailBody, subject, alertar } };"
         },
         "id": "sub-error-normalizar",
         "name": "Normalizar entrada de error",
@@ -438,18 +438,34 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:31:27.401Z",
-        "id": 2685,
+        "createdAt": "2026-09-23T13:38:10.300Z",
+        "id": 2717,
         "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "02a5df85-f9b0-47e5-8fb0-4803b357dc36",
+        "versionId": "beac6923-04a8-4b1e-9f00-1bd8efc43eec",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:31:27.415Z",
-        "id": 2686,
+        "createdAt": "2026-09-23T13:38:10.315Z",
+        "id": 2718,
         "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "02a5df85-f9b0-47e5-8fb0-4803b357dc36",
+        "versionId": "beac6923-04a8-4b1e-9f00-1bd8efc43eec",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T13:38:02.114Z",
+        "id": 2715,
+        "workflowId": "2dY1kaT7I5a0eP2w",
+        "versionId": "beac6923-04a8-4b1e-9f00-1bd8efc43eec",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T13:38:02.130Z",
+        "id": 2716,
+        "workflowId": "2dY1kaT7I5a0eP2w",
+        "versionId": "beac6923-04a8-4b1e-9f00-1bd8efc43eec",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

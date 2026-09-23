@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:34:30.239Z",
+  "updatedAt": "2026-09-23T13:39:34.359Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -385,7 +385,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\nconst mensaje = 'Decisión no reconocida recibida desde la página de revisión: \"' + (j.Decision || '(vacía)') + '\"';\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enrutar decisión', mensaje_error: mensaje } };"
+        "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar('Decisión no reconocida recibida desde la página de revisión: \"' + (j.Decision || '(vacía)') + '\"').slice(0, 300);\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enrutar decisión', mensaje_error: mensaje } };"
       },
       "id": "91f348e7-e148-4990-8fad-984bb22ca60e",
       "name": "Preparar error - No reconocida",
@@ -477,7 +477,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\nconst asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + (j.servicio || 'servicio') + ' (' + (j.id_solicitud || '') + ')';\nconst cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + (j.nombre_cliente || 'cliente') + ' (' + (j.razon_social || '-') + '). Requiere revisión manual.\\n\\nComentario del asesor: ' + (j.Comentario || '(sin comentario)') + '\\n\\nDocumento: ' + (j.pdf_url || '(sin documento)');\nreturn { json: { ...j, _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
+        "jsCode": "const j = $json;\n// F6-03: el aviso interno identifica la solicitud sin exponer el dato personal completo.\nconst parcial = (t) => { const s = String(t === null || t === undefined ? '' : t).trim(); return s.length > 3 ? s.slice(0, 3) + '…' : s; };\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + (j.servicio || 'servicio') + ' (' + (j.id_solicitud || '') + ')';\nconst cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + parcial(j.nombre_cliente || 'cliente') + ' (' + parcial(j.razon_social || '-') + '). Requiere revisión manual.\\n\\nComentario del asesor: ' + limpiar(j.Comentario || '(sin comentario)') + '\\n\\nDocumento: ' + (j.pdf_url || '(sin documento)');\nreturn { json: { ...j, _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
       },
       "id": "a2ee211f-5d41-4cff-8288-7565e2deb358",
       "name": "Preparar aviso - Tope",
@@ -897,7 +897,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams';\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Teams - Enviar mensaje (corrección)', mensaje_error: mensaje } };"
+        "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar((j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams').slice(0, 300);\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Teams - Enviar mensaje (corrección)', mensaje_error: mensaje } };"
       },
       "id": "54d2b4a3-ade7-45b1-a3be-f6915fcbbc17",
       "name": "Preparar error - Teams envío",
@@ -956,7 +956,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\nconst flujo = $workflow.name;\nconst esExcepcion = typeof j.ok === 'undefined';\nconst nodoFallido = 'Re-invocar motor' + (esExcepcion ? '' : ' (recálculo)');\nconst tipoError = esExcepcion\n  ? 'Excepción al re-invocar el motor de cálculo (W3)'\n  : 'Rechazo del motor de cálculo (ok=false)';\nconst id = j.id_solicitud || $('Consolidar datos y decisión').first().json.id_solicitud;\nconst mensaje = (typeof j.error === 'string' ? j.error : (j.error && j.error.message)) || j.message || (esExcepcion ? 'Error desconocido al re-invocar el motor' : 'El recálculo devolvió ok=false');\nconst descripcion = esExcepcion\n  ? 'La corrección con IA se aplicó pero la re-invocación del motor de cálculo falló con una excepción (no se obtuvo respuesta). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.'\n  : 'La corrección con IA se aplicó pero el motor rechazó el recálculo (ok=false). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Recálculo falló — propuesta en ERROR_CALCULO</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">${descripcion}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: nodoFallido, mensaje_error: mensaje, fecha_error: fechaError, emailBody } };"
+        "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst flujo = $workflow.name;\nconst esExcepcion = typeof j.ok === 'undefined';\nconst nodoFallido = 'Re-invocar motor' + (esExcepcion ? '' : ' (recálculo)');\nconst tipoError = esExcepcion\n  ? 'Excepción al re-invocar el motor de cálculo (W3)'\n  : 'Rechazo del motor de cálculo (ok=false)';\nconst id = j.id_solicitud || $('Consolidar datos y decisión').first().json.id_solicitud;\nconst mensaje = limpiar((typeof j.error === 'string' ? j.error : (j.error && j.error.message)) || j.message || (esExcepcion ? 'Error desconocido al re-invocar el motor' : 'El recálculo devolvió ok=false')).slice(0, 300);\nconst descripcion = esExcepcion\n  ? 'La corrección con IA se aplicó pero la re-invocación del motor de cálculo falló con una excepción (no se obtuvo respuesta). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.'\n  : 'La corrección con IA se aplicó pero el motor rechazó el recálculo (ok=false). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Recálculo falló — propuesta en ERROR_CALCULO</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">${descripcion}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: nodoFallido, mensaje_error: mensaje, fecha_error: fechaError, emailBody } };"
       },
       "id": "8025ad4e-1707-450a-8c27-22e51d5cdf42",
       "name": "Preparar error - Recálculo falló",
@@ -1098,7 +1098,7 @@
       ],
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\nconst mensaje = 'Decision no reconocida, rechazada antes de leer la base: \"' + (j.Decision || '(vacia)') + '\"';\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Validar decision reconocida', mensaje_error: mensaje, ok: false, error: mensaje } };"
+        "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar('Decision no reconocida, rechazada antes de leer la base: \"' + (j.Decision || '(vacia)') + '\"').slice(0, 300);\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Validar decision reconocida', mensaje_error: mensaje, ok: false, error: mensaje } };"
       }
     },
     {
@@ -1842,15 +1842,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
-  "activeVersionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
-  "versionCounter": 199,
+  "versionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
+  "activeVersionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
+  "versionCounter": 202,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:34:30.241Z",
-    "createdAt": "2026-09-23T13:34:30.241Z",
-    "versionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
+    "updatedAt": "2026-09-23T13:39:34.363Z",
+    "createdAt": "2026-09-23T13:39:34.363Z",
+    "versionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -2231,7 +2231,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst mensaje = 'Decisión no reconocida recibida desde la página de revisión: \"' + (j.Decision || '(vacía)') + '\"';\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enrutar decisión', mensaje_error: mensaje } };"
+          "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar('Decisión no reconocida recibida desde la página de revisión: \"' + (j.Decision || '(vacía)') + '\"').slice(0, 300);\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Enrutar decisión', mensaje_error: mensaje } };"
         },
         "id": "91f348e7-e148-4990-8fad-984bb22ca60e",
         "name": "Preparar error - No reconocida",
@@ -2323,7 +2323,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + (j.servicio || 'servicio') + ' (' + (j.id_solicitud || '') + ')';\nconst cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + (j.nombre_cliente || 'cliente') + ' (' + (j.razon_social || '-') + '). Requiere revisión manual.\\n\\nComentario del asesor: ' + (j.Comentario || '(sin comentario)') + '\\n\\nDocumento: ' + (j.pdf_url || '(sin documento)');\nreturn { json: { ...j, _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
+          "jsCode": "const j = $json;\n// F6-03: el aviso interno identifica la solicitud sin exponer el dato personal completo.\nconst parcial = (t) => { const s = String(t === null || t === undefined ? '' : t).trim(); return s.length > 3 ? s.slice(0, 3) + '…' : s; };\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + (j.servicio || 'servicio') + ' (' + (j.id_solicitud || '') + ')';\nconst cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + parcial(j.nombre_cliente || 'cliente') + ' (' + parcial(j.razon_social || '-') + '). Requiere revisión manual.\\n\\nComentario del asesor: ' + limpiar(j.Comentario || '(sin comentario)') + '\\n\\nDocumento: ' + (j.pdf_url || '(sin documento)');\nreturn { json: { ...j, _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
         },
         "id": "a2ee211f-5d41-4cff-8288-7565e2deb358",
         "name": "Preparar aviso - Tope",
@@ -2743,7 +2743,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams';\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Teams - Enviar mensaje (corrección)', mensaje_error: mensaje } };"
+          "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar((j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams').slice(0, 300);\nconst id = $('Consolidar datos y decisión').first().json.id_solicitud;\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Teams - Enviar mensaje (corrección)', mensaje_error: mensaje } };"
         },
         "id": "54d2b4a3-ade7-45b1-a3be-f6915fcbbc17",
         "name": "Preparar error - Teams envío",
@@ -2802,7 +2802,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst flujo = $workflow.name;\nconst esExcepcion = typeof j.ok === 'undefined';\nconst nodoFallido = 'Re-invocar motor' + (esExcepcion ? '' : ' (recálculo)');\nconst tipoError = esExcepcion\n  ? 'Excepción al re-invocar el motor de cálculo (W3)'\n  : 'Rechazo del motor de cálculo (ok=false)';\nconst id = j.id_solicitud || $('Consolidar datos y decisión').first().json.id_solicitud;\nconst mensaje = (typeof j.error === 'string' ? j.error : (j.error && j.error.message)) || j.message || (esExcepcion ? 'Error desconocido al re-invocar el motor' : 'El recálculo devolvió ok=false');\nconst descripcion = esExcepcion\n  ? 'La corrección con IA se aplicó pero la re-invocación del motor de cálculo falló con una excepción (no se obtuvo respuesta). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.'\n  : 'La corrección con IA se aplicó pero el motor rechazó el recálculo (ok=false). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Recálculo falló — propuesta en ERROR_CALCULO</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">${descripcion}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: nodoFallido, mensaje_error: mensaje, fecha_error: fechaError, emailBody } };"
+          "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst flujo = $workflow.name;\nconst esExcepcion = typeof j.ok === 'undefined';\nconst nodoFallido = 'Re-invocar motor' + (esExcepcion ? '' : ' (recálculo)');\nconst tipoError = esExcepcion\n  ? 'Excepción al re-invocar el motor de cálculo (W3)'\n  : 'Rechazo del motor de cálculo (ok=false)';\nconst id = j.id_solicitud || $('Consolidar datos y decisión').first().json.id_solicitud;\nconst mensaje = limpiar((typeof j.error === 'string' ? j.error : (j.error && j.error.message)) || j.message || (esExcepcion ? 'Error desconocido al re-invocar el motor' : 'El recálculo devolvió ok=false')).slice(0, 300);\nconst descripcion = esExcepcion\n  ? 'La corrección con IA se aplicó pero la re-invocación del motor de cálculo falló con una excepción (no se obtuvo respuesta). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.'\n  : 'La corrección con IA se aplicó pero el motor rechazó el recálculo (ok=false). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Recálculo falló — propuesta en ERROR_CALCULO</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">${descripcion}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: nodoFallido, mensaje_error: mensaje, fecha_error: fechaError, emailBody } };"
         },
         "id": "8025ad4e-1707-450a-8c27-22e51d5cdf42",
         "name": "Preparar error - Recálculo falló",
@@ -2944,7 +2944,7 @@
         ],
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const j = $json;\nconst mensaje = 'Decision no reconocida, rechazada antes de leer la base: \"' + (j.Decision || '(vacia)') + '\"';\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Validar decision reconocida', mensaje_error: mensaje, ok: false, error: mensaje } };"
+          "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar('Decision no reconocida, rechazada antes de leer la base: \"' + (j.Decision || '(vacia)') + '\"').slice(0, 300);\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Validar decision reconocida', mensaje_error: mensaje, ok: false, error: mensaje } };"
         }
       },
       {
@@ -3682,18 +3682,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:34:30.315Z",
-        "id": 2703,
+        "createdAt": "2026-09-23T13:39:34.446Z",
+        "id": 2721,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
+        "versionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:34:30.349Z",
-        "id": 2704,
+        "createdAt": "2026-09-23T13:39:34.475Z",
+        "id": 2722,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
+        "versionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

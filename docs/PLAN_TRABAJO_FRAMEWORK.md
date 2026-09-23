@@ -204,11 +204,43 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 
 | ID | Tarea | Alcance | Esf. | Cómo se verifica | Hecho |
 |---|---|---|---|---|---|
-| F6-01 | `timeout` explícito en las llamadas HTTP | W3, W5B | ▪ | Una llamada colgada corta en el tiempo definido, no queda esperando | ☐ |
-| F6-02 | Paginación o límite en las lecturas que hoy traen todo sin tope | W4A, W5A, W6 | ▪ | El volumen leído por ejecución está acotado | ☐ |
-| F6-03 | Enmascarar PII antes de logs y alertas externas | W4B, W4D, W5B, W2C | ▪▪ | Las alertas identifican la solicitud sin exponer datos personales completos | ☐ |
-| F6-04 | Revisar las variables de retención de ejecuciones a nivel de instancia | instancia — requiere Tecnología | ▪ | La retención está acotada y el disco deja de crecer sin control | ☐ |
-| F6-05 | Monitorear las cuatro métricas del framework: tasa de ejecución, tasa de error por flujo (umbral 2%), latencia p95 y profundidad de cola | instancia | ▪▪ | Existe un punto donde consultar las cuatro y un umbral que dispara aviso | ☐ |
+| F6-01 | `timeout` explícito en las llamadas HTTP | W3, W5B | ▪ | Una llamada colgada corta en el tiempo definido, no queda esperando | ☑ 23/09 — `options.timeout = 60000` en `HTTP - Generar PDF (microservicio)` (W3) y `HTTP - Descargar PDF` (W5B). Son los únicos dos nodos HTTP del pipeline. |
+| F6-02 | Paginación o límite en las lecturas que hoy traen todo sin tope | W4A, W5A, W6 | ▪ | El volumen leído por ejecución está acotado | ☑ 23/09 — `limit: 100` en las tres lecturas de cola (`PROPUESTA_GENERADA`, `APROBADA`, `ENVIADA`). Son colas de trabajo: el resto se procesa en el ciclo siguiente (15 min / 3am). |
+| F6-03 | Enmascarar PII antes de logs y alertas externas | W4B, W4D, W5B, W2C | ▪▪ | Las alertas identifican la solicitud sin exponer datos personales completos | ☑ 23/09 — helper `limpiar()` en el subflujo compartido de error (cubre W4B/W5B y los otros 6 flujos que alertan por ahí), en el catch-all y en 4 nodos de error de W4D; `parcial()` para nombre y razón social en el aviso de tope. W2C verificado: su registro de error solo lleva nombres de campos faltantes. |
+| F6-04 | Revisar las variables de retención de ejecuciones a nivel de instancia | instancia — requiere Tecnología | ▪ | La retención está acotada y el disco deja de crecer sin control | ⏸ pendiente de Tecnología — ver nota |
+| F6-05 | Monitorear las cuatro métricas del framework: tasa de ejecución, tasa de error por flujo (umbral 2%), latencia p95 y profundidad de cola | instancia | ▪▪ | Existe un punto donde consultar las cuatro y un umbral que dispara aviso | 🔄 parcial (23/09) — fuentes verificadas y una de las cuatro cubierta; ver nota |
+
+### Nota — F6-03 (23/09, enmascarado de PII)
+
+El texto libre que llega a `Errores_CCB` y a las alertas internas viene de mensajes de error de n8n (Outlook, HTTP, Teams) que pueden arrastrar correos de destinatario, URLs con identificadores o números de documento. El helper aplicado antes de registrar o alertar:
+
+```js
+const limpiar = (t) => String(t === null || t === undefined ? '' : t)
+  .replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '<correo>')
+  .replace(/https?:\/\/\S+/g, '<url>')
+  .replace(/\b\d{7,}\b/g, '<num>');
+```
+
+En el aviso de tope de correcciones (W4D) el asesor sigue recibiendo la solicitud completa, pero nombre y razón social van parciales (`parcial()`): el aviso identifica el caso sin transportar el dato personal completo. El correo **al cliente** no se toca — ahí los datos del cliente son el contenido legítimo del mensaje.
+
+Verificado con `node` sobre casos reales (`Recipient address rejected: cliente@empresa.com` → `<correo>`; URL de Graph con token → `<url>`; NIT → `<num>`).
+
+### Nota — F6-04 / F6-05 (23/09)
+
+**Hallazgo relevante:** el endpoint `/metrics` de la instancia está **expuesto sin autenticación** y devuelve 42 métricas de proceso (CPU, memoria, event loop, `n8n_workflow_execution_duration_seconds`, `n8n_nodejs_active_requests`, `n8n_active_workflow_count`). Sirve para latencia y profundidad de cola, pero **no** para tasa de ejecución ni tasa de error por flujo, que viven en la API de ejecuciones.
+
+Estado de las cuatro métricas del framework:
+
+| Métrica | Fuente | Estado |
+|---|---|---|
+| Latencia (p95) | `n8n_workflow_execution_duration_seconds` en `/metrics` | ✅ disponible |
+| Profundidad de cola | `n8n_nodejs_active_requests` / `active_handles` en `/metrics` | ✅ disponible |
+| Tasa de error por flujo (umbral 2%) | `GET /api/v1/executions?status=error` — requiere una credencial de API dentro de un workflow | 🔲 requiere credencial |
+| Tasa de ejecución | `GET /api/v1/executions` | 🔲 requiere credencial |
+
+**Segundo hallazgo (bloquea el cálculo de tasa de error):** `Errores_CCB` no tiene columna de fecha — los registros de error no son ubicables en el tiempo, así que hoy no se puede calcular una tasa de error por ventana ni siquiera desde los datos propios. Se corrige en la unidad de observabilidad siguiente (columna `error_timestamp` + sellado en los 8 puntos de inserción).
+
+**F6-04** requiere que Tecnología revise `EXECUTIONS_DATA_PRUNE` / `EXECUTIONS_DATA_MAX_AGE`; no es accesible desde la API pública. Queda como pedido concreto, junto con el cierre de `/metrics` (o al menos su restricción por red), que hoy publica la topología interna de la instancia.
 
 ---
 

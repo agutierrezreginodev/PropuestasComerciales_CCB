@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:24:58.849Z",
+  "updatedAt": "2026-09-23T13:37:30.137Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB - Workflow 6 - Finalizador de Cotizaciones",
@@ -43,7 +43,8 @@
             }
           ]
         },
-        "returnAll": true
+        "returnAll": true,
+        "limit": 100
       },
       "id": "w6-leer",
       "name": "Data Table - Leer cotizaciones ENVIADA",
@@ -415,15 +416,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "de104ca3-e4ab-4322-bbdb-b7d43c6a692a",
-  "activeVersionId": "de104ca3-e4ab-4322-bbdb-b7d43c6a692a",
-  "versionCounter": 51,
+  "versionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
+  "activeVersionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
+  "versionCounter": 54,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:24:58.850Z",
-    "createdAt": "2026-09-22T20:24:58.850Z",
-    "versionId": "de104ca3-e4ab-4322-bbdb-b7d43c6a692a",
+    "updatedAt": "2026-09-23T13:37:30.138Z",
+    "createdAt": "2026-09-23T13:37:30.138Z",
+    "versionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
@@ -462,7 +463,8 @@
               }
             ]
           },
-          "returnAll": true
+          "returnAll": true,
+          "limit": 100
         },
         "id": "w6-leer",
         "name": "Data Table - Leer cotizaciones ENVIADA",
@@ -824,18 +826,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:24:58.898Z",
-        "id": 2654,
+        "createdAt": "2026-09-23T13:37:30.169Z",
+        "id": 2713,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "de104ca3-e4ab-4322-bbdb-b7d43c6a692a",
+        "versionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:24:58.917Z",
-        "id": 2655,
+        "createdAt": "2026-09-23T13:37:30.185Z",
+        "id": 2714,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "de104ca3-e4ab-4322-bbdb-b7d43c6a692a",
+        "versionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

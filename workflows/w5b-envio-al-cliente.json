@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:34:33.670Z",
+  "updatedAt": "2026-09-23T13:37:23.286Z",
   "createdAt": "2026-09-11T18:19:42.906Z",
   "id": "XWBHgbmtBubA4gqx",
   "name": "[SUB] CCB - Workflow 5B - Envío al Cliente",
@@ -162,7 +162,8 @@
             "response": {
               "responseFormat": "file"
             }
-          }
+          },
+          "timeout": 60000
         }
       },
       "id": "w5b-descargar",
@@ -955,15 +956,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "a997eea5-f0c5-465f-a235-6f695cc4b1f9",
-  "activeVersionId": "a997eea5-f0c5-465f-a235-6f695cc4b1f9",
-  "versionCounter": 144,
+  "versionId": "015afe06-dc7e-414a-8a55-11e48594d4b0",
+  "activeVersionId": "015afe06-dc7e-414a-8a55-11e48594d4b0",
+  "versionCounter": 147,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:34:33.671Z",
-    "createdAt": "2026-09-23T13:34:33.671Z",
-    "versionId": "a997eea5-f0c5-465f-a235-6f695cc4b1f9",
+    "updatedAt": "2026-09-23T13:37:23.288Z",
+    "createdAt": "2026-09-23T13:37:23.288Z",
+    "versionId": "015afe06-dc7e-414a-8a55-11e48594d4b0",
     "workflowId": "XWBHgbmtBubA4gqx",
     "nodes": [
       {
@@ -1121,7 +1122,8 @@
               "response": {
                 "responseFormat": "file"
               }
-            }
+            },
+            "timeout": 60000
           }
         },
         "id": "w5b-descargar",
@@ -1908,18 +1910,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:34:33.719Z",
-        "id": 2705,
+        "createdAt": "2026-09-23T13:37:23.353Z",
+        "id": 2707,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "a997eea5-f0c5-465f-a235-6f695cc4b1f9",
+        "versionId": "015afe06-dc7e-414a-8a55-11e48594d4b0",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:34:33.751Z",
-        "id": 2706,
+        "createdAt": "2026-09-23T13:37:23.372Z",
+        "id": 2708,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "a997eea5-f0c5-465f-a235-6f695cc4b1f9",
+        "versionId": "015afe06-dc7e-414a-8a55-11e48594d4b0",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
