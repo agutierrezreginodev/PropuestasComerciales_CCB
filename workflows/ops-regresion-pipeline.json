@@ -1,0 +1,1374 @@
+{
+  "updatedAt": "2026-09-23T19:03:57.951Z",
+  "createdAt": "2026-09-23T18:53:35.700Z",
+  "id": "GVE3iNQ80y5Q9FEw",
+  "name": "[OPS] CCB - Regresión del pipeline",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 1,
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 6,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "name": "Schedule - Regresion semanal",
+      "position": [
+        -700,
+        0
+      ],
+      "id": "ac9ff61c-fa83-4935-b21e-2fbc19225f1f"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "name": "Trigger manual",
+      "position": [
+        -700,
+        160
+      ],
+      "id": "3c088edf-6f4b-42b0-9236-b4c055d22969"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Hgy02eqPhnsdJvkq",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "name": "Ejecutar Leer Configuracion",
+      "position": [
+        -480,
+        0
+      ],
+      "id": "04011ccd-5121-4285-8f78-9b22988ea8a6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filas de prueba de la regresion. Comparten 'servicio' para poder borrarlas de una sola vez.\n// Los ids son fijos: cada corrida reutiliza las mismas filas (upsert), la tabla no crece.\nconst casos = ['APROBAR', 'CANCELAR', 'REVISION', 'ERROR'];\nreturn casos.map((caso) => ({\n  json: {\n    id_solicitud: 'SOL-PRUEBA-REGRESION-' + caso,\n    servicio: 'SOL-PRUEBA-REGRESION',\n    total_registros: 100, valor: 100000, iva: 19000, valor_total: 119000,\n    estado: 'EN_REVISION', ronda_correccion: 0, comentario_fausto: '',\n  },\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar filas de prueba",
+      "position": [
+        -260,
+        0
+      ],
+      "id": "440e6ca5-7c75-40d7-ad20-074aaa166441"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id_solicitud"
+          ],
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "servicio": "={{ $json.servicio }}",
+            "total_registros": "={{ $json.total_registros }}",
+            "valor": "={{ $json.valor }}",
+            "iva": "={{ $json.iva }}",
+            "valor_total": "={{ $json.valor_total }}",
+            "estado": "={{ $json.estado }}",
+            "ronda_correccion": "={{ $json.ronda_correccion }}",
+            "comentario_fausto": "={{ $json.comentario_fausto }}"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Crear filas de prueba",
+      "position": [
+        -40,
+        0
+      ],
+      "id": "8063a5bf-f01c-45aa-bfcd-a112734b50b2"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { id_solicitud: 'SOL-PRUEBA-REGRESION-APROBAR', Comentario: 'Regresion: aprobacion automatica' } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar caso aprobar",
+      "position": [
+        180,
+        0
+      ],
+      "executeOnce": true,
+      "id": "57def854-fbeb-412d-a07b-e60b1bc47822"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "8j6BCwXkgJCccyO1",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - W4D Aprobar"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "name": "Ejecutar W4D Aprobar",
+      "position": [
+        400,
+        0
+      ],
+      "id": "4aef9592-b83f-43e3-bfda-1a2f284ae718"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { id_solicitud: 'SOL-PRUEBA-REGRESION-CANCELAR', Comentario: 'Regresion: cancelacion automatica' } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar caso cancelar",
+      "position": [
+        620,
+        0
+      ],
+      "executeOnce": true,
+      "id": "0d512798-5135-4e00-bae0-276d00b63955"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Jgf514VxDINJ8ra3",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - W4D Cancelar"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "name": "Ejecutar W4D Cancelar",
+      "position": [
+        840,
+        0
+      ],
+      "id": "6038f42d-ed06-44f6-badd-1ba9a608100d"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { id_solicitud: 'SOL-PRUEBA-REGRESION-REVISION', motivo: 'tope', Comentario: 'Regresion: tope de rondas' } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar caso revision manual",
+      "position": [
+        1060,
+        0
+      ],
+      "executeOnce": true,
+      "id": "bbe9d3f8-471f-464b-8ab5-b237f6723fb8"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "iNSErCHs2iw33emJ",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - W4D Revisión Manual"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "name": "Ejecutar W4D Revision Manual",
+      "position": [
+        1280,
+        0
+      ],
+      "id": "8539c561-09ac-48eb-b9cb-69f704fea68d"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-ERROR',\n  workflow_origen: 'Regresion del pipeline',\n  nodo_fallido: 'Nodo simulado de regresion',\n  mensaje_error: 'Caso de regresion: fallo simulado con correo pruebas@ejemplo.test y url http://interno/prueba',\n  subject: '[REGRESION] Caso de error simulado',\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar caso error",
+      "position": [
+        1500,
+        0
+      ],
+      "executeOnce": true,
+      "id": "bca9744e-7347-40d5-a905-2f7bc30054a2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "name": "Ejecutar Registrar y Alertar Error",
+      "position": [
+        1720,
+        0
+      ],
+      "id": "e4b3c12b-6886-488d-908e-1ad272e244c3"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "limit": 500
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Leer cotizaciones",
+      "position": [
+        1940,
+        0
+      ],
+      "id": "f786089c-b252-4f2c-a527-03e387efb222"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "limit": 500
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Leer errores",
+      "position": [
+        2160,
+        0
+      ],
+      "executeOnce": true,
+      "id": "517939f0-a165-4936-897a-6e801381fc9d"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Verifica el ESTADO real en las tablas (no lo que devolvieron los subflujos).\nconst leer = (nombre) => { try { return $(nombre).all().map((i) => i.json); } catch (e) { return []; } };\nconst cot = leer('Data Table - Leer cotizaciones');\nconst err = leer('Data Table - Leer errores');\nconst casos = [\n  { caso: 'aprobar',  id: 'SOL-PRUEBA-REGRESION-APROBAR',  esperado: 'APROBADA' },\n  { caso: 'cancelar', id: 'SOL-PRUEBA-REGRESION-CANCELAR', esperado: 'CANCELADA' },\n  { caso: 'revision', id: 'SOL-PRUEBA-REGRESION-REVISION', esperado: 'REVISION_MANUAL' },\n  { caso: 'error',    id: 'SOL-PRUEBA-REGRESION-ERROR',    esperado: 'fila en Errores_CCB con error_timestamp' },\n];\nconst filas = casos.map((c) => {\n  if (c.caso === 'error') {\n    const f = err.find((r) => r.id_solicitud === c.id) || {};\n    return { caso: c.caso, esperado: c.esperado, obtenido: f.error_timestamp ? 'fila con ' + f.error_timestamp : '(sin fila)', ok: !!f.error_timestamp };\n  }\n  const r = cot.find((x) => x.id_solicitud === c.id) || {};\n  return { caso: c.caso, esperado: c.esperado, obtenido: r.estado || '(sin fila)', ok: r.estado === c.esperado };\n});\nconst fallos = filas.filter((f) => !f.ok).length;\nconst resumen = filas.map((f) => (f.ok ? 'OK    ' : 'FALLO ') + f.caso + ': esperado ' + f.esperado + ' / obtenido ' + f.obtenido).join('\\n');\nreturn [{ json: {\n  metrica: 'regresion_pipeline',\n  valor: (filas.length - fallos) + '/' + filas.length,\n  unidad: 'casos ok',\n  estado: fallos === 0 ? 'ok' : 'FALLO',\n  actualizado_en: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss'),\n  filas, resumen,\n  subject: '[Regresion CCB] ' + (fallos === 0 ? 'ok' : 'FALLO') + ': ' + (filas.length - fallos) + '/' + filas.length + ' casos ok',\n  emailBody: '<p><b>Regresion del pipeline CCB</b></p><p>' + resumen.split('\\n').join('<br>') + '</p>',\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Comparar resultados",
+      "position": [
+        2380,
+        0
+      ],
+      "executeOnce": true,
+      "id": "6b2b390f-9741-44e1-bf58-c7094e90a10e"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "W3oJ4a8h0TAPO9ji",
+          "mode": "list",
+          "cachedResultName": "Metricas_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/W3oJ4a8h0TAPO9ji"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "metrica",
+              "keyValue": "={{ $json.metrica }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "metrica"
+          ],
+          "value": {
+            "metrica": "={{ $json.metrica }}",
+            "valor": "={{ $json.valor }}",
+            "unidad": "={{ $json.unidad }}",
+            "estado": "={{ $json.estado }}",
+            "actualizado_en": "={{ $json.actualizado_en }}"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Publicar semaforo",
+      "position": [
+        2600,
+        0
+      ],
+      "id": "4ba0c946-fee5-48de-947e-8ef661584402"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "servicio",
+              "keyValue": "SOL-PRUEBA-REGRESION"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Limpiar filas de prueba",
+      "position": [
+        2820,
+        0
+      ],
+      "id": "2652c8bf-2e05-468e-a0fd-006fa0a979dc"
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Ejecutar Leer Configuracion').first().json._config.alertas_email }}",
+        "subject": "={{ $json.subject }}",
+        "bodyContent": "={{ $('Comparar resultados').first().json.emailBody }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "sub-error-alerta",
+      "name": "Outlook - Enviar resumen de regresion",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        3040,
+        0
+      ],
+      "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "SOL-PRUEBA-REGRESION-ERROR"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Limpiar errores de prueba",
+      "position": [
+        2820,
+        200
+      ],
+      "id": "acd5d0d9-b05a-490f-90d3-5efe8654e5a3"
+    }
+  ],
+  "connections": {
+    "Schedule - Regresion semanal": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Leer Configuracion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger manual": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Leer Configuracion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Leer Configuracion": {
+      "main": [
+        [
+          {
+            "node": "Preparar filas de prueba",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar filas de prueba": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Crear filas de prueba",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Crear filas de prueba": {
+      "main": [
+        [
+          {
+            "node": "Preparar caso aprobar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar caso aprobar": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar W4D Aprobar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar W4D Aprobar": {
+      "main": [
+        [
+          {
+            "node": "Preparar caso cancelar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar caso cancelar": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar W4D Cancelar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar W4D Cancelar": {
+      "main": [
+        [
+          {
+            "node": "Preparar caso revision manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar caso revision manual": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar W4D Revision Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar W4D Revision Manual": {
+      "main": [
+        [
+          {
+            "node": "Preparar caso error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar caso error": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar y Alertar Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Registrar y Alertar Error": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer cotizaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer cotizaciones": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer errores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer errores": {
+      "main": [
+        [
+          {
+            "node": "Comparar resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comparar resultados": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Publicar semaforo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Publicar semaforo": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Limpiar filas de prueba",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Limpiar filas de prueba": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Limpiar errores de prueba",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Limpiar errores de prueba": {
+      "main": [
+        [
+          {
+            "node": "Outlook - Enviar resumen de regresion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule - Regresion semanal": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "2ecfa1a5-0920-4272-a2ca-f2f4c8e39c39",
+  "activeVersionId": "2ecfa1a5-0920-4272-a2ca-f2f4c8e39c39",
+  "versionCounter": 18,
+  "triggerCount": 1,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T19:02:01.167Z",
+    "createdAt": "2026-09-23T19:02:01.167Z",
+    "versionId": "2ecfa1a5-0920-4272-a2ca-f2f4c8e39c39",
+    "workflowId": "GVE3iNQ80y5Q9FEw",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "weeks",
+                "weeksInterval": 1,
+                "triggerAtDay": [
+                  1
+                ],
+                "triggerAtHour": 6,
+                "triggerAtMinute": 0
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "name": "Schedule - Regresion semanal",
+        "position": [
+          -700,
+          0
+        ],
+        "id": "ac9ff61c-fa83-4935-b21e-2fbc19225f1f"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "name": "Trigger manual",
+        "position": [
+          -700,
+          160
+        ],
+        "id": "3c088edf-6f4b-42b0-9236-b4c055d22969"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Hgy02eqPhnsdJvkq",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "name": "Ejecutar Leer Configuracion",
+        "position": [
+          -480,
+          0
+        ],
+        "id": "04011ccd-5121-4285-8f78-9b22988ea8a6"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Filas de prueba de la regresion. Comparten 'servicio' para poder borrarlas de una sola vez.\n// Los ids son fijos: cada corrida reutiliza las mismas filas (upsert), la tabla no crece.\nconst casos = ['APROBAR', 'CANCELAR', 'REVISION', 'ERROR'];\nreturn casos.map((caso) => ({\n  json: {\n    id_solicitud: 'SOL-PRUEBA-REGRESION-' + caso,\n    servicio: 'SOL-PRUEBA-REGRESION',\n    total_registros: 100, valor: 100000, iva: 19000, valor_total: 119000,\n    estado: 'EN_REVISION', ronda_correccion: 0, comentario_fausto: '',\n  },\n}));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar filas de prueba",
+        "position": [
+          -260,
+          0
+        ],
+        "id": "440e6ca5-7c75-40d7-ad20-074aaa166441"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "id_solicitud"
+            ],
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "servicio": "={{ $json.servicio }}",
+              "total_registros": "={{ $json.total_registros }}",
+              "valor": "={{ $json.valor }}",
+              "iva": "={{ $json.iva }}",
+              "valor_total": "={{ $json.valor_total }}",
+              "estado": "={{ $json.estado }}",
+              "ronda_correccion": "={{ $json.ronda_correccion }}",
+              "comentario_fausto": "={{ $json.comentario_fausto }}"
+            }
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Crear filas de prueba",
+        "position": [
+          -40,
+          0
+        ],
+        "id": "8063a5bf-f01c-45aa-bfcd-a112734b50b2"
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { id_solicitud: 'SOL-PRUEBA-REGRESION-APROBAR', Comentario: 'Regresion: aprobacion automatica' } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar caso aprobar",
+        "position": [
+          180,
+          0
+        ],
+        "executeOnce": true,
+        "id": "57def854-fbeb-412d-a07b-e60b1bc47822"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "8j6BCwXkgJCccyO1",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - W4D Aprobar"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "name": "Ejecutar W4D Aprobar",
+        "position": [
+          400,
+          0
+        ],
+        "id": "4aef9592-b83f-43e3-bfda-1a2f284ae718"
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { id_solicitud: 'SOL-PRUEBA-REGRESION-CANCELAR', Comentario: 'Regresion: cancelacion automatica' } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar caso cancelar",
+        "position": [
+          620,
+          0
+        ],
+        "executeOnce": true,
+        "id": "0d512798-5135-4e00-bae0-276d00b63955"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Jgf514VxDINJ8ra3",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - W4D Cancelar"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "name": "Ejecutar W4D Cancelar",
+        "position": [
+          840,
+          0
+        ],
+        "id": "6038f42d-ed06-44f6-badd-1ba9a608100d"
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: { id_solicitud: 'SOL-PRUEBA-REGRESION-REVISION', motivo: 'tope', Comentario: 'Regresion: tope de rondas' } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar caso revision manual",
+        "position": [
+          1060,
+          0
+        ],
+        "executeOnce": true,
+        "id": "bbe9d3f8-471f-464b-8ab5-b237f6723fb8"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "iNSErCHs2iw33emJ",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - W4D Revisión Manual"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "name": "Ejecutar W4D Revision Manual",
+        "position": [
+          1280,
+          0
+        ],
+        "id": "8539c561-09ac-48eb-b9cb-69f704fea68d"
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-ERROR',\n  workflow_origen: 'Regresion del pipeline',\n  nodo_fallido: 'Nodo simulado de regresion',\n  mensaje_error: 'Caso de regresion: fallo simulado con correo pruebas@ejemplo.test y url http://interno/prueba',\n  subject: '[REGRESION] Caso de error simulado',\n} }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar caso error",
+        "position": [
+          1500,
+          0
+        ],
+        "executeOnce": true,
+        "id": "bca9744e-7347-40d5-a905-2f7bc30054a2"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "name": "Ejecutar Registrar y Alertar Error",
+        "position": [
+          1720,
+          0
+        ],
+        "id": "e4b3c12b-6886-488d-908e-1ad272e244c3"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "limit": 500
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Leer cotizaciones",
+        "position": [
+          1940,
+          0
+        ],
+        "id": "f786089c-b252-4f2c-a527-03e387efb222"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "limit": 500
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Leer errores",
+        "position": [
+          2160,
+          0
+        ],
+        "executeOnce": true,
+        "id": "517939f0-a165-4936-897a-6e801381fc9d"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Verifica el ESTADO real en las tablas (no lo que devolvieron los subflujos).\nconst leer = (nombre) => { try { return $(nombre).all().map((i) => i.json); } catch (e) { return []; } };\nconst cot = leer('Data Table - Leer cotizaciones');\nconst err = leer('Data Table - Leer errores');\nconst casos = [\n  { caso: 'aprobar',  id: 'SOL-PRUEBA-REGRESION-APROBAR',  esperado: 'APROBADA' },\n  { caso: 'cancelar', id: 'SOL-PRUEBA-REGRESION-CANCELAR', esperado: 'CANCELADA' },\n  { caso: 'revision', id: 'SOL-PRUEBA-REGRESION-REVISION', esperado: 'REVISION_MANUAL' },\n  { caso: 'error',    id: 'SOL-PRUEBA-REGRESION-ERROR',    esperado: 'fila en Errores_CCB con error_timestamp' },\n];\nconst filas = casos.map((c) => {\n  if (c.caso === 'error') {\n    const f = err.find((r) => r.id_solicitud === c.id) || {};\n    return { caso: c.caso, esperado: c.esperado, obtenido: f.error_timestamp ? 'fila con ' + f.error_timestamp : '(sin fila)', ok: !!f.error_timestamp };\n  }\n  const r = cot.find((x) => x.id_solicitud === c.id) || {};\n  return { caso: c.caso, esperado: c.esperado, obtenido: r.estado || '(sin fila)', ok: r.estado === c.esperado };\n});\nconst fallos = filas.filter((f) => !f.ok).length;\nconst resumen = filas.map((f) => (f.ok ? 'OK    ' : 'FALLO ') + f.caso + ': esperado ' + f.esperado + ' / obtenido ' + f.obtenido).join('\\n');\nreturn [{ json: {\n  metrica: 'regresion_pipeline',\n  valor: (filas.length - fallos) + '/' + filas.length,\n  unidad: 'casos ok',\n  estado: fallos === 0 ? 'ok' : 'FALLO',\n  actualizado_en: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss'),\n  filas, resumen,\n  subject: '[Regresion CCB] ' + (fallos === 0 ? 'ok' : 'FALLO') + ': ' + (filas.length - fallos) + '/' + filas.length + ' casos ok',\n  emailBody: '<p><b>Regresion del pipeline CCB</b></p><p>' + resumen.split('\\n').join('<br>') + '</p>',\n} }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Comparar resultados",
+        "position": [
+          2380,
+          0
+        ],
+        "executeOnce": true,
+        "id": "6b2b390f-9741-44e1-bf58-c7094e90a10e"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "W3oJ4a8h0TAPO9ji",
+            "mode": "list",
+            "cachedResultName": "Metricas_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/W3oJ4a8h0TAPO9ji"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "metrica",
+                "keyValue": "={{ $json.metrica }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "metrica"
+            ],
+            "value": {
+              "metrica": "={{ $json.metrica }}",
+              "valor": "={{ $json.valor }}",
+              "unidad": "={{ $json.unidad }}",
+              "estado": "={{ $json.estado }}",
+              "actualizado_en": "={{ $json.actualizado_en }}"
+            }
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Publicar semaforo",
+        "position": [
+          2600,
+          0
+        ],
+        "id": "4ba0c946-fee5-48de-947e-8ef661584402"
+      },
+      {
+        "parameters": {
+          "operation": "deleteRows",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "servicio",
+                "keyValue": "SOL-PRUEBA-REGRESION"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Limpiar filas de prueba",
+        "position": [
+          2820,
+          0
+        ],
+        "id": "2652c8bf-2e05-468e-a0fd-006fa0a979dc"
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $('Ejecutar Leer Configuracion').first().json._config.alertas_email }}",
+          "subject": "={{ $json.subject }}",
+          "bodyContent": "={{ $('Comparar resultados').first().json.emailBody }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "sub-error-alerta",
+        "name": "Outlook - Enviar resumen de regresion",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          3040,
+          0
+        ],
+        "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "deleteRows",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "SOL-PRUEBA-REGRESION-ERROR"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Limpiar errores de prueba",
+        "position": [
+          2820,
+          200
+        ],
+        "id": "acd5d0d9-b05a-490f-90d3-5efe8654e5a3"
+      }
+    ],
+    "connections": {
+      "Schedule - Regresion semanal": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Leer Configuracion",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Trigger manual": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Leer Configuracion",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Leer Configuracion": {
+        "main": [
+          [
+            {
+              "node": "Preparar filas de prueba",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar filas de prueba": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Crear filas de prueba",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Crear filas de prueba": {
+        "main": [
+          [
+            {
+              "node": "Preparar caso aprobar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar caso aprobar": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar W4D Aprobar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar W4D Aprobar": {
+        "main": [
+          [
+            {
+              "node": "Preparar caso cancelar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar caso cancelar": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar W4D Cancelar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar W4D Cancelar": {
+        "main": [
+          [
+            {
+              "node": "Preparar caso revision manual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar caso revision manual": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar W4D Revision Manual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar W4D Revision Manual": {
+        "main": [
+          [
+            {
+              "node": "Preparar caso error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar caso error": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar y Alertar Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Registrar y Alertar Error": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer cotizaciones",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer cotizaciones": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer errores",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer errores": {
+        "main": [
+          [
+            {
+              "node": "Comparar resultados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Comparar resultados": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Publicar semaforo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Publicar semaforo": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Limpiar filas de prueba",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Limpiar filas de prueba": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Limpiar errores de prueba",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Limpiar errores de prueba": {
+        "main": [
+          [
+            {
+              "node": "Outlook - Enviar resumen de regresion",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T19:02:01.265Z",
+        "id": 2966,
+        "workflowId": "GVE3iNQ80y5Q9FEw",
+        "versionId": "2ecfa1a5-0920-4272-a2ca-f2f4c8e39c39",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T19:02:01.295Z",
+        "id": 2967,
+        "workflowId": "GVE3iNQ80y5Q9FEw",
+        "versionId": "2ecfa1a5-0920-4272-a2ca-f2f4c8e39c39",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T19:03:58.012Z",
+        "id": 2968,
+        "workflowId": "GVE3iNQ80y5Q9FEw",
+        "versionId": "2ecfa1a5-0920-4272-a2ca-f2f4c8e39c39",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T19:03:58.033Z",
+        "id": 2969,
+        "workflowId": "GVE3iNQ80y5Q9FEw",
+        "versionId": "2ecfa1a5-0920-4272-a2ca-f2f4c8e39c39",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

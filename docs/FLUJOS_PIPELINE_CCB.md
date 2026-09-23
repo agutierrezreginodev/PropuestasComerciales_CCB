@@ -276,6 +276,43 @@ de configuración, de `Errores_CCB` (que alimentan los 8 flujos que registran er
 
 ---
 
+## 9.bis `[OPS] CCB - Regresión del pipeline`
+**ID:** `GVE3iNQ80y5Q9FEw` · **Nodos:** 20 · **Plan:** R3 (feature `regresion-y-documentacion-ccb`)
+
+**Por qué se creó.** La re-auditoría dejó *Testing* como la dimensión más baja (11,7/15): todo se verificaba a mano y
+cada cambio exigía repetir el procedimiento completo. Este flujo convierte esa verificación en una **prueba de regresión
+repetible**: en un clic (o sola, cada lunes) recorre los caminos críticos y publica un semáforo.
+
+**Cómo funciona.** Se dispara **a mano** (`Trigger manual`) o **sola los lunes a las 6:00** (`Schedule - Regresión
+semanal`). En orden:
+
+1. `Ejecutar Leer Configuracion` (el subflujo de configuración: de ahí sale el destinatario del resumen).
+2. `Preparar filas de prueba` + `Data Table - Crear filas de prueba`: crea **cuatro filas descartables** en
+   `Cotizaciones_CCB` con ids fijos (`SOL-PRUEBA-REGRESION-APROBAR`, `-CANCELAR`, `-REVISION`, `-ERROR`) y
+   `servicio = SOL-PRUEBA-REGRESION`. Los ids son fijos a propósito: cada corrida **reutiliza** las mismas filas (upsert),
+   así la tabla no crece.
+3. Cuatro casos en cadena, cada uno con su nodo de preparación y su subflujo real:
+   `W4D Aprobar` (espera `APROBADA`) → `W4D Cancelar` (espera `CANCELADA`) → `W4D Revisión Manual` con motivo `tope`
+   (espera `REVISION_MANUAL`) → `Registrar y Alertar Error` (espera una fila en `Errores_CCB` con `error_timestamp`).
+4. `Data Table - Leer cotizaciones` + `Data Table - Leer errores` y `Comparar resultados`: **verifica el estado real en
+   las tablas**, no lo que devolvieron los subflujos (así se detecta una regresión en el mapeo de un `update`).
+5. `Data Table - Publicar semaforo`: publica el resultado en `Metricas_CCB` como la métrica `regresion_pipeline`
+   (`valor` = casos ok, `estado` = `ok`/`FALLO`), visible junto a las demás métricas.
+6. `Data Table - Limpiar filas de prueba` y `Data Table - Limpiar errores de prueba`: borra **sus propias filas** de las
+   dos tablas (la de error también, para no ensuciar la métrica de errores del monitor).
+7. `Outlook - Enviar resumen de regresion`: manda el semáforo con el detalle caso por caso.
+
+**Detalle técnico.** La operación de borrado del nodo *Data Table* se llama **`deleteRows`** (la documentación la
+etiqueta "Delete", pero el valor interno es `deleteRows`; con `delete` el nodo falla con
+`Cannot read properties of undefined (reading 'execute')`). Los nodos de preparación y comparación usan `executeOnce`
+para que cada caso corra **una sola vez** aunque los nodos de lectura devuelvan muchas filas.
+
+**Relaciones.** No procesa propuestas reales: **prueba** los flujos. Llama a los subflujos de configuración, de error y a
+tres ramas de W4D; escribe y borra en `Cotizaciones_CCB` y `Errores_CCB`; publica en `Metricas_CCB` y avisa al correo de
+`alertas_email`. Los ids `SOL-PRUEBA-REGRESION-*` son la marca para reconocer sus filas.
+
+---
+
 ## 10. El catch-all (flujo original que **no** se migró)
 **ID:** `Dh2lAQtzyoZBpXie` · 6 nodos
 
@@ -305,4 +342,5 @@ W1/W2A/W4A/W4B/W4D/W5A/W5B/W6 ──> [SUB] CCB - Registrar y Alertar Error
 W2A ──> [SUB] CCB - Invocar Motor y Guardar Cotización ──> W3
 [OPS] CCB - Monitoreo del pipeline ──> lee todo el pipeline ───┘
 catch-all ──> recibe los fallos no capturados de los 11 flujos activos
+[OPS] CCB - Regresion del pipeline ──> prueba los subflujos de error y tres ramas de W4D, y escribe/borra sus propias filas de prueba
 ```
