@@ -78,7 +78,7 @@ La distancia es de **2,3 puntos**, y está concentrada en dos dimensiones:
 
 | Camino | Dimensión | Qué haría falta | Impacto estimado |
 |---|---|---|---|
-| Cerrar las verificaciones pendientes con tráfico real | Testing | Corrida de punta a punta de las ramas de error de los 8 flujos que usan el subflujo compartido; rechazo/expiración de la aprobación de IA; y **una suite de regresión** (aunque sea un flujo de prueba que recorra los caminos críticos) | +2 a +3 |
+| Cerrar las verificaciones pendientes con tráfico real ([procedimiento](TESTING_PIPELINE_CCB.md)) | Testing | Corrida de punta a punta de las ramas de error de los 8 flujos que usan el subflujo compartido; rechazo/expiración de la aprobación de IA; y **una suite de regresión** (aunque sea un flujo de prueba que recorra los caminos críticos) | +2 a +3 |
 | Poda de ejecuciones a nivel de instancia | Observabilidad | `EXECUTIONS_DATA_PRUNE` / `MAX_AGE` (Tecnología). La retención **por flujo** ya está aplicada | +0,5 a +1 |
 | Credencial y cierre de `/metrics` | Seguridad | Credencial Header Auth creada en la UI (para la métrica por flujo exacta) y cerrar o restringir `/metrics`; tokens de los front-ends fuera del código | +0,5 a +1 |
 

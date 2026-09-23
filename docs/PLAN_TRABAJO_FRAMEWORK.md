@@ -12,6 +12,7 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 - Una tarea **no se da por hecha sin su verificación**. La columna *Cómo se verifica* dice exactamente qué comprobar; no alcanza con "lo cambié".
 - Al cerrar cada fase se repite el procedimiento de evaluación del informe de auditoría, se re-exporta con `scripts/export_workflows.py` y se anota el puntaje nuevo en la tabla de seguimiento.
 - **Regla de oro:** ningún cambio se da por bueno sin ejecutar el flujo afectado al menos una vez de punta a punta.
+- **Cómo se prueba:** el procedimiento completo (niveles, datos descartables, evidencia y checklist) está en [`TESTING_PIPELINE_CCB.md`](TESTING_PIPELINE_CCB.md).
 
 **Leyenda de esfuerzo:** ▪ ≤30 min · ▪▪ 1–3 h · ▪▪▪ más de medio día.
 
