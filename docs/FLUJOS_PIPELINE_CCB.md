@@ -154,7 +154,33 @@ W5B (`id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error`, `emailB
 
 ---
 
-## 7. Los cinco subflujos de rama de W4D
+## 7. `[SUB] CCB - Invocar Motor y Guardar Cotización`
+**ID:** `MHWlUApSFT6gpBHs` · **Nodos:** 10 · **Plan:** F4-03 (W2A pasó de 25 a **19 nodos**)
+
+**Por qué se creó.** W2-A (guardar criterios y cotizar) tenía 25 nodos: además de leer y validar el formulario, guardaba
+los criterios por servicio, invocaba el motor de cálculo y guardaba la cotización. El tramo "motor + guardado" se extrajo
+para dejarlo bajo el umbral del framework.
+
+**Cómo funciona.** Recibe el item con los criterios ya preparados por W2-A (`Preparar criterios para motor - …`),
+invoca el motor (`Ejecutar motor` → W3), **restaura `id_solicitud`** (W3 no lo reenvía en su salida, así que se recupera
+del item del llamador) y evalúa `IF - Motor Retornó OK`:
+
+- **El motor calculó** → `Data Table - Guardar Cotización` (upsert por `id_solicitud`) → `Return - Cotización generada`
+  devuelve la respuesta lista para el formulario.
+- **El motor rechazó el cálculo o lanzó una excepción** → `Preparar error - Motor rechazó la propuesta` (distingue
+  excepción de rechazo) → `[SUB] CCB - Registrar y Alertar Error` → `Return - Error (motor)`.
+- **Falló el guardado** → `Preparar error - Guardado de cotización` → `[SUB] CCB - Registrar y Alertar Error` →
+  `Return - Error (motor)`.
+
+Devuelve el item de respuesta en los tres casos, así que el flujo llamador no necesita enrutar el resultado.
+
+**Relaciones.** Lo llama **W2-A** (`Ejecutar Invocar Motor y Guardar Cotización`, alimentado por los cuatro
+`Preparar criterios para motor - …`); llama a **W3** (motor de cálculo) y a `[SUB] CCB - Registrar y Alertar Error`.
+Las ramas de error de validación de entrada y de guardado de criterios siguen viviendo en W2-A.
+
+---
+
+## 8. Los cinco subflujos de rama de W4D
 **Plan:** F4-03 (partir un lienzo de 54 nodos en un router + una rama por decisión)
 
 W4D recibía la decisión del asesor (aprobar / cancelar / solicitar correcciones) en un solo lienzo de 54 nodos.
@@ -162,16 +188,16 @@ Ahora W4D es un **router de 20 nodos** y cada rama vive en su propio subflujo. L
 preservan: **400** `{ok:false, error}` cuando la decisión no se reconoce antes de leer la base, **200**
 `{ok:false, mensaje}` cuando no se reconoce después.
 
-### 7.1 `[SUB] CCB - W4D Aprobar` — `8j6BCwXkgJCccyO1` · 3 nodos
+### 8.1 `[SUB] CCB - W4D Aprobar` — `8j6BCwXkgJCccyO1` · 3 nodos
 **Por qué:** la rama "aprobar" eran dos nodos dentro del lienzo gigante. **Cómo funciona:** recibe el item consolidado,
 `Data Table - Marcar APROBADA` (estado + comentario del asesor) y `Confirmar aprobación` devuelve el mensaje de
 confirmación que el router responde al asesor. **Relaciones:** lo llama W4D (`Ejecutar Aprobar`); el resultado vuelve por
 `Responder decisión`.
 
-### 7.2 `[SUB] CCB - W4D Cancelar` — `Jgf514VxDINJ8ra3` · 3 nodos
+### 8.2 `[SUB] CCB - W4D Cancelar` — `Jgf514VxDINJ8ra3` · 3 nodos
 **Por qué / cómo / relaciones:** idéntico al anterior pero marca `CANCELADA` (`Ejecutar Cancelar`).
 
-### 7.3 `[SUB] CCB - W4D Revisión Manual` — `iNSErCHs2iw33emJ` · 6 nodos
+### 8.3 `[SUB] CCB - W4D Revisión Manual` — `iNSErCHs2iw33emJ` · 6 nodos
 **Por qué:** había **dos** cadenas casi iguales de "marcar `REVISION_MANUAL` + avisar" (tope de rondas y corrección no
 aplicada por confianza baja o IA desactivada). Se unificaron en un subflujo que calcula el **motivo** y arma el aviso:
 `Preparar aviso - Revisión manual` → `Data Table - Marcar REVISION_MANUAL` (`alwaysOutputData`: el aviso sale aunque la
@@ -180,7 +206,7 @@ el item) → `Confirmar aviso - Revisión manual`. **Motivos soportados:** `tope
 `confianza_baja` y `aprobacion_rechazada`. **Ninguno consume una ronda de corrección.** El nombre y la razón social del
 cliente salen **parciales** (F6-03) y el comentario del asesor se enmascara. **Relaciones:** lo llama C1 (tres caminos).
 
-### 7.4 `[SUB] CCB - W4D Corrección IA` — `3NAcLF4jaZ1JBw0A` · 18 nodos
+### 8.4 `[SUB] CCB - W4D Corrección IA` — `3NAcLF4jaZ1JBw0A` · 18 nodos
 **Por qué:** concentra todo el camino "solicitar correcciones": los guardarraíles de IA, el ajuste con el modelo, la
 re-invocación del motor y el traspaso al cierre. **Cómo funciona, en orden:**
 1. `Ejecutar Leer Configuración` (interruptor `ia_correccion_habilitada`, chat de aprobación, URL de revisión).
@@ -205,7 +231,7 @@ re-invocación del motor y el traspaso al cierre. **Cómo funciona, en orden:**
 **Relaciones:** lo llama W4D (`Ejecutar Corrección IA`) **después de responderle al asesor** (ver más abajo); llama a
 W3 por medio de `Re-invocar motor`, al subflujo de Revisión Manual y al subflujo de Cierre de Corrección.
 
-### 7.5 `[SUB] CCB - W4D Cierre de Corrección` — `POeFkqQp8e4cGfY3` · 17 nodos
+### 8.5 `[SUB] CCB - W4D Cierre de Corrección` — `POeFkqQp8e4cGfY3` · 17 nodos
 **Por qué:** todo lo que pasa **después** del recálculo (verificar el resultado, guardar la ronda, avisar por Teams y
 manejar los dos fallos posibles) estaba mezclado con el resto del camino de correcciones.
 **Cómo funciona:** `IF - ¿Recálculo exitoso (ok)?` → si fue bien: `Data Table - Releer cotización` →
@@ -217,7 +243,7 @@ lanzó una excepción: `Preparar error - Recálculo falló` → `Data Table - Ma
 `Preparar error - Teams envío` → registra en `Errores_CCB` → confirma igual (el asesor no queda sin respuesta).
 **Relaciones:** lo llama C1; llama al subflujo de error y usa la configuración para el chat de Teams y la URL de revisión.
 
-### 7.6 W4D como router (el flujo que los orquesta)
+### 8.6 W4D como router (el flujo que los orquesta)
 **Por qué:** era un lienzo de 54 nodos (muy por encima del umbral). **Cómo funciona hoy (20 nodos):**
 webhook autenticado (`X-CCB-Auth`) → `Extraer decisión del body` → `Validar decisión reconocida`
 (rechazo temprano **400**) → `Ejecutar Leer Contexto Propuesta` → `Consolidar datos y decisión` → tres IF en cascada →
@@ -227,7 +253,7 @@ esperar la aprobación humana, para que la página de revisión no quede colgada
 
 ---
 
-## 8. `[OPS] CCB - Monitoreo del pipeline`
+## 9. `[OPS] CCB - Monitoreo del pipeline`
 **ID:** `ZwBFTBhwS9pjS69X` · **Nodos:** 10 · **Plan:** F6-05
 
 **Por qué se creó.** El framework pide monitorear cuatro métricas (tasa de ejecución, tasa de error por flujo con umbral
@@ -249,7 +275,7 @@ de configuración, de `Errores_CCB` (que alimentan los 8 flujos que registran er
 
 ---
 
-## 9. El catch-all (flujo original que **no** se migró)
+## 10. El catch-all (flujo original que **no** se migró)
 **ID:** `Dh2lAQtzyoZBpXie` · 6 nodos
 
 Es el `errorWorkflow` centralizado de los 11 flujos activos. Se evaluó migrarlo al subflujo compartido de error y la
@@ -260,7 +286,7 @@ marca de tiempo, enmascarado del mensaje y reintentos en el envío del correo.
 
 ---
 
-## 10. Mapa de dependencias (quién llama a quién)
+## 11. Mapa de dependencias (quién llama a quién)
 
 ```
 W4D (router) ──> [SUB] CCB - W4D Aprobar / Cancelar / Revisión Manual
@@ -275,6 +301,7 @@ W4B/W4C/W4D/W5B ──> [SUB] CCB - Leer Contexto Propuesta
 W5B ──> [SUB] CCB - Enviar propuesta al cliente ──> [SUB] CCB - Cerrar envío
 W5B ──> [SUB] CCB - Cerrar error de envío ──> [SUB] CCB - Registrar y Alertar Error           │
 W1/W2A/W4A/W4B/W4D/W5A/W5B/W6 ──> [SUB] CCB - Registrar y Alertar Error
+W2A ──> [SUB] CCB - Invocar Motor y Guardar Cotización ──> W3
 [OPS] CCB - Monitoreo del pipeline ──> lee todo el pipeline ───┘
 catch-all ──> recibe los fallos no capturados de los 11 flujos activos
 ```

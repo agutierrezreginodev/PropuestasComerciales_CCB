@@ -33,7 +33,7 @@
 | **Seguridad (sin valores incrustados)** | ⚠️ 2/11 | ✅ **11/11** — correo de alertas, correo/nombre del asesor, URL del microservicio y chatId salen de `Configuracion_CCB` |
 | **Idempotencia** | ⚠️ 6/11 | ⚠️ 6/11 (sin cambios: cubierta por upsert en los puntos de escritura y por el subflujo de error) |
 | **Resiliencia (retry)** | ⚠️ en mejora | ✅ 11/11 en nodos de red de negocio (5×5000) + timeout explícito en los dos nodos HTTP |
-| **Arquitectura (≤20 nodos)** | ⚠️ 6/11 | ✅ **9/11** — W4D 54→**19** (F4-03); siguen sobre el umbral solo W2A (26) y W5B (26), que no estaban contemplados en el plan |
+| **Arquitectura (≤20 nodos)** | ⚠️ 6/11 | ✅ **11/11** — W4D 54→**19** (F4-03); **ningún flujo activo supera los 20 nodos** (W2A 25→19, W5B 25→19, W4D 54→19, W3 25→17) |
 | Control de versiones | ✅ 13/13 | ✅ 17/17 workflows versionados en el snapshot |
 
 ## 3. Artefactos nuevos (23/09)
