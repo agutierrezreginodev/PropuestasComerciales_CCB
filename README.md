@@ -111,7 +111,7 @@ Además, el bloque `shared` que n8n incluye en cada export (metadata de propieda
 
 **Qué NO se anonimizó (a propósito):** IDs de workflow, IDs de Data Table, ID del proyecto de n8n, IDs y nombres de credenciales. Son identificadores internos de n8n, no secretos explotables por sí solos, y modificarlos habría roto el valor del snapshot como respaldo fiel de lo que corre en producción. Tampoco se tocó la columna `comentario_fausto` de una Data Table: es un nombre de campo del esquema de datos, y renombrarlo en el snapshot lo dejaría inconsistente con la base real.
 
-**Mantenimiento:** el proceso está automatizado en [`scripts/export_workflows.py`](scripts/export_workflows.py). Exporta los 22 workflows desde la instancia, elimina el bloque `shared`, aplica exactamente la tabla de reemplazos de arriba y **termina con código de error si sobrevive algún correo fuera de los dominios de reemplazo**, para que una fuga no pueda colarse en un commit sin que nadie lo note.
+**Mantenimiento:** el proceso está automatizado en [`scripts/export_workflows.py`](scripts/export_workflows.py). Exporta los 23 workflows desde la instancia, elimina el bloque `shared`, aplica exactamente la tabla de reemplazos de arriba y **termina con código de error si sobrevive algún correo fuera de los dominios de reemplazo**, para que una fuga no pueda colarse en un commit sin que nadie lo note.
 
 ```bash
 N8N_API_URL="https://<instancia>" N8N_API_KEY="<clave>" python3 scripts/export_workflows.py
