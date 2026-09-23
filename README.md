@@ -87,6 +87,7 @@ Todo el detalle de casos de prueba (matriz completa de cobertura, evidencia de c
 
 Los 12 workflows se evaluaron contra el marco *Arquitectura e Ingeniería de Automatización en n8n* (rúbrica ponderada de 6 dimensiones sobre 100 puntos y lista de comprobación de 11 requisitos de despliegue).
 
+- **[Re-auditoría (2026-09-23)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md)** — promedio **87,7/100** (16/09: 53,6 · 22/09: 67,3), ficha por flujo contra las 6 dimensiones y lo que falta para cruzar el umbral de 90.
 - **[Informe de auditoría (2026-09-16)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-16.md)** — procedimiento reproducible paso a paso, resultado consolidado, desglose por dimensión y ficha por flujo con lo que cumple, lo que no y sus pendientes.
 - **[Plan de remediación](docs/PLAN_REMEDIACION.md)** — la estrategia: las 8 fases para pasar de 53,6 a ≥90/100, con ganancia estimada, esfuerzo y dependencias externas.
 - **[Estado de progreso (2026-09-23)](docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md)**

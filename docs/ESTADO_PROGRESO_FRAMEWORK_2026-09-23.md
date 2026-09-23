@@ -5,7 +5,7 @@
 **Repo:** `ccb-workflows-git` (público, `agutierrezreginodev/PropuestasComerciales_CCB`)
 **Documentos relacionados:** [`PLAN_TRABAJO_FRAMEWORK.md`](PLAN_TRABAJO_FRAMEWORK.md) (tablero de ejecución), [`AUDITORIA_BUENAS_PRACTICAS_2026-09-22.md`](AUDITORIA_BUENAS_PRACTICAS_2026-09-22.md) (última evaluación completa), [`ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md) (estado anterior).
 
-> **Sobre el puntaje:** este documento **no publica un promedio nuevo**. La evaluación numérica exige repetir el procedimiento de la auditoría (ficha por flujo contra las 6 dimensiones) y queda como tarea de cierre pendiente. Lo que sí se registra acá es qué tareas del plan se cerraron, con su evidencia, y el estado verificable de la lista de comprobación.
+> **Sobre el puntaje:** la re-auditoría numérica **ya está publicada** en [AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md): **promedio 87,7/100** (16/09: 53,6 → 22/09: 67,3 → 23/09: 87,7), con W4D en 92 y W5B en 90, y **10 de 11 requisitos cumplidos**. Acá se registra el estado por fase y los pendientes.
 
 ---
 
