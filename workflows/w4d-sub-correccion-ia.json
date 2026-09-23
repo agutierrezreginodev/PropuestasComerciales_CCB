@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T15:35:07.742Z",
+  "updatedAt": "2026-09-23T15:48:14.275Z",
   "createdAt": "2026-09-23T14:17:58.025Z",
   "id": "3NAcLF4jaZ1JBw0A",
   "name": "[SUB] - CCB - W4D Corrección IA",
@@ -359,7 +359,7 @@
           "mode": "id",
           "value": "={{ $('Ejecutar Leer Configuración').first().json._config.teams_chat_aprobacion }}"
         },
-        "message": "={{ '⚠️ *Aprobación requerida — corrección de propuesta*\\n\\n'\n  + 'Solicitud: ' + $json.id_solicitud + '\\n'\n  + 'Servicio: ' + ($json.servicio || '-') + '\\n\\n'\n  + '*Pedido del asesor:* ' + ($json.comentario || '(sin comentario)') + '\\n\\n'\n  + '*Ajuste propuesto por la IA:* ' + ($json.resumen_cambios || '(sin resumen)') + '\\n\\n'\n  + 'Si aprobás, el motor recalcula y se consume una ronda de corrección. Si rechazás o no respondés, la propuesta queda en revisión manual y no se consume ronda.' }}",
+        "message": "={{ '⚠️ *Aprobación requerida — corrección de propuesta*\\n\\n'\n  + 'Solicitud: ' + $json.id_solicitud + '\\n'\n  + 'Servicio: ' + ($json.servicio || '-') + '\\n\\n'\n  + '*Pedido del asesor:* ' + ($json.comentario || '(sin comentario)') + '\\n\\n'\n  + '*Ajuste propuesto por la IA:* ' + ($json.resumen_cambios || '(sin resumen)') + '\\n\\n'\n  + '👉 Revisá la propuesta y decidí: '\n  + ($('Ejecutar Leer Configuración').first().json._config.revision_url || '') + '/?id_solicitud=' + $json.id_solicitud + '\\n\\n'\n  + 'Si aprobás, el motor recalcula y se consume una ronda. Si rechazás o no respondés, la propuesta queda en revisión manual y no se consume ronda.' }}",
         "approvalOptions": {
           "values": {
             "approvalType": "double"
@@ -669,15 +669,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
-  "activeVersionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
-  "versionCounter": 7,
+  "versionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
+  "activeVersionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:35:07.746Z",
-    "createdAt": "2026-09-23T15:35:07.746Z",
-    "versionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
+    "updatedAt": "2026-09-23T15:48:14.276Z",
+    "createdAt": "2026-09-23T15:48:14.276Z",
+    "versionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
     "workflowId": "3NAcLF4jaZ1JBw0A",
     "nodes": [
       {
@@ -1032,7 +1032,7 @@
             "mode": "id",
             "value": "={{ $('Ejecutar Leer Configuración').first().json._config.teams_chat_aprobacion }}"
           },
-          "message": "={{ '⚠️ *Aprobación requerida — corrección de propuesta*\\n\\n'\n  + 'Solicitud: ' + $json.id_solicitud + '\\n'\n  + 'Servicio: ' + ($json.servicio || '-') + '\\n\\n'\n  + '*Pedido del asesor:* ' + ($json.comentario || '(sin comentario)') + '\\n\\n'\n  + '*Ajuste propuesto por la IA:* ' + ($json.resumen_cambios || '(sin resumen)') + '\\n\\n'\n  + 'Si aprobás, el motor recalcula y se consume una ronda de corrección. Si rechazás o no respondés, la propuesta queda en revisión manual y no se consume ronda.' }}",
+          "message": "={{ '⚠️ *Aprobación requerida — corrección de propuesta*\\n\\n'\n  + 'Solicitud: ' + $json.id_solicitud + '\\n'\n  + 'Servicio: ' + ($json.servicio || '-') + '\\n\\n'\n  + '*Pedido del asesor:* ' + ($json.comentario || '(sin comentario)') + '\\n\\n'\n  + '*Ajuste propuesto por la IA:* ' + ($json.resumen_cambios || '(sin resumen)') + '\\n\\n'\n  + '👉 Revisá la propuesta y decidí: '\n  + ($('Ejecutar Leer Configuración').first().json._config.revision_url || '') + '/?id_solicitud=' + $json.id_solicitud + '\\n\\n'\n  + 'Si aprobás, el motor recalcula y se consume una ronda. Si rechazás o no respondés, la propuesta queda en revisión manual y no se consume ronda.' }}",
           "approvalOptions": {
             "values": {
               "approvalType": "double"
@@ -1342,18 +1342,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:35:07.883Z",
-        "id": 2793,
+        "createdAt": "2026-09-23T15:48:14.325Z",
+        "id": 2801,
         "workflowId": "3NAcLF4jaZ1JBw0A",
-        "versionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
+        "versionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:35:07.925Z",
-        "id": 2794,
+        "createdAt": "2026-09-23T15:48:14.339Z",
+        "id": 2802,
         "workflowId": "3NAcLF4jaZ1JBw0A",
-        "versionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
+        "versionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

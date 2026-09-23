@@ -142,7 +142,7 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 
 > **Nota — F3-03 (22/09):** W5A `Despachar a W5-B` ahora tiene `onError: continueErrorOutput` → `Preparar error - Despacho falló` → `Data Table - Revertir a APROBADA (fallo despacho)` → `Ejecutar Registrar-y-Alertar`. Si el despacho fire-and-forget falla, la fila vuelve a `APROBADA` (recuperable el próximo ciclo de 15 min) en vez de quedar atascada en `EN_ENVIO`, y el error queda registrado+alertado vía subflujo compartido.
 
-> **Nota — F3-07 (22/09):** W4D insertó `IF - ¿Comentario ya procesado?` entre `Releer cotización` y `Guardar ronda y comentario`: si el comentario guardado ya es el mismo que llega en el POST (y no está vacío), responde "ya procesado" sin incrementar ronda ni re-correr el pipeline de IA. Un reenvío del mismo POST ahora consume **una** ronda, no dos.
+> **Nota — F3-07 (22/09, corregido el 23/09):** W4D insertó `IF - ¿Comentario ya procesado?` entre `Releer cotización` y `Guardar ronda y comentario`: si el comentario guardado ya es el mismo que llega en el POST (y no está vacío), responde "ya procesado" sin incrementar ronda ni re-correr el pipeline de IA. Un reenvío del mismo POST ahora consume **una** ronda, no dos.
 
 > **Nota — F3-08 (22/09):** el `Data Table - Registrar error` del subflujo compartido pasó de insert a **upsert** con match por `id_solicitud + workflow_origen + nodo_fallido` — reintentar el mismo error para la misma solicitud actualiza la fila en vez de duplicarla. Esto beneficia a los 8 flujos que ya usan el subflujo (F4-01).
 
@@ -336,7 +336,9 @@ Estado de las cuatro métricas del framework:
 >
 > **Validación:** los tres workflows afectados validan `valid=true`, 0 errores y 0 advertencias con `n8n_validate_workflow`. La credencial de Teams usada es la real del pipeline (`INT-ServiciosInformacion Microsoft Teams`), no una inventada.
 >
-> **Pendiente de verificación real:** el clic de aprobación (y el rechazo) en Teams. El timeout y el rechazo se pueden probar dejando vencer la espera; la aprobación requiere que la persona apruebe en el chat. El chat hoy apunta al de pruebas (F0-05 diferida), lo que de hecho facilita la prueba.
+> **Verificado con aprobación humana real (23/09):** se disparó una solicitud de correcciones con filas descartables. La IA interpretó el pedido (confianza `alta`), propuso `ubicacion_geografica: "Barranquilla; Soledad"`, la tarjeta salió a Teams y la ejecución quedó en `waiting`. **El asesor aprobó en Teams** y la ejecución reanudó: `aprobado: true` → `Re-invocar motor` con `ok: true` → cierre → **la ronda pasó de 0 a 1 y el estado a `EN_REVISION`**. Es decir: la ronda se consumió **solo después** de la autorización humana explícita, que es exactamente el criterio de la tarea. El webhook había respondido antes de esperar, sin colgar la página.
+>
+> **Ajustes posteriores a la prueba:** (1) el mensaje de aprobación ahora incluye el **enlace a la página de revisión** (`Configuracion_CCB.revision_url`) porque desde Teams no se veía la propuesta; (2) se corrigió un defecto del cierre: `Data Table - Releer cotización` reemplaza el item, así que `IF - ¿Comentario ya procesado?` comparaba contra vacío y el comentario del asesor no se guardaba — eso dejaba **inoperante el guardarraíl de idempotencia de F3-07** ante reenvíos. Ahora el comentario se lee del item que entra al subflujo y sí se persiste. Las filas de prueba se eliminaron con `n8n_manage_datatable`.
 
 > **Nota — F7-03 (23/09, decisión que quedó documentada):** el requisito es que ninguna ronda se consuma sin autorización humana sobre la **propuesta de la IA**. Hoy el humano autoriza "solicitar correcciones", pero el ajuste de la IA se aplica y se recalcula sin que nadie lo vea antes. Hay dos caminos y cambian el producto, así que no se implementa sin decisión:
 >

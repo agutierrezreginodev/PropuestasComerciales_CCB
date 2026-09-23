@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T14:25:56.072Z",
+  "updatedAt": "2026-09-23T15:48:12.563Z",
   "createdAt": "2026-09-23T14:17:02.880Z",
   "id": "POeFkqQp8e4cGfY3",
   "name": "[SUB] - CCB - W4D Cierre de Corrección",
@@ -129,7 +129,7 @@
             {
               "id": "c1",
               "leftValue": "={{ $json.comentario_fausto }}",
-              "rightValue": "={{ $json.Comentario }}",
+              "rightValue": "={{ $('When Executed by Another Workflow').first().json.Comentario }}",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -186,7 +186,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "ronda_correccion": "={{ (Number($json.ronda_correccion) || 0) + 1 }}",
-            "comentario_fausto": "={{ $json.Comentario }}",
+            "comentario_fausto": "={{ $('When Executed by Another Workflow').first().json.Comentario }}",
             "estado": "EN_REVISION"
           },
           "matchingColumns": []
@@ -208,7 +208,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const fresh = $json;\nconst idSolicitud = fresh.id_solicitud;\nconst rondaGuardada = Number(fresh.ronda_correccion) || 0;\nconst link = 'https://revision-propuesta-ccb.vercel.app/?id_solicitud=' + encodeURIComponent(idSolicitud);\nconst mensaje = '📋 <b>Propuesta actualizada — ronda ' + rondaGuardada + ' de 3</b><br><br>'\n  + 'Solicitud: ' + idSolicitud + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { id_solicitud: idSolicitud, mensaje_teams: mensaje } };"
+        "jsCode": "const fresh = $json;\nconst idSolicitud = fresh.id_solicitud;\nconst rondaGuardada = Number(fresh.ronda_correccion) || 0;\n// F5: la URL de la página vive en Configuracion_CCB.\nconst baseRevision = (() => { try { return $('Ejecutar Leer Configuración').first().json._config.revision_url || ''; } catch (e) { return ''; } })();\nconst link = (baseRevision || 'https://revision-propuesta-ccb.vercel.app') + '/?id_solicitud=' + encodeURIComponent(idSolicitud);\nconst mensaje = '📋 <b>Propuesta actualizada — ronda ' + rondaGuardada + ' de 3</b><br><br>'\n  + 'Solicitud: ' + idSolicitud + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { id_solicitud: idSolicitud, mensaje_teams: mensaje } };"
       },
       "id": "5c01a49c-6ccd-4855-bc29-8aed6f2f32da",
       "name": "Reconstruir mensaje simple",
@@ -589,15 +589,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
-  "activeVersionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
-  "versionCounter": 7,
+  "versionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
+  "activeVersionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T14:25:56.073Z",
-    "createdAt": "2026-09-23T14:25:56.073Z",
-    "versionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
+    "updatedAt": "2026-09-23T15:48:12.565Z",
+    "createdAt": "2026-09-23T15:48:12.565Z",
+    "versionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
     "workflowId": "POeFkqQp8e4cGfY3",
     "nodes": [
       {
@@ -722,7 +722,7 @@
               {
                 "id": "c1",
                 "leftValue": "={{ $json.comentario_fausto }}",
-                "rightValue": "={{ $json.Comentario }}",
+                "rightValue": "={{ $('When Executed by Another Workflow').first().json.Comentario }}",
                 "operator": {
                   "type": "string",
                   "operation": "equals"
@@ -779,7 +779,7 @@
             "mappingMode": "defineBelow",
             "value": {
               "ronda_correccion": "={{ (Number($json.ronda_correccion) || 0) + 1 }}",
-              "comentario_fausto": "={{ $json.Comentario }}",
+              "comentario_fausto": "={{ $('When Executed by Another Workflow').first().json.Comentario }}",
               "estado": "EN_REVISION"
             },
             "matchingColumns": []
@@ -801,7 +801,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "const fresh = $json;\nconst idSolicitud = fresh.id_solicitud;\nconst rondaGuardada = Number(fresh.ronda_correccion) || 0;\nconst link = 'https://revision-propuesta-ccb.vercel.app/?id_solicitud=' + encodeURIComponent(idSolicitud);\nconst mensaje = '📋 <b>Propuesta actualizada — ronda ' + rondaGuardada + ' de 3</b><br><br>'\n  + 'Solicitud: ' + idSolicitud + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { id_solicitud: idSolicitud, mensaje_teams: mensaje } };"
+          "jsCode": "const fresh = $json;\nconst idSolicitud = fresh.id_solicitud;\nconst rondaGuardada = Number(fresh.ronda_correccion) || 0;\n// F5: la URL de la página vive en Configuracion_CCB.\nconst baseRevision = (() => { try { return $('Ejecutar Leer Configuración').first().json._config.revision_url || ''; } catch (e) { return ''; } })();\nconst link = (baseRevision || 'https://revision-propuesta-ccb.vercel.app') + '/?id_solicitud=' + encodeURIComponent(idSolicitud);\nconst mensaje = '📋 <b>Propuesta actualizada — ronda ' + rondaGuardada + ' de 3</b><br><br>'\n  + 'Solicitud: ' + idSolicitud + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { id_solicitud: idSolicitud, mensaje_teams: mensaje } };"
         },
         "id": "5c01a49c-6ccd-4855-bc29-8aed6f2f32da",
         "name": "Reconstruir mensaje simple",
@@ -1182,18 +1182,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T14:25:56.128Z",
-        "id": 2766,
+        "createdAt": "2026-09-23T15:48:12.623Z",
+        "id": 2799,
         "workflowId": "POeFkqQp8e4cGfY3",
-        "versionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
+        "versionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T14:25:56.190Z",
-        "id": 2767,
+        "createdAt": "2026-09-23T15:48:12.641Z",
+        "id": 2800,
         "workflowId": "POeFkqQp8e4cGfY3",
-        "versionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
+        "versionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

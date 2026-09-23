@@ -16,7 +16,7 @@
 | **Fase 5 — Configuración centralizada** | ✅ **Cerrada** | Data Table `Configuracion_CCB` + subflujo `[SUB] - CCB - Leer Configuración`; ningún correo, URL ni destino escrito a mano en los 13 flujos |
 | **Fase 6 — Observabilidad** | ✅ **Cerrada** (salvo F6-04) | Timeouts, límites de lectura, enmascarado de PII, marca de tiempo de errores y monitoreo horario de las 4 métricas |
 | **Fase 4 — Arquitectura** | 🔄 F4-01, **F4-02, F4-03 y F4-05 cerradas** | Subflujo de contexto de propuesta; **W4-D partido en router de 19 nodos + 5 subflujos**; dictamen sobre separar el PDF; catch-all con diseño propio |
-| **Fase 7 — Guardarraíles de IA** | ✅ **Cerrada (F7-01, F7-02, F7-03)** | Confianza baja → revisión manual; interruptor de la corrección asistida; **aprobación humana en Teams antes del recálculo y de la ronda** |
+| **Fase 7 — Guardarraíles de IA** | ✅ **Cerrada y verificada (F7-01, F7-02, F7-03)** | Confianza baja → revisión manual; interruptor de la corrección asistida; **aprobación humana en Teams antes del recálculo y de la ronda** |
 | Fase 0 / 1 / 2 | ✅ Cerradas previamente | — |
 | Fase 3 | ✅ 9/11 + 1 N/A; F3-02 cerrado como desviación de plataforma | — |
 
