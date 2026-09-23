@@ -168,9 +168,9 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 | F4-02 | Crear `[SUB] - CCB - Leer Contexto Propuesta` para el bloque de tres lecturas duplicado idéntico | W4B, W4C, W4D | ▪▪ | Los tres flujos leen el contexto invocando el mismo subflujo | ☑ 23/09 — subflujo `GELWpskp0aYJ2zPg`; W4B 14→12, W4C 12→10, W4D 50→48 nodos |
 | F4-03 | Partir el flujo de decisión en subflujos por rama: aprobar, cancelar, corregir con IA | W4D (43 nodos, 5 ramas) | ▪▪▪ | Ningún lienzo supera 20 nodos; los tres caminos siguen funcionando de punta a punta | ☑ 23/09 — **W4D 54→19 nodos** + 5 subflujos; los tres caminos verificados con tráfico real |
 | F4-04 | Extraer la lógica repetida de consolidación de criterios (4 copias con ~90% de código idéntico) | W2B | ▪▪ | La lógica vive en un solo lugar; las cuatro ramas de servicio siguen cotizando igual | 🚫 N/A — W2B está retirado y fuera de alcance desde el 17/09 (misma decisión que F0-04 y F3-05). Refactorizar un flujo sin tráfico real no aporta puntaje ni reduce riesgo. |
-| F4-05 | Evaluar separar la generación de PDF del cálculo de precio | W3 | ▪▪ | Decisión documentada; si se separa, ambos flujos bajo el umbral de nodos | ☑ 23/09 — **decisión: separar, pero en una sesión dedicada con PDF real** (ver nota) |
+| F4-05 | Evaluar separar la generación de PDF del cálculo de precio | W3 | ▪▪ | Decisión documentada; si se separa, ambos flujos bajo el umbral de nodos | ☑ 23/09 — **ejecutado**: `[SUB] - CCB - Generar PDF de Propuesta`; **W3 25→17 nodos** y `valid=true` (ver nota) |
 
-**Criterio de cierre:** ningún flujo por encima de 20 nodos y ningún bloque lógico duplicado entre flujos.
+**Criterio de cierre:** ningún flujo por encima de 20 nodos y ningún bloque lógico duplicado entre flujos. **Estado 23/09: W4D (19), sus 5 subflujos (3/3/6/15/17), W3 (17) y el subflujo de PDF (11) cumplen. Siguen sobre el umbral W2A (26) y W5B (26), que no estaban contemplados en el plan.**
 
 > **Nota — F4-01 en curso (22/09):** el subflujo compartido `[SUB] - CCB - Registrar y Alertar Error` (`2dY1kaT7I5a0eP2w`) ya existe, publicado y validado (0 errores/0 warnings). Su contrato de entrada tolera la divergencia real del patrón (ver re-auditoría del 22/09, sección 4.2 punto 8): recibe `{ id_solicitud, workflow_origen, nodo_fallido, mensaje_error, emailBody, subject?, alertar? }` con defaults para los campos ausentes (W1 y W3 no emiten `workflow_origen`; W5B/catch-all usan `alertHtml` en vez de `emailBody`). Registra siempre en `Errores_CCB` y condiciona la alerta Outlook a `alertar !== false`. **W6 migrado como piloto** (commit `e8177dd`): sus dos `Preparar error` ahora invocan el subflujo en vez de duplicar Data Table+Outlook (10 nodos, antes 11). **Pendiente:** verificación con ejecución real de W6 antes de escalar al resto de flujos — la regla de oro del proyecto aplica igual acá.
 
@@ -203,6 +203,16 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 > 2. **El aviso de tope salía con asunto y cuerpo vacíos**, por la misma razón (leía `$json._aviso_asunto` después de un update). Ahora el asunto, el cuerpo y el motivo se resuelven por nombre de nodo, que no depende del item.
 >
 > **Pendiente de esta fase:** el criterio de ≤20 nodos sigue fallando en **W2A (26)**, **W3 (25)** y **W5B (26)**. La F4-05 cubre W3; W2A y W5B **no estaban contemplados** en el plan y hay que decidir si se parten igual (mismo patrón: agrupar por rama de servicio / por responsabilidad).
+
+> **Nota — F4-05 ejecutado (23/09):** la etapa de presentación salió del motor a `[SUB] - CCB - Generar PDF de Propuesta` (`DF3emCmBBBB2HA3i`, 11 nodos): `Enrutar por servicio` + las 4 plantillas `HTML - …` + `Interpolar plantilla HTML` + `HTTP - Generar PDF` + `Adjuntar PDF_URL`, más un nodo propio que devuelve el fallo (servicio no reconocido o microservicio caído) como item.
+>
+> **Resultados:** W3 pasó de 25 a **17 nodos** y quedó `valid=true` con **0 errores y 0 advertencias** — los 4 hallazgos "Mixed literal text and expression requires = prefix" **se fueron con las plantillas** al subflujo (siguen siendo los mismos falsos positivos preexistentes: el runtime los acepta y genera PDFs reales). El subflujo tiene 11 nodos, también bajo el umbral.
+>
+> **Cambio de contrato:** el subflujo ya **no devuelve el binario del PDF**, solo `PDF_URL` (se verificó que ningún flujo aguas abajo consume el binario). El fallo se devuelve como item `{ ok: false, error, mensaje_error }` y W3 lo registra en `Errores_CCB` y responde con `Restaurar resultado de error` (que ahora lee el fallo del subflujo).
+>
+> **Pendiente de verificación real:** generar un PDF de verdad. El túnel ngrok del microservicio está **caído** (`POST /html-pdf` → `ERR_NGROK_3200`, y `/pdfs/SOL-20260916134302.pdf` → 404), así que la corrida end-to-end con PDF real no se pudo completar. Es el mismo punto débil que el plan llama "Fase D de infra": la URL del microservicio vive en `Configuracion_CCB.microservicio_pdf_url` y se cambia sin tocar workflows cuando el túnel se republica.
+>
+> ⚠️ **Implicación de producción:** con el túnel caído, la generación de PDF falla para propuestas reales (el error queda registrado y alertado por el subflujo, pero no hay PDF ni envío). Vale confirmar con el usuario si el túnel se republica.
 
 > **Nota — F4-05 (23/09, dictamen):** **recomendación: separar** la generación de PDF en `[SUB] - CCB - Generar PDF`, moviendo `Enrutar por servicio` + los 4 nodos `HTML - …` + `Interpolar plantilla HTML` + `HTTP - Generar PDF` + `Adjuntar PDF_URL` (8 nodos). W3 quedaría en **17 nodos** y cumpliría el umbral de ≤20 del framework (hoy tiene 25: de esos, 4 son plantillas HTML de 100–212 KB y 1 es una nota).
 >

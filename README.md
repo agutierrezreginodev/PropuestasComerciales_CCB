@@ -32,6 +32,7 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 | `iNSErCHs2iw33emJ` | [SUB] - CCB - W4D Revisión Manual | [`workflows/w4d-sub-revision-manual.json`](workflows/w4d-sub-revision-manual.json) |
 | `3NAcLF4jaZ1JBw0A` | [SUB] - CCB - W4D Corrección IA | [`workflows/w4d-sub-correccion-ia.json`](workflows/w4d-sub-correccion-ia.json) |
 | `POeFkqQp8e4cGfY3` | [SUB] - CCB - W4D Cierre de Corrección | [`workflows/w4d-sub-cierre-correccion.json`](workflows/w4d-sub-cierre-correccion.json) |
+| `DF3emCmBBBB2HA3i` | [SUB] - CCB - Generar PDF de Propuesta | [`workflows/sub-generar-pdf-propuesta.json`](workflows/sub-generar-pdf-propuesta.json) |
 
 El snapshot está **completo**: los 12 workflows del pipeline definitivo (11 activos + W2B retirado), el Error Workflow catch-all, los tres subflujos compartidos y el flujo de monitoreo operativo. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
 

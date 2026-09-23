@@ -50,6 +50,7 @@ WORKFLOWS = {
     "w4d-sub-revision-manual": "iNSErCHs2iw33emJ",
     "w4d-sub-correccion-ia": "3NAcLF4jaZ1JBw0A",
     "w4d-sub-cierre-correccion": "POeFkqQp8e4cGfY3",
+    "sub-generar-pdf-propuesta": "DF3emCmBBBB2HA3i",
 }
 
 # Literal replacements — see README.md "Anonimización" for the documented table.
