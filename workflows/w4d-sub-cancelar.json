@@ -1,0 +1,226 @@
+{
+  "updatedAt": "2026-09-23T14:17:02.367Z",
+  "createdAt": "2026-09-23T14:17:01.625Z",
+  "id": "Jgf514VxDINJ8ra3",
+  "name": "[SUB] - CCB - W4D Cancelar",
+  "description": "Subflujo del router de decisión: marca la cotización como CANCELADA y devuelve la confirmación al router (F4-03).",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "cancelar-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "CANCELADA",
+            "comentario_fausto": "={{ $json.Comentario }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "48cd1869-c128-4bfa-972e-62053fd4c0be",
+      "name": "Data Table - Marcar CANCELADA",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Solicitud marcada como cancelada.' } };"
+      },
+      "id": "6dcab535-a8c1-4e7b-959f-440026498ebb",
+      "name": "Confirmar cancelación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Data Table - Marcar CANCELADA": {
+      "main": [
+        [
+          {
+            "node": "Confirmar cancelación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Marcar CANCELADA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
+  "activeVersionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T14:17:01.625Z",
+    "createdAt": "2026-09-23T14:17:01.625Z",
+    "versionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
+    "workflowId": "Jgf514VxDINJ8ra3",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "cancelar-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "CANCELADA",
+              "comentario_fausto": "={{ $json.Comentario }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "48cd1869-c128-4bfa-972e-62053fd4c0be",
+        "name": "Data Table - Marcar CANCELADA",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Solicitud marcada como cancelada.' } };"
+        },
+        "id": "6dcab535-a8c1-4e7b-959f-440026498ebb",
+        "name": "Confirmar cancelación",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          240,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Data Table - Marcar CANCELADA": {
+        "main": [
+          [
+            {
+              "node": "Confirmar cancelación",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Marcar CANCELADA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T14:18:39.081Z",
+        "id": 2752,
+        "workflowId": "Jgf514VxDINJ8ra3",
+        "versionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

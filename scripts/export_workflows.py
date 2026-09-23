@@ -45,6 +45,11 @@ WORKFLOWS = {
     "sub-leer-configuracion": "Hgy02eqPhnsdJvkq",
     "ops-monitoreo-pipeline": "ZwBFTBhwS9pjS69X",
     "sub-leer-contexto-propuesta": "GELWpskp0aYJ2zPg",
+    "w4d-sub-aprobar": "8j6BCwXkgJCccyO1",
+    "w4d-sub-cancelar": "Jgf514VxDINJ8ra3",
+    "w4d-sub-revision-manual": "iNSErCHs2iw33emJ",
+    "w4d-sub-correccion-ia": "3NAcLF4jaZ1JBw0A",
+    "w4d-sub-cierre-correccion": "POeFkqQp8e4cGfY3",
 }
 
 # Literal replacements — see README.md "Anonimización" for the documented table.

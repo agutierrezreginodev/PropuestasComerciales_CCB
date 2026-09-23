@@ -34,7 +34,8 @@ y el estado global en [`docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](../../doc
 | 6b | Observabilidad: sellar `error_timestamp` y monitorear las 4 métricas | F6-05 | ☑ | Flujo `[OPS]` horario verificado + 8 nodos de error sellados | `ops-monitoreo` |
 | 7 | Arquitectura: subflujo `[SUB] - CCB - Leer Contexto Propuesta` | F4-02 | ☑ | W4B 14→12, W4C 12→10, W4D 50→48; verificado con datos reales | `f4-02` |
 | 8 | Arquitectura: dictamen sobre separar PDF de cálculo de precio | F4-05 | ☑ | Dictamen: separar en sesión dedicada con PDF real; binario no consumido aguas abajo (verificado) | `f4-05` |
-| 9 | Arquitectura: partir W4D en subflujos por rama | F4-03 | ☐ | Ningún lienzo supera 20 nodos; las 3 ramas funcionan | — |
+| 9 | Arquitectura: partir W4D en subflujos por rama | F4-03 | ☑ | W4D 54→19 nodos + 5 subflujos; 3 caminos verificados con tráfico real | `f4-03` |
+| 9b | Bug: las alertas de error perdían el detalle (update de Data Table antes del subflujo) | F4-03 | ☑ | Orden invertido en W4B/W5A/W6/cierre; verificado con ejecución real | `f4-03` |
 | 10 | Guardarraíles de IA: `confianza: baja` → revisión humana | F7-01 | ☑ | `IF - ¿Confianza suficiente?` → revisión manual sin consumir ronda | `f7-01-02` |
 | 11 | Guardarraíles de IA: kill switch de la corrección asistida | F7-02 | ☑ | Clave `ia_correccion_habilitada` en `Configuracion_CCB` | `f7-01-02` |
 | 12 | Guardarraíles de IA: aprobación humana antes del recálculo | F7-03 | 🔶 | Dos caminos (Teams `sendAndWait` vs. página de revisión): decisión del usuario pendiente | — |
@@ -85,6 +86,14 @@ y el estado global en [`docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](../../doc
 - Ambos caminos avisan al asesor con motivo + interpretación de la IA + comentario, y **no consumen ronda**. W4D pasó de 48 a 54 nodos (F4-03 los va a redistribuir).
 - **Verificado**: lógica del nodo nuevo probada con `node` sobre el código extraído y los dos casos reales.
 - F7-03 queda con dos caminos documentados y pendiente de decisión del usuario.
+
+### Unidad 9 — Arquitectura: partir W4-D (F4-03) — 23/09
+
+- W4-D pasó de 54 a **19 nodos** (router). Cinco subflujos nuevos: Aprobar `8j6BCwXkgJCccyO1` (3), Cancelar `Jgf514VxDINJ8ra3` (3), Revisión Manual `iNSErCHs2iw33emJ` (6), Corrección IA `3NAcLF4jaZ1JBw0A` (15), Cierre de Corrección `POeFkqQp8e4cGfY3` (17).
+- Se preservaron las dos respuestas del rechazo (400 temprano, 200 tardío) y las referencias `$('nodo')` se resolvieron por nombre dentro de cada subflujo (verificación estática de ancestros: 0 rotas en los 5).
+- **Verificado con tráfico real** con filas descartables: Aprobar/Cancelar/Tope de rondas, más la cadena anidada W4D → C1 → Revisión Manual → Leer Configuración.
+- **Dos defectos corregidos**: (1) los avisos de error perdían el detalle porque un update de Data Table reemplaza el item — afectaba W4B, W5A, W6 y el cierre; (2) el aviso de tope salía con asunto y cuerpo vacíos, mismo motivo.
+- Pendiente: ≤20 nodos sigue fallando en W2A (26), W3 (25) y W5B (26); W2A y W5B no estaban en el plan.
 
 ## Cierre de tareas sin trabajo de código
 

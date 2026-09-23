@@ -166,7 +166,7 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 |---|---|---|---|---|---|
 | F4-01 | Crear `[SUB] - CCB - Registrar y Alertar Error` y reemplazar con él el patrón replicado en los 12 flujos | los 12 (triplicado en W1, tres bloques en W5B) | ▪▪▪ | El patrón existe en un solo lugar; los errores se siguen registrando y alertando igual | ☑ **8/9 flujos del patrón A migrados (22/09)** + **catch-all resuelto con diseño propio (23/09)** — ver nota |
 | F4-02 | Crear `[SUB] - CCB - Leer Contexto Propuesta` para el bloque de tres lecturas duplicado idéntico | W4B, W4C, W4D | ▪▪ | Los tres flujos leen el contexto invocando el mismo subflujo | ☑ 23/09 — subflujo `GELWpskp0aYJ2zPg`; W4B 14→12, W4C 12→10, W4D 50→48 nodos |
-| F4-03 | Partir el flujo de decisión en subflujos por rama: aprobar, cancelar, corregir con IA | W4D (43 nodos, 5 ramas) | ▪▪▪ | Ningún lienzo supera 20 nodos; los tres caminos siguen funcionando de punta a punta | ☐ |
+| F4-03 | Partir el flujo de decisión en subflujos por rama: aprobar, cancelar, corregir con IA | W4D (43 nodos, 5 ramas) | ▪▪▪ | Ningún lienzo supera 20 nodos; los tres caminos siguen funcionando de punta a punta | ☑ 23/09 — **W4D 54→19 nodos** + 5 subflujos; los tres caminos verificados con tráfico real |
 | F4-04 | Extraer la lógica repetida de consolidación de criterios (4 copias con ~90% de código idéntico) | W2B | ▪▪ | La lógica vive en un solo lugar; las cuatro ramas de servicio siguen cotizando igual | 🚫 N/A — W2B está retirado y fuera de alcance desde el 17/09 (misma decisión que F0-04 y F3-05). Refactorizar un flujo sin tráfico real no aporta puntaje ni reduce riesgo. |
 | F4-05 | Evaluar separar la generación de PDF del cálculo de precio | W3 | ▪▪ | Decisión documentada; si se separa, ambos flujos bajo el umbral de nodos | ☑ 23/09 — **decisión: separar, pero en una sesión dedicada con PDF real** (ver nota) |
 
@@ -183,6 +183,26 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 > Las tres lecturas del subflujo llevan `alwaysOutputData`, así que una propuesta sin cotización **no corta la cadena**: devuelve `{}` en la clave que falte y el llamador decide, igual que antes. Eso además hace explícito el caso que antes dependía de que la cadena lineal llegara entera.
 >
 > **Verificado con datos reales:** se ejecutó el subflujo desde un workflow descartable (ya eliminado) con un `id_solicitud` real de `Cotizaciones_CCB`: devolvió la cotización (`ENVIADA`, Información Georreferenciada), los criterios (razón social) y `null` en la solicitud, que no existía para ese id — confirmando el fallback sin cortar la ejecución.
+
+> **Nota — F4-03 cerrado (23/09):** W4-D dejó de ser un lienzo de 54 nodos y pasó a ser un **router de decisión de 19 nodos**; cada rama vive en su propio subflujo:
+>
+> | Subflujo | ID | Nodos | Qué hace |
+> |---|---|---|---|
+> | `[SUB] - CCB - W4D Aprobar` | `8j6BCwXkgJCccyO1` | 3 | Marca `APROBADA` y devuelve la confirmación |
+> | `[SUB] - CCB - W4D Cancelar` | `Jgf514VxDINJ8ra3` | 3 | Marca `CANCELADA` y devuelve la confirmación |
+> | `[SUB] - CCB - W4D Revisión Manual` | `iNSErCHs2iw33emJ` | 6 | Los tres motivos de revisión manual (tope, IA desactivada, confianza baja) sin consumir ronda |
+> | `[SUB] - CCB - W4D Corrección IA` | `3NAcLF4jaZ1JBw0A` | 15 | Guardarraíles + ajuste con IA + re-invocación del motor |
+> | `[SUB] - CCB - W4D Cierre de Corrección` | `POeFkqQp8e4cGfY3` | 17 | Idempotencia del comentario, ronda, aviso por Teams y los dos fallos posibles |
+>
+> El router conserva las dos respuestas distintas del rechazo: **400** `{ok:false, error}` cuando la decisión no se reconoce antes de leer la base (F2-04) y **200** `{ok:false, mensaje}` cuando no se reconoce después de consolidar.
+>
+> **Verificado con tráfico real** (filas descartables `SOL-PRUEBA-F403` / `SOL-PRUEBA-F403B`, sin tocar datos reales): `Aprobar` → 200 + fila `APROBADA`; `Cancelar` → 200 + fila `CANCELADA`; `Solicitar correcciones` con ronda 3 → 200 con el mensaje de tope + fila `REVISION_MANUAL` y **la ronda sin consumir**; y la cadena anidada W4D → C1 → Revisión Manual → Leer Configuración ejecutada completa (`success`).
+>
+> **Dos defectos encontrados y corregidos al verificar:**
+> 1. **Los avisos de error perdían el detalle.** El nodo `Data Table` **reemplaza el item** por la fila actualizada, así que en cuatro cadenas la llamada al subflujo compartido de error salía *después* de un update y llegaba sin `mensaje_error` ni `nodo_fallido`: la alerta se registraba como `desconocido` / `Error sin mensaje`. Afectaba a **W4B, W5A, W6** y al nuevo cierre de corrección (herencia del orden original de W4-D). Se invirtió el orden — primero registrar y alertar, después marcar el estado — y se verificó con una ejecución real: la fila registrada ahora dice `solicitud=SOL-PRUEBA-F403B`, `nodo=Re-invocar motor (recálculo)` y el mensaje real del fallo.
+> 2. **El aviso de tope salía con asunto y cuerpo vacíos**, por la misma razón (leía `$json._aviso_asunto` después de un update). Ahora el asunto, el cuerpo y el motivo se resuelven por nombre de nodo, que no depende del item.
+>
+> **Pendiente de esta fase:** el criterio de ≤20 nodos sigue fallando en **W2A (26)**, **W3 (25)** y **W5B (26)**. La F4-05 cubre W3; W2A y W5B **no estaban contemplados** en el plan y hay que decidir si se parten igual (mismo patrón: agrupar por rama de servicio / por responsabilidad).
 
 > **Nota — F4-05 (23/09, dictamen):** **recomendación: separar** la generación de PDF en `[SUB] - CCB - Generar PDF`, moviendo `Enrutar por servicio` + los 4 nodos `HTML - …` + `Interpolar plantilla HTML` + `HTTP - Generar PDF` + `Adjuntar PDF_URL` (8 nodos). W3 quedaría en **17 nodos** y cumpliría el umbral de ≤20 del framework (hoy tiene 25: de esos, 4 son plantillas HTML de 100–212 KB y 1 es una nota).
 >

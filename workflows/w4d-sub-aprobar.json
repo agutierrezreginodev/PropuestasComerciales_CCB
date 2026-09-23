@@ -1,0 +1,226 @@
+{
+  "updatedAt": "2026-09-23T14:17:01.218Z",
+  "createdAt": "2026-09-23T14:17:00.130Z",
+  "id": "8j6BCwXkgJCccyO1",
+  "name": "[SUB] - CCB - W4D Aprobar",
+  "description": "Subflujo del router de decisión: marca la cotización como APROBADA y devuelve la confirmación al router (F4-03).",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "aprobar-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "APROBADA",
+            "comentario_fausto": "={{ $json.Comentario }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "10f107aa-83c7-49b8-bea7-f867a5778266",
+      "name": "Data Table - Marcar APROBADA",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Propuesta aprobada. Gracias.' } };"
+      },
+      "id": "56628919-4ef5-45f3-914b-d6fb0916f310",
+      "name": "Confirmar aprobación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Data Table - Marcar APROBADA": {
+      "main": [
+        [
+          {
+            "node": "Confirmar aprobación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Marcar APROBADA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
+  "activeVersionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T14:17:00.130Z",
+    "createdAt": "2026-09-23T14:17:00.130Z",
+    "versionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
+    "workflowId": "8j6BCwXkgJCccyO1",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "aprobar-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "APROBADA",
+              "comentario_fausto": "={{ $json.Comentario }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "10f107aa-83c7-49b8-bea7-f867a5778266",
+        "name": "Data Table - Marcar APROBADA",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Propuesta aprobada. Gracias.' } };"
+        },
+        "id": "56628919-4ef5-45f3-914b-d6fb0916f310",
+        "name": "Confirmar aprobación",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          240,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Data Table - Marcar APROBADA": {
+        "main": [
+          [
+            {
+              "node": "Confirmar aprobación",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Marcar APROBADA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T14:18:38.687Z",
+        "id": 2751,
+        "workflowId": "8j6BCwXkgJCccyO1",
+        "versionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

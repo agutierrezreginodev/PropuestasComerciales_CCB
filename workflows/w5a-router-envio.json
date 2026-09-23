@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:37:28.025Z",
+  "updatedAt": "2026-09-23T14:25:51.959Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -409,7 +409,7 @@
       "main": [
         [
           {
-            "node": "Data Table - Revertir a APROBADA (fallo despacho)",
+            "node": "Ejecutar Registrar-y-Alertar (Despacho)",
             "type": "main",
             "index": 0
           }
@@ -418,9 +418,14 @@
     },
     "Data Table - Revertir a APROBADA (fallo despacho)": {
       "main": [
+        []
+      ]
+    },
+    "Ejecutar Registrar-y-Alertar (Despacho)": {
+      "main": [
         [
           {
-            "node": "Ejecutar Registrar-y-Alertar (Despacho)",
+            "node": "Data Table - Revertir a APROBADA (fallo despacho)",
             "type": "main",
             "index": 0
           }
@@ -444,15 +449,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
-  "activeVersionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
-  "versionCounter": 48,
+  "versionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
+  "activeVersionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
+  "versionCounter": 51,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:37:28.027Z",
-    "createdAt": "2026-09-23T13:37:28.027Z",
-    "versionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
+    "updatedAt": "2026-09-23T14:25:51.960Z",
+    "createdAt": "2026-09-23T14:25:51.960Z",
+    "versionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -857,7 +862,7 @@
         "main": [
           [
             {
-              "node": "Data Table - Revertir a APROBADA (fallo despacho)",
+              "node": "Ejecutar Registrar-y-Alertar (Despacho)",
               "type": "main",
               "index": 0
             }
@@ -866,9 +871,14 @@
       },
       "Data Table - Revertir a APROBADA (fallo despacho)": {
         "main": [
+          []
+        ]
+      },
+      "Ejecutar Registrar-y-Alertar (Despacho)": {
+        "main": [
           [
             {
-              "node": "Ejecutar Registrar-y-Alertar (Despacho)",
+              "node": "Data Table - Revertir a APROBADA (fallo despacho)",
               "type": "main",
               "index": 0
             }
@@ -882,18 +892,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:37:28.080Z",
-        "id": 2711,
+        "createdAt": "2026-09-23T14:25:51.999Z",
+        "id": 2762,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
+        "versionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:37:28.096Z",
-        "id": 2712,
+        "createdAt": "2026-09-23T14:25:52.018Z",
+        "id": 2763,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "19e49e13-78cb-4ef4-b015-09e77ca38179",
+        "versionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -1,0 +1,1076 @@
+{
+  "updatedAt": "2026-09-23T14:17:59.058Z",
+  "createdAt": "2026-09-23T14:17:58.025Z",
+  "id": "3NAcLF4jaZ1JBw0A",
+  "name": "[SUB] - CCB - W4D Corrección IA",
+  "description": "Subflujo del router de decisión: aplica la corrección asistida por IA con sus guardarraíles (tope de rondas, interruptor de IA, confianza) y encadena al cierre de la corrección (F4-03, F7-01, F7-02).",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "correccion-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -640,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Hgy02eqPhnsdJvkq",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "ca43b774-9c64-44e4-846e-d620b15c77b9",
+      "name": "Ejecutar Leer Configuración",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-tope",
+              "leftValue": "={{ Number($json.ronda_correccion) || 0 }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "98350229-ba94-4d0b-9279-884502826904",
+      "name": "IF - ¿Rondas de corrección >= 3?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const base = $json;\nconst comentario = base.Comentario || '';\nconst criterios = base.criterios || {};\nconst CLAVES_PROHIBIDAS = ['servicio', 'id_solicitud'];\nconst claves = Object.keys(criterios).filter(k => !CLAVES_PROHIBIDAS.includes(k));\nconst prompt = 'Sos un asistente de la Cámara de Comercio de Barranquilla (CCB). Aplicás correcciones a los criterios de una cotización ya generada, según el pedido del asesor comercial.\\n\\n'\n  + 'REGLAS ESTRICTAS:\\n'\n  + '- Solo podés modificar valores de estas claves existentes: ' + claves.join(', ') + '\\n'\n  + '- Está prohibido agregar claves nuevas o cambiar la estructura del objeto.\\n'\n  + '- Si el pedido requiere una clave que no existe, dejá criterios_ajustados vacío y explicá en resumen_cambios qué información falta.\\n'\n  + '- No inventes valores: usá solo lo que el pedido indica de forma inequívoca.\\n'\n  + '- confianza: alta si el pedido es claro, media si es interpretable, baja si es ambiguo.\\n\\n'\n  + 'CONVENCIONES DE VALORES (usar EXACTAMENTE estos textos cuando aplique):\\n'\n  + '- organizacion_juridica: solo \"Personas Jurídicas\", \"Personas Naturales\", \"Establecimientos\", \"Entidades sin ánimo de lucro\" (separadas por \"; \" si son varias).\\n'\n  + '- ubicacion_geografica: para zonas amplias usar exactamente \"Barranquilla\", \"Área Metropolitana de Barranquilla\" o \"Todo el Departamento del Atlántico\". Para municipios puntuales, listar el nombre exacto del municipio separados por \"; \".\\n'\n  + '- actividad_economica: para \"todos los sectores/actividades\" usar exactamente \"Todas las actividades económicas\". Para sectores puntuales, usar EXCLUSIVAMENTE uno o más de estos 18 nombres exactos, SIN partirlos aunque contengan \"y\"/\"al por\": \"Agropecuario\", \"Minero\", \"Industria\", \"Electricidad, gas, vapor y aire acondicionado\", \"Agua\", \"Construcción\", \"Comercio al por mayor y al por menor\", \"Transporte\", \"Alojamiento y restaurantes\", \"Información y comunicaciones\", \"Financiero\", \"Inmobiliarias\", \"Profesionales, científicas y técnicas\", \"Servicios administrativos y de apoyo\", \"Educación\", \"Salud\", \"Artísticas, de entretenimiento y recreación\", \"Otras actividades de servicios\". Si el asesor menciona varios sectores, separalos por \"; \" manteniendo cada nombre completo e intacto (nunca dividas un nombre de la lista en dos partes).\\n'\n  + '- tamano_empresa: solo \"Microempresas\", \"Pequeñas empresas\", \"Medianas empresas\", \"Grandes empresas\" (separadas por \"; \" si son varias).\\n'\n  + '- Si el pedido ajusta un rango de activos o ventas (activos_min/activos_max/activos_entre/activos_y, o su equivalente en ventas), seteá en null los otros campos del mismo grupo que queden en conflicto para no dejar un filtro inconsistente.\\n\\n'\n  + 'CRITERIOS ACTUALES (JSON):\\n' + JSON.stringify(criterios, null, 2) + '\\n\\n'\n  + 'PEDIDO DE CORRECCIÓN DEL ASESOR:\\n\"' + comentario + '\"';\nreturn { json: { ...base, prompt_correccion: prompt } };"
+      },
+      "id": "ac77d766-fbe1-49d8-aae7-f08e4ef511d8",
+      "name": "Preparar corrección IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt_correccion }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "id": "08c7a343-0734-4753-b916-d340d2dbe23a",
+      "name": "IA - Ajustar criterios",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o-mini",
+        "options": {}
+      },
+      "id": "276150b4-9ed2-43c9-b10a-2278c2bcaa76",
+      "name": "Modelo OpenRouter",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        560,
+        224
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "openRouterApi": {
+          "id": "PPk35IDkMnX3QnnE",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"criterios_ajustados\": {\n      \"type\": \"object\",\n      \"description\": \"Subconjunto de claves existentes de los criterios con sus nuevos valores. Vacío si no hay ajustes válidos.\",\n      \"additionalProperties\": true\n    },\n    \"resumen_cambios\": {\n      \"type\": \"string\",\n      \"description\": \"Resumen breve en español de qué se cambió y por qué.\"\n    },\n    \"confianza\": {\n      \"type\": \"string\",\n      \"enum\": [\"alta\",\"media\",\"baja\"],\n      \"description\": \"Confianza en la interpretación del pedido.\"\n    }\n  },\n  \"required\": [\"criterios_ajustados\",\"resumen_cambios\",\"confianza\"]\n}",
+        "autoFix": true
+      },
+      "id": "787af846-5b01-4676-b19b-13a58318d921",
+      "name": "Parser criterios ajustados",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        800,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4o-mini",
+        "options": {}
+      },
+      "id": "036f0526-2250-43f3-abcb-31f3e846d036",
+      "name": "Modelo Fixer",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        800,
+        320
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "openRouterApi": {
+          "id": "PPk35IDkMnX3QnnE",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const base = $('Preparar corrección IA').first().json;\nconst raw = $json;\nconst out = (raw && typeof raw.output === 'object' && raw.output !== null) ? raw.output\n  : (raw && typeof raw.response === 'object' && raw.response !== null) ? raw.response\n  : (raw || {});\nconst ajustes = out.criterios_ajustados || {};\nconst criterios = { ...base.criterios };\nconst aplicadas = {};\nconst rechazadas = {};\n\n// Valores permitidos por clave -- si la IA escribe algo fuera de esta lista para una clave\n// controlada, se descarta el ajuste en vez de aplicarlo (evita corromper el criterio en\n// silencio, p.ej. valores de organizacion_juridica escritos por error en tamano_empresa).\nconst VALORES_VALIDOS = {\n  organizacion_juridica: ['Personas Jurídicas', 'Personas Naturales', 'Establecimientos', 'Entidades sin ánimo de lucro'],\n  tamano_empresa: ['Microempresas', 'Pequeñas empresas', 'Medianas empresas', 'Grandes empresas'],\n  actividad_economica: ['Agropecuario', 'Minero', 'Industria', 'Electricidad, gas, vapor y aire acondicionado', 'Agua', 'Construcción', 'Comercio al por mayor y al por menor', 'Transporte', 'Alojamiento y restaurantes', 'Información y comunicaciones', 'Financiero', 'Inmobiliarias', 'Profesionales, científicas y técnicas', 'Servicios administrativos y de apoyo', 'Educación', 'Salud', 'Artísticas, de entretenimiento y recreación', 'Otras actividades de servicios', 'Todas las actividades económicas']\n};\n\nfunction esValorValido(clave, valor) {\n  const permitidos = VALORES_VALIDOS[clave];\n  if (!permitidos) return true;\n  const partes = String(valor).split(';').map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return false;\n  return partes.every(p => permitidos.includes(p));\n}\n\nfor (const [k, v] of Object.entries(ajustes)) {\n  if (!Object.prototype.hasOwnProperty.call(criterios, k)) continue;\n  if (esValorValido(k, v)) { criterios[k] = v; aplicadas[k] = v; }\n  else { rechazadas[k] = v; }\n}\n\nconst huboRechazos = Object.keys(rechazadas).length > 0;\nconst avisoRechazo = huboRechazos\n  ? ' [AVISO: se descartaron ajustes invalidos para: ' + Object.keys(rechazadas).join(', ') + ' -- valor(es) no reconocido(s): ' + JSON.stringify(rechazadas) + ']'\n  : '';\n\n// F7-01: la confianza declarada por la IA viaja con el resultado para poder enrutar a revisión manual.\nreturn { json: { id_solicitud: base.id_solicitud, servicio: base.servicio, criterios, criterios_ajustados_aplicados: aplicadas, criterios_ajustados_rechazados: rechazadas, resumen_cambios: (out.resumen_cambios || '') + avisoRechazo, comentario: base.Comentario || '', confianza: out.confianza || '',\n  // F4-03: el aviso y el cierre corren en otros subflujos, asi que el contexto de la propuesta viaja en el item.\n  contexto: { nombre_cliente: base.nombre_cliente || '', razon_social: base.razon_social || '',\n              servicio: base.servicio || '', pdf_url: base.pdf_url || '',\n              ronda_correccion: base.ronda_correccion, id_solicitud: base.id_solicitud,\n              Comentario: base.Comentario || '' } } };"
+      },
+      "id": "9bbd410a-676b-4ccc-852b-3b88839220d9",
+      "name": "Aplicar correcciones",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ String($('Ejecutar Leer Configuración').first().json._config.ia_correccion_habilitada || 'true') }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7f5db526-5fc9-4a0d-84a4-c57349d54801",
+      "name": "IF - ¿Corrección IA habilitada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ String($json.confianza || '') }}",
+              "rightValue": "baja",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ef4370cc-2b7a-4684-966f-ae219ae7126f",
+      "name": "IF - ¿Confianza suficiente?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1040,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "VChcasvisGKekezR",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "servicio": "={{ $json.servicio }}",
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "criterios": "={{ $json.criterios }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "servicio",
+              "type": "string",
+              "display": true
+            },
+            {
+              "id": "id_solicitud",
+              "type": "string",
+              "display": true
+            },
+            {
+              "id": "criterios",
+              "type": "object",
+              "display": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a4ae8173-2ea4-4d08-932d-d222ce182ef6",
+      "name": "Re-invocar motor",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1280,
+        0
+      ],
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "iNSErCHs2iw33emJ",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - W4D Revisión Manual"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "41893d46-f11d-43d7-b1e4-29eea075b4f1",
+      "name": "Ejecutar Revisión Manual",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// F4-03: el cierre corre en otro subflujo, asi que el comentario del asesor y el contexto de la\n// propuesta (que antes se leian de 'Consolidar datos y decision' dentro de W4-D) viajan en el item.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst ap = get('Aplicar correcciones');\nconst motor = $json || {};\nreturn { json: { ...motor, Comentario: ap.comentario || motor.Comentario || '',\n                 id_solicitud: motor.id_solicitud || ap.id_solicitud || '',\n                 contexto: ap.contexto || {} } };"
+      },
+      "id": "56d928e7-adb0-40e8-b5ed-2c63e7aacd34",
+      "name": "Preservar contexto de la corrección",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "POeFkqQp8e4cGfY3",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - W4D Cierre de Corrección"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "242d4bc9-645b-4e6b-9871-00113ff2eabb",
+      "name": "Ejecutar Cierre de Corrección",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "IF - ¿Rondas de corrección >= 3?": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Revisión Manual",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF - ¿Corrección IA habilitada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar corrección IA": {
+      "main": [
+        [
+          {
+            "node": "IA - Ajustar criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modelo OpenRouter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA - Ajustar criterios",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser criterios ajustados": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "IA - Ajustar criterios",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modelo Fixer": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Parser criterios ajustados",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA - Ajustar criterios": {
+      "main": [
+        [
+          {
+            "node": "Aplicar correcciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aplicar correcciones": {
+      "main": [
+        [
+          {
+            "node": "IF - ¿Confianza suficiente?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Corrección IA habilitada?": {
+      "main": [
+        [
+          {
+            "node": "Preparar corrección IA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ejecutar Revisión Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Confianza suficiente?": {
+      "main": [
+        [
+          {
+            "node": "Re-invocar motor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ejecutar Revisión Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Leer Configuración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Leer Configuración": {
+      "main": [
+        [
+          {
+            "node": "IF - ¿Rondas de corrección >= 3?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Re-invocar motor": {
+      "main": [
+        [
+          {
+            "node": "Preservar contexto de la corrección",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preservar contexto de la corrección",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preservar contexto de la corrección": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Cierre de Corrección",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "12275300-3ea0-48d8-a3ec-889734906fed",
+  "activeVersionId": "12275300-3ea0-48d8-a3ec-889734906fed",
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T14:17:58.025Z",
+    "createdAt": "2026-09-23T14:17:58.025Z",
+    "versionId": "12275300-3ea0-48d8-a3ec-889734906fed",
+    "workflowId": "3NAcLF4jaZ1JBw0A",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "correccion-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -640,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Hgy02eqPhnsdJvkq",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "ca43b774-9c64-44e4-846e-d620b15c77b9",
+        "name": "Ejecutar Leer Configuración",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "loose"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-tope",
+                "leftValue": "={{ Number($json.ronda_correccion) || 0 }}",
+                "rightValue": 3,
+                "operator": {
+                  "type": "number",
+                  "operation": "gte"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "98350229-ba94-4d0b-9279-884502826904",
+        "name": "IF - ¿Rondas de corrección >= 3?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -160,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const base = $json;\nconst comentario = base.Comentario || '';\nconst criterios = base.criterios || {};\nconst CLAVES_PROHIBIDAS = ['servicio', 'id_solicitud'];\nconst claves = Object.keys(criterios).filter(k => !CLAVES_PROHIBIDAS.includes(k));\nconst prompt = 'Sos un asistente de la Cámara de Comercio de Barranquilla (CCB). Aplicás correcciones a los criterios de una cotización ya generada, según el pedido del asesor comercial.\\n\\n'\n  + 'REGLAS ESTRICTAS:\\n'\n  + '- Solo podés modificar valores de estas claves existentes: ' + claves.join(', ') + '\\n'\n  + '- Está prohibido agregar claves nuevas o cambiar la estructura del objeto.\\n'\n  + '- Si el pedido requiere una clave que no existe, dejá criterios_ajustados vacío y explicá en resumen_cambios qué información falta.\\n'\n  + '- No inventes valores: usá solo lo que el pedido indica de forma inequívoca.\\n'\n  + '- confianza: alta si el pedido es claro, media si es interpretable, baja si es ambiguo.\\n\\n'\n  + 'CONVENCIONES DE VALORES (usar EXACTAMENTE estos textos cuando aplique):\\n'\n  + '- organizacion_juridica: solo \"Personas Jurídicas\", \"Personas Naturales\", \"Establecimientos\", \"Entidades sin ánimo de lucro\" (separadas por \"; \" si son varias).\\n'\n  + '- ubicacion_geografica: para zonas amplias usar exactamente \"Barranquilla\", \"Área Metropolitana de Barranquilla\" o \"Todo el Departamento del Atlántico\". Para municipios puntuales, listar el nombre exacto del municipio separados por \"; \".\\n'\n  + '- actividad_economica: para \"todos los sectores/actividades\" usar exactamente \"Todas las actividades económicas\". Para sectores puntuales, usar EXCLUSIVAMENTE uno o más de estos 18 nombres exactos, SIN partirlos aunque contengan \"y\"/\"al por\": \"Agropecuario\", \"Minero\", \"Industria\", \"Electricidad, gas, vapor y aire acondicionado\", \"Agua\", \"Construcción\", \"Comercio al por mayor y al por menor\", \"Transporte\", \"Alojamiento y restaurantes\", \"Información y comunicaciones\", \"Financiero\", \"Inmobiliarias\", \"Profesionales, científicas y técnicas\", \"Servicios administrativos y de apoyo\", \"Educación\", \"Salud\", \"Artísticas, de entretenimiento y recreación\", \"Otras actividades de servicios\". Si el asesor menciona varios sectores, separalos por \"; \" manteniendo cada nombre completo e intacto (nunca dividas un nombre de la lista en dos partes).\\n'\n  + '- tamano_empresa: solo \"Microempresas\", \"Pequeñas empresas\", \"Medianas empresas\", \"Grandes empresas\" (separadas por \"; \" si son varias).\\n'\n  + '- Si el pedido ajusta un rango de activos o ventas (activos_min/activos_max/activos_entre/activos_y, o su equivalente en ventas), seteá en null los otros campos del mismo grupo que queden en conflicto para no dejar un filtro inconsistente.\\n\\n'\n  + 'CRITERIOS ACTUALES (JSON):\\n' + JSON.stringify(criterios, null, 2) + '\\n\\n'\n  + 'PEDIDO DE CORRECCIÓN DEL ASESOR:\\n\"' + comentario + '\"';\nreturn { json: { ...base, prompt_correccion: prompt } };"
+        },
+        "id": "ac77d766-fbe1-49d8-aae7-f08e4ef511d8",
+        "name": "Preparar corrección IA",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          320,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.prompt_correccion }}",
+          "hasOutputParser": true,
+          "batching": {}
+        },
+        "id": "08c7a343-0734-4753-b916-d340d2dbe23a",
+        "name": "IA - Ajustar criterios",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.9,
+        "position": [
+          560,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "model": "openai/gpt-4o-mini",
+          "options": {}
+        },
+        "id": "276150b4-9ed2-43c9-b10a-2278c2bcaa76",
+        "name": "Modelo OpenRouter",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          560,
+          224
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "openRouterApi": {
+            "id": "PPk35IDkMnX3QnnE",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "schemaType": "manual",
+          "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"criterios_ajustados\": {\n      \"type\": \"object\",\n      \"description\": \"Subconjunto de claves existentes de los criterios con sus nuevos valores. Vacío si no hay ajustes válidos.\",\n      \"additionalProperties\": true\n    },\n    \"resumen_cambios\": {\n      \"type\": \"string\",\n      \"description\": \"Resumen breve en español de qué se cambió y por qué.\"\n    },\n    \"confianza\": {\n      \"type\": \"string\",\n      \"enum\": [\"alta\",\"media\",\"baja\"],\n      \"description\": \"Confianza en la interpretación del pedido.\"\n    }\n  },\n  \"required\": [\"criterios_ajustados\",\"resumen_cambios\",\"confianza\"]\n}",
+          "autoFix": true
+        },
+        "id": "787af846-5b01-4676-b19b-13a58318d921",
+        "name": "Parser criterios ajustados",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          800,
+          224
+        ]
+      },
+      {
+        "parameters": {
+          "model": "openai/gpt-4o-mini",
+          "options": {}
+        },
+        "id": "036f0526-2250-43f3-abcb-31f3e846d036",
+        "name": "Modelo Fixer",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [
+          800,
+          320
+        ],
+        "retryOnFail": true,
+        "maxTries": 2,
+        "waitBetweenTries": 2000,
+        "credentials": {
+          "openRouterApi": {
+            "id": "PPk35IDkMnX3QnnE",
+            "name": "OpenRouter account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const base = $('Preparar corrección IA').first().json;\nconst raw = $json;\nconst out = (raw && typeof raw.output === 'object' && raw.output !== null) ? raw.output\n  : (raw && typeof raw.response === 'object' && raw.response !== null) ? raw.response\n  : (raw || {});\nconst ajustes = out.criterios_ajustados || {};\nconst criterios = { ...base.criterios };\nconst aplicadas = {};\nconst rechazadas = {};\n\n// Valores permitidos por clave -- si la IA escribe algo fuera de esta lista para una clave\n// controlada, se descarta el ajuste en vez de aplicarlo (evita corromper el criterio en\n// silencio, p.ej. valores de organizacion_juridica escritos por error en tamano_empresa).\nconst VALORES_VALIDOS = {\n  organizacion_juridica: ['Personas Jurídicas', 'Personas Naturales', 'Establecimientos', 'Entidades sin ánimo de lucro'],\n  tamano_empresa: ['Microempresas', 'Pequeñas empresas', 'Medianas empresas', 'Grandes empresas'],\n  actividad_economica: ['Agropecuario', 'Minero', 'Industria', 'Electricidad, gas, vapor y aire acondicionado', 'Agua', 'Construcción', 'Comercio al por mayor y al por menor', 'Transporte', 'Alojamiento y restaurantes', 'Información y comunicaciones', 'Financiero', 'Inmobiliarias', 'Profesionales, científicas y técnicas', 'Servicios administrativos y de apoyo', 'Educación', 'Salud', 'Artísticas, de entretenimiento y recreación', 'Otras actividades de servicios', 'Todas las actividades económicas']\n};\n\nfunction esValorValido(clave, valor) {\n  const permitidos = VALORES_VALIDOS[clave];\n  if (!permitidos) return true;\n  const partes = String(valor).split(';').map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return false;\n  return partes.every(p => permitidos.includes(p));\n}\n\nfor (const [k, v] of Object.entries(ajustes)) {\n  if (!Object.prototype.hasOwnProperty.call(criterios, k)) continue;\n  if (esValorValido(k, v)) { criterios[k] = v; aplicadas[k] = v; }\n  else { rechazadas[k] = v; }\n}\n\nconst huboRechazos = Object.keys(rechazadas).length > 0;\nconst avisoRechazo = huboRechazos\n  ? ' [AVISO: se descartaron ajustes invalidos para: ' + Object.keys(rechazadas).join(', ') + ' -- valor(es) no reconocido(s): ' + JSON.stringify(rechazadas) + ']'\n  : '';\n\n// F7-01: la confianza declarada por la IA viaja con el resultado para poder enrutar a revisión manual.\nreturn { json: { id_solicitud: base.id_solicitud, servicio: base.servicio, criterios, criterios_ajustados_aplicados: aplicadas, criterios_ajustados_rechazados: rechazadas, resumen_cambios: (out.resumen_cambios || '') + avisoRechazo, comentario: base.Comentario || '', confianza: out.confianza || '',\n  // F4-03: el aviso y el cierre corren en otros subflujos, asi que el contexto de la propuesta viaja en el item.\n  contexto: { nombre_cliente: base.nombre_cliente || '', razon_social: base.razon_social || '',\n              servicio: base.servicio || '', pdf_url: base.pdf_url || '',\n              ronda_correccion: base.ronda_correccion, id_solicitud: base.id_solicitud,\n              Comentario: base.Comentario || '' } } };"
+        },
+        "id": "9bbd410a-676b-4ccc-852b-3b88839220d9",
+        "name": "Aplicar correcciones",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": false,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ String($('Ejecutar Leer Configuración').first().json._config.ia_correccion_habilitada || 'true') }}",
+                "rightValue": "false",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "7f5db526-5fc9-4a0d-84a4-c57349d54801",
+        "name": "IF - ¿Corrección IA habilitada?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          80,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": false,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ String($json.confianza || '') }}",
+                "rightValue": "baja",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ef4370cc-2b7a-4684-966f-ae219ae7126f",
+        "name": "IF - ¿Confianza suficiente?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1040,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "VChcasvisGKekezR",
+            "mode": "id"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "servicio": "={{ $json.servicio }}",
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "criterios": "={{ $json.criterios }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "servicio",
+                "type": "string",
+                "display": true
+              },
+              {
+                "id": "id_solicitud",
+                "type": "string",
+                "display": true
+              },
+              {
+                "id": "criterios",
+                "type": "object",
+                "display": true
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "a4ae8173-2ea4-4d08-932d-d222ce182ef6",
+        "name": "Re-invocar motor",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.3,
+        "position": [
+          1280,
+          0
+        ],
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "iNSErCHs2iw33emJ",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - W4D Revisión Manual"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "41893d46-f11d-43d7-b1e4-29eea075b4f1",
+        "name": "Ejecutar Revisión Manual",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          880,
+          -240
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// F4-03: el cierre corre en otro subflujo, asi que el comentario del asesor y el contexto de la\n// propuesta (que antes se leian de 'Consolidar datos y decision' dentro de W4-D) viajan en el item.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst ap = get('Aplicar correcciones');\nconst motor = $json || {};\nreturn { json: { ...motor, Comentario: ap.comentario || motor.Comentario || '',\n                 id_solicitud: motor.id_solicitud || ap.id_solicitud || '',\n                 contexto: ap.contexto || {} } };"
+        },
+        "id": "56d928e7-adb0-40e8-b5ed-2c63e7aacd34",
+        "name": "Preservar contexto de la corrección",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1360,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "POeFkqQp8e4cGfY3",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - W4D Cierre de Corrección"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "242d4bc9-645b-4e6b-9871-00113ff2eabb",
+        "name": "Ejecutar Cierre de Corrección",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1600,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "IF - ¿Rondas de corrección >= 3?": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Revisión Manual",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "IF - ¿Corrección IA habilitada?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar corrección IA": {
+        "main": [
+          [
+            {
+              "node": "IA - Ajustar criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Modelo OpenRouter": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "IA - Ajustar criterios",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parser criterios ajustados": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "IA - Ajustar criterios",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Modelo Fixer": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Parser criterios ajustados",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IA - Ajustar criterios": {
+        "main": [
+          [
+            {
+              "node": "Aplicar correcciones",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Aplicar correcciones": {
+        "main": [
+          [
+            {
+              "node": "IF - ¿Confianza suficiente?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Corrección IA habilitada?": {
+        "main": [
+          [
+            {
+              "node": "Preparar corrección IA",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Ejecutar Revisión Manual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Confianza suficiente?": {
+        "main": [
+          [
+            {
+              "node": "Re-invocar motor",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Ejecutar Revisión Manual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Leer Configuración",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Leer Configuración": {
+        "main": [
+          [
+            {
+              "node": "IF - ¿Rondas de corrección >= 3?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Re-invocar motor": {
+        "main": [
+          [
+            {
+              "node": "Preservar contexto de la corrección",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preservar contexto de la corrección",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preservar contexto de la corrección": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Cierre de Corrección",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T14:18:40.370Z",
+        "id": 2755,
+        "workflowId": "3NAcLF4jaZ1JBw0A",
+        "versionId": "12275300-3ea0-48d8-a3ec-889734906fed",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

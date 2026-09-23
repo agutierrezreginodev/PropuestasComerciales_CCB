@@ -15,7 +15,7 @@
 |---|---|---|
 | **Fase 5 — Configuración centralizada** | ✅ **Cerrada** | Data Table `Configuracion_CCB` + subflujo `[SUB] - CCB - Leer Configuración`; ningún correo, URL ni destino escrito a mano en los 13 flujos |
 | **Fase 6 — Observabilidad** | ✅ **Cerrada** (salvo F6-04) | Timeouts, límites de lectura, enmascarado de PII, marca de tiempo de errores y monitoreo horario de las 4 métricas |
-| **Fase 4 — Arquitectura** | 🔄 F4-01 (8/9), **F4-02 y F4-05 cerradas** | Subflujo de contexto de propuesta (W4B/W4C/W4D); dictamen sobre separar el PDF; catch-all con diseño propio documentado; **F4-03 pendiente** |
+| **Fase 4 — Arquitectura** | 🔄 F4-01, **F4-02, F4-03 y F4-05 cerradas** | Subflujo de contexto de propuesta; **W4-D partido en router de 19 nodos + 5 subflujos**; dictamen sobre separar el PDF; catch-all con diseño propio |
 | **Fase 7 — Guardarraíles de IA** | 🔄 **F7-01 y F7-02 cerradas**; F7-03 pendiente de decisión | Confianza baja → revisión manual; interruptor de la corrección asistida |
 | Fase 0 / 1 / 2 | ✅ Cerradas previamente | — |
 | Fase 3 | ✅ 9/11 + 1 N/A; F3-02 cerrado como desviación de plataforma | — |
@@ -33,7 +33,7 @@
 | **Seguridad (sin valores incrustados)** | ⚠️ 2/11 | ✅ **11/11** — correo de alertas, correo/nombre del asesor, URL del microservicio y chatId salen de `Configuracion_CCB` |
 | **Idempotencia** | ⚠️ 6/11 | ⚠️ 6/11 (sin cambios: cubierta por upsert en los puntos de escritura y por el subflujo de error) |
 | **Resiliencia (retry)** | ⚠️ en mejora | ✅ 11/11 en nodos de red de negocio (5×5000) + timeout explícito en los dos nodos HTTP |
-| **Arquitectura (≤20 nodos)** | ⚠️ 6/11 | ⚠️ 6/11 — W4B 14→12, W4C 12→10, W4D 50→48 por F4-02, pero W4D subió a 54 con los guardarraíles de F7; se resuelve con F4-03 y con la separación del PDF (F4-05) |
+| **Arquitectura (≤20 nodos)** | ⚠️ 6/11 | ⚠️ **7/11** — W4D 54→**19** (F4-03); siguen sobre el umbral W2A (26), W3 (25, lo cubre F4-05) y W5B (26, fuera del plan) |
 | Control de versiones | ✅ 13/13 | ✅ 17/17 workflows versionados en el snapshot |
 
 ## 3. Artefactos nuevos (23/09)
@@ -46,6 +46,11 @@
 | Subflujo `[SUB] - CCB - Leer Contexto Propuesta` | `GELWpskp0aYJ2zPg` | Reemplaza el bloque de 3 lecturas duplicado en W4B/W4C/W4D |
 | Flujo `[OPS] - CCB - Monitoreo del pipeline` | `ZwBFTBhwS9pjS69X` | Horario: mide y publica las 4 métricas, alerta sobre umbral |
 | Columna `error_timestamp` en `Errores_CCB` | — | Sella los 8 puntos de registro de error (antes no había forma de ubicarlos en el tiempo) |
+| Subflujo `[SUB] - CCB - W4D Aprobar` | `8j6BCwXkgJCccyO1` | Rama "aprobar" del router de decisión (3 nodos) |
+| Subflujo `[SUB] - CCB - W4D Cancelar` | `Jgf514VxDINJ8ra3` | Rama "cancelar" (3 nodos) |
+| Subflujo `[SUB] - CCB - W4D Revisión Manual` | `iNSErCHs2iw33emJ` | Los tres motivos de revisión manual sin consumir ronda (6 nodos) |
+| Subflujo `[SUB] - CCB - W4D Corrección IA` | `3NAcLF4jaZ1JBw0A` | Guardarraíles + ajuste con IA + re-invocación del motor (15 nodos) |
+| Subflujo `[SUB] - CCB - W4D Cierre de Corrección` | `POeFkqQp8e4cGfY3` | Idempotencia, ronda, aviso por Teams y fallos (17 nodos) |
 
 ## 4. Verificación (regla de oro)
 
@@ -56,6 +61,8 @@
 - Flujo de monitoreo: ejecución completa `success`; 0,17% de error, 124.471 ejecuciones, p95 5.000 ms, 19 handles, 5 filas escritas en `Metricas_CCB`.
 - Enmascarado de PII y lógica de los guardarraíles de IA: probados con `node` sobre el código extraído de la instancia, con casos reales.
 - Hallazgo de motor verificado: n8n **no** resuelve `$('nodo')` hacia una rama hermana (*"hasn't been executed"*); el patrón válido es un subflujo ancestro.
+- **F4-03 verificado** con filas descartables (`SOL-PRUEBA-F403` / `SOL-PRUEBA-F403B`): `Aprobar` → 200 + `APROBADA`; `Cancelar` → 200 + `CANCELADA`; `Solicitar correcciones` con ronda 3 → 200 con el mensaje de tope + `REVISION_MANUAL` **sin consumir ronda**; cadena anidada W4D → C1 → Revisión Manual → Leer Configuración completa (`success`).
+- **Defecto corregido y verificado:** los avisos de error perdían el detalle porque el nodo `Data Table` reemplaza el item; afectaba a W4B, W5A, W6 y al cierre. Tras invertir el orden, una ejecución real registró `solicitud=SOL-PRUEBA-F403B`, `nodo=Re-invocar motor (recálculo)` y el mensaje real del fallo (antes: `desconocido` / `Error sin mensaje`). También se corrigió el aviso de tope, que salía con asunto y cuerpo vacíos.
 
 **Pendiente de verificación real (no se dio por bueno):**
 
@@ -76,13 +83,14 @@
 
 ### 5.2 Trabajo pendiente en el plan
 
-1. **F4-03** — partir W4D (54 nodos, 5 ramas) en subflujos por rama: es el cambio de mayor riesgo y el que cierra el criterio de ≤20 nodos.
-2. **F4-05** — ejecutar la separación de la etapa de PDF (W3 quedaría en 17 nodos). El bloqueo ya no existe: se verificó que ningún flujo aguas abajo consume el binario del PDF.
+1. **F4-05** — ejecutar la separación de la etapa de PDF (W3 quedaría en 17 nodos). El bloqueo ya no existe: se verificó que ningún flujo aguas abajo consume el binario del PDF.
+2. **Partir W2A (26) y W5B (26)** para cerrar el criterio de ≤20 nodos: no estaba contemplado en el plan y hay que decidirlo (mismo patrón que F4-03: agrupar por rama de servicio / responsabilidad).
 3. **F7-03** — según la decisión de arriba.
 4. **F6-04** — retención de ejecuciones (`EXECUTIONS_DATA_PRUNE` / `MAX_AGE`): requiere Tecnología.
 5. **Re-auditoría de cierre** — repetir el procedimiento de evaluación y publicar el puntaje nuevo.
 
 ### 5.3 Limpieza manual
 
-- Fila id **118** de `Errores_CCB` (`id_solicitud = PRUEBA-F6-05`): el API público de n8n no permite borrar ni actualizar filas (404/405), hay que eliminarla desde la UI. El flujo de monitoreo la excluye por prefijo `PRUEBA-`.
+- Filas de prueba en `Errores_CCB` (ids **118**, **120**, **121**, **122**, **123**): el API público de n8n no permite borrar ni actualizar filas (404/405), hay que eliminarlas desde la UI. El flujo de monitoreo excluye las de prefijo `PRUEBA-`.
+- Filas descartables en `Cotizaciones_CCB` (`SOL-PRUEBA-F403`, `SOL-PRUEBA-F403B`) usadas para verificar F4-03: eliminarlas desde la UI.
 - Tabla **`Errores_Workflows_CCB`**: quedó huérfana (ningún workflow escribe en ella). Se conserva por su historial; conviene decidir si se archiva.

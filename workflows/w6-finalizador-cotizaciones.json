@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:37:30.137Z",
+  "updatedAt": "2026-09-23T14:25:53.819Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB - Workflow 6 - Finalizador de Cotizaciones",
@@ -381,7 +381,7 @@
       "main": [
         [
           {
-            "node": "Data Table - Revertir FINALIZADA a ENVIADA (Cotización)",
+            "node": "Ejecutar Registrar-y-Alertar",
             "type": "main",
             "index": 0
           }
@@ -390,9 +390,14 @@
     },
     "Data Table - Revertir FINALIZADA a ENVIADA (Cotización)": {
       "main": [
+        []
+      ]
+    },
+    "Ejecutar Registrar-y-Alertar": {
+      "main": [
         [
           {
-            "node": "Ejecutar Registrar-y-Alertar",
+            "node": "Data Table - Revertir FINALIZADA a ENVIADA (Cotización)",
             "type": "main",
             "index": 0
           }
@@ -416,15 +421,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
-  "activeVersionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
-  "versionCounter": 54,
+  "versionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
+  "activeVersionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
+  "versionCounter": 57,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:37:30.138Z",
-    "createdAt": "2026-09-23T13:37:30.138Z",
-    "versionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
+    "updatedAt": "2026-09-23T14:25:53.820Z",
+    "createdAt": "2026-09-23T14:25:53.820Z",
+    "versionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
@@ -801,7 +806,7 @@
         "main": [
           [
             {
-              "node": "Data Table - Revertir FINALIZADA a ENVIADA (Cotización)",
+              "node": "Ejecutar Registrar-y-Alertar",
               "type": "main",
               "index": 0
             }
@@ -810,9 +815,14 @@
       },
       "Data Table - Revertir FINALIZADA a ENVIADA (Cotización)": {
         "main": [
+          []
+        ]
+      },
+      "Ejecutar Registrar-y-Alertar": {
+        "main": [
           [
             {
-              "node": "Ejecutar Registrar-y-Alertar",
+              "node": "Data Table - Revertir FINALIZADA a ENVIADA (Cotización)",
               "type": "main",
               "index": 0
             }
@@ -826,18 +836,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:37:30.169Z",
-        "id": 2713,
+        "createdAt": "2026-09-23T14:25:53.856Z",
+        "id": 2764,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
+        "versionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:37:30.185Z",
-        "id": 2714,
+        "createdAt": "2026-09-23T14:25:53.875Z",
+        "id": 2765,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "5701e3ab-2fec-444a-8422-b2b9d6004c41",
+        "versionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

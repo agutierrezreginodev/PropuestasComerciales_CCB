@@ -1,0 +1,1202 @@
+{
+  "updatedAt": "2026-09-23T14:25:56.072Z",
+  "createdAt": "2026-09-23T14:17:02.880Z",
+  "id": "POeFkqQp8e4cGfY3",
+  "name": "[SUB] - CCB - W4D Cierre de Corrección",
+  "description": "Subflujo del router de decisión: cierra la corrección después del recálculo (idempotencia del comentario, ronda, aviso por Teams) y maneja el fallo del recálculo y del aviso (F4-03).",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "cierre-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -640,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Hgy02eqPhnsdJvkq",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "789c511f-bc61-468e-b4d1-bc42c07182c8",
+      "name": "Ejecutar Leer Configuración",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-ok",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5201a9ef-1df5-4a0c-b211-9dad1726f905",
+      "name": "IF - ¿Recálculo exitoso (ok)?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "limit": 1
+      },
+      "id": "f1931cd8-4da1-443b-9799-309947dc6dc4",
+      "name": "Data Table - Releer cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "id": "w4d-if-reenvio",
+      "name": "IF - ¿Comentario ya procesado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        320,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.comentario_fausto }}",
+              "rightValue": "={{ $json.Comentario }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.comentario_fausto }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "w4d-confirmar-reenvio",
+      "name": "Confirmar reenvío - ya procesado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Tus comentarios ya fueron procesados. No se consumió una ronda nueva.' } };"
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ronda_correccion": "={{ (Number($json.ronda_correccion) || 0) + 1 }}",
+            "comentario_fausto": "={{ $json.Comentario }}",
+            "estado": "EN_REVISION"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "866f961a-96d8-4cad-b079-63f5ef1dceef",
+      "name": "Data Table - Guardar ronda y comentario",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const fresh = $json;\nconst idSolicitud = fresh.id_solicitud;\nconst rondaGuardada = Number(fresh.ronda_correccion) || 0;\nconst link = 'https://revision-propuesta-ccb.vercel.app/?id_solicitud=' + encodeURIComponent(idSolicitud);\nconst mensaje = '📋 <b>Propuesta actualizada — ronda ' + rondaGuardada + ' de 3</b><br><br>'\n  + 'Solicitud: ' + idSolicitud + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { id_solicitud: idSolicitud, mensaje_teams: mensaje } };"
+      },
+      "id": "5c01a49c-6ccd-4855-bc29-8aed6f2f32da",
+      "name": "Reconstruir mensaje simple",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "chatId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Ejecutar Leer Configuración').first().json._config.teams_chat_aprobacion }}"
+        },
+        "contentType": "html",
+        "message": "={{ $json.mensaje_teams }}",
+        "options": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "52d8c83b-371c-4993-aa80-b87e5ed2ad66",
+      "name": "Teams - Enviar mensaje (corrección)",
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "webhookId": "b5bc81d8-ac78-4f1e-98a2-85de97c1e1c3",
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "XuEqB2riUsSUuZEr",
+          "name": "INT-ServiciosInformacion Microsoft Teams"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "notes": "MODO PRUEBA (15/09): el chatId sale de la Data Table `Configuracion_CCB`, clave `teams_chat_aprobacion`, que hoy apunta al chat de notas de prueba. La tarea F0-05 (restaurar el chat del aprobador real) se cierra cambiando esa clave por el valor de `teams_chat_aprobacion_produccion`; no hace falta tocar ningún nodo."
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Se enviaron tus comentarios. El asesor va a recalcular y te va a volver a escribir por Teams con el link actualizado.' } };"
+      },
+      "id": "6b50bae2-171a-4dda-9230-20d01c103272",
+      "name": "Confirmar corrección enviada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar((j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams').slice(0, 300);\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\n// F4-03: el id venia de 'Consolidar datos y decision' (nodo de W4-D); ahora se resuelve dentro del subflujo.\nconst id = get('Data Table - Releer cotización').id_solicitud || $json.id_solicitud || '';\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Teams - Enviar mensaje (corrección)', mensaje_error: mensaje } };"
+      },
+      "id": "54d2b4a3-ade7-45b1-a3be-f6915fcbbc17",
+      "name": "Preparar error - Teams envío",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "workflow_origen": "={{ $json.workflow_origen }}",
+            "nodo_fallido": "={{ $json.nodo_fallido }}",
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "cd00c18e-4e50-4e01-b7a5-63cd1bef1f7a",
+      "name": "Data Table - Registrar error (envío Teams)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        240
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: true, mensaje: 'Se guardaron tus comentarios y se recalculó la propuesta, pero no pudimos avisarte por Teams. El asesor te va a contactar directamente.' } };"
+      },
+      "id": "51b4054e-a874-4f01-a1a2-3ce48579fda6",
+      "name": "Confirmar corrección (aviso Teams falló)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst flujo = $workflow.name;\nconst esExcepcion = typeof j.ok === 'undefined';\nconst nodoFallido = 'Re-invocar motor' + (esExcepcion ? '' : ' (recálculo)');\nconst tipoError = esExcepcion\n  ? 'Excepción al re-invocar el motor de cálculo (W3)'\n  : 'Rechazo del motor de cálculo (ok=false)';\n// F4-03: el id viaja en el item (lo conserva 'Preservar contexto de la corrección').\nconst id = j.id_solicitud || '';\nconst mensaje = limpiar((typeof j.error === 'string' ? j.error : (j.error && j.error.message)) || j.message || (esExcepcion ? 'Error desconocido al re-invocar el motor' : 'El recálculo devolvió ok=false')).slice(0, 300);\nconst descripcion = esExcepcion\n  ? 'La corrección con IA se aplicó pero la re-invocación del motor de cálculo falló con una excepción (no se obtuvo respuesta). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.'\n  : 'La corrección con IA se aplicó pero el motor rechazó el recálculo (ok=false). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Recálculo falló — propuesta en ERROR_CALCULO</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">${descripcion}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: nodoFallido, mensaje_error: mensaje, fecha_error: fechaError, emailBody } };"
+      },
+      "id": "8025ad4e-1707-450a-8c27-22e51d5cdf42",
+      "name": "Preparar error - Recálculo falló",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $('Preparar error - Recálculo falló').first().json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "ERROR_CALCULO"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "20596eff-c580-4a01-bec9-c60235537c16",
+      "name": "Data Table - Marcar ERROR_CALCULO",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        240
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "id": "w4d-ejecutar-reg-alertar-rec",
+      "name": "Ejecutar Registrar-y-Alertar (Recálculo)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        240
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return { json: { ok: false, mensaje: 'Se registró tu comentario, pero el motor no pudo recalcular la propuesta con esos ajustes. El asesor te va a contactar directamente.' } };"
+      },
+      "id": "42f9531e-9645-4c9e-98e6-90eef1b265e8",
+      "name": "Confirmar error recálculo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "IF - ¿Recálculo exitoso (ok)?": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Releer cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Recálculo falló",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Guardar ronda y comentario": {
+      "main": [
+        [
+          {
+            "node": "Reconstruir mensaje simple",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reconstruir mensaje simple": {
+      "main": [
+        [
+          {
+            "node": "Teams - Enviar mensaje (corrección)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Teams - Enviar mensaje (corrección)": {
+      "main": [
+        [
+          {
+            "node": "Confirmar corrección enviada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Teams envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Teams envío": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Registrar error (envío Teams)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Registrar error (envío Teams)": {
+      "main": [
+        [
+          {
+            "node": "Confirmar corrección (aviso Teams falló)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Recálculo falló": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar (Recálculo)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Marcar ERROR_CALCULO": {
+      "main": [
+        []
+      ]
+    },
+    "Ejecutar Registrar-y-Alertar (Recálculo)": {
+      "main": [
+        [
+          {
+            "node": "Confirmar error recálculo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Data Table - Marcar ERROR_CALCULO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Releer cotización": {
+      "main": [
+        [
+          {
+            "node": "IF - ¿Comentario ya procesado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Comentario ya procesado?": {
+      "main": [
+        [
+          {
+            "node": "Confirmar reenvío - ya procesado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Data Table - Guardar ronda y comentario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Leer Configuración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Leer Configuración": {
+      "main": [
+        [
+          {
+            "node": "IF - ¿Recálculo exitoso (ok)?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
+  "activeVersionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
+  "versionCounter": 7,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T14:25:56.073Z",
+    "createdAt": "2026-09-23T14:25:56.073Z",
+    "versionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
+    "workflowId": "POeFkqQp8e4cGfY3",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "cierre-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -640,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Hgy02eqPhnsdJvkq",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "789c511f-bc61-468e-b4d1-bc42c07182c8",
+        "name": "Ejecutar Leer Configuración",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-ok",
+                "leftValue": "={{ $json.ok }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "5201a9ef-1df5-4a0c-b211-9dad1726f905",
+        "name": "IF - ¿Recálculo exitoso (ok)?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -160,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "limit": 1
+        },
+        "id": "f1931cd8-4da1-443b-9799-309947dc6dc4",
+        "name": "Data Table - Releer cotización",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          80,
+          0
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "id": "w4d-if-reenvio",
+        "name": "IF - ¿Comentario ya procesado?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          320,
+          0
+        ],
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "loose"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.comentario_fausto }}",
+                "rightValue": "={{ $json.Comentario }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              },
+              {
+                "id": "c2",
+                "leftValue": "={{ $json.comentario_fausto }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        }
+      },
+      {
+        "id": "w4d-confirmar-reenvio",
+        "name": "Confirmar reenvío - ya procesado",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          560,
+          0
+        ],
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Tus comentarios ya fueron procesados. No se consumió una ronda nueva.' } };"
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "ronda_correccion": "={{ (Number($json.ronda_correccion) || 0) + 1 }}",
+              "comentario_fausto": "={{ $json.Comentario }}",
+              "estado": "EN_REVISION"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "866f961a-96d8-4cad-b079-63f5ef1dceef",
+        "name": "Data Table - Guardar ronda y comentario",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          800,
+          0
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const fresh = $json;\nconst idSolicitud = fresh.id_solicitud;\nconst rondaGuardada = Number(fresh.ronda_correccion) || 0;\nconst link = 'https://revision-propuesta-ccb.vercel.app/?id_solicitud=' + encodeURIComponent(idSolicitud);\nconst mensaje = '📋 <b>Propuesta actualizada — ronda ' + rondaGuardada + ' de 3</b><br><br>'\n  + 'Solicitud: ' + idSolicitud + '<br><br>'\n  + '<a href=\"' + link + '\">👉 Ver y decidir</a>';\nreturn { json: { id_solicitud: idSolicitud, mensaje_teams: mensaje } };"
+        },
+        "id": "5c01a49c-6ccd-4855-bc29-8aed6f2f32da",
+        "name": "Reconstruir mensaje simple",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1040,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "chatMessage",
+          "chatId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ $('Ejecutar Leer Configuración').first().json._config.teams_chat_aprobacion }}"
+          },
+          "contentType": "html",
+          "message": "={{ $json.mensaje_teams }}",
+          "options": {
+            "includeLinkToWorkflow": false
+          }
+        },
+        "id": "52d8c83b-371c-4993-aa80-b87e5ed2ad66",
+        "name": "Teams - Enviar mensaje (corrección)",
+        "type": "n8n-nodes-base.microsoftTeams",
+        "typeVersion": 2,
+        "position": [
+          1280,
+          0
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "webhookId": "b5bc81d8-ac78-4f1e-98a2-85de97c1e1c3",
+        "credentials": {
+          "microsoftTeamsOAuth2Api": {
+            "id": "XuEqB2riUsSUuZEr",
+            "name": "INT-ServiciosInformacion Microsoft Teams"
+          }
+        },
+        "onError": "continueErrorOutput",
+        "notes": "MODO PRUEBA (15/09): el chatId sale de la Data Table `Configuracion_CCB`, clave `teams_chat_aprobacion`, que hoy apunta al chat de notas de prueba. La tarea F0-05 (restaurar el chat del aprobador real) se cierra cambiando esa clave por el valor de `teams_chat_aprobacion_produccion`; no hace falta tocar ningún nodo."
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Se enviaron tus comentarios. El asesor va a recalcular y te va a volver a escribir por Teams con el link actualizado.' } };"
+        },
+        "id": "6b50bae2-171a-4dda-9230-20d01c103272",
+        "name": "Confirmar corrección enviada",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1520,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar((j.error && (j.error.message || j.error.description)) || 'Fallo técnico al enviar el mensaje de Teams').slice(0, 300);\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\n// F4-03: el id venia de 'Consolidar datos y decision' (nodo de W4-D); ahora se resuelve dentro del subflujo.\nconst id = get('Data Table - Releer cotización').id_solicitud || $json.id_solicitud || '';\nreturn { json: { id_solicitud: id, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Teams - Enviar mensaje (corrección)', mensaje_error: mensaje } };"
+        },
+        "id": "54d2b4a3-ade7-45b1-a3be-f6915fcbbc17",
+        "name": "Preparar error - Teams envío",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/lO46Xkqj0TTedLjI"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "workflow_origen": "={{ $json.workflow_origen }}",
+              "nodo_fallido": "={{ $json.nodo_fallido }}",
+              "mensaje_error": "={{ $json.mensaje_error }}",
+              "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "cd00c18e-4e50-4e01-b7a5-63cd1bef1f7a",
+        "name": "Data Table - Registrar error (envío Teams)",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          80,
+          240
+        ],
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: true, mensaje: 'Se guardaron tus comentarios y se recalculó la propuesta, pero no pudimos avisarte por Teams. El asesor te va a contactar directamente.' } };"
+        },
+        "id": "51b4054e-a874-4f01-a1a2-3ce48579fda6",
+        "name": "Confirmar corrección (aviso Teams falló)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          320,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst flujo = $workflow.name;\nconst esExcepcion = typeof j.ok === 'undefined';\nconst nodoFallido = 'Re-invocar motor' + (esExcepcion ? '' : ' (recálculo)');\nconst tipoError = esExcepcion\n  ? 'Excepción al re-invocar el motor de cálculo (W3)'\n  : 'Rechazo del motor de cálculo (ok=false)';\n// F4-03: el id viaja en el item (lo conserva 'Preservar contexto de la corrección').\nconst id = j.id_solicitud || '';\nconst mensaje = limpiar((typeof j.error === 'string' ? j.error : (j.error && j.error.message)) || j.message || (esExcepcion ? 'Error desconocido al re-invocar el motor' : 'El recálculo devolvió ok=false')).slice(0, 300);\nconst descripcion = esExcepcion\n  ? 'La corrección con IA se aplicó pero la re-invocación del motor de cálculo falló con una excepción (no se obtuvo respuesta). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.'\n  : 'La corrección con IA se aplicó pero el motor rechazó el recálculo (ok=false). La propuesta quedó en ERROR_CALCULO y no se reintenta automáticamente.';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Recálculo falló — propuesta en ERROR_CALCULO</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">${descripcion}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje de error:</strong> ${mensaje}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${id}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: id, flujo, tipo_error: tipoError, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: nodoFallido, mensaje_error: mensaje, fecha_error: fechaError, emailBody } };"
+        },
+        "id": "8025ad4e-1707-450a-8c27-22e51d5cdf42",
+        "name": "Preparar error - Recálculo falló",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          560,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $('Preparar error - Recálculo falló').first().json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "ERROR_CALCULO"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "20596eff-c580-4a01-bec9-c60235537c16",
+        "name": "Data Table - Marcar ERROR_CALCULO",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          800,
+          240
+        ],
+        "alwaysOutputData": true,
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "id": "w4d-ejecutar-reg-alertar-rec",
+        "name": "Ejecutar Registrar-y-Alertar (Recálculo)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          1040,
+          240
+        ],
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "return { json: { ok: false, mensaje: 'Se registró tu comentario, pero el motor no pudo recalcular la propuesta con esos ajustes. El asesor te va a contactar directamente.' } };"
+        },
+        "id": "42f9531e-9645-4c9e-98e6-90eef1b265e8",
+        "name": "Confirmar error recálculo",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1280,
+          240
+        ]
+      }
+    ],
+    "connections": {
+      "IF - ¿Recálculo exitoso (ok)?": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Releer cotización",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Recálculo falló",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Guardar ronda y comentario": {
+        "main": [
+          [
+            {
+              "node": "Reconstruir mensaje simple",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Reconstruir mensaje simple": {
+        "main": [
+          [
+            {
+              "node": "Teams - Enviar mensaje (corrección)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Teams - Enviar mensaje (corrección)": {
+        "main": [
+          [
+            {
+              "node": "Confirmar corrección enviada",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Teams envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Teams envío": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Registrar error (envío Teams)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Registrar error (envío Teams)": {
+        "main": [
+          [
+            {
+              "node": "Confirmar corrección (aviso Teams falló)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Recálculo falló": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar (Recálculo)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Marcar ERROR_CALCULO": {
+        "main": [
+          []
+        ]
+      },
+      "Ejecutar Registrar-y-Alertar (Recálculo)": {
+        "main": [
+          [
+            {
+              "node": "Confirmar error recálculo",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Data Table - Marcar ERROR_CALCULO",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Releer cotización": {
+        "main": [
+          [
+            {
+              "node": "IF - ¿Comentario ya procesado?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Comentario ya procesado?": {
+        "main": [
+          [
+            {
+              "node": "Confirmar reenvío - ya procesado",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Data Table - Guardar ronda y comentario",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Leer Configuración",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Leer Configuración": {
+        "main": [
+          [
+            {
+              "node": "IF - ¿Recálculo exitoso (ok)?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T14:25:56.128Z",
+        "id": 2766,
+        "workflowId": "POeFkqQp8e4cGfY3",
+        "versionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T14:25:56.190Z",
+        "id": 2767,
+        "workflowId": "POeFkqQp8e4cGfY3",
+        "versionId": "29f1d92d-85bf-41dc-8a95-b81fdca49f09",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}
