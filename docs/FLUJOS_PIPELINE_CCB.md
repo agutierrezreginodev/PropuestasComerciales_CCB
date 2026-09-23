@@ -76,7 +76,8 @@ un nodo intermedio reemplaza el item por la fila de una tabla).
 **Relaciones.** Lo llaman los flujos que necesitan configuración: el subflujo de error, el catch-all, W3, W4B, W4D, W5B,
 el subflujo de PDF, el subflujo de Revisión Manual y el flujo de monitoreo. Las claves actuales: `alertas_email`,
 `asesor_nombre`, `asesor_email`, `asesor_telefono`, `microservicio_pdf_url`, `teams_chat_aprobacion`,
-`notificacion_envio_email`, `teams_chat_aprobacion_produccion`, `metricas_url`, `ia_correccion_habilitada`, `revision_url`.
+`notificacion_envio_email`, `teams_chat_aprobacion_produccion`, `metricas_url`, `ia_correccion_habilitada`, `revision_url`,
+`n8n_api_url`.
 
 ---
 
