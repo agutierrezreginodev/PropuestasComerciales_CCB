@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-17T14:16:50.046Z",
+  "updatedAt": "2026-09-23T13:31:29.094Z",
   "createdAt": "2026-09-07T14:40:21.862Z",
   "id": "Dh2lAQTzyoZBpXie",
   "name": "CCB - Error Workflow (catch-all)",
@@ -33,7 +33,7 @@
     },
     {
       "parameters": {
-        "toRecipients": "dev-alerts@example.com",
+        "toRecipients": "={{ $('Ejecutar Leer Configuración').first().json._config.alertas_email }}",
         "subject": "={{ '🔴 Falló ejecución - ' + $json.workflowName }}",
         "bodyContent": "={{ $json.alertHtml }}",
         "additionalFields": {
@@ -148,6 +148,27 @@
         -160,
         -160
       ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Hgy02eqPhnsdJvkq",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "5e068f58-ff26-43f7-b7ab-2c0a6b5fa7ae",
+      "name": "Ejecutar Leer Configuración",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        0
+      ]
     }
   ],
   "connections": {
@@ -155,7 +176,7 @@
       "main": [
         [
           {
-            "node": "Preparar alerta de fallo",
+            "node": "Ejecutar Leer Configuración",
             "type": "main",
             "index": 0
           }
@@ -183,6 +204,17 @@
           }
         ]
       ]
+    },
+    "Ejecutar Leer Configuración": {
+      "main": [
+        [
+          {
+            "node": "Preparar alerta de fallo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -192,15 +224,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
-  "activeVersionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
-  "versionCounter": 27,
+  "versionId": "81d6bcb6-3b09-40fc-982a-d5290defd4d0",
+  "activeVersionId": "81d6bcb6-3b09-40fc-982a-d5290defd4d0",
+  "versionCounter": 36,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-16T16:19:30.576Z",
-    "createdAt": "2026-09-16T16:19:30.576Z",
-    "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
+    "updatedAt": "2026-09-23T13:31:29.095Z",
+    "createdAt": "2026-09-23T13:31:29.095Z",
+    "versionId": "81d6bcb6-3b09-40fc-982a-d5290defd4d0",
     "workflowId": "Dh2lAQTzyoZBpXie",
     "nodes": [
       {
@@ -229,7 +261,7 @@
       },
       {
         "parameters": {
-          "toRecipients": "dev-alerts@example.com",
+          "toRecipients": "={{ $('Ejecutar Leer Configuración').first().json._config.alertas_email }}",
           "subject": "={{ '🔴 Falló ejecución - ' + $json.workflowName }}",
           "bodyContent": "={{ $json.alertHtml }}",
           "additionalFields": {
@@ -344,6 +376,27 @@
           -160,
           -160
         ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Hgy02eqPhnsdJvkq",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "5e068f58-ff26-43f7-b7ab-2c0a6b5fa7ae",
+        "name": "Ejecutar Leer Configuración",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -400,
+          0
+        ]
       }
     ],
     "connections": {
@@ -351,7 +404,7 @@
         "main": [
           [
             {
-              "node": "Preparar alerta de fallo",
+              "node": "Ejecutar Leer Configuración",
               "type": "main",
               "index": 0
             }
@@ -379,6 +432,17 @@
             }
           ]
         ]
+      },
+      "Ejecutar Leer Configuración": {
+        "main": [
+          [
+            {
+              "node": "Preparar alerta de fallo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -387,34 +451,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-16T16:19:30.613Z",
-        "id": 2348,
+        "createdAt": "2026-09-23T13:31:29.134Z",
+        "id": 2687,
         "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
+        "versionId": "81d6bcb6-3b09-40fc-982a-d5290defd4d0",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-16T16:19:30.627Z",
-        "id": 2349,
+        "createdAt": "2026-09-23T13:31:29.152Z",
+        "id": 2688,
         "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:50.076Z",
-        "id": 2430,
-        "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-17T14:16:50.088Z",
-        "id": 2431,
-        "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "e7490315-9128-4235-9e87-6f92a40ebe0f",
+        "versionId": "81d6bcb6-3b09-40fc-982a-d5290defd4d0",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

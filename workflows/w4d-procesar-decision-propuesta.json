@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:24:12.106Z",
+  "updatedAt": "2026-09-23T13:34:30.239Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -530,7 +530,7 @@
     },
     {
       "parameters": {
-        "toRecipients": "dev-alerts@example.com",
+        "toRecipients": "={{ $('Ejecutar Leer Configuración').first().json._config.alertas_email }}",
         "subject": "={{ $json._aviso_asunto }}",
         "bodyContent": "={{ $json._aviso_cuerpo }}",
         "additionalFields": {
@@ -851,7 +851,7 @@
         "chatId": {
           "__rl": true,
           "mode": "id",
-          "value": "48:notes"
+          "value": "={{ $('Ejecutar Leer Configuración').first().json._config.teams_chat_aprobacion }}"
         },
         "contentType": "html",
         "message": "={{ $json.mensaje_teams }}",
@@ -878,7 +878,7 @@
         }
       },
       "onError": "continueErrorOutput",
-      "notes": "MODO PRUEBA (15/09): chatId apuntando al chat de Notas de Adrian mientras se prueba el pipeline. Antes de producción real, restaurar a Asesor CCB: <TEAMS_CHAT_ID>"
+      "notes": "MODO PRUEBA (15/09): el chatId sale de la Data Table `Configuracion_CCB`, clave `teams_chat_aprobacion`, que hoy apunta al chat de notas de prueba. La tarea F0-05 (restaurar el chat del aprobador real) se cierra cambiando esa clave por el valor de `teams_chat_aprobacion_produccion`; no hace falta tocar ningún nodo."
     },
     {
       "parameters": {
@@ -1225,6 +1225,27 @@
         "mode": "runOnceForEachItem",
         "jsCode": "return { json: { ok: true, mensaje: 'Tus comentarios ya fueron procesados. No se consumió una ronda nueva.' } };"
       }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Hgy02eqPhnsdJvkq",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "852cee0e-dbfe-4489-bf91-97c328002587",
+      "name": "Ejecutar Leer Configuración",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        208
+      ]
     }
   ],
   "connections": {
@@ -1232,7 +1253,7 @@
       "main": [
         [
           {
-            "node": "Extraer decisión del body",
+            "node": "Ejecutar Leer Configuración",
             "type": "main",
             "index": 0
           }
@@ -1796,6 +1817,17 @@
           }
         ]
       ]
+    },
+    "Ejecutar Leer Configuración": {
+      "main": [
+        [
+          {
+            "node": "Extraer decisión del body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1810,15 +1842,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
-  "activeVersionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
-  "versionCounter": 187,
+  "versionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
+  "activeVersionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
+  "versionCounter": 199,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:24:12.107Z",
-    "createdAt": "2026-09-22T20:24:12.107Z",
-    "versionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
+    "updatedAt": "2026-09-23T13:34:30.241Z",
+    "createdAt": "2026-09-23T13:34:30.241Z",
+    "versionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -2344,7 +2376,7 @@
       },
       {
         "parameters": {
-          "toRecipients": "dev-alerts@example.com",
+          "toRecipients": "={{ $('Ejecutar Leer Configuración').first().json._config.alertas_email }}",
           "subject": "={{ $json._aviso_asunto }}",
           "bodyContent": "={{ $json._aviso_cuerpo }}",
           "additionalFields": {
@@ -2665,7 +2697,7 @@
           "chatId": {
             "__rl": true,
             "mode": "id",
-            "value": "48:notes"
+            "value": "={{ $('Ejecutar Leer Configuración').first().json._config.teams_chat_aprobacion }}"
           },
           "contentType": "html",
           "message": "={{ $json.mensaje_teams }}",
@@ -2692,7 +2724,7 @@
           }
         },
         "onError": "continueErrorOutput",
-        "notes": "MODO PRUEBA (15/09): chatId apuntando al chat de Notas de Adrian mientras se prueba el pipeline. Antes de producción real, restaurar a Asesor CCB: <TEAMS_CHAT_ID>"
+        "notes": "MODO PRUEBA (15/09): el chatId sale de la Data Table `Configuracion_CCB`, clave `teams_chat_aprobacion`, que hoy apunta al chat de notas de prueba. La tarea F0-05 (restaurar el chat del aprobador real) se cierra cambiando esa clave por el valor de `teams_chat_aprobacion_produccion`; no hace falta tocar ningún nodo."
       },
       {
         "parameters": {
@@ -3039,6 +3071,27 @@
           "mode": "runOnceForEachItem",
           "jsCode": "return { json: { ok: true, mensaje: 'Tus comentarios ya fueron procesados. No se consumió una ronda nueva.' } };"
         }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Hgy02eqPhnsdJvkq",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "852cee0e-dbfe-4489-bf91-97c328002587",
+        "name": "Ejecutar Leer Configuración",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -400,
+          208
+        ]
       }
     ],
     "connections": {
@@ -3046,7 +3099,7 @@
         "main": [
           [
             {
-              "node": "Extraer decisión del body",
+              "node": "Ejecutar Leer Configuración",
               "type": "main",
               "index": 0
             }
@@ -3610,6 +3663,17 @@
             }
           ]
         ]
+      },
+      "Ejecutar Leer Configuración": {
+        "main": [
+          [
+            {
+              "node": "Extraer decisión del body",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -3618,18 +3682,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:24:12.175Z",
-        "id": 2652,
+        "createdAt": "2026-09-23T13:34:30.315Z",
+        "id": 2703,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
+        "versionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:24:12.201Z",
-        "id": 2653,
+        "createdAt": "2026-09-23T13:34:30.349Z",
+        "id": 2704,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "dbed190d-dfc7-435c-aa1b-3c364024b89d",
+        "versionId": "3001cd56-7faa-44e3-85dc-90168d3cfb10",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

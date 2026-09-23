@@ -1,0 +1,218 @@
+{
+  "updatedAt": "2026-09-23T13:30:54.029Z",
+  "createdAt": "2026-09-23T13:30:53.252Z",
+  "id": "Hgy02eqPhnsdJvkq",
+  "name": "[SUB] - CCB - Leer Configuración",
+  "description": "Subflujo compartido que entrega la configuración centralizada (Data Table Configuracion_CCB) adjunta al item del llamador. Sistema: n8n Data Tables. Área propietaria: Servicios de Información CCB. Escalado: canal de alertas técnicas del pipeline.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "sub-config-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "8ChPkhKrjag6Jkcs",
+          "mode": "list",
+          "cachedResultName": "Configuracion_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/8ChPkhKrjag6Jkcs"
+        },
+        "limit": 50
+      },
+      "id": "649afff4-7bb6-442d-8fe2-e3ec9af225aa",
+      "name": "Data Table - Leer configuración",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Devuelve el item del llamador con la configuracion adjunta en _config (clave -> valor).\n// F5-01/F5-02/F5-03/F5-04: fuente unica de verdad = Data Table Configuracion_CCB.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst base = get('When Executed by Another Workflow');\nconst _config = Object.fromEntries($('Data Table - Leer configuración').all().map(i => [i.json.clave, i.json.valor]));\nreturn { json: { ...base, _config } };"
+      },
+      "id": "23bc7063-a889-4d99-a574-1ab8fa2fb293",
+      "name": "Fusionar configuración en el item del llamador",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## [SUB] - CCB - Leer Configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
+        "height": 320,
+        "width": 520,
+        "color": 4
+      },
+      "id": "1d6fea4f-e1b0-45bb-99d9-bc3c9cc924a5",
+      "name": "Nota - Leer Configuración",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -288
+      ]
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer configuración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer configuración": {
+      "main": [
+        [
+          {
+            "node": "Fusionar configuración en el item del llamador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "a0021488-f661-4fae-b2d3-3658bd455b56",
+  "activeVersionId": "a0021488-f661-4fae-b2d3-3658bd455b56",
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T13:30:53.252Z",
+    "createdAt": "2026-09-23T13:30:53.252Z",
+    "versionId": "a0021488-f661-4fae-b2d3-3658bd455b56",
+    "workflowId": "Hgy02eqPhnsdJvkq",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "sub-config-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "8ChPkhKrjag6Jkcs",
+            "mode": "list",
+            "cachedResultName": "Configuracion_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/8ChPkhKrjag6Jkcs"
+          },
+          "limit": 50
+        },
+        "id": "649afff4-7bb6-442d-8fe2-e3ec9af225aa",
+        "name": "Data Table - Leer configuración",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          -160,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Devuelve el item del llamador con la configuracion adjunta en _config (clave -> valor).\n// F5-01/F5-02/F5-03/F5-04: fuente unica de verdad = Data Table Configuracion_CCB.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst base = get('When Executed by Another Workflow');\nconst _config = Object.fromEntries($('Data Table - Leer configuración').all().map(i => [i.json.clave, i.json.valor]));\nreturn { json: { ...base, _config } };"
+        },
+        "id": "23bc7063-a889-4d99-a574-1ab8fa2fb293",
+        "name": "Fusionar configuración en el item del llamador",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          96,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## [SUB] - CCB - Leer Configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
+          "height": 320,
+          "width": 520,
+          "color": 4
+        },
+        "id": "1d6fea4f-e1b0-45bb-99d9-bc3c9cc924a5",
+        "name": "Nota - Leer Configuración",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -400,
+          -288
+        ]
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer configuración",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer configuración": {
+        "main": [
+          [
+            {
+              "node": "Fusionar configuración en el item del llamador",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T13:30:54.964Z",
+        "id": 2683,
+        "workflowId": "Hgy02eqPhnsdJvkq",
+        "versionId": "a0021488-f661-4fae-b2d3-3658bd455b56",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}
