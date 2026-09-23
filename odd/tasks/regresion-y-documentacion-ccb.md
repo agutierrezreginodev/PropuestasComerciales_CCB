@@ -31,7 +31,7 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 | # | Tarea | Criterio de aceptación | Estado |
 |---|---|---|---|
 | **R1** | Restaurar el `httpMethod: GET` explícito en el webhook de W4C | El snapshot muestra el método y el path responde como webhook vivo | ☑ 23/09 — commit `089af00` |
-| **R2** | Verificar con tráfico real la ruta de error compartida (`[SUB] CCB - Registrar y Alertar Error`) | Una ejecución real que falle deja fila en `Errores_CCB` con `error_timestamp` y mensaje enmascarado, envía el correo de alerta y **no corta** el flujo que la invoca | ☐ pendiente |
+| **R2** | Verificar con tráfico real la ruta de error compartida (`[SUB] CCB - Registrar y Alertar Error`) | Una ejecución real que falle deja fila en `Errores_CCB` con `error_timestamp` y mensaje enmascarado, envía el correo de alerta y **no corta** el flujo que la invoca | ☑ 23/09 — ejecución `422821` |
 | **R3** | Construir `[OPS] CCB - Regresión del pipeline` | El flujo corre los caminos críticos con filas descartables, publica un semáforo por camino, borra sus filas y reporta por correo | ☐ pendiente |
 | **R4** | Probar la rama de **rechazo/expiración** de la aprobación de IA (F7-03) | Rechazo real en Teams → motivo `aprobacion_rechazada`, revisión manual y **sin consumir ronda** | ☐ pendiente (requiere un clic del usuario) |
 | **R5** | Documentar el flujo completo | `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`: el recorrido de negocio de punta a punta (quién interviene, qué ve, qué pasa en cada rama) + el mapa técnico de los 26 flujos y las 6 tablas; un lector nuevo puede seguirlo sin abrir n8n | ☐ pendiente |
@@ -68,3 +68,28 @@ _(se completa al cerrar cada tarea: id de ejecución, filas afectadas, correo re
     no coincide).
 - **Pendiente declarado:** la respuesta **200 con credencial válida** no se puede probar sin el token; queda cubierta por
   el uso real de las páginas.
+
+### R2 — Ruta de error compartida con tráfico real · 23/09
+
+**Montaje.** Flujo temporal descartable `TEST DESCARTABLE - R2 ruta de error (7a98c53936)` (`aE4LpvQdltT2orEK`):
+webhook (path aleatorio no adivinable) → desenvolver body → `Execute Workflow` al subflujo de error
+(`waitForSubWorkflow: true`, la misma configuración que usa W2A) → marcar continuación → responder. Se activó, se disparó
+con `curl` y se borró al terminar.
+
+**Carga enviada** (con PII a propósito, para probar el enmascarado):
+`{id_solicitud: SOL-PRUEBA-R2, workflow_origen: "W2A (prueba R2)", nodo_fallido: "HTTP - Invocar motor", mensaje_error:
+"Fallo simulado: connect ETIMEDOUT al motor http://10.0.0.9:8080/calcular para buzon-de-prueba@example.com (codigo
+interno 1234567890123)", subject: "[PRUEBA R2] ..."}`
+
+**Resultado (ejecuciones `422820` llamador y `422821` subflujo, ambas `success`):**
+
+| Qué se verifica | Evidencia |
+|---|---|
+| **Enmascarado** de PII | La URL, el correo y el número largo quedaron como `<url>`, `<correo>` y `<num>`, **tanto en la fila guardada como en el cuerpo del correo** |
+| **Fila registrada** en `Errores_CCB` | `id 128`, `id_solicitud: SOL-PRUEBA-R2`, `nodo_fallido: HTTP - Invocar motor`, `mensaje_error` enmascarado |
+| **Marca de tiempo** | `error_timestamp: "2026-09-23 13:46:53"` (zona `America/Bogota`, con `$now.setZone`) |
+| **Correo de alerta enviado** | `Outlook - Enviar alerta` → `{success: true}` (no falló en silencio: el nodo tiene `onError: continueRegularOutput`, así que había que mirar su salida) al destinatario de `alertas_email` |
+| **El llamador NO se corta** | El flujo de prueba terminó en `Marcar continuacion` y respondió `{llamador_continuo: true, devuelto_por_subflujo: {...}}`: el subflujo devolvió el item y el llamador siguió |
+| **Configuración por subflujo** | La salida de `Ejecutar Leer Configuración` es un *passthrough*: conserva los campos del llamador y agrega `_config` |
+
+**Limpieza verificada:** `deleteRows` con `dryRun` coincidió en **exactamente 1 fila** (la de prueba) y luego se borró; el flujo temporal se desactivó y se eliminó (`GET` → **404**); el inventario quedó en **57 workflows**, igual que antes de la prueba.
