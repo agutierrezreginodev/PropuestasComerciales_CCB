@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:08:40.100Z",
+  "updatedAt": "2026-09-23T15:57:06.384Z",
   "createdAt": "2026-09-23T15:05:13.086Z",
   "id": "DF3emCmBBBB2HA3i",
-  "name": "[SUB] - CCB - Generar PDF de Propuesta",
+  "name": "[SUB] CCB - Generar PDF de Propuesta",
   "description": "Subflujo compartido que genera el PDF de la propuesta: elige la plantilla por servicio, interpola los datos y llama al microservicio. Sistema: n8n Set/HTTP + microservicio de PDF. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -26,7 +26,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -325,7 +325,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] - CCB - Generar PDF de Propuesta (F4-05)\n\nEtapa de presentación del motor, separada del cálculo de precio (W3 pasó de 25 a 19 nodos).\n\n- **Entrada:** el item calculado por W3 (`servicio`, campos del cálculo, `id_solicitud`).\n- **Salida:** el mismo item + `PDF_URL` (link público del PDF en el microservicio), o `{ ok: false, error, mensaje_error }` si el microservicio falla o el servicio no es reconocido.\n- **Ya no devuelve el binario del PDF:** nadie aguas abajo lo consume (se verificó), y así se evita cruzar binarios entre subflujos.\n- Las plantillas HTML (100–212 KB cada una) y la interpolación viven acá; la URL del microservicio y los datos del asesor salen de `Configuracion_CCB`.",
+        "content": "## [SUB] CCB - Generar PDF de Propuesta (F4-05)\n\nEtapa de presentación del motor, separada del cálculo de precio (W3 pasó de 25 a 19 nodos).\n\n- **Entrada:** el item calculado por W3 (`servicio`, campos del cálculo, `id_solicitud`).\n- **Salida:** el mismo item + `PDF_URL` (link público del PDF en el microservicio), o `{ ok: false, error, mensaje_error }` si el microservicio falla o el servicio no es reconocido.\n- **Ya no devuelve el binario del PDF:** nadie aguas abajo lo consume (se verificó), y así se evita cruzar binarios entre subflujos.\n- Las plantillas HTML (100–212 KB cada una) y la interpolación viven acá; la URL del microservicio y los datos del asesor salen de `Configuracion_CCB`.",
         "height": 340,
         "width": 520,
         "color": 3
@@ -482,15 +482,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "eca126b2-9eec-45e4-9fa3-76f90c1a3c8b",
-  "activeVersionId": "eca126b2-9eec-45e4-9fa3-76f90c1a3c8b",
-  "versionCounter": 10,
+  "versionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
+  "activeVersionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
+  "versionCounter": 16,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:08:40.108Z",
-    "createdAt": "2026-09-23T15:08:40.108Z",
-    "versionId": "eca126b2-9eec-45e4-9fa3-76f90c1a3c8b",
+    "updatedAt": "2026-09-23T15:57:06.392Z",
+    "createdAt": "2026-09-23T15:57:06.392Z",
+    "versionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
     "workflowId": "DF3emCmBBBB2HA3i",
     "nodes": [
       {
@@ -512,7 +512,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -811,7 +811,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] - CCB - Generar PDF de Propuesta (F4-05)\n\nEtapa de presentación del motor, separada del cálculo de precio (W3 pasó de 25 a 19 nodos).\n\n- **Entrada:** el item calculado por W3 (`servicio`, campos del cálculo, `id_solicitud`).\n- **Salida:** el mismo item + `PDF_URL` (link público del PDF en el microservicio), o `{ ok: false, error, mensaje_error }` si el microservicio falla o el servicio no es reconocido.\n- **Ya no devuelve el binario del PDF:** nadie aguas abajo lo consume (se verificó), y así se evita cruzar binarios entre subflujos.\n- Las plantillas HTML (100–212 KB cada una) y la interpolación viven acá; la URL del microservicio y los datos del asesor salen de `Configuracion_CCB`.",
+          "content": "## [SUB] CCB - Generar PDF de Propuesta (F4-05)\n\nEtapa de presentación del motor, separada del cálculo de precio (W3 pasó de 25 a 19 nodos).\n\n- **Entrada:** el item calculado por W3 (`servicio`, campos del cálculo, `id_solicitud`).\n- **Salida:** el mismo item + `PDF_URL` (link público del PDF en el microservicio), o `{ ok: false, error, mensaje_error }` si el microservicio falla o el servicio no es reconocido.\n- **Ya no devuelve el binario del PDF:** nadie aguas abajo lo consume (se verificó), y así se evita cruzar binarios entre subflujos.\n- Las plantillas HTML (100–212 KB cada una) y la interpolación viven acá; la URL del microservicio y los datos del asesor salen de `Configuracion_CCB`.",
           "height": 340,
           "width": 520,
           "color": 3
@@ -968,18 +968,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:08:40.236Z",
-        "id": 2785,
+        "createdAt": "2026-09-23T15:57:06.522Z",
+        "id": 2835,
         "workflowId": "DF3emCmBBBB2HA3i",
-        "versionId": "eca126b2-9eec-45e4-9fa3-76f90c1a3c8b",
+        "versionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:08:40.281Z",
-        "id": 2786,
+        "createdAt": "2026-09-23T15:57:06.577Z",
+        "id": 2836,
         "workflowId": "DF3emCmBBBB2HA3i",
-        "versionId": "eca126b2-9eec-45e4-9fa3-76f90c1a3c8b",
+        "versionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

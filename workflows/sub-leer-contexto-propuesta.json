@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T13:49:39.977Z",
+  "updatedAt": "2026-09-23T15:57:02.682Z",
   "createdAt": "2026-09-23T13:49:39.140Z",
   "id": "GELWpskp0aYJ2zPg",
-  "name": "[SUB] - CCB - Leer Contexto Propuesta",
+  "name": "[SUB] CCB - Leer Contexto Propuesta",
   "description": "Subflujo compartido que lee el contexto de una propuesta (cotización, criterios y solicitud) por id_solicitud y lo devuelve en un solo item. Sistema: n8n Data Tables. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -35,7 +35,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] - CCB - Leer Contexto Propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
+        "content": "## [SUB] CCB - Leer Contexto Propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
         "height": 380,
         "width": 520,
         "color": 4
@@ -216,15 +216,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "ec5f920c-39f0-4e6b-9df1-9e970cfd68fa",
-  "activeVersionId": "ec5f920c-39f0-4e6b-9df1-9e970cfd68fa",
-  "versionCounter": 4,
+  "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
+  "activeVersionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:49:39.140Z",
-    "createdAt": "2026-09-23T13:49:39.140Z",
-    "versionId": "ec5f920c-39f0-4e6b-9df1-9e970cfd68fa",
+    "updatedAt": "2026-09-23T15:57:02.683Z",
+    "createdAt": "2026-09-23T15:57:02.683Z",
+    "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
     "workflowId": "GELWpskp0aYJ2zPg",
     "nodes": [
       {
@@ -255,7 +255,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] - CCB - Leer Contexto Propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
+          "content": "## [SUB] CCB - Leer Contexto Propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
           "height": 380,
           "width": 520,
           "color": 4
@@ -436,10 +436,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:49:40.385Z",
-        "id": 2737,
+        "createdAt": "2026-09-23T15:57:02.733Z",
+        "id": 2833,
         "workflowId": "GELWpskp0aYJ2zPg",
-        "versionId": "ec5f920c-39f0-4e6b-9df1-9e970cfd68fa",
+        "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T15:57:02.749Z",
+        "id": 2834,
+        "workflowId": "GELWpskp0aYJ2zPg",
+        "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

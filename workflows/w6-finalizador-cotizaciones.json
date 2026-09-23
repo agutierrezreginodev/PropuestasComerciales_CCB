@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T14:25:53.819Z",
+  "updatedAt": "2026-09-23T15:57:21.662Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB - Workflow 6 - Finalizador de Cotizaciones",
@@ -240,7 +240,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -421,15 +421,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
-  "activeVersionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
-  "versionCounter": 57,
+  "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
+  "activeVersionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
+  "versionCounter": 60,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T14:25:53.820Z",
-    "createdAt": "2026-09-23T14:25:53.820Z",
-    "versionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
+    "updatedAt": "2026-09-23T15:57:21.664Z",
+    "createdAt": "2026-09-23T15:57:21.664Z",
+    "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
@@ -665,7 +665,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -836,18 +836,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T14:25:53.856Z",
-        "id": 2764,
+        "createdAt": "2026-09-23T15:57:21.708Z",
+        "id": 2855,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
+        "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T14:25:53.875Z",
-        "id": 2765,
+        "createdAt": "2026-09-23T15:57:21.725Z",
+        "id": 2856,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "ff06bb6e-bd0e-40d5-990b-c33b5351e507",
+        "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T14:25:51.959Z",
+  "updatedAt": "2026-09-23T15:57:18.874Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -233,7 +233,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -304,7 +304,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -449,15 +449,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
-  "activeVersionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
-  "versionCounter": 51,
+  "versionId": "03891099-f994-490c-b1f6-aeb849593596",
+  "activeVersionId": "03891099-f994-490c-b1f6-aeb849593596",
+  "versionCounter": 54,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T14:25:51.960Z",
-    "createdAt": "2026-09-23T14:25:51.960Z",
-    "versionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
+    "updatedAt": "2026-09-23T15:57:18.875Z",
+    "createdAt": "2026-09-23T15:57:18.875Z",
+    "versionId": "03891099-f994-490c-b1f6-aeb849593596",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -686,7 +686,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -757,7 +757,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -892,18 +892,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T14:25:51.999Z",
-        "id": 2762,
+        "createdAt": "2026-09-23T15:57:18.911Z",
+        "id": 2851,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
+        "versionId": "03891099-f994-490c-b1f6-aeb849593596",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T14:25:52.018Z",
-        "id": 2763,
+        "createdAt": "2026-09-23T15:57:18.927Z",
+        "id": 2852,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "92bf35e9-2998-4c45-9d8e-175ad0d8afde",
+        "versionId": "03891099-f994-490c-b1f6-aeb849593596",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

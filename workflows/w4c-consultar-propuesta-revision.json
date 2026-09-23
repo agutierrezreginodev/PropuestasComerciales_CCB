@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:50:29.734Z",
+  "updatedAt": "2026-09-23T15:57:17.827Z",
   "createdAt": "2026-09-15T15:09:07.764Z",
   "id": "KuLSIzBZgaRIjuSu",
   "name": "CCB - Workflow 4C - Consultar Propuesta para Revisión",
@@ -194,7 +194,7 @@
           "__rl": true,
           "value": "GELWpskp0aYJ2zPg",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Contexto Propuesta"
+          "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -315,15 +315,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "af9593e1-fb59-45de-9c5b-7b2b6706a6e7",
-  "activeVersionId": "af9593e1-fb59-45de-9c5b-7b2b6706a6e7",
-  "versionCounter": 49,
+  "versionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
+  "activeVersionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
+  "versionCounter": 52,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:50:29.736Z",
-    "createdAt": "2026-09-23T13:50:29.736Z",
-    "versionId": "af9593e1-fb59-45de-9c5b-7b2b6706a6e7",
+    "updatedAt": "2026-09-23T15:57:17.830Z",
+    "createdAt": "2026-09-23T15:57:17.830Z",
+    "versionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
     "workflowId": "KuLSIzBZgaRIjuSu",
     "nodes": [
       {
@@ -513,7 +513,7 @@
             "__rl": true,
             "value": "GELWpskp0aYJ2zPg",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Contexto Propuesta"
+            "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -628,18 +628,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:50:29.783Z",
-        "id": 2741,
+        "createdAt": "2026-09-23T15:57:17.885Z",
+        "id": 2849,
         "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "af9593e1-fb59-45de-9c5b-7b2b6706a6e7",
+        "versionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:50:29.802Z",
-        "id": 2742,
+        "createdAt": "2026-09-23T15:57:17.907Z",
+        "id": 2850,
         "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "af9593e1-fb59-45de-9c5b-7b2b6706a6e7",
+        "versionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

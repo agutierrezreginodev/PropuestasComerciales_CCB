@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T15:20:33.991Z",
+  "updatedAt": "2026-09-23T15:57:14.192Z",
   "createdAt": "2026-09-07T18:48:54.850Z",
   "id": "cHOIOEFB5nbltN82",
   "name": "[SUB] CCB - Workflow 3 - Motor Criterios y Precio",
@@ -386,7 +386,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -407,7 +407,7 @@
           "__rl": true,
           "value": "DF3emCmBBBB2HA3i",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Generar PDF de Propuesta"
+          "cachedResultName": "[SUB] CCB - Generar PDF de Propuesta"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -666,15 +666,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "cc6ca036-d977-4155-a207-460772d2ba57",
-  "activeVersionId": "cc6ca036-d977-4155-a207-460772d2ba57",
-  "versionCounter": 307,
+  "versionId": "31de76a1-6fc6-456c-a99e-8af05d19bfa5",
+  "activeVersionId": "31de76a1-6fc6-456c-a99e-8af05d19bfa5",
+  "versionCounter": 310,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:20:33.992Z",
-    "createdAt": "2026-09-23T15:20:33.992Z",
-    "versionId": "cc6ca036-d977-4155-a207-460772d2ba57",
+    "updatedAt": "2026-09-23T15:57:14.193Z",
+    "createdAt": "2026-09-23T15:57:14.193Z",
+    "versionId": "31de76a1-6fc6-456c-a99e-8af05d19bfa5",
     "workflowId": "cHOIOEFB5nbltN82",
     "nodes": [
       {
@@ -1056,7 +1056,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1077,7 +1077,7 @@
             "__rl": true,
             "value": "DF3emCmBBBB2HA3i",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Generar PDF de Propuesta"
+            "cachedResultName": "[SUB] CCB - Generar PDF de Propuesta"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1328,18 +1328,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:20:34.087Z",
-        "id": 2788,
+        "createdAt": "2026-09-23T15:57:14.241Z",
+        "id": 2843,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "cc6ca036-d977-4155-a207-460772d2ba57",
+        "versionId": "31de76a1-6fc6-456c-a99e-8af05d19bfa5",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:20:34.121Z",
-        "id": 2789,
+        "createdAt": "2026-09-23T15:57:14.256Z",
+        "id": 2844,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "cc6ca036-d977-4155-a207-460772d2ba57",
+        "versionId": "31de76a1-6fc6-456c-a99e-8af05d19bfa5",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

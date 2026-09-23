@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T15:35:10.052Z",
+  "updatedAt": "2026-09-23T15:56:56.562Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -369,7 +369,7 @@
           "__rl": true,
           "value": "GELWpskp0aYJ2zPg",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Contexto Propuesta"
+          "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -390,7 +390,7 @@
           "__rl": true,
           "value": "8j6BCwXkgJCccyO1",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - W4D Aprobar"
+          "cachedResultName": "[SUB] CCB - W4D Aprobar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -411,7 +411,7 @@
           "__rl": true,
           "value": "Jgf514VxDINJ8ra3",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - W4D Cancelar"
+          "cachedResultName": "[SUB] CCB - W4D Cancelar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -432,7 +432,7 @@
           "__rl": true,
           "value": "3NAcLF4jaZ1JBw0A",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - W4D Corrección IA"
+          "cachedResultName": "[SUB] CCB - W4D Corrección IA"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -688,15 +688,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "72331620-7e1f-4a42-be92-0e5f6701614e",
-  "activeVersionId": "72331620-7e1f-4a42-be92-0e5f6701614e",
-  "versionCounter": 239,
+  "versionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
+  "activeVersionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
+  "versionCounter": 242,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:35:10.053Z",
-    "createdAt": "2026-09-23T15:35:10.053Z",
-    "versionId": "72331620-7e1f-4a42-be92-0e5f6701614e",
+    "updatedAt": "2026-09-23T15:56:56.563Z",
+    "createdAt": "2026-09-23T15:56:56.563Z",
+    "versionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -1061,7 +1061,7 @@
             "__rl": true,
             "value": "GELWpskp0aYJ2zPg",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Contexto Propuesta"
+            "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1082,7 +1082,7 @@
             "__rl": true,
             "value": "8j6BCwXkgJCccyO1",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - W4D Aprobar"
+            "cachedResultName": "[SUB] CCB - W4D Aprobar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1103,7 +1103,7 @@
             "__rl": true,
             "value": "Jgf514VxDINJ8ra3",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - W4D Cancelar"
+            "cachedResultName": "[SUB] CCB - W4D Cancelar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1124,7 +1124,7 @@
             "__rl": true,
             "value": "3NAcLF4jaZ1JBw0A",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - W4D Corrección IA"
+            "cachedResultName": "[SUB] CCB - W4D Corrección IA"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1374,18 +1374,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:35:10.104Z",
-        "id": 2795,
+        "createdAt": "2026-09-23T15:56:56.606Z",
+        "id": 2823,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "72331620-7e1f-4a42-be92-0e5f6701614e",
+        "versionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:35:10.123Z",
-        "id": 2796,
+        "createdAt": "2026-09-23T15:56:56.622Z",
+        "id": 2824,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "72331620-7e1f-4a42-be92-0e5f6701614e",
+        "versionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

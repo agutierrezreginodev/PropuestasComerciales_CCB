@@ -34,6 +34,10 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 | `POeFkqQp8e4cGfY3` | [SUB] - CCB - W4D Cierre de Corrección | [`workflows/w4d-sub-cierre-correccion.json`](workflows/w4d-sub-cierre-correccion.json) |
 | `DF3emCmBBBB2HA3i` | [SUB] - CCB - Generar PDF de Propuesta | [`workflows/sub-generar-pdf-propuesta.json`](workflows/sub-generar-pdf-propuesta.json) |
 
+**Carpeta en n8n:** los 12 flujos originales viven en la carpeta `Servicios_Información_Cotizaciones_v2.0`; los flujos nuevos deben quedar en esa misma carpeta (ver [docs/FLUJOS_PIPELINE_CCB.md](docs/FLUJOS_PIPELINE_CCB.md), que además documenta cada uno: por qué se creó, cómo funciona y con qué flujos se relaciona).
+
+**Convención de nombres:** `[SUB]` para subflujos invocados desde otro flujo, `[OPS]` para flujos operativos de plataforma, y sin prefijo para los flujos principales del pipeline.
+
 El snapshot está **completo**: los 12 workflows del pipeline definitivo (11 activos + W2B retirado), el Error Workflow catch-all, los tres subflujos compartidos y el flujo de monitoreo operativo. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
 
 ## Pipeline completo — Información Georreferenciada
@@ -81,7 +85,8 @@ Los 12 workflows se evaluaron contra el marco *Arquitectura e Ingeniería de Aut
 
 - **[Informe de auditoría (2026-09-16)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-16.md)** — procedimiento reproducible paso a paso, resultado consolidado, desglose por dimensión y ficha por flujo con lo que cumple, lo que no y sus pendientes.
 - **[Plan de remediación](docs/PLAN_REMEDIACION.md)** — la estrategia: las 8 fases para pasar de 53,6 a ≥90/100, con ganancia estimada, esfuerzo y dependencias externas.
-- **[Estado de progreso (2026-09-23)](docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md)** — qué fases se cerraron, artefactos nuevos, verificación real y pendientes.
+- **[Estado de progreso (2026-09-23)](docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md)**
+- **[Flujos del pipeline: subflujos y flujos operativos](docs/FLUJOS_PIPELINE_CCB.md)** — por qué se creó cada flujo nuevo (10), cómo funciona, con qué flujos se relaciona, las convenciones de nombre y el mapa de dependencias. — qué fases se cerraron, artefactos nuevos, verificación real y pendientes.
 - **[Plan de trabajo](docs/PLAN_TRABAJO_FRAMEWORK.md)** — el tablero de ejecución: 50 tareas atómicas con el nodo exacto sobre el que se actúa, cómo se verifica cada una y el seguimiento de puntaje por flujo.
 
 Resultado: promedio **53,6/100**, ningún flujo sobre el umbral de 90. Tres flujos en clasificación *Crítico* y nueve en *Requiere refactorización*. Los hallazgos son sistemáticos (autenticación de endpoints, validación de entradas, documentación, configuración centralizada), no defectos aislados. Ningún workflow fue modificado durante la auditoría.

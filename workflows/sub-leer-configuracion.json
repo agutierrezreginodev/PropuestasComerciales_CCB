@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T13:30:54.029Z",
+  "updatedAt": "2026-09-23T15:57:01.770Z",
   "createdAt": "2026-09-23T13:30:53.252Z",
   "id": "Hgy02eqPhnsdJvkq",
-  "name": "[SUB] - CCB - Leer Configuración",
+  "name": "[SUB] CCB - Leer Configuración",
   "description": "Subflujo compartido que entrega la configuración centralizada (Data Table Configuracion_CCB) adjunta al item del llamador. Sistema: n8n Data Tables. Área propietaria: Servicios de Información CCB. Escalado: canal de alertas técnicas del pipeline.",
   "active": true,
   "isArchived": false,
@@ -56,7 +56,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] - CCB - Leer Configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
+        "content": "## [SUB] CCB - Leer Configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
         "height": 320,
         "width": 520,
         "color": 4
@@ -101,15 +101,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "a0021488-f661-4fae-b2d3-3658bd455b56",
-  "activeVersionId": "a0021488-f661-4fae-b2d3-3658bd455b56",
-  "versionCounter": 4,
+  "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
+  "activeVersionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:30:53.252Z",
-    "createdAt": "2026-09-23T13:30:53.252Z",
-    "versionId": "a0021488-f661-4fae-b2d3-3658bd455b56",
+    "updatedAt": "2026-09-23T15:57:01.771Z",
+    "createdAt": "2026-09-23T15:57:01.771Z",
+    "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
     "workflowId": "Hgy02eqPhnsdJvkq",
     "nodes": [
       {
@@ -161,7 +161,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] - CCB - Leer Configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
+          "content": "## [SUB] CCB - Leer Configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
           "height": 320,
           "width": 520,
           "color": 4
@@ -206,10 +206,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:30:54.964Z",
-        "id": 2683,
+        "createdAt": "2026-09-23T15:57:01.805Z",
+        "id": 2831,
         "workflowId": "Hgy02eqPhnsdJvkq",
-        "versionId": "a0021488-f661-4fae-b2d3-3658bd455b56",
+        "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T15:57:01.816Z",
+        "id": 2832,
+        "workflowId": "Hgy02eqPhnsdJvkq",
+        "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

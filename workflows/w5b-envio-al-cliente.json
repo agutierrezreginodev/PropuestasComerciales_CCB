@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T14:54:36.219Z",
+  "updatedAt": "2026-09-23T15:57:20.302Z",
   "createdAt": "2026-09-11T18:19:42.906Z",
   "id": "XWBHgbmtBubA4gqx",
   "name": "[SUB] CCB - Workflow 5B - Envío al Cliente",
@@ -603,7 +603,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -630,7 +630,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -956,15 +956,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "5d85ce5c-05fe-4b5f-bfc2-771ecdecdfb3",
-  "activeVersionId": "5d85ce5c-05fe-4b5f-bfc2-771ecdecdfb3",
-  "versionCounter": 153,
+  "versionId": "54b88a68-87fd-4f48-aa67-61c766006c9d",
+  "activeVersionId": "54b88a68-87fd-4f48-aa67-61c766006c9d",
+  "versionCounter": 156,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T14:54:36.221Z",
-    "createdAt": "2026-09-23T14:54:36.221Z",
-    "versionId": "5d85ce5c-05fe-4b5f-bfc2-771ecdecdfb3",
+    "updatedAt": "2026-09-23T15:57:20.303Z",
+    "createdAt": "2026-09-23T15:57:20.303Z",
+    "versionId": "54b88a68-87fd-4f48-aa67-61c766006c9d",
     "workflowId": "XWBHgbmtBubA4gqx",
     "nodes": [
       {
@@ -1563,7 +1563,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1590,7 +1590,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1910,18 +1910,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T14:54:36.284Z",
-        "id": 2774,
+        "createdAt": "2026-09-23T15:57:20.348Z",
+        "id": 2853,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "5d85ce5c-05fe-4b5f-bfc2-771ecdecdfb3",
+        "versionId": "54b88a68-87fd-4f48-aa67-61c766006c9d",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T14:54:36.302Z",
-        "id": 2775,
+        "createdAt": "2026-09-23T15:57:20.375Z",
+        "id": 2854,
         "workflowId": "XWBHgbmtBubA4gqx",
-        "versionId": "5d85ce5c-05fe-4b5f-bfc2-771ecdecdfb3",
+        "versionId": "54b88a68-87fd-4f48-aa67-61c766006c9d",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

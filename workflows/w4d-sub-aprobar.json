@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T14:17:01.218Z",
+  "updatedAt": "2026-09-23T15:56:49.745Z",
   "createdAt": "2026-09-23T14:17:00.130Z",
   "id": "8j6BCwXkgJCccyO1",
-  "name": "[SUB] - CCB - W4D Aprobar",
+  "name": "[SUB] CCB - W4D Aprobar",
   "description": "Subflujo del router de decisión: marca la cotización como APROBADA y devuelve la confirmación al router (F4-03).",
   "active": true,
   "isArchived": false,
@@ -107,7 +107,7 @@
   "pinData": null,
   "versionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
   "activeVersionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
-  "versionCounter": 4,
+  "versionCounter": 7,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -216,6 +216,22 @@
       {
         "createdAt": "2026-09-23T14:18:38.687Z",
         "id": 2751,
+        "workflowId": "8j6BCwXkgJCccyO1",
+        "versionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T15:56:49.774Z",
+        "id": 2811,
+        "workflowId": "8j6BCwXkgJCccyO1",
+        "versionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T15:56:49.786Z",
+        "id": 2812,
         "workflowId": "8j6BCwXkgJCccyO1",
         "versionId": "ff6b9e49-980e-4bf5-b476-e00f8d7a0ffb",
         "event": "activated",

@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:35:11.966Z",
+  "updatedAt": "2026-09-23T15:57:00.105Z",
   "createdAt": "2026-09-23T14:17:56.787Z",
   "id": "iNSErCHs2iw33emJ",
-  "name": "[SUB] - CCB - W4D Revisión Manual",
+  "name": "[SUB] CCB - W4D Revisión Manual",
   "description": "Subflujo del router de decisión: deja la propuesta en REVISION_MANUAL y avisa al asesor. Cubre los tres motivos (tope de rondas, IA desactivada, confianza baja de la IA) sin consumir ronda (F4-03, F7-01, F7-02).",
   "active": true,
   "isArchived": false,
@@ -26,7 +26,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -199,15 +199,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
-  "activeVersionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
-  "versionCounter": 10,
+  "versionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
+  "activeVersionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
+  "versionCounter": 16,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:35:11.967Z",
-    "createdAt": "2026-09-23T15:35:11.967Z",
-    "versionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
+    "updatedAt": "2026-09-23T15:57:00.106Z",
+    "createdAt": "2026-09-23T15:57:00.106Z",
+    "versionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
     "workflowId": "iNSErCHs2iw33emJ",
     "nodes": [
       {
@@ -229,7 +229,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -402,18 +402,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:35:12.008Z",
-        "id": 2797,
+        "createdAt": "2026-09-23T15:57:00.148Z",
+        "id": 2829,
         "workflowId": "iNSErCHs2iw33emJ",
-        "versionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
+        "versionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:35:12.022Z",
-        "id": 2798,
+        "createdAt": "2026-09-23T15:57:00.162Z",
+        "id": 2830,
         "workflowId": "iNSErCHs2iw33emJ",
-        "versionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
+        "versionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

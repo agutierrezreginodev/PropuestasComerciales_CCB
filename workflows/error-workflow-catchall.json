@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:59:09.782Z",
+  "updatedAt": "2026-09-23T15:57:22.650Z",
   "createdAt": "2026-09-07T14:40:21.862Z",
   "id": "Dh2lAQTzyoZBpXie",
   "name": "CCB - Error Workflow (catch-all)",
@@ -136,7 +136,7 @@
     },
     {
       "parameters": {
-        "content": "## Error Workflow (catch-all)\n\nAsignado como `errorWorkflow` centralizado de los **11 flujos activos** del pipeline (vía `settings.errorWorkflow`).\nCaptura cualquier fallo que el flujo de origen no haya manejado en una rama propia, lo registra en `Errores_CCB`\n(con marca de tiempo) y envía la alerta por Outlook al destinatario de `Configuracion_CCB.alertas_email`.\n\n**Diseño propio — no usa `[SUB] - CCB - Registrar y Alertar Error` a propósito:** ese subflujo hace *upsert*\npor `id_solicitud + workflow_origen + nodo_fallido`, así que dos incidentes distintos del mismo nodo se pisarían\nentre sí. Acá el `id_solicitud` es fijo (`N/A (catch-all)`) y lo que importa es conservar el **historial de cada\nincidente**, así que se mantiene el insert propio (decisión de F4-01, 23/09).\n\nEl mensaje de error se enmascara (correos, URLs y números largos) antes de registrarlo y de alertarlo (F6-03).",
+        "content": "## Error Workflow (catch-all)\n\nAsignado como `errorWorkflow` centralizado de los **11 flujos activos** del pipeline (vía `settings.errorWorkflow`).\nCaptura cualquier fallo que el flujo de origen no haya manejado en una rama propia, lo registra en `Errores_CCB`\n(con marca de tiempo) y envía la alerta por Outlook al destinatario de `Configuracion_CCB.alertas_email`.\n\n**Diseño propio — no usa `[SUB] CCB - Registrar y Alertar Error` a propósito:** ese subflujo hace *upsert*\npor `id_solicitud + workflow_origen + nodo_fallido`, así que dos incidentes distintos del mismo nodo se pisarían\nentre sí. Acá el `id_solicitud` es fijo (`N/A (catch-all)`) y lo que importa es conservar el **historial de cada\nincidente**, así que se mantiene el insert propio (decisión de F4-01, 23/09).\n\nEl mensaje de error se enmascara (correos, URLs y números largos) antes de registrarlo y de alertarlo (F6-03).",
         "height": 136,
         "width": 700,
         "color": 4
@@ -156,7 +156,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -225,15 +225,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "41bb6a30-4970-41a4-a4be-41492e83b599",
-  "activeVersionId": "41bb6a30-4970-41a4-a4be-41492e83b599",
-  "versionCounter": 45,
+  "versionId": "911b8251-9834-4689-a17e-39163ac7f4fb",
+  "activeVersionId": "911b8251-9834-4689-a17e-39163ac7f4fb",
+  "versionCounter": 48,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:59:09.784Z",
-    "createdAt": "2026-09-23T13:59:09.784Z",
-    "versionId": "41bb6a30-4970-41a4-a4be-41492e83b599",
+    "updatedAt": "2026-09-23T15:57:22.651Z",
+    "createdAt": "2026-09-23T15:57:22.651Z",
+    "versionId": "911b8251-9834-4689-a17e-39163ac7f4fb",
     "workflowId": "Dh2lAQTzyoZBpXie",
     "nodes": [
       {
@@ -365,7 +365,7 @@
       },
       {
         "parameters": {
-          "content": "## Error Workflow (catch-all)\n\nAsignado como `errorWorkflow` centralizado de los **11 flujos activos** del pipeline (vía `settings.errorWorkflow`).\nCaptura cualquier fallo que el flujo de origen no haya manejado en una rama propia, lo registra en `Errores_CCB`\n(con marca de tiempo) y envía la alerta por Outlook al destinatario de `Configuracion_CCB.alertas_email`.\n\n**Diseño propio — no usa `[SUB] - CCB - Registrar y Alertar Error` a propósito:** ese subflujo hace *upsert*\npor `id_solicitud + workflow_origen + nodo_fallido`, así que dos incidentes distintos del mismo nodo se pisarían\nentre sí. Acá el `id_solicitud` es fijo (`N/A (catch-all)`) y lo que importa es conservar el **historial de cada\nincidente**, así que se mantiene el insert propio (decisión de F4-01, 23/09).\n\nEl mensaje de error se enmascara (correos, URLs y números largos) antes de registrarlo y de alertarlo (F6-03).",
+          "content": "## Error Workflow (catch-all)\n\nAsignado como `errorWorkflow` centralizado de los **11 flujos activos** del pipeline (vía `settings.errorWorkflow`).\nCaptura cualquier fallo que el flujo de origen no haya manejado en una rama propia, lo registra en `Errores_CCB`\n(con marca de tiempo) y envía la alerta por Outlook al destinatario de `Configuracion_CCB.alertas_email`.\n\n**Diseño propio — no usa `[SUB] CCB - Registrar y Alertar Error` a propósito:** ese subflujo hace *upsert*\npor `id_solicitud + workflow_origen + nodo_fallido`, así que dos incidentes distintos del mismo nodo se pisarían\nentre sí. Acá el `id_solicitud` es fijo (`N/A (catch-all)`) y lo que importa es conservar el **historial de cada\nincidente**, así que se mantiene el insert propio (decisión de F4-01, 23/09).\n\nEl mensaje de error se enmascara (correos, URLs y números largos) antes de registrarlo y de alertarlo (F6-03).",
           "height": 136,
           "width": 700,
           "color": 4
@@ -385,7 +385,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -453,18 +453,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:59:09.915Z",
-        "id": 2747,
+        "createdAt": "2026-09-23T15:57:22.684Z",
+        "id": 2857,
         "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "41bb6a30-4970-41a4-a4be-41492e83b599",
+        "versionId": "911b8251-9834-4689-a17e-39163ac7f4fb",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:59:09.961Z",
-        "id": 2748,
+        "createdAt": "2026-09-23T15:57:22.697Z",
+        "id": 2858,
         "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "41bb6a30-4970-41a4-a4be-41492e83b599",
+        "versionId": "911b8251-9834-4689-a17e-39163ac7f4fb",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

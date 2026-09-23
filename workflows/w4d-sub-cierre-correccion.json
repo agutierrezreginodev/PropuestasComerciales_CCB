@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:48:12.563Z",
+  "updatedAt": "2026-09-23T15:56:59.005Z",
   "createdAt": "2026-09-23T14:17:02.880Z",
   "id": "POeFkqQp8e4cGfY3",
-  "name": "[SUB] - CCB - W4D Cierre de Corrección",
+  "name": "[SUB] CCB - W4D Cierre de Corrección",
   "description": "Subflujo del router de decisión: cierra la corrección después del recálculo (idempotencia del comentario, ronda, aviso por Teams) y maneja el fallo del recálculo y del aviso (F4-03).",
   "active": true,
   "isArchived": false,
@@ -26,7 +26,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -396,7 +396,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -589,15 +589,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
-  "activeVersionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
-  "versionCounter": 10,
+  "versionId": "6cc3733a-ffcc-438a-9e3a-012755d69763",
+  "activeVersionId": "6cc3733a-ffcc-438a-9e3a-012755d69763",
+  "versionCounter": 16,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:48:12.565Z",
-    "createdAt": "2026-09-23T15:48:12.565Z",
-    "versionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
+    "updatedAt": "2026-09-23T15:56:59.007Z",
+    "createdAt": "2026-09-23T15:56:59.007Z",
+    "versionId": "6cc3733a-ffcc-438a-9e3a-012755d69763",
     "workflowId": "POeFkqQp8e4cGfY3",
     "nodes": [
       {
@@ -619,7 +619,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -989,7 +989,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1182,18 +1182,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:48:12.623Z",
-        "id": 2799,
+        "createdAt": "2026-09-23T15:56:59.051Z",
+        "id": 2827,
         "workflowId": "POeFkqQp8e4cGfY3",
-        "versionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
+        "versionId": "6cc3733a-ffcc-438a-9e3a-012755d69763",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:48:12.641Z",
-        "id": 2800,
+        "createdAt": "2026-09-23T15:56:59.065Z",
+        "id": 2828,
         "workflowId": "POeFkqQp8e4cGfY3",
-        "versionId": "cd66760d-4f3a-4194-aedf-4b85a47f44c8",
+        "versionId": "6cc3733a-ffcc-438a-9e3a-012755d69763",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

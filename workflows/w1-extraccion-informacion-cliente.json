@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T20:26:35.914Z",
+  "updatedAt": "2026-09-23T15:57:10.316Z",
   "createdAt": "2026-09-04T15:37:43.940Z",
   "id": "w6h0qSblUESIpSVc",
   "name": "CCB - Workflow 1 - Extracción información del cliente",
@@ -687,7 +687,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -708,7 +708,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -729,7 +729,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -965,22 +965,22 @@
       "lastTimeChecked": "2026-09-17T19:14:17.081Z"
     },
     "node:Outlook - Nuevo correo recibido": {
-      "lastTimeChecked": "2026-09-22T20:26:36.230Z"
+      "lastTimeChecked": "2026-09-23T15:57:10.378Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "ca6fe989-acac-4879-89f6-9c87f93cdc87",
-  "activeVersionId": "ca6fe989-acac-4879-89f6-9c87f93cdc87",
-  "versionCounter": 486,
+  "versionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
+  "activeVersionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
+  "versionCounter": 490,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T20:26:35.928Z",
-    "createdAt": "2026-09-22T20:26:35.928Z",
-    "versionId": "ca6fe989-acac-4879-89f6-9c87f93cdc87",
+    "updatedAt": "2026-09-23T15:57:10.317Z",
+    "createdAt": "2026-09-23T15:57:10.317Z",
+    "versionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
     "workflowId": "w6h0qSblUESIpSVc",
     "nodes": [
       {
@@ -1663,7 +1663,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1684,7 +1684,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1705,7 +1705,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1934,18 +1934,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T20:26:36.211Z",
-        "id": 2656,
+        "createdAt": "2026-09-23T15:57:10.364Z",
+        "id": 2839,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "ca6fe989-acac-4879-89f6-9c87f93cdc87",
+        "versionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T20:26:36.379Z",
-        "id": 2657,
+        "createdAt": "2026-09-23T15:57:10.595Z",
+        "id": 2840,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "ca6fe989-acac-4879-89f6-9c87f93cdc87",
+        "versionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

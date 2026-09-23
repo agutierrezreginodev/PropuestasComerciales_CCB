@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:48:14.275Z",
+  "updatedAt": "2026-09-23T15:56:57.850Z",
   "createdAt": "2026-09-23T14:17:58.025Z",
   "id": "3NAcLF4jaZ1JBw0A",
-  "name": "[SUB] - CCB - W4D Corrección IA",
+  "name": "[SUB] CCB - W4D Corrección IA",
   "description": "Subflujo del router de decisión: aplica la corrección asistida por IA con sus guardarraíles (tope de rondas, interruptor de IA, confianza) y encadena al cierre de la corrección (F4-03, F7-01, F7-02).",
   "active": true,
   "isArchived": false,
@@ -26,7 +26,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -301,7 +301,7 @@
           "__rl": true,
           "value": "iNSErCHs2iw33emJ",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - W4D Revisión Manual"
+          "cachedResultName": "[SUB] CCB - W4D Revisión Manual"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -335,7 +335,7 @@
           "__rl": true,
           "value": "POeFkqQp8e4cGfY3",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - W4D Cierre de Corrección"
+          "cachedResultName": "[SUB] CCB - W4D Cierre de Corrección"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -669,15 +669,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
-  "activeVersionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
-  "versionCounter": 10,
+  "versionId": "d51a0071-484e-4cb1-a62a-296f64bf1cdc",
+  "activeVersionId": "d51a0071-484e-4cb1-a62a-296f64bf1cdc",
+  "versionCounter": 16,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:48:14.276Z",
-    "createdAt": "2026-09-23T15:48:14.276Z",
-    "versionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
+    "updatedAt": "2026-09-23T15:56:57.851Z",
+    "createdAt": "2026-09-23T15:56:57.851Z",
+    "versionId": "d51a0071-484e-4cb1-a62a-296f64bf1cdc",
     "workflowId": "3NAcLF4jaZ1JBw0A",
     "nodes": [
       {
@@ -699,7 +699,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -974,7 +974,7 @@
             "__rl": true,
             "value": "iNSErCHs2iw33emJ",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - W4D Revisión Manual"
+            "cachedResultName": "[SUB] CCB - W4D Revisión Manual"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1008,7 +1008,7 @@
             "__rl": true,
             "value": "POeFkqQp8e4cGfY3",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - W4D Cierre de Corrección"
+            "cachedResultName": "[SUB] CCB - W4D Cierre de Corrección"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1342,18 +1342,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:48:14.325Z",
-        "id": 2801,
+        "createdAt": "2026-09-23T15:56:57.893Z",
+        "id": 2825,
         "workflowId": "3NAcLF4jaZ1JBw0A",
-        "versionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
+        "versionId": "d51a0071-484e-4cb1-a62a-296f64bf1cdc",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:48:14.339Z",
-        "id": 2802,
+        "createdAt": "2026-09-23T15:56:57.907Z",
+        "id": 2826,
         "workflowId": "3NAcLF4jaZ1JBw0A",
-        "versionId": "a11b9c2f-fab0-434e-910b-65079d895fd1",
+        "versionId": "d51a0071-484e-4cb1-a62a-296f64bf1cdc",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
