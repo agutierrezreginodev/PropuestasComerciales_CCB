@@ -51,6 +51,10 @@ WORKFLOWS = {
     "w4d-sub-correccion-ia": "3NAcLF4jaZ1JBw0A",
     "w4d-sub-cierre-correccion": "POeFkqQp8e4cGfY3",
     "sub-generar-pdf-propuesta": "DF3emCmBBBB2HA3i",
+    "sub-invocar-motor-guardar-cotizacion": "MHWlUApSFT6gpBHs",
+    "sub-enviar-propuesta-cliente": "AnPJGVWylmKEYWmJ",
+    "sub-cerrar-envio": "1Zzkrg3dTkTrddgp",
+    "sub-cerrar-error-envio": "D2d9Og6UUvq13TJA",
 }
 
 # Literal replacements — see README.md "Anonimización" for the documented table.

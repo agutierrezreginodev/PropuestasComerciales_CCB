@@ -1,0 +1,872 @@
+{
+  "updatedAt": "2026-09-23T16:30:14.326Z",
+  "createdAt": "2026-09-23T16:17:59.172Z",
+  "id": "MHWlUApSFT6gpBHs",
+  "name": "[SUB] CCB - Invocar Motor y Guardar Cotización",
+  "description": "Subflujo de W2-A: invoca el motor de cálculo (W3), restaura id_solicitud y guarda la cotización; devuelve la respuesta lista para el formulario. Sistema: W3 + n8n Data Tables. Área propietaria: Servicios de Información CCB.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "w2a-motor-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cHOIOEFB5nbltN82",
+          "mode": "list",
+          "cachedResultName": "CCB - Motor Criterios y Precio v2",
+          "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "sw-ejecutar-motor",
+      "name": "Ejecutar motor",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        0
+      ],
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "jsCode": "// W3 (Normalizar Criterios) no reenvía id_solicitud en su salida — se restaura acá desde\n// el contrato de entrada original, para no depender de que el motor lo corrija.\nconst idOriginal = // F4-03: el id original viaja en el item del llamador (antes se leia de 'Aplanar contrato de entrada').\n$('When Executed by Another Workflow').item.json.id_solicitud;\nreturn { json: { ...$json, id_solicitud: idOriginal } };"
+      },
+      "id": "71750b93-9fa2-4f04-ac52-fdecc88c99ae",
+      "name": "Restaurar id_solicitud",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "id": "3bed852e-7d1d-45c5-aaed-7c4e296edcf5"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "sw-validar-motor",
+      "name": "IF - Motor Retornó OK",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "servicio": "={{ $json.servicio }}",
+            "total_registros": "={{ $json.TOTAL_REGISTROS }}",
+            "valor": "={{ $json.VALOR }}",
+            "iva": "={{ $json.IVA }}",
+            "valor_total": "={{ $json.VALOR_TOTAL }}",
+            "plan_seleccionado": "={{ $json.PLAN_SELECCIONADO }}",
+            "inversion_inicial": "={{ $json.INVERSION_INICIAL }}",
+            "pago_mensual": "={{ $json.PAGO_MENSUAL }}",
+            "num_zonas": "={{ $json.NUM_ZONAS }}",
+            "num_niveles": "={{ $json.NUM_NIVELES }}",
+            "criterio_sector": "={{ $json.CRITERIO_SECTOR }}",
+            "estado": "={{ $json.ok === false ? 'ERROR_CALCULO' : 'PROPUESTA_GENERADA' }}",
+            "fecha_calculo": "={{ DateTime.now().toISO() }}",
+            "error": "={{ $json.error }}",
+            "pdf_url": "={{ $json.PDF_URL }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "sw-guardar-cotiz",
+      "name": "Data Table - Guardar Cotización",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        -96
+      ],
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "ok",
+              "type": "boolean",
+              "value": true
+            },
+            {
+              "id": "r2",
+              "name": "id_solicitud",
+              "type": "string",
+              "value": "={{ $json.id_solicitud }}"
+            },
+            {
+              "id": "r3",
+              "name": "servicio",
+              "type": "string",
+              "value": "={{ $json.servicio }}"
+            },
+            {
+              "id": "r4",
+              "name": "valor_total",
+              "type": "number",
+              "value": "={{ $json.valor_total }}"
+            },
+            {
+              "id": "r5",
+              "name": "error",
+              "type": "string",
+              "value": "={{ $json.error || null }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sw-return-ok",
+      "name": "Return - Cotización generada",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst servicio = $json.servicio || '(sin servicio)';\nconst nodoFallido = 'Motor Criterios y Precio';\nconst flujo = $workflow.name;\nconst esExcepcion = typeof $json.ok === 'undefined';\nconst tipoError = esExcepcion ? 'Excepción al invocar el motor de cálculo (W3)' : 'Rechazo del motor de cálculo (ok=false)';\nconst mensajeError = $json.error || JSON.stringify($json.error || {}) || 'El motor rechazó el cálculo sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Motor rechazó el cálculo</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">El motor de criterios y precio rechazó el cálculo de esta propuesta (Workflow 3). No se generó cotización.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ${servicio}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, workflow_origen: 'workflow-formulario', nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, emailBody } };"
+      },
+      "id": "sw-prep-error-motor",
+      "name": "Preparar error - Motor rechazó la propuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        96
+      ]
+    },
+    {
+      "id": "w2a-ejecutar-reg-alertar-motor",
+      "name": "Ejecutar Registrar-y-Alertar (Motor)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        96
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2dY1kaT7I5a0eP2w",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "ok",
+              "type": "boolean",
+              "value": false
+            },
+            {
+              "id": "e2",
+              "name": "error",
+              "type": "string",
+              "value": "={{ $json.mensaje_error }}"
+            },
+            {
+              "id": "e3",
+              "name": "id_solicitud",
+              "type": "string",
+              "value": "={{ $json.id_solicitud }}"
+            },
+            {
+              "id": "e4",
+              "name": "servicio",
+              "type": "string",
+              "value": "={{ $json.servicio }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bd68dadc-2a8e-41da-9a35-badddcd486a1",
+      "name": "Return - Error (motor)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## [SUB] CCB - Invocar Motor y Guardar Cotización (F4-03/W2A)\n\nInvoca el motor de cálculo (W3) y guarda la cotización.\n\n- **Entrada:** el item con los criterios ya preparados (`Preparar criterios para motor - …`).\n- **Salida:** la respuesta lista para el formulario (`ok:true` con la cotización, o `ok:false` con el error).\n- Restaura `id_solicitud` (W3 no lo reenvía) y, si el motor rechaza o falla, registra el error con el subflujo compartido y devuelve el error.",
+        "height": 320,
+        "width": 520,
+        "color": 6
+      },
+      "id": "26eb6166-7074-42d7-bbaa-b8bf3fe2f56e",
+      "name": "Nota - Motor y cotización",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// F4-03: la salida de error del guardado vive ahora en este subflujo (antes iba al preparador de W2-A).\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst j = $json || {};\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo al guardar la cotización';\nconst id = j.id_solicitud || get('Restaurar id_solicitud').id_solicitud || '(sin id)';\nconst emailBody = '<p>Error guardando la cotización en Cotizaciones_CCB.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W2-A-guardar-criterios', nodo_fallido: 'Data Table - Guardar Cotización',\n                 mensaje_error: mensaje, emailBody } };"
+      },
+      "id": "413208b3-f88e-433d-95ff-4a269db9af35",
+      "name": "Preparar error - Guardado de cotización",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        224
+      ]
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar motor": {
+      "main": [
+        [
+          {
+            "node": "Restaurar id_solicitud",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restaurar id_solicitud": {
+      "main": [
+        [
+          {
+            "node": "IF - Motor Retornó OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Motor Retornó OK": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Guardar Cotización",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Motor rechazó la propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Guardar Cotización": {
+      "main": [
+        [
+          {
+            "node": "Return - Cotización generada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar error - Guardado de cotización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Motor rechazó la propuesta": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar (Motor)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Registrar-y-Alertar (Motor)": {
+      "main": [
+        [
+          {
+            "node": "Return - Error (motor)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar error - Guardado de cotización": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Registrar-y-Alertar (Motor)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
+  "activeVersionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
+  "versionCounter": 7,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T16:30:14.328Z",
+    "createdAt": "2026-09-23T16:30:14.328Z",
+    "versionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
+    "workflowId": "MHWlUApSFT6gpBHs",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "w2a-motor-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -560,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "cHOIOEFB5nbltN82",
+            "mode": "list",
+            "cachedResultName": "CCB - Motor Criterios y Precio v2",
+            "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": true
+          },
+          "options": {}
+        },
+        "id": "sw-ejecutar-motor",
+        "name": "Ejecutar motor",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -320,
+          0
+        ],
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "jsCode": "// W3 (Normalizar Criterios) no reenvía id_solicitud en su salida — se restaura acá desde\n// el contrato de entrada original, para no depender de que el motor lo corrija.\nconst idOriginal = // F4-03: el id original viaja en el item del llamador (antes se leia de 'Aplanar contrato de entrada').\n$('When Executed by Another Workflow').item.json.id_solicitud;\nreturn { json: { ...$json, id_solicitud: idOriginal } };"
+        },
+        "id": "71750b93-9fa2-4f04-ac52-fdecc88c99ae",
+        "name": "Restaurar id_solicitud",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -80,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "leftValue": "={{ $json.ok }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                },
+                "id": "3bed852e-7d1d-45c5-aaed-7c4e296edcf5"
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "sw-validar-motor",
+        "name": "IF - Motor Retornó OK",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          160,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "matchType": "allConditions",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "servicio": "={{ $json.servicio }}",
+              "total_registros": "={{ $json.TOTAL_REGISTROS }}",
+              "valor": "={{ $json.VALOR }}",
+              "iva": "={{ $json.IVA }}",
+              "valor_total": "={{ $json.VALOR_TOTAL }}",
+              "plan_seleccionado": "={{ $json.PLAN_SELECCIONADO }}",
+              "inversion_inicial": "={{ $json.INVERSION_INICIAL }}",
+              "pago_mensual": "={{ $json.PAGO_MENSUAL }}",
+              "num_zonas": "={{ $json.NUM_ZONAS }}",
+              "num_niveles": "={{ $json.NUM_NIVELES }}",
+              "criterio_sector": "={{ $json.CRITERIO_SECTOR }}",
+              "estado": "={{ $json.ok === false ? 'ERROR_CALCULO' : 'PROPUESTA_GENERADA' }}",
+              "fecha_calculo": "={{ DateTime.now().toISO() }}",
+              "error": "={{ $json.error }}",
+              "pdf_url": "={{ $json.PDF_URL }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "sw-guardar-cotiz",
+        "name": "Data Table - Guardar Cotización",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          400,
+          -96
+        ],
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "r1",
+                "name": "ok",
+                "type": "boolean",
+                "value": true
+              },
+              {
+                "id": "r2",
+                "name": "id_solicitud",
+                "type": "string",
+                "value": "={{ $json.id_solicitud }}"
+              },
+              {
+                "id": "r3",
+                "name": "servicio",
+                "type": "string",
+                "value": "={{ $json.servicio }}"
+              },
+              {
+                "id": "r4",
+                "name": "valor_total",
+                "type": "number",
+                "value": "={{ $json.valor_total }}"
+              },
+              {
+                "id": "r5",
+                "name": "error",
+                "type": "string",
+                "value": "={{ $json.error || null }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "sw-return-ok",
+        "name": "Return - Cotización generada",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          640,
+          -96
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst captura = get('Capturar ID de solicitud');\nconst idSolicitud = $json.id_solicitud || captura.id_solicitud || '(sin id)';\nconst servicio = $json.servicio || '(sin servicio)';\nconst nodoFallido = 'Motor Criterios y Precio';\nconst flujo = $workflow.name;\nconst esExcepcion = typeof $json.ok === 'undefined';\nconst tipoError = esExcepcion ? 'Excepción al invocar el motor de cálculo (W3)' : 'Rechazo del motor de cálculo (ok=false)';\nconst mensajeError = $json.error || JSON.stringify($json.error || {}) || 'El motor rechazó el cálculo sin mensaje';\nconst fechaError = DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst emailBody = `<!DOCTYPE html>\n<html lang=\"es\"><head><meta charset=\"UTF-8\"></head>\n<body style=\"margin:0;padding:0;background-color:#F2F5F9;font-family:Arial,sans-serif;\">\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#F2F5F9\"><tr><td align=\"center\" style=\"padding:32px 16px;\">\n<table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" bgcolor=\"#FFFFFF\" style=\"max-width:600px;border-radius:12px;overflow:hidden;\">\n<tr><td bgcolor=\"#001489\" align=\"center\" style=\"padding:28px 40px;\">\n<p style=\"font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);text-transform:uppercase;letter-spacing:3px;margin:0;\">Servicios de Información</p>\n</td></tr>\n<tr><td bgcolor=\"#D64545\" align=\"center\" style=\"padding:11px 32px;\">\n<p style=\"font-size:12px;font-weight:700;color:#FFFFFF;text-transform:uppercase;letter-spacing:2px;margin:0;\">⚠️ Motor rechazó el cálculo</p>\n</td></tr>\n<tr><td bgcolor=\"#FFFFFF\" style=\"padding:32px 40px;\">\n<p style=\"font-size:14px;color:#404e4f;margin:0 0 16px 0;line-height:1.7;\">El motor de criterios y precio rechazó el cálculo de esta propuesta (Workflow 3). No se generó cotización.</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Flujo:</strong> ${flujo}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Tipo de error:</strong> ${tipoError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">ID solicitud:</strong> ${idSolicitud}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Servicio:</strong> ${servicio}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Nodo fallido:</strong> ${nodoFallido}</p>\n<p style=\"font-size:13px;color:#212120;margin:0 0 6px 0;\"><strong style=\"color:#001489;\">Mensaje:</strong> ${mensajeError}</p>\n<p style=\"font-size:13px;color:#212120;margin:0;\"><strong style=\"color:#001489;\">Fecha:</strong> ${fechaError}</p>\n</td></tr>\n</table></td></tr></table></body></html>`;\nreturn { json: { id_solicitud: idSolicitud, flujo, tipo_error: tipoError, workflow_origen: 'workflow-formulario', nodo_fallido: nodoFallido, mensaje_error: mensajeError, fecha_error: fechaError, emailBody } };"
+        },
+        "id": "sw-prep-error-motor",
+        "name": "Preparar error - Motor rechazó la propuesta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          400,
+          96
+        ]
+      },
+      {
+        "id": "w2a-ejecutar-reg-alertar-motor",
+        "name": "Ejecutar Registrar-y-Alertar (Motor)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          640,
+          96
+        ],
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "2dY1kaT7I5a0eP2w",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e1",
+                "name": "ok",
+                "type": "boolean",
+                "value": false
+              },
+              {
+                "id": "e2",
+                "name": "error",
+                "type": "string",
+                "value": "={{ $json.mensaje_error }}"
+              },
+              {
+                "id": "e3",
+                "name": "id_solicitud",
+                "type": "string",
+                "value": "={{ $json.id_solicitud }}"
+              },
+              {
+                "id": "e4",
+                "name": "servicio",
+                "type": "string",
+                "value": "={{ $json.servicio }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "bd68dadc-2a8e-41da-9a35-badddcd486a1",
+        "name": "Return - Error (motor)",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          880,
+          96
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## [SUB] CCB - Invocar Motor y Guardar Cotización (F4-03/W2A)\n\nInvoca el motor de cálculo (W3) y guarda la cotización.\n\n- **Entrada:** el item con los criterios ya preparados (`Preparar criterios para motor - …`).\n- **Salida:** la respuesta lista para el formulario (`ok:true` con la cotización, o `ok:false` con el error).\n- Restaura `id_solicitud` (W3 no lo reenvía) y, si el motor rechaza o falla, registra el error con el subflujo compartido y devuelve el error.",
+          "height": 320,
+          "width": 520,
+          "color": 6
+        },
+        "id": "26eb6166-7074-42d7-bbaa-b8bf3fe2f56e",
+        "name": "Nota - Motor y cotización",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -560,
+          -300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// F4-03: la salida de error del guardado vive ahora en este subflujo (antes iba al preparador de W2-A).\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst j = $json || {};\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo al guardar la cotización';\nconst id = j.id_solicitud || get('Restaurar id_solicitud').id_solicitud || '(sin id)';\nconst emailBody = '<p>Error guardando la cotización en Cotizaciones_CCB.</p><ul><li><b>Solicitud:</b> ' + id + '</li><li><b>Detalle:</b> ' + mensaje + '</li></ul>';\nreturn { json: { id_solicitud: id, workflow_origen: 'W2-A-guardar-criterios', nodo_fallido: 'Data Table - Guardar Cotización',\n                 mensaje_error: mensaje, emailBody } };"
+        },
+        "id": "413208b3-f88e-433d-95ff-4a269db9af35",
+        "name": "Preparar error - Guardado de cotización",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          560,
+          224
+        ]
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar motor",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar motor": {
+        "main": [
+          [
+            {
+              "node": "Restaurar id_solicitud",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Motor rechazó la propuesta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Restaurar id_solicitud": {
+        "main": [
+          [
+            {
+              "node": "IF - Motor Retornó OK",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - Motor Retornó OK": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Guardar Cotización",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Motor rechazó la propuesta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Guardar Cotización": {
+        "main": [
+          [
+            {
+              "node": "Return - Cotización generada",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preparar error - Guardado de cotización",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Motor rechazó la propuesta": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar (Motor)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Registrar-y-Alertar (Motor)": {
+        "main": [
+          [
+            {
+              "node": "Return - Error (motor)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar error - Guardado de cotización": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Registrar-y-Alertar (Motor)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T16:30:14.373Z",
+        "id": 2886,
+        "workflowId": "MHWlUApSFT6gpBHs",
+        "versionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T16:30:14.390Z",
+        "id": 2887,
+        "workflowId": "MHWlUApSFT6gpBHs",
+        "versionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

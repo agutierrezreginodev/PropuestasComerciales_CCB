@@ -1,0 +1,528 @@
+{
+  "updatedAt": "2026-09-23T16:04:57.272Z",
+  "createdAt": "2026-09-23T16:00:28.724Z",
+  "id": "1Zzkrg3dTkTrddgp",
+  "name": "[SUB] CCB - Cerrar envío",
+  "description": "Subflujo del envío al cliente: marca ENVIADA en Cotizaciones y Solicitudes y avisa al asesor. Sistema: n8n Data Tables + Microsoft Outlook. Área propietaria: Servicios de Información CCB.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "w5b-cierre-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Hgy02eqPhnsdJvkq",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - Leer Configuración"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "9560deb5-4755-49f0-a5bc-3b6cfb3b7dda",
+      "name": "Ejecutar Leer Configuración",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GELWpskp0aYJ2zPg",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "4f07eca3-9118-4ac8-bdd2-529a757a620f",
+      "name": "Ejecutar Leer Contexto Propuesta",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "ENVIADA",
+            "fecha_envio": "={{ DateTime.now().toISO() }}",
+            "enviado_a": "={{ $('When Executed by Another Workflow').first().json.email_destinatario || (($('Ejecutar Leer Contexto Propuesta').first().json.criterios || {}).email_solicitante) || '' }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w5b-marcar-enviada",
+      "name": "Data Table - Marcar ENVIADA (Cotización)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB",
+          "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "ENVIADA"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "w5b-marcar-enviada-sol",
+      "name": "Data Table - Marcar ENVIADA (Solicitudes)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Ejecutar Leer Configuración').first().json._config.notificacion_envio_email }}",
+        "subject": "={{ '[Propuesta CCB] Enviada al cliente — ' + $('Ejecutar Leer Contexto Propuesta').first().json.id_solicitud }}",
+        "bodyContent": "={{ '<p>La propuesta comercial fue enviada exitosamente al cliente.</p><ul>' + '<li><b>Solicitud:</b> ' + $('Ejecutar Leer Contexto Propuesta').first().json.id_solicitud + '</li>' + '<li><b>Cliente:</b> ' + ($('Ejecutar Leer Contexto Propuesta').first().json.nombre_cliente || '(sin nombre)') + '</li>' + '<li><b>Empresa:</b> ' + ($('Ejecutar Leer Contexto Propuesta').first().json.criterios.razon_social || '-') + '</li>' + '<li><b>Servicio:</b> ' + ($('Ejecutar Leer Contexto Propuesta').first().json.servicio || '-') + '</li>' + '<li><b>Valor total:</b> ' + Number($('Ejecutar Leer Contexto Propuesta').first().json.valor_total || 0).toLocaleString('es-CO', {style:'currency',currency:'COP',maximumFractionDigits:0}) + '</li>' + '<li><b>Enviado a:</b> ' + $('Ejecutar Leer Contexto Propuesta').first().json.email_destinatario + '</li>' + '</ul>' }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "dad6e49c-0035-444c-8301-2cb6dbff6e75",
+      "name": "Notificar a asesor - Envío",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ],
+      "webhookId": "dad74ad4-3733-4d26-b660-80d54a0dee83",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "MODO PRUEBA (15/09): el destinatario sale de la Data Table `Configuracion_CCB`, clave `notificacion_envio_email`, que hoy apunta a la cuenta de grabación de demo. La tarea F0-06 se cierra cambiando esa clave por el correo del asesor (`asesor_email`); no hace falta tocar ningún nodo.",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "content": "## [SUB] CCB - Cerrar envío (F4-03/W5B)\n\nCierra un envío exitoso: marca `ENVIADA` en `Cotizaciones_CCB` y `Solicitudes_CCB` y avisa al asesor por correo.\n\n- **Entrada:** el item del llamador (`id_solicitud`).\n- **Salida:** el item del aviso (confirmación).\n- Lee el contexto con `[SUB] CCB - Leer Contexto Propuesta` para el asunto y el cuerpo del aviso (razón social), y la configuración para el destinatario.",
+        "height": 300,
+        "width": 520,
+        "color": 6
+      },
+      "id": "b30c0b57-fb7e-4071-96c2-f72c2f2b06c7",
+      "name": "Nota - Cerrar envío",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -280
+      ]
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Leer Configuración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Leer Configuración": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Leer Contexto Propuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Leer Contexto Propuesta": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Marcar ENVIADA (Cotización)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Marcar ENVIADA (Cotización)": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Marcar ENVIADA (Solicitudes)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Marcar ENVIADA (Solicitudes)": {
+      "main": [
+        [
+          {
+            "node": "Notificar a asesor - Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
+  "activeVersionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
+  "versionCounter": 10,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T16:04:57.273Z",
+    "createdAt": "2026-09-23T16:04:57.273Z",
+    "versionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
+    "workflowId": "1Zzkrg3dTkTrddgp",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "w5b-cierre-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Hgy02eqPhnsdJvkq",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - Leer Configuración"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "9560deb5-4755-49f0-a5bc-3b6cfb3b7dda",
+        "name": "Ejecutar Leer Configuración",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -160,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "GELWpskp0aYJ2zPg",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "4f07eca3-9118-4ac8-bdd2-529a757a620f",
+        "name": "Ejecutar Leer Contexto Propuesta",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          80,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/YAvQTqzsgJWjacVZ"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "ENVIADA",
+              "fecha_envio": "={{ DateTime.now().toISO() }}",
+              "enviado_a": "={{ $('When Executed by Another Workflow').first().json.email_destinatario || (($('Ejecutar Leer Contexto Propuesta').first().json.criterios || {}).email_solicitante) || '' }}"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w5b-marcar-enviada",
+        "name": "Data Table - Marcar ENVIADA (Cotización)",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          320,
+          0
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB",
+            "cachedResultUrl": "/projects/dxSG9ciMXpzUN2g4/datatables/u5gFYvTfuQRX71u5"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "estado": "ENVIADA"
+            },
+            "matchingColumns": []
+          },
+          "options": {}
+        },
+        "id": "w5b-marcar-enviada-sol",
+        "name": "Data Table - Marcar ENVIADA (Solicitudes)",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          560,
+          0
+        ],
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $('Ejecutar Leer Configuración').first().json._config.notificacion_envio_email }}",
+          "subject": "={{ '[Propuesta CCB] Enviada al cliente — ' + $('Ejecutar Leer Contexto Propuesta').first().json.id_solicitud }}",
+          "bodyContent": "={{ '<p>La propuesta comercial fue enviada exitosamente al cliente.</p><ul>' + '<li><b>Solicitud:</b> ' + $('Ejecutar Leer Contexto Propuesta').first().json.id_solicitud + '</li>' + '<li><b>Cliente:</b> ' + ($('Ejecutar Leer Contexto Propuesta').first().json.nombre_cliente || '(sin nombre)') + '</li>' + '<li><b>Empresa:</b> ' + ($('Ejecutar Leer Contexto Propuesta').first().json.criterios.razon_social || '-') + '</li>' + '<li><b>Servicio:</b> ' + ($('Ejecutar Leer Contexto Propuesta').first().json.servicio || '-') + '</li>' + '<li><b>Valor total:</b> ' + Number($('Ejecutar Leer Contexto Propuesta').first().json.valor_total || 0).toLocaleString('es-CO', {style:'currency',currency:'COP',maximumFractionDigits:0}) + '</li>' + '<li><b>Enviado a:</b> ' + $('Ejecutar Leer Contexto Propuesta').first().json.email_destinatario + '</li>' + '</ul>' }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "dad6e49c-0035-444c-8301-2cb6dbff6e75",
+        "name": "Notificar a asesor - Envío",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          800,
+          0
+        ],
+        "webhookId": "dad74ad4-3733-4d26-b660-80d54a0dee83",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueRegularOutput",
+        "notes": "MODO PRUEBA (15/09): el destinatario sale de la Data Table `Configuracion_CCB`, clave `notificacion_envio_email`, que hoy apunta a la cuenta de grabación de demo. La tarea F0-06 se cierra cambiando esa clave por el correo del asesor (`asesor_email`); no hace falta tocar ningún nodo.",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "content": "## [SUB] CCB - Cerrar envío (F4-03/W5B)\n\nCierra un envío exitoso: marca `ENVIADA` en `Cotizaciones_CCB` y `Solicitudes_CCB` y avisa al asesor por correo.\n\n- **Entrada:** el item del llamador (`id_solicitud`).\n- **Salida:** el item del aviso (confirmación).\n- Lee el contexto con `[SUB] CCB - Leer Contexto Propuesta` para el asunto y el cuerpo del aviso (razón social), y la configuración para el destinatario.",
+          "height": 300,
+          "width": 520,
+          "color": 6
+        },
+        "id": "b30c0b57-fb7e-4071-96c2-f72c2f2b06c7",
+        "name": "Nota - Cerrar envío",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -400,
+          -280
+        ]
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Leer Configuración",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Leer Configuración": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Leer Contexto Propuesta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Leer Contexto Propuesta": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Marcar ENVIADA (Cotización)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Marcar ENVIADA (Cotización)": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Marcar ENVIADA (Solicitudes)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Marcar ENVIADA (Solicitudes)": {
+        "main": [
+          [
+            {
+              "node": "Notificar a asesor - Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T16:04:57.319Z",
+        "id": 2874,
+        "workflowId": "1Zzkrg3dTkTrddgp",
+        "versionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T16:04:57.336Z",
+        "id": 2875,
+        "workflowId": "1Zzkrg3dTkTrddgp",
+        "versionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

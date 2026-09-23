@@ -1,0 +1,608 @@
+{
+  "updatedAt": "2026-09-23T16:06:29.110Z",
+  "createdAt": "2026-09-23T16:02:56.141Z",
+  "id": "AnPJGVWylmKEYWmJ",
+  "name": "[SUB] CCB - Enviar propuesta al cliente",
+  "description": "Subflujo del envío al cliente: adjunta el PDF o manda el enlace y cierra el envío. Sistema: Microsoft Outlook + n8n Data Tables. Área propietaria: Servicios de Información CCB.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "w5b-envio-trigger",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-adj",
+              "leftValue": "={{ $json.adjuntar }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "w5b-if-adjunto",
+      "name": "IF - ¿Adjuntar PDF? (<4MB)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $json.email_destinatario }}",
+        "subject": "={{ 'Propuesta comercial CCB — ' + ($json.razon_social || $json.id_solicitud) }}",
+        "bodyContent": "={{ $json.emailBodyConAdjunto }}",
+        "additionalFields": {
+          "attachments": {
+            "attachments": [
+              {
+                "binaryPropertyName": "data"
+              }
+            ]
+          },
+          "bodyContentType": "html"
+        }
+      },
+      "id": "w5b-enviar-adjunto",
+      "name": "Outlook - Enviar con adjunto",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -96
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "webhookId": "2f9af50e-0e73-4e4d-a3f0-f1622ab99ad4",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $json.email_destinatario }}",
+        "subject": "={{ 'Propuesta comercial CCB — ' + ($json.razon_social || $json.id_solicitud) }}",
+        "bodyContent": "={{ $json.emailBodySoloLink }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "w5b-enviar-link",
+      "name": "Outlook - Enviar solo link",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        80,
+        96
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "webhookId": "2b87e5b3-fd89-41d9-8d66-115773703231",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// F4-03: los nodos de Outlook devuelven {success:true} y pierden el contexto, asi que se\n// reinyecta el item del llamador (que trae id_solicitud y los datos de la propuesta).\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst base = get('When Executed by Another Workflow');\nreturn { json: { ...base, envio_ok: ($json.success === true) } };"
+      },
+      "id": "b4860f13-e0f5-44a2-85ca-57b2600511ab",
+      "name": "Reinyectar contexto del envío",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "1Zzkrg3dTkTrddgp",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB - Cerrar envío"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "54f66f2e-e8a1-428e-a384-6756b8260a37",
+      "name": "Ejecutar Cerrar Envío",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fallo del envio (salida de error de los Outlook): devuelve el item del llamador + el detalle,\n// para que el flujo llamador lo registre con su rama de error de siempre.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst base = get('When Executed by Another Workflow');\nconst j = $json || {};\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo al enviar el correo al cliente';\nreturn { json: { ...base, ok: false, error: mensaje, mensaje_error: mensaje,\n                 nodo_fallido: 'Outlook - Enviar propuesta al cliente' } };"
+      },
+      "id": "3dd75ee8-e3f9-4cff-8d1b-f348dd1dad58",
+      "name": "Devolver fallo de envío",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## [SUB] CCB - Enviar propuesta al cliente (F4-03/W5B)\n\nEnvía la propuesta al cliente y cierra el envío.\n\n- **Entrada:** el item preparado por W5-B (`email_destinatario`, `emailBodyConAdjunto`, `emailBodySoloLink`, `adjuntar`, binario del PDF, `id_solicitud`).\n- **Salida:** la confirmación del cierre, o `{ ok:false, error, mensaje_error }` si el envío falla.\n- Decide adjunto vs. solo link por tamaño (`IF - ¿Adjuntar PDF? (<4MB)`), reinyecta el contexto (los nodos de Outlook lo pierden) y delega el cierre en `[SUB] CCB - Cerrar envío`.",
+        "height": 340,
+        "width": 540,
+        "color": 6
+      },
+      "id": "e88ad526-a190-4718-8566-005500c32e31",
+      "name": "Nota - Enviar al cliente",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Confirmacion explicita del envio + cierre para el flujo llamador.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nreturn { json: { ok: true, id_solicitud: get('Reinyectar contexto del envío').id_solicitud || '', mensaje: 'Propuesta enviada al cliente y envío cerrado.' } };"
+      },
+      "id": "6af6a386-ca87-40f0-bb32-222302c049bd",
+      "name": "Confirmar envío",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "IF - ¿Adjuntar PDF? (<4MB)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Adjuntar PDF? (<4MB)": {
+      "main": [
+        [
+          {
+            "node": "Outlook - Enviar con adjunto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Outlook - Enviar solo link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outlook - Enviar con adjunto": {
+      "main": [
+        [
+          {
+            "node": "Reinyectar contexto del envío",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Devolver fallo de envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outlook - Enviar solo link": {
+      "main": [
+        [
+          {
+            "node": "Reinyectar contexto del envío",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Devolver fallo de envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reinyectar contexto del envío": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Cerrar Envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Cerrar Envío": {
+      "main": [
+        [
+          {
+            "node": "Confirmar envío",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
+  "activeVersionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
+  "versionCounter": 7,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T16:06:29.111Z",
+    "createdAt": "2026-09-23T16:06:29.111Z",
+    "versionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
+    "workflowId": "AnPJGVWylmKEYWmJ",
+    "nodes": [
+      {
+        "parameters": {
+          "inputSource": "passthrough"
+        },
+        "id": "w5b-envio-trigger",
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-adj",
+                "leftValue": "={{ $json.adjuntar }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "w5b-if-adjunto",
+        "name": "IF - ¿Adjuntar PDF? (<4MB)",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -160,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $json.email_destinatario }}",
+          "subject": "={{ 'Propuesta comercial CCB — ' + ($json.razon_social || $json.id_solicitud) }}",
+          "bodyContent": "={{ $json.emailBodyConAdjunto }}",
+          "additionalFields": {
+            "attachments": {
+              "attachments": [
+                {
+                  "binaryPropertyName": "data"
+                }
+              ]
+            },
+            "bodyContentType": "html"
+          }
+        },
+        "id": "w5b-enviar-adjunto",
+        "name": "Outlook - Enviar con adjunto",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          80,
+          -96
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "2f9af50e-0e73-4e4d-a3f0-f1622ab99ad4",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $json.email_destinatario }}",
+          "subject": "={{ 'Propuesta comercial CCB — ' + ($json.razon_social || $json.id_solicitud) }}",
+          "bodyContent": "={{ $json.emailBodySoloLink }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "w5b-enviar-link",
+        "name": "Outlook - Enviar solo link",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          80,
+          96
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000,
+        "webhookId": "2b87e5b3-fd89-41d9-8d66-115773703231",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// F4-03: los nodos de Outlook devuelven {success:true} y pierden el contexto, asi que se\n// reinyecta el item del llamador (que trae id_solicitud y los datos de la propuesta).\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst base = get('When Executed by Another Workflow');\nreturn { json: { ...base, envio_ok: ($json.success === true) } };"
+        },
+        "id": "b4860f13-e0f5-44a2-85ca-57b2600511ab",
+        "name": "Reinyectar contexto del envío",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          320,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "1Zzkrg3dTkTrddgp",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB - Cerrar envío"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "54f66f2e-e8a1-428e-a384-6756b8260a37",
+        "name": "Ejecutar Cerrar Envío",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          560,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Fallo del envio (salida de error de los Outlook): devuelve el item del llamador + el detalle,\n// para que el flujo llamador lo registre con su rama de error de siempre.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst base = get('When Executed by Another Workflow');\nconst j = $json || {};\nconst mensaje = (j.error && (j.error.message || j.error.description)) || 'Fallo al enviar el correo al cliente';\nreturn { json: { ...base, ok: false, error: mensaje, mensaje_error: mensaje,\n                 nodo_fallido: 'Outlook - Enviar propuesta al cliente' } };"
+        },
+        "id": "3dd75ee8-e3f9-4cff-8d1b-f348dd1dad58",
+        "name": "Devolver fallo de envío",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          320,
+          224
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## [SUB] CCB - Enviar propuesta al cliente (F4-03/W5B)\n\nEnvía la propuesta al cliente y cierra el envío.\n\n- **Entrada:** el item preparado por W5-B (`email_destinatario`, `emailBodyConAdjunto`, `emailBodySoloLink`, `adjuntar`, binario del PDF, `id_solicitud`).\n- **Salida:** la confirmación del cierre, o `{ ok:false, error, mensaje_error }` si el envío falla.\n- Decide adjunto vs. solo link por tamaño (`IF - ¿Adjuntar PDF? (<4MB)`), reinyecta el contexto (los nodos de Outlook lo pierden) y delega el cierre en `[SUB] CCB - Cerrar envío`.",
+          "height": 340,
+          "width": 540,
+          "color": 6
+        },
+        "id": "e88ad526-a190-4718-8566-005500c32e31",
+        "name": "Nota - Enviar al cliente",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -400,
+          -300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "// Confirmacion explicita del envio + cierre para el flujo llamador.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nreturn { json: { ok: true, id_solicitud: get('Reinyectar contexto del envío').id_solicitud || '', mensaje: 'Propuesta enviada al cliente y envío cerrado.' } };"
+        },
+        "id": "6af6a386-ca87-40f0-bb32-222302c049bd",
+        "name": "Confirmar envío",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "IF - ¿Adjuntar PDF? (<4MB)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Adjuntar PDF? (<4MB)": {
+        "main": [
+          [
+            {
+              "node": "Outlook - Enviar con adjunto",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Outlook - Enviar solo link",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Outlook - Enviar con adjunto": {
+        "main": [
+          [
+            {
+              "node": "Reinyectar contexto del envío",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Devolver fallo de envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Outlook - Enviar solo link": {
+        "main": [
+          [
+            {
+              "node": "Reinyectar contexto del envío",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Devolver fallo de envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Reinyectar contexto del envío": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Cerrar Envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Cerrar Envío": {
+        "main": [
+          [
+            {
+              "node": "Confirmar envío",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T16:06:29.160Z",
+        "id": 2879,
+        "workflowId": "AnPJGVWylmKEYWmJ",
+        "versionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T16:06:29.179Z",
+        "id": 2880,
+        "workflowId": "AnPJGVWylmKEYWmJ",
+        "versionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}
