@@ -96,6 +96,7 @@ Los 12 workflows se evaluaron contra el marco *Arquitectura e Ingeniería de Aut
 - **[Informe de auditoría (2026-09-16)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-16.md)** — procedimiento reproducible paso a paso, resultado consolidado, desglose por dimensión y ficha por flujo con lo que cumple, lo que no y sus pendientes.
 - **[Plan de remediación](docs/PLAN_REMEDIACION.md)** — la estrategia: las 8 fases para pasar de 53,6 a ≥90/100, con ganancia estimada, esfuerzo y dependencias externas.
 - **[Estado de progreso (2026-09-23)](docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md)**
+- **[Informe visual del pipeline (HTML)](docs/informe-pipeline-ccb.html)** — arquitectura, inventario de los 30 flujos, evaluación del framework flujo por flujo y los pendientes para llegar a 90. Se regenera con `scripts/generar_informe_html.py`.
 - **[Convención de nombres y carpetas](docs/CONVENCION_NOMBRES_Y_CARPETAS_CCB.md)** — el patrón único de nombres, la tabla de renombrado de los 30 flujos y cómo organizarlos en carpetas dentro de n8n.
 - **[Plan de pendientes para el 2026-09-24](odd/tasks/plan-pendientes-2026-09-24.md)** — qué falta, quién lo hace, en qué orden y qué cruza el umbral de 90.
 - **[El pipeline CCB de punta a punta](docs/FLUJO_COMPLETO_PIPELINE_CCB.md)** — el recorrido completo: actores, etapas, ramas, estados, tablas, diagnóstico de errores y operación del día a día.
