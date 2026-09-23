@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T14:21:13.850Z",
+  "updatedAt": "2026-09-23T15:26:51.863Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -11,17 +11,17 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "decidir-propuesta",
+        "authentication": "headerAuth",
         "responseMode": "responseNode",
-        "options": {},
-        "authentication": "headerAuth"
+        "options": {}
       },
       "id": "53ca7f86-c409-4377-9190-a84b430a8756",
       "name": "Webhook - Decisión Propuesta",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -992,
-        704
+        -608,
+        544
       ],
       "webhookId": "a7fc4cf6-9ad7-410f-86ad-8745c6233fee",
       "credentials": {
@@ -44,8 +44,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -752,
-        704
+        704,
+        144
       ]
     },
     {
@@ -58,8 +58,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -752,
-        512
+        -416,
+        544
       ]
     },
     {
@@ -73,17 +73,17 @@
       "typeVersion": 2,
       "position": [
         208,
-        512
+        528
       ]
     },
     {
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "loose"
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
           },
           "combinator": "and",
           "conditions": [
@@ -106,17 +106,17 @@
       "typeVersion": 2.3,
       "position": [
         448,
-        512
+        528
       ]
     },
     {
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "loose"
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
           },
           "combinator": "and",
           "conditions": [
@@ -138,18 +138,18 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        736,
-        704
+        720,
+        544
       ]
     },
     {
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "loose"
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
           },
           "combinator": "and",
           "conditions": [
@@ -171,8 +171,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1216,
-        832
+        976,
+        560
       ]
     },
     {
@@ -185,8 +185,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1456,
-        1168
+        1200,
+        576
       ]
     },
     {
@@ -216,8 +216,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        1696,
-        1168
+        1440,
+        576
       ],
       "onError": "continueRegularOutput"
     },
@@ -231,41 +231,33 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1920,
-        1168
+        1664,
+        576
       ]
     },
     {
+      "parameters": {
+        "content": "### W4D - Procesar Decision de Propuesta\n\n- Webhook que recibe la decision del asesor (aprobar/cancelar/corregir) desde revision-propuesta-ccb.\n- En correccion: IA (OpenRouter) ajusta los criterios; Aplicar correcciones valida cada clave devuelta contra las claves existentes y contra listas cerradas de valores permitidos por campo - un valor fuera de rango se descarta, no se aplica a ciegas.\n- Tope de 3 rondas de correccion antes de escalar a revision manual.\n- Protegido con Header Auth (17/09/2026). Pendiente: la confianza que devuelve la IA aun no enruta a revision humana - ver Fase 7 del plan de remediacion.",
+        "height": 260,
+        "width": 520
+      },
       "id": "b1d626a9-7a9c-4cc5-b57d-4f112cead7b4",
       "name": "Nota - W4D Procesar Decision",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -992,
-        400
-      ],
-      "parameters": {
-        "content": "### W4D - Procesar Decision de Propuesta\n\n- Webhook que recibe la decision del asesor (aprobar/cancelar/corregir) desde revision-propuesta-ccb.\n- En correccion: IA (OpenRouter) ajusta los criterios; Aplicar correcciones valida cada clave devuelta contra las claves existentes y contra listas cerradas de valores permitidos por campo - un valor fuera de rango se descarta, no se aplica a ciegas.\n- Tope de 3 rondas de correccion antes de escalar a revision manual.\n- Protegido con Header Auth (17/09/2026). Pendiente: la confianza que devuelve la IA aun no enruta a revision humana - ver Fase 7 del plan de remediacion.",
-        "width": 520,
-        "height": 260
-      }
+        -240,
+        208
+      ]
     },
     {
-      "id": "a5cc5780-a89d-4cda-9ae4-d9f58c07a04c",
-      "name": "Validar decisión reconocida",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        -512,
-        320
-      ],
       "parameters": {
         "conditions": {
           "options": {
-            "version": 2,
-            "leftValue": "",
             "caseSensitive": true,
-            "typeValidation": "loose"
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
           },
           "combinator": "or",
           "conditions": [
@@ -299,31 +291,31 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "a5cc5780-a89d-4cda-9ae4-d9f58c07a04c",
+      "name": "Validar decisión reconocida",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -240,
+        544
+      ]
     },
     {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar('Decision no reconocida, rechazada antes de leer la base: \"' + (j.Decision || '(vacia)') + '\"').slice(0, 300);\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Validar decision reconocida', mensaje_error: mensaje, ok: false, error: mensaje } };"
+      },
       "id": "9b9f59da-c941-45b9-afe1-755611957bf6",
       "name": "Preparar error - Decisión no reconocida (rechazo temprano)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -272,
-        880
-      ],
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const j = $json;\n// F6-03: enmascara PII y datos sensibles del texto libre antes de registrarlo o alertarlo.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst mensaje = limpiar('Decision no reconocida, rechazada antes de leer la base: \"' + (j.Decision || '(vacia)') + '\"').slice(0, 300);\nreturn { json: { id_solicitud: j.id_solicitud, workflow_origen: 'W4-D-decision-propuesta', nodo_fallido: 'Validar decision reconocida', mensaje_error: mensaje, ok: false, error: mensaje } };"
-      }
+        -240,
+        768
+      ]
     },
     {
-      "id": "c54f4c93-dd7a-4674-b5c5-a712ce9d30bb",
-      "name": "Data Table - Registrar error (rechazo temprano)",
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1.1,
-      "position": [
-        -32,
-        880
-      ],
       "parameters": {
         "dataTableId": {
           "__rl": true,
@@ -344,24 +336,32 @@
         },
         "options": {}
       },
+      "id": "c54f4c93-dd7a-4674-b5c5-a712ce9d30bb",
+      "name": "Data Table - Registrar error (rechazo temprano)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        768
+      ],
       "onError": "continueRegularOutput"
     },
     {
-      "id": "77501e18-7f18-48de-b93c-928836b0b543",
-      "name": "Responder decisión - Rechazo temprano",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.5,
-      "position": [
-        208,
-        880
-      ],
       "parameters": {
         "respondWith": "json",
         "responseBody": "={{ { ok: false, error: $json.mensaje_error } }}",
         "options": {
           "responseCode": 400
         }
-      }
+      },
+      "id": "77501e18-7f18-48de-b93c-928836b0b543",
+      "name": "Responder decisión - Rechazo temprano",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        240,
+        768
+      ]
     },
     {
       "parameters": {
@@ -380,8 +380,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        -272,
-        320
+        0,
+        528
       ]
     },
     {
@@ -401,7 +401,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        400,
+        416,
         -16
       ]
     },
@@ -422,7 +422,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        400,
+        416,
         144
       ]
     },
@@ -443,7 +443,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        400,
+        416,
         304
       ]
     }
@@ -666,9 +666,9 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "960bceda-2ac1-470c-a3c8-982f153c6c41",
+  "versionId": "71e5bc68-2bb8-437c-b820-3d2a4fff70ea",
   "activeVersionId": "960bceda-2ac1-470c-a3c8-982f153c6c41",
-  "versionCounter": 217,
+  "versionCounter": 236,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
