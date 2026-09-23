@@ -28,9 +28,10 @@ y el estado global en [`docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](../../doc
 | 1 | Configuración centralizada: Data Table `Configuracion_CCB` | F5-01 | ☑ | Lectura de prueba devuelve las 8 claves | `f5-config-centralizada` |
 | 2 | Configuración centralizada: reemplazar correo/correos hardcodeados | F5-02 | ☑ | El correo vive en `alertas_email`; lo consumen subflujo de error, catch-all y W4D | `f5-config-centralizada` |
 | 3 | Configuración centralizada: URL del microservicio y datos del asesor fuera de los nodos | F5-03, F5-04 | ☑ | Sin literales de correo/URL/chatId en los nodos de los 13 flujos | `f5-config-centralizada` |
-| 4 | Observabilidad: `timeout` explícito en llamadas HTTP | F6-01 | ☐ | Llamada colgada corta en el tiempo definido | — |
-| 5 | Observabilidad: límite/paginación en lecturas sin tope | F6-02 | ☐ | Volumen leído por ejecución acotado | — |
-| 6 | Observabilidad: enmascarar PII antes de logs y alertas | F6-03 | ☐ | La alerta identifica la solicitud sin exponer PII | — |
+| 4 | Observabilidad: `timeout` explícito en llamadas HTTP | F6-01 | ☑ | 60s en los dos nodos HTTP del pipeline | `be0ac78` |
+| 5 | Observabilidad: límite/paginación en lecturas sin tope | F6-02 | ☑ | 100 filas por ciclo en las 3 colas | `be0ac78` |
+| 6 | Observabilidad: enmascarar PII antes de logs y alertas | F6-03 | ☑ | `limpiar()` en subflujo de error, catch-all y W4D; W2C verificado | `be0ac78` |
+| 6b | Observabilidad: sellar `error_timestamp` y monitorear las 4 métricas | F6-05 | ☑ | Flujo `[OPS]` horario verificado + 8 nodos de error sellados | `ops-monitoreo` |
 | 7 | Arquitectura: subflujo `[SUB] - CCB - Leer Contexto Propuesta` | F4-02 | ☐ | W4B/W4C/W4D leen el contexto por el mismo subflujo | — |
 | 8 | Arquitectura: dictamen sobre separar PDF de cálculo de precio | F4-05 | ☐ | Decisión documentada | — |
 | 9 | Arquitectura: partir W4D en subflujos por rama | F4-03 | ☐ | Ningún lienzo supera 20 nodos; las 3 ramas funcionan | — |
@@ -40,13 +41,23 @@ y el estado global en [`docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](../../doc
 | 13 | Catch-all con diseño propio | F4-01 (pendiente) | ☐ | Contrato adaptado, sin perder fidelidad de diagnóstico | — |
 | 14 | Cierre documental: re-auditoría, tablero y estado actualizados | — | ☐ | Puntaje nuevo anotado y docs sincronizados | — |
 
+### Unidad 6b — Observabilidad: medición y monitoreo (F6-05) — 23/09
+
+- Columna `error_timestamp` agregada a `Errores_CCB` y sellada en los 8 nodos que registran errores (expresión verificada contra la instancia).
+- Data Table `Metricas_CCB` = `W3oJ4a8h0TAPO9ji` (upsert por `metrica`: no crece).
+- Flujo `[OPS] - CCB - Monitoreo del pipeline` = `ZwBFTBhwS9pjS69X`, horario, 10 nodos. Fuente: `/metrics` (expuesto sin auth) + `Errores_CCB`. URL centralizada en `Configuracion_CCB.metricas_url`.
+- **Verificado con ejecución real** (trigger por webhook temporal, ya eliminado): `success`; tasa de error 0,17%, 124.471 ejecuciones, 0 errores en la hora, p95 5.000 ms, 19 handles; rama de alerta evaluada como falsa; 5 filas escritas en `Metricas_CCB`.
+- Limitaciones declaradas: `/metrics` es acumulado desde el arranque y sin etiqueta de flujo; la cola real de workers no es accesible; la tasa exacta por flujo necesita una credencial de API que solo puede crear una persona desde la UI.
+- **Pendiente de limpieza manual:** queda una fila de verificación en `Errores_CCB` (id 118, `id_solicitud = PRUEBA-F6-05`); la API pública no permite borrar filas, así que hay que eliminarla desde la UI. El flujo de monitoreo ya la excluye por prefijo `PRUEBA-`.
+
 ## Bloqueadas por terceros (no ejecutables desde acá)
 
 | ID | Motivo |
 |---|---|
-| F5-05 | Migrar a Variables nativas requiere que Tecnología habilite el acceso. La Fase 5 no lo espera: usa la Data Table. |
-| F6-04 | Retención de ejecuciones a nivel de instancia — requiere Tecnología. |
-| F6-05 | Monitoreo de las 4 métricas del framework — requiere un punto de consulta a nivel de instancia; se documenta el diseño. |
+| F5-05 | Migrar a Variables nativas requiere que Tecnología habilite el acceso (la API de Variables devuelve 403 por licencia). La Fase 5 no lo espera: usa la Data Table. |
+| F6-04 | Retención de ejecuciones a nivel de instancia (`EXECUTIONS_DATA_PRUNE`/`MAX_AGE`) — requiere Tecnología. |
+| F6-05 (exactitud por flujo) | La tasa de error por flujo con denominador real necesita una credencial de API de n8n dentro del flujo; la API pública no permite crear credenciales (403). Se entrega la métrica global + el desglose por flujo desde `Errores_CCB`. |
+| Seguridad | `/metrics` está expuesto sin autenticación en `automatizacion.camarabaq.org.co/metrics` (42 métricas de proceso). Se usó como fuente, pero conviene restringirlo o cerrarlo: es decisión de Tecnología. |
 
 ## Evidencia por unidad
 

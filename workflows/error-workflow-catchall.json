@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:38:12.077Z",
+  "updatedAt": "2026-09-23T13:42:05.738Z",
   "createdAt": "2026-09-07T14:40:21.862Z",
   "id": "Dh2lAQTzyoZBpXie",
   "name": "CCB - Error Workflow (catch-all)",
@@ -74,7 +74,8 @@
             "id_solicitud": "=N/A (catch-all)",
             "workflow_origen": "={{ $json.workflowName }}",
             "nodo_fallido": "={{ $json.lastNode }}",
-            "mensaje_error": "={{ $json.errorMessage }}"
+            "mensaje_error": "={{ $json.errorMessage }}",
+            "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -224,15 +225,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "864061e9-47a3-41d3-846e-568fcc4ee179",
-  "activeVersionId": "864061e9-47a3-41d3-846e-568fcc4ee179",
-  "versionCounter": 39,
+  "versionId": "42532396-39e3-477e-b620-6acd6b66ef92",
+  "activeVersionId": "42532396-39e3-477e-b620-6acd6b66ef92",
+  "versionCounter": 42,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:38:12.078Z",
-    "createdAt": "2026-09-23T13:38:12.078Z",
-    "versionId": "864061e9-47a3-41d3-846e-568fcc4ee179",
+    "updatedAt": "2026-09-23T13:42:05.739Z",
+    "createdAt": "2026-09-23T13:42:05.739Z",
+    "versionId": "42532396-39e3-477e-b620-6acd6b66ef92",
     "workflowId": "Dh2lAQTzyoZBpXie",
     "nodes": [
       {
@@ -302,7 +303,8 @@
               "id_solicitud": "=N/A (catch-all)",
               "workflow_origen": "={{ $json.workflowName }}",
               "nodo_fallido": "={{ $json.lastNode }}",
-              "mensaje_error": "={{ $json.errorMessage }}"
+              "mensaje_error": "={{ $json.errorMessage }}",
+              "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -451,18 +453,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:38:12.114Z",
-        "id": 2719,
+        "createdAt": "2026-09-23T13:42:05.773Z",
+        "id": 2730,
         "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "864061e9-47a3-41d3-846e-568fcc4ee179",
+        "versionId": "42532396-39e3-477e-b620-6acd6b66ef92",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:38:12.126Z",
-        "id": 2720,
+        "createdAt": "2026-09-23T13:42:05.786Z",
+        "id": 2731,
         "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "864061e9-47a3-41d3-846e-568fcc4ee179",
+        "versionId": "42532396-39e3-477e-b620-6acd6b66ef92",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

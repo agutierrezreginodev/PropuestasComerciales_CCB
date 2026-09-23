@@ -1,0 +1,692 @@
+{
+  "updatedAt": "2026-09-23T13:45:11.084Z",
+  "createdAt": "2026-09-23T13:44:00.657Z",
+  "id": "ZwBFTBhwS9pjS69X",
+  "name": "[OPS] - CCB - Monitoreo del pipeline",
+  "description": "Monitoreo horario del pipeline CCB: publica tasa de error, ejecuciones, latencia p95 y saturacion en la Data Table Metricas_CCB y alerta por correo si se supera un umbral. Sistema: endpoint Prometheus de la instancia + Data Tables. Area propietaria: Servicios de Informacion CCB.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "339a5f95-0041-450e-bb25-d2527239cb1d",
+      "name": "Cada hora",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Hgy02eqPhnsdJvkq",
+          "mode": "id",
+          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "2dcc8130-d235-4b2d-8716-6a71760c4e0e",
+      "name": "Ejecutar Leer Configuración",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json._config.metricas_url }}",
+        "options": {
+          "timeout": 15000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "9b17b268-635c-4a55-a8b3-f7e657fc8f68",
+      "name": "HTTP - Leer métricas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB"
+        },
+        "limit": 250
+      },
+      "id": "194fc30b-80bc-497f-ba1b-a7b36a8556ba",
+      "name": "Data Table - Leer errores recientes",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// F6-05: calcula las cuatro metricas del framework (tasa de ejecucion, tasa de error,\n// latencia p95 y saturacion/cola) desde la serie Prometheus de la instancia y desde los\n// errores registrados en Errores_CCB en la ultima hora.\nconst cfg = (() => { try { return $('Ejecutar Leer Configuración').first().json._config || {}; } catch (e) { return {}; } })();\nconst http = $('HTTP - Leer métricas').first().json;\nconst texto = String(http.data || http.body || '');\nconst num = (v) => Number(v);\nconst buckets = {};\nlet ok = 0, err = 0, sumaSeg = 0;\nconst gauge = {};\nfor (const linea of texto.split('\\n')) {\n  if (linea.startsWith('#') || !linea.trim()) continue;\n  const m = linea.trim().match(/^([a-zA-Z0-9_:]+)(\\{[^}]*\\})?\\s+(-?[\\d.eE+-]+)$/);\n  if (!m) continue;\n  const nombre = m[1], labels = m[2] || '', valor = num(m[3]);\n  if (nombre === 'n8n_workflow_execution_duration_seconds_bucket') {\n    const le = (labels.match(/le=\"([^\"]+)\"/) || [])[1];\n    const st = (labels.match(/status=\"([^\"]+)\"/) || [])[1];\n    if (st === 'success') { const k = le === '+Inf' ? Infinity : num(le); buckets[k] = (buckets[k] || 0) + valor; }\n  } else if (nombre === 'n8n_workflow_execution_duration_seconds_count') {\n    const st = (labels.match(/status=\"([^\"]+)\"/) || [])[1];\n    if (st === 'success') ok += valor; else if (st === 'failed') err += valor;\n  } else if (nombre === 'n8n_workflow_execution_duration_seconds_sum') {\n    sumaSeg += valor;\n  } else if (nombre === 'n8n_nodejs_active_handles_total' || nombre === 'n8n_active_workflow_count'\n             || nombre === 'n8n_nodejs_heap_size_used_bytes') {\n    gauge[nombre] = valor;\n  }\n}\nconst total = ok + err;\nlet p95 = null, acumulado = 0;\nfor (const k of Object.keys(buckets).map(Number).sort((a, b) => a - b)) {\n  acumulado = buckets[k];\n  if (ok > 0 && acumulado >= ok * 0.95) { p95 = k; break; }\n}\nconst ventana = $now.minus({ hours: 1 }).setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst filas = $input.all().map((i) => i.json);\nconst errores = filas.filter((f) => String(f.error_timestamp || '') >= ventana\n  && !String(f.id_solicitud || '').startsWith('PRUEBA-') && f.workflow_origen !== 'verificacion');\nconst porFlujo = {};\nfor (const e of errores) { const k = e.workflow_origen || 'desconocido'; porFlujo[k] = (porFlujo[k] || 0) + 1; }\nconst tasa = total > 0 ? Number(((err / total) * 100).toFixed(2)) : 0;\nconst p95ms = (p95 === null || p95 === Infinity) ? null : Math.round(p95 * 1000);\nconst alertar = tasa >= 2 || errores.length >= 3;\nconst ahora = $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst filasMetricas = [\n  { metrica: 'tasa_error_pct', valor: String(tasa), unidad: 'porcentaje', estado: tasa >= 2 ? 'SUPERA_UMBRAL' : 'ok', actualizado_en: ahora },\n  { metrica: 'ejecuciones_total', valor: String(total), unidad: 'ejecuciones', estado: 'ok', actualizado_en: ahora },\n  { metrica: 'latencia_p95_ms', valor: String(p95ms === null ? '' : p95ms), unidad: 'milisegundos', estado: 'ok', actualizado_en: ahora },\n  { metrica: 'saturacion_handles', valor: String(gauge['n8n_nodejs_active_handles_total'] ?? ''), unidad: 'handles_activos', estado: 'ok', actualizado_en: ahora },\n  { metrica: 'errores_ultima_hora', valor: String(errores.length), unidad: 'errores', estado: errores.length >= 3 ? 'SUPERA_UMBRAL' : 'ok', actualizado_en: ahora },\n];\nconst detalle = '<p><b>Monitoreo del pipeline CCB</b> (' + ahora + ')</p><ul>'\n  + '<li><b>Tasa de error acumulada:</b> ' + tasa + '% (umbral 2%)</li>'\n  + '<li><b>Ejecuciones desde el arranque:</b> ' + ok + ' ok / ' + err + ' con error</li>'\n  + '<li><b>Latencia p95:</b> ' + (p95ms === null ? 'n/d' : p95ms + ' ms') + '</li>'\n  + '<li><b>Saturacion (handles activos):</b> ' + (gauge['n8n_nodejs_active_handles_total'] ?? 'n/d') + '</li>'\n  + '<li><b>Errores en la ultima hora:</b> ' + errores.length + (errores.length ? ' -> ' + JSON.stringify(porFlujo) : '') + '</li></ul>';\nreturn { json: { tasa_error_pct: tasa, ejecuciones_total: total, errores_ultima_hora: errores.length,\n                 latencia_p95_ms: p95ms, por_flujo: porFlujo, alertar, alertar_para: cfg.alertas_email,\n                 unidad_alerta: cfg.asesor_email, detalle, metricas: filasMetricas } };"
+      },
+      "id": "488a6eff-6109-47a3-a412-a2abfd7ec49c",
+      "name": "Calcular métricas del pipeline",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Expande las metricas calculadas a una fila por metrica (upsert por `metrica`).\nreturn $('Calcular métricas del pipeline').first().json.metricas.map((m) => ({ json: m }));"
+      },
+      "id": "7556b2fb-80b2-437f-a9f7-35883e57bf2b",
+      "name": "Preparar filas de métricas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "W3oJ4a8h0TAPO9ji",
+          "mode": "list",
+          "cachedResultName": "Metricas_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "metrica",
+              "keyValue": "={{ $json.metrica }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "metrica"
+          ],
+          "value": {
+            "metrica": "={{ $json.metrica }}",
+            "valor": "={{ $json.valor }}",
+            "unidad": "={{ $json.unidad }}",
+            "estado": "={{ $json.estado }}",
+            "actualizado_en": "={{ $json.actualizado_en }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "c5c47336-714b-4465-b37e-d7575261334c",
+      "name": "Data Table - Guardar métricas",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.alertar }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4df47209-7ac9-4d1c-9c75-177c7f43a058",
+      "name": "IF - ¿Supera el umbral?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        640,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $json.alertar_para }}",
+        "subject": "={{ '[Pipeline CCB] Monitoreo: ' + $json.tasa_error_pct + '% de error, ' + $json.errores_ultima_hora + ' error(es) en la ultima hora' }}",
+        "bodyContent": "={{ $json.detalle }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "id": "430817bb-e81e-4f6a-ba1e-2ea5e40fa0ed",
+      "name": "Outlook - Enviar alerta de monitoreo",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -160
+      ],
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "webhookId": "165a5065-1acd-4362-b04e-f440604807f5",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "iOA7XXDSHZojLhJz",
+          "name": "INT-ServiciosInformacion Microsoft Outlook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## [OPS] - CCB - Monitoreo del pipeline (F6-05)\n\nCorre cada hora y publica las cuatro metricas del framework en la Data Table `Metricas_CCB`\n(una fila por metrica, upsert por `metrica`, asi la tabla no crece):\n\n| Metrica | Fuente | Umbral |\n|---|---|---|\n| `tasa_error_pct` | `n8n_workflow_execution_duration_seconds_count{status}` en `/metrics` | 2% |\n| `ejecuciones_total` | idem | informativa |\n| `latencia_p95_ms` | buckets del histograma de duracion | informativa |\n| `saturacion_handles` | `n8n_nodejs_active_handles_total` | informativa |\n| `errores_ultima_hora` | `Errores_CCB` (columna `error_timestamp`) | 3 por hora |\n\nSi se supera un umbral, manda un correo al destinatario de `alertas_email` de\n`Configuracion_CCB`. La URL de `/metrics` tambien sale de esa tabla (`metricas_url`),\nasi que cambiar de instancia no requiere tocar el flujo.\n\n**Limitaciones conocidas:** `/metrics` es acumulado desde el arranque del proceso (no por\nventana) y no trae etiqueta de workflow, asi que la tasa de error es global; el desglose\npor flujo sale de `Errores_CCB`. La profundidad de cola real (workers) requeriria acceso a\nla cola de n8n, no disponible en la API publica.",
+        "height": 420,
+        "width": 560,
+        "color": 5
+      },
+      "id": "c6c8f92e-56d8-487c-aa64-6a0326701d33",
+      "name": "Nota - Monitoreo",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -360
+      ]
+    }
+  ],
+  "connections": {
+    "Cada hora": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Leer Configuración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Leer Configuración": {
+      "main": [
+        [
+          {
+            "node": "HTTP - Leer métricas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP - Leer métricas": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer errores recientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer errores recientes": {
+      "main": [
+        [
+          {
+            "node": "Calcular métricas del pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular métricas del pipeline": {
+      "main": [
+        [
+          {
+            "node": "Preparar filas de métricas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF - ¿Supera el umbral?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar filas de métricas": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Guardar métricas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Supera el umbral?": {
+      "main": [
+        [
+          {
+            "node": "Outlook - Enviar alerta de monitoreo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Cada hora": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "b346f81c-b7c0-461d-81a3-c46382290cdb",
+  "activeVersionId": "b346f81c-b7c0-461d-81a3-c46382290cdb",
+  "versionCounter": 10,
+  "triggerCount": 1,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T13:45:11.085Z",
+    "createdAt": "2026-09-23T13:45:11.085Z",
+    "versionId": "b346f81c-b7c0-461d-81a3-c46382290cdb",
+    "workflowId": "ZwBFTBhwS9pjS69X",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours",
+                "hoursInterval": 1
+              }
+            ]
+          }
+        },
+        "id": "339a5f95-0041-450e-bb25-d2527239cb1d",
+        "name": "Cada hora",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -560,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "Hgy02eqPhnsdJvkq",
+            "mode": "id",
+            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "id": "2dcc8130-d235-4b2d-8716-6a71760c4e0e",
+        "name": "Ejecutar Leer Configuración",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -320,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "GET",
+          "url": "={{ $json._config.metricas_url }}",
+          "options": {
+            "timeout": 15000,
+            "response": {
+              "response": {
+                "responseFormat": "text"
+              }
+            }
+          }
+        },
+        "id": "9b17b268-635c-4a55-a8b3-f7e657fc8f68",
+        "name": "HTTP - Leer métricas",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -80,
+          0
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB"
+          },
+          "limit": 250
+        },
+        "id": "194fc30b-80bc-497f-ba1b-a7b36a8556ba",
+        "name": "Data Table - Leer errores recientes",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          160,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// F6-05: calcula las cuatro metricas del framework (tasa de ejecucion, tasa de error,\n// latencia p95 y saturacion/cola) desde la serie Prometheus de la instancia y desde los\n// errores registrados en Errores_CCB en la ultima hora.\nconst cfg = (() => { try { return $('Ejecutar Leer Configuración').first().json._config || {}; } catch (e) { return {}; } })();\nconst http = $('HTTP - Leer métricas').first().json;\nconst texto = String(http.data || http.body || '');\nconst num = (v) => Number(v);\nconst buckets = {};\nlet ok = 0, err = 0, sumaSeg = 0;\nconst gauge = {};\nfor (const linea of texto.split('\\n')) {\n  if (linea.startsWith('#') || !linea.trim()) continue;\n  const m = linea.trim().match(/^([a-zA-Z0-9_:]+)(\\{[^}]*\\})?\\s+(-?[\\d.eE+-]+)$/);\n  if (!m) continue;\n  const nombre = m[1], labels = m[2] || '', valor = num(m[3]);\n  if (nombre === 'n8n_workflow_execution_duration_seconds_bucket') {\n    const le = (labels.match(/le=\"([^\"]+)\"/) || [])[1];\n    const st = (labels.match(/status=\"([^\"]+)\"/) || [])[1];\n    if (st === 'success') { const k = le === '+Inf' ? Infinity : num(le); buckets[k] = (buckets[k] || 0) + valor; }\n  } else if (nombre === 'n8n_workflow_execution_duration_seconds_count') {\n    const st = (labels.match(/status=\"([^\"]+)\"/) || [])[1];\n    if (st === 'success') ok += valor; else if (st === 'failed') err += valor;\n  } else if (nombre === 'n8n_workflow_execution_duration_seconds_sum') {\n    sumaSeg += valor;\n  } else if (nombre === 'n8n_nodejs_active_handles_total' || nombre === 'n8n_active_workflow_count'\n             || nombre === 'n8n_nodejs_heap_size_used_bytes') {\n    gauge[nombre] = valor;\n  }\n}\nconst total = ok + err;\nlet p95 = null, acumulado = 0;\nfor (const k of Object.keys(buckets).map(Number).sort((a, b) => a - b)) {\n  acumulado = buckets[k];\n  if (ok > 0 && acumulado >= ok * 0.95) { p95 = k; break; }\n}\nconst ventana = $now.minus({ hours: 1 }).setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst filas = $input.all().map((i) => i.json);\nconst errores = filas.filter((f) => String(f.error_timestamp || '') >= ventana\n  && !String(f.id_solicitud || '').startsWith('PRUEBA-') && f.workflow_origen !== 'verificacion');\nconst porFlujo = {};\nfor (const e of errores) { const k = e.workflow_origen || 'desconocido'; porFlujo[k] = (porFlujo[k] || 0) + 1; }\nconst tasa = total > 0 ? Number(((err / total) * 100).toFixed(2)) : 0;\nconst p95ms = (p95 === null || p95 === Infinity) ? null : Math.round(p95 * 1000);\nconst alertar = tasa >= 2 || errores.length >= 3;\nconst ahora = $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss');\nconst filasMetricas = [\n  { metrica: 'tasa_error_pct', valor: String(tasa), unidad: 'porcentaje', estado: tasa >= 2 ? 'SUPERA_UMBRAL' : 'ok', actualizado_en: ahora },\n  { metrica: 'ejecuciones_total', valor: String(total), unidad: 'ejecuciones', estado: 'ok', actualizado_en: ahora },\n  { metrica: 'latencia_p95_ms', valor: String(p95ms === null ? '' : p95ms), unidad: 'milisegundos', estado: 'ok', actualizado_en: ahora },\n  { metrica: 'saturacion_handles', valor: String(gauge['n8n_nodejs_active_handles_total'] ?? ''), unidad: 'handles_activos', estado: 'ok', actualizado_en: ahora },\n  { metrica: 'errores_ultima_hora', valor: String(errores.length), unidad: 'errores', estado: errores.length >= 3 ? 'SUPERA_UMBRAL' : 'ok', actualizado_en: ahora },\n];\nconst detalle = '<p><b>Monitoreo del pipeline CCB</b> (' + ahora + ')</p><ul>'\n  + '<li><b>Tasa de error acumulada:</b> ' + tasa + '% (umbral 2%)</li>'\n  + '<li><b>Ejecuciones desde el arranque:</b> ' + ok + ' ok / ' + err + ' con error</li>'\n  + '<li><b>Latencia p95:</b> ' + (p95ms === null ? 'n/d' : p95ms + ' ms') + '</li>'\n  + '<li><b>Saturacion (handles activos):</b> ' + (gauge['n8n_nodejs_active_handles_total'] ?? 'n/d') + '</li>'\n  + '<li><b>Errores en la ultima hora:</b> ' + errores.length + (errores.length ? ' -> ' + JSON.stringify(porFlujo) : '') + '</li></ul>';\nreturn { json: { tasa_error_pct: tasa, ejecuciones_total: total, errores_ultima_hora: errores.length,\n                 latencia_p95_ms: p95ms, por_flujo: porFlujo, alertar, alertar_para: cfg.alertas_email,\n                 unidad_alerta: cfg.asesor_email, detalle, metricas: filasMetricas } };"
+        },
+        "id": "488a6eff-6109-47a3-a412-a2abfd7ec49c",
+        "name": "Calcular métricas del pipeline",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Expande las metricas calculadas a una fila por metrica (upsert por `metrica`).\nreturn $('Calcular métricas del pipeline').first().json.metricas.map((m) => ({ json: m }));"
+        },
+        "id": "7556b2fb-80b2-437f-a9f7-35883e57bf2b",
+        "name": "Preparar filas de métricas",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          640,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "W3oJ4a8h0TAPO9ji",
+            "mode": "list",
+            "cachedResultName": "Metricas_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "metrica",
+                "keyValue": "={{ $json.metrica }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "metrica"
+            ],
+            "value": {
+              "metrica": "={{ $json.metrica }}",
+              "valor": "={{ $json.valor }}",
+              "unidad": "={{ $json.unidad }}",
+              "estado": "={{ $json.estado }}",
+              "actualizado_en": "={{ $json.actualizado_en }}"
+            }
+          },
+          "options": {}
+        },
+        "id": "c5c47336-714b-4465-b37e-d7575261334c",
+        "name": "Data Table - Guardar métricas",
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "position": [
+          880,
+          160
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ $json.alertar }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "4df47209-7ac9-4d1c-9c75-177c7f43a058",
+        "name": "IF - ¿Supera el umbral?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          640,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "toRecipients": "={{ $json.alertar_para }}",
+          "subject": "={{ '[Pipeline CCB] Monitoreo: ' + $json.tasa_error_pct + '% de error, ' + $json.errores_ultima_hora + ' error(es) en la ultima hora' }}",
+          "bodyContent": "={{ $json.detalle }}",
+          "additionalFields": {
+            "bodyContentType": "html"
+          }
+        },
+        "id": "430817bb-e81e-4f6a-ba1e-2ea5e40fa0ed",
+        "name": "Outlook - Enviar alerta de monitoreo",
+        "type": "n8n-nodes-base.microsoftOutlook",
+        "typeVersion": 2,
+        "position": [
+          880,
+          -160
+        ],
+        "onError": "continueRegularOutput",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "webhookId": "165a5065-1acd-4362-b04e-f440604807f5",
+        "credentials": {
+          "microsoftOutlookOAuth2Api": {
+            "id": "iOA7XXDSHZojLhJz",
+            "name": "INT-ServiciosInformacion Microsoft Outlook"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "## [OPS] - CCB - Monitoreo del pipeline (F6-05)\n\nCorre cada hora y publica las cuatro metricas del framework en la Data Table `Metricas_CCB`\n(una fila por metrica, upsert por `metrica`, asi la tabla no crece):\n\n| Metrica | Fuente | Umbral |\n|---|---|---|\n| `tasa_error_pct` | `n8n_workflow_execution_duration_seconds_count{status}` en `/metrics` | 2% |\n| `ejecuciones_total` | idem | informativa |\n| `latencia_p95_ms` | buckets del histograma de duracion | informativa |\n| `saturacion_handles` | `n8n_nodejs_active_handles_total` | informativa |\n| `errores_ultima_hora` | `Errores_CCB` (columna `error_timestamp`) | 3 por hora |\n\nSi se supera un umbral, manda un correo al destinatario de `alertas_email` de\n`Configuracion_CCB`. La URL de `/metrics` tambien sale de esa tabla (`metricas_url`),\nasi que cambiar de instancia no requiere tocar el flujo.\n\n**Limitaciones conocidas:** `/metrics` es acumulado desde el arranque del proceso (no por\nventana) y no trae etiqueta de workflow, asi que la tasa de error es global; el desglose\npor flujo sale de `Errores_CCB`. La profundidad de cola real (workers) requeriria acceso a\nla cola de n8n, no disponible en la API publica.",
+          "height": 420,
+          "width": 560,
+          "color": 5
+        },
+        "id": "c6c8f92e-56d8-487c-aa64-6a0326701d33",
+        "name": "Nota - Monitoreo",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -560,
+          -360
+        ]
+      }
+    ],
+    "connections": {
+      "Cada hora": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Leer Configuración",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Leer Configuración": {
+        "main": [
+          [
+            {
+              "node": "HTTP - Leer métricas",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP - Leer métricas": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer errores recientes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer errores recientes": {
+        "main": [
+          [
+            {
+              "node": "Calcular métricas del pipeline",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calcular métricas del pipeline": {
+        "main": [
+          [
+            {
+              "node": "Preparar filas de métricas",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "IF - ¿Supera el umbral?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar filas de métricas": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Guardar métricas",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Supera el umbral?": {
+        "main": [
+          [
+            {
+              "node": "Outlook - Enviar alerta de monitoreo",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T13:45:11.130Z",
+        "id": 2735,
+        "workflowId": "ZwBFTBhwS9pjS69X",
+        "versionId": "b346f81c-b7c0-461d-81a3-c46382290cdb",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T13:45:11.159Z",
+        "id": 2736,
+        "workflowId": "ZwBFTBhwS9pjS69X",
+        "versionId": "b346f81c-b7c0-461d-81a3-c46382290cdb",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

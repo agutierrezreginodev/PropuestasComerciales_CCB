@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:32:06.239Z",
+  "updatedAt": "2026-09-23T13:41:53.778Z",
   "createdAt": "2026-09-07T18:48:54.850Z",
   "id": "cHOIOEFB5nbltN82",
   "name": "[SUB] CCB - Workflow 3 - Motor Criterios y Precio",
@@ -441,7 +441,8 @@
             "id_solicitud": "={{ $json.id_solicitud }}",
             "workflow_origen": "=motor-v2.0",
             "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -527,7 +528,8 @@
             "id_solicitud": "={{ $json.id_solicitud }}",
             "workflow_origen": "=motor-v2.0",
             "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -1009,15 +1011,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "0073a7f5-d6da-4d6f-9d32-b1fb3fd53aa5",
-  "activeVersionId": "0073a7f5-d6da-4d6f-9d32-b1fb3fd53aa5",
-  "versionCounter": 292,
+  "versionId": "09911df4-ac76-4154-ac09-2fe88705b877",
+  "activeVersionId": "09911df4-ac76-4154-ac09-2fe88705b877",
+  "versionCounter": 295,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:32:06.265Z",
-    "createdAt": "2026-09-23T13:32:06.265Z",
-    "versionId": "0073a7f5-d6da-4d6f-9d32-b1fb3fd53aa5",
+    "updatedAt": "2026-09-23T13:41:53.786Z",
+    "createdAt": "2026-09-23T13:41:53.786Z",
+    "versionId": "09911df4-ac76-4154-ac09-2fe88705b877",
     "workflowId": "cHOIOEFB5nbltN82",
     "nodes": [
       {
@@ -1454,7 +1456,8 @@
               "id_solicitud": "={{ $json.id_solicitud }}",
               "workflow_origen": "=motor-v2.0",
               "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
+              "mensaje_error": "={{ $json.mensaje_error }}",
+              "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -1540,7 +1543,8 @@
               "id_solicitud": "={{ $json.id_solicitud }}",
               "workflow_origen": "=motor-v2.0",
               "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
+              "mensaje_error": "={{ $json.mensaje_error }}",
+              "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
             },
             "matchingColumns": [],
             "schema": [
@@ -2014,18 +2018,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:32:06.690Z",
-        "id": 2695,
+        "createdAt": "2026-09-23T13:41:53.944Z",
+        "id": 2726,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "0073a7f5-d6da-4d6f-9d32-b1fb3fd53aa5",
+        "versionId": "09911df4-ac76-4154-ac09-2fe88705b877",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:32:06.747Z",
-        "id": 2696,
+        "createdAt": "2026-09-23T13:41:54.054Z",
+        "id": 2727,
         "workflowId": "cHOIOEFB5nbltN82",
-        "versionId": "0073a7f5-d6da-4d6f-9d32-b1fb3fd53aa5",
+        "versionId": "09911df4-ac76-4154-ac09-2fe88705b877",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-22T18:22:31.648Z",
+  "updatedAt": "2026-09-23T13:41:44.598Z",
   "createdAt": "2026-09-15T13:24:42.298Z",
   "id": "u6KCMnLwFOp6Ja0N",
   "name": "CCB - Workflow 2C - Recepción Formulario Externo (Georreferenciada)",
@@ -208,7 +208,8 @@
             "id_solicitud": "={{ $json.id_solicitud }}",
             "workflow_origen": "={{ $json.workflow_origen }}",
             "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
           },
           "matchingColumns": []
         },
@@ -354,15 +355,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "48034e20-5022-458e-a8e4-e5643d220288",
-  "activeVersionId": "48034e20-5022-458e-a8e4-e5643d220288",
-  "versionCounter": 65,
+  "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
+  "activeVersionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
+  "versionCounter": 68,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-22T18:22:31.651Z",
-    "createdAt": "2026-09-22T18:22:31.651Z",
-    "versionId": "48034e20-5022-458e-a8e4-e5643d220288",
+    "updatedAt": "2026-09-23T13:41:44.599Z",
+    "createdAt": "2026-09-23T13:41:44.599Z",
+    "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
     "workflowId": "u6KCMnLwFOp6Ja0N",
     "nodes": [
       {
@@ -566,7 +567,8 @@
               "id_solicitud": "={{ $json.id_solicitud }}",
               "workflow_origen": "={{ $json.workflow_origen }}",
               "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
+              "mensaje_error": "={{ $json.mensaje_error }}",
+              "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
             },
             "matchingColumns": []
           },
@@ -706,18 +708,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-22T18:22:31.746Z",
-        "id": 2603,
+        "createdAt": "2026-09-23T13:41:44.642Z",
+        "id": 2724,
         "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "48034e20-5022-458e-a8e4-e5643d220288",
+        "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-22T18:22:31.787Z",
-        "id": 2604,
+        "createdAt": "2026-09-23T13:41:44.660Z",
+        "id": 2725,
         "workflowId": "u6KCMnLwFOp6Ja0N",
-        "versionId": "48034e20-5022-458e-a8e4-e5643d220288",
+        "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -208,7 +208,25 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 | F6-02 | Paginación o límite en las lecturas que hoy traen todo sin tope | W4A, W5A, W6 | ▪ | El volumen leído por ejecución está acotado | ☑ 23/09 — `limit: 100` en las tres lecturas de cola (`PROPUESTA_GENERADA`, `APROBADA`, `ENVIADA`). Son colas de trabajo: el resto se procesa en el ciclo siguiente (15 min / 3am). |
 | F6-03 | Enmascarar PII antes de logs y alertas externas | W4B, W4D, W5B, W2C | ▪▪ | Las alertas identifican la solicitud sin exponer datos personales completos | ☑ 23/09 — helper `limpiar()` en el subflujo compartido de error (cubre W4B/W5B y los otros 6 flujos que alertan por ahí), en el catch-all y en 4 nodos de error de W4D; `parcial()` para nombre y razón social en el aviso de tope. W2C verificado: su registro de error solo lleva nombres de campos faltantes. |
 | F6-04 | Revisar las variables de retención de ejecuciones a nivel de instancia | instancia — requiere Tecnología | ▪ | La retención está acotada y el disco deja de crecer sin control | ⏸ pendiente de Tecnología — ver nota |
-| F6-05 | Monitorear las cuatro métricas del framework: tasa de ejecución, tasa de error por flujo (umbral 2%), latencia p95 y profundidad de cola | instancia | ▪▪ | Existe un punto donde consultar las cuatro y un umbral que dispara aviso | 🔄 parcial (23/09) — fuentes verificadas y una de las cuatro cubierta; ver nota |
+| F6-05 | Monitorear las cuatro métricas del framework: tasa de ejecución, tasa de error por flujo (umbral 2%), latencia p95 y profundidad de cola | instancia | ▪▪ | Existe un punto donde consultar las cuatro y un umbral que dispara aviso | ☑ 23/09 — flujo `[OPS] - CCB - Monitoreo del pipeline` (horario) + Data Table `Metricas_CCB`; verificado con ejecución real |
+
+**Nota — F6-05 (23/09):** el flujo de monitoreo corre **cada hora**, calcula las cuatro métricas y las publica en la Data Table `Metricas_CCB` (una fila por métrica, upsert por `metrica`, así la tabla no crece):
+
+| Métrica publicada | Fuente | Umbral que dispara aviso |
+|---|---|---|
+| `tasa_error_pct` | contadores `n8n_workflow_execution_duration_seconds_count{status}` de `/metrics` | ≥ 2% |
+| `ejecuciones_total` | idem (acumulado del proceso) | informativa |
+| `latencia_p95_ms` | buckets del histograma de duración | informativa |
+| `saturacion_handles` | `n8n_nodejs_active_handles_total` | informativa |
+| `errores_ultima_hora` | `Errores_CCB` por `error_timestamp`, con desglose por `workflow_origen` | ≥ 3 en la hora |
+
+Si se supera un umbral, envía el detalle al destinatario de `alertas_email` de `Configuracion_CCB`; la URL de `/metrics` también sale de esa tabla (`metricas_url`), así que mudar de instancia no toca el flujo.
+
+**Verificación real:** se agregó un trigger por webhook temporal, se ejecutó contra la instancia viva (ejecución `success`) y se comprobó: `tasa_error_pct = 0.17`, `ejecuciones_total = 124.471`, `errores_ultima_hora = 0`, `latencia_p95_ms = 5000`, `saturacion_handles = 19`, la rama de alerta evaluada como falsa (correcto: por debajo del umbral) y las 5 filas escritas en `Metricas_CCB`. Después se eliminó el trigger temporal: el flujo quedó **solo por horario**.
+
+**Limitaciones declaradas:** `/metrics` acumula desde el arranque del proceso (no por ventana) y no tiene etiqueta de flujo, así que la tasa de error es global y el desglose por flujo sale de `Errores_CCB`. La profundidad de cola real (workers) requeriría acceso a la cola de n8n, que la API pública no expone: se usa la saturación de handles como proxi. **Para el cálculo exacto por flujo** hace falta una credencial de API de n8n dentro del flujo (la API pública devuelve 403 al crear credenciales: debe crearla una persona desde la UI).
+
+**Columna `error_timestamp` (23/09):** `Errores_CCB` no tenía marca de tiempo, así que ningún error propio era ubicable en el tiempo. Se agregó la columna y se selló en los **8 nodos** que insertan errores (subflujo compartido, W2C, W3 ×2, W4D ×3, catch-all) con `={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}` (expresión verificada contra la instancia viva).
 
 ### Nota — F6-03 (23/09, enmascarado de PII)
 
@@ -233,12 +251,12 @@ Estado de las cuatro métricas del framework:
 
 | Métrica | Fuente | Estado |
 |---|---|---|
-| Latencia (p95) | `n8n_workflow_execution_duration_seconds` en `/metrics` | ✅ disponible |
-| Profundidad de cola | `n8n_nodejs_active_requests` / `active_handles` en `/metrics` | ✅ disponible |
-| Tasa de error por flujo (umbral 2%) | `GET /api/v1/executions?status=error` — requiere una credencial de API dentro de un workflow | 🔲 requiere credencial |
-| Tasa de ejecución | `GET /api/v1/executions` | 🔲 requiere credencial |
+| Latencia (p95) | `n8n_workflow_execution_duration_seconds` en `/metrics` | ✅ en `Metricas_CCB` |
+| Profundidad de cola | `n8n_nodejs_active_handles_total` en `/metrics` | ⚠️ proxi de saturación (la cola real no es accesible) |
+| Tasa de error (umbral 2%) | contadores `status="failed"`/`status="success"` en `/metrics` + desglose por flujo desde `Errores_CCB` | ✅ global; por flujo requiere credencial de API |
+| Tasa de ejecución | `n8n_workflow_execution_duration_seconds_count` en `/metrics` | ✅ acumulada |
 
-**Segundo hallazgo (bloquea el cálculo de tasa de error):** `Errores_CCB` no tiene columna de fecha — los registros de error no son ubicables en el tiempo, así que hoy no se puede calcular una tasa de error por ventana ni siquiera desde los datos propios. Se corrige en la unidad de observabilidad siguiente (columna `error_timestamp` + sellado en los 8 puntos de inserción).
+**Segundo hallazgo (habilitador de la métrica de error):** `Errores_CCB` no tenía columna de fecha — los registros de error no eran ubicables en el tiempo, así que no se podía calcular nada por ventana. **Corregido el 23/09**: columna `error_timestamp` + sellado en los 8 puntos de inserción (ver la nota de F6-05).
 
 **F6-04** requiere que Tecnología revise `EXECUTIONS_DATA_PRUNE` / `EXECUTIONS_DATA_MAX_AGE`; no es accesible desde la API pública. Queda como pedido concreto, junto con el cierre de `/metrics` (o al menos su restricción por red), que hoy publica la topología interna de la instancia.
 

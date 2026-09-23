@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T13:39:34.359Z",
+  "updatedAt": "2026-09-23T13:42:02.450Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
@@ -411,7 +411,8 @@
             "id_solicitud": "={{ $json.id_solicitud }}",
             "workflow_origen": "={{ $json.workflow_origen }}",
             "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
           },
           "matchingColumns": []
         },
@@ -923,7 +924,8 @@
             "id_solicitud": "={{ $json.id_solicitud }}",
             "workflow_origen": "={{ $json.workflow_origen }}",
             "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
           },
           "matchingColumns": []
         },
@@ -1123,7 +1125,8 @@
             "id_solicitud": "={{ $json.id_solicitud }}",
             "workflow_origen": "={{ $json.workflow_origen }}",
             "nodo_fallido": "={{ $json.nodo_fallido }}",
-            "mensaje_error": "={{ $json.mensaje_error }}"
+            "mensaje_error": "={{ $json.mensaje_error }}",
+            "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
           },
           "matchingColumns": []
         },
@@ -1842,15 +1845,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
-  "activeVersionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
-  "versionCounter": 202,
+  "versionId": "62c158c0-5746-4c24-8db6-73af468531b0",
+  "activeVersionId": "62c158c0-5746-4c24-8db6-73af468531b0",
+  "versionCounter": 205,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:39:34.363Z",
-    "createdAt": "2026-09-23T13:39:34.363Z",
-    "versionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
+    "updatedAt": "2026-09-23T13:42:02.452Z",
+    "createdAt": "2026-09-23T13:42:02.452Z",
+    "versionId": "62c158c0-5746-4c24-8db6-73af468531b0",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -2257,7 +2260,8 @@
               "id_solicitud": "={{ $json.id_solicitud }}",
               "workflow_origen": "={{ $json.workflow_origen }}",
               "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
+              "mensaje_error": "={{ $json.mensaje_error }}",
+              "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
             },
             "matchingColumns": []
           },
@@ -2769,7 +2773,8 @@
               "id_solicitud": "={{ $json.id_solicitud }}",
               "workflow_origen": "={{ $json.workflow_origen }}",
               "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
+              "mensaje_error": "={{ $json.mensaje_error }}",
+              "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
             },
             "matchingColumns": []
           },
@@ -2969,7 +2974,8 @@
               "id_solicitud": "={{ $json.id_solicitud }}",
               "workflow_origen": "={{ $json.workflow_origen }}",
               "nodo_fallido": "={{ $json.nodo_fallido }}",
-              "mensaje_error": "={{ $json.mensaje_error }}"
+              "mensaje_error": "={{ $json.mensaje_error }}",
+              "error_timestamp": "={{ $now.setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss') }}"
             },
             "matchingColumns": []
           },
@@ -3682,18 +3688,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:39:34.446Z",
-        "id": 2721,
+        "createdAt": "2026-09-23T13:42:02.533Z",
+        "id": 2728,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
+        "versionId": "62c158c0-5746-4c24-8db6-73af468531b0",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:39:34.475Z",
-        "id": 2722,
+        "createdAt": "2026-09-23T13:42:02.565Z",
+        "id": 2729,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "4f0bce0f-306c-4ade-a9f1-5ea8b97dce7d",
+        "versionId": "62c158c0-5746-4c24-8db6-73af468531b0",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
