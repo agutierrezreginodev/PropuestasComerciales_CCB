@@ -352,21 +352,21 @@ Estado de las cuatro métricas del framework:
 
 ## Seguimiento por flujo
 
-Se actualiza al cerrar cada fase, repitiendo el procedimiento de evaluación del informe. El detalle de la re-auditoría del 23/09 está en [`AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md`](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md): **promedio 87,7/100** (2 flujos ya sobre 90).
+Se actualiza al cerrar cada fase, repitiendo el procedimiento de evaluación del informe. El detalle está en [`AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md`](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md) y su [cierre del mismo día](AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md): **promedio 89,5/100** (87,7 a la mañana), con **cinco flujos en 90 o más** y a **0,5 puntos del umbral**.
 
 | Flujo | 16/09 | 22/09 | **23/09** | Objetivo | Fases |
 |---|---|---|---|---|
-| W1 — Extracción información | 50 | 58 | **83** | ≥90 | 1, 2, 3, 4, 5 |
-| W2A — Guardar Criterios y Cotizar | 66 | 73 | **87** | ≥90 | 1, 2, 3, 5 |
+| W1 — Extracción información | 50 | 58 | **85** | ≥90 | 1, 2, 3, 4, 5 |
+| W2A — Guardar Criterios y Cotizar | 66 | 73 | **89** | ≥90 | 1, 2, 3, 5 |
 | W2B — Formulario de Solicitud *(retirado, fuera de alcance)* | 46 | — | — | — | — |
-| W2C — Recepción Formulario Externo | 54 | 77 | **84** | ≥90 | 0, 1, 2, 3, 5, 6 |
-| W3 — Motor Criterios y Precio | 58 | 70 | **89** | ≥90 | 0, 1, 2, 3, 4, 5, 6 |
-| W4A — Router de Aprobación | 63 | 72 | **89** | ≥90 | 1, 2, 3, 5, 6 |
-| W4B — Aprobación (Teams) | 60 | 66 | **88** | ≥90 | 0, 1, 2, 3, 4, 5, 6 |
-| W4C — Consultar Propuesta | 42 | 66 | **85** | ≥90 | 0, 1, 2, 4, 5 |
-| W4D — Procesar Decisión | 34 | 54 | **92** | ≥90 | 0, 1, 2, 3, 4, 5, 6, 7 |
-| W5A — Router de Envío | 60 | 72 | **89** | ≥90 | 1, 2, 3, 5, 6 |
-| W5B — Envío al Cliente | 52 | 59 | **90** | ≥90 | 0, 1, 2, 3, 4, 5, 6 |
+| W2C — Recepción Formulario Externo | 54 | 77 | **85** | ≥90 | 0, 1, 2, 3, 5, 6 |
+| W3 — Motor Criterios y Precio | 58 | 70 | **90** | ≥90 | 0, 1, 2, 3, 4, 5, 6 |
+| W4A — Router de Aprobación | 63 | 72 | **91** | ≥90 | 1, 2, 3, 5, 6 |
+| W4B — Aprobación (Teams) | 60 | 66 | **90** | ≥90 | 0, 1, 2, 3, 4, 5, 6 |
+| W4C — Consultar Propuesta | 42 | 66 | **87** | ≥90 | 0, 1, 2, 4, 5 |
+| W4D — Procesar Decisión | 34 | 54 | **94** | ≥90 | 0, 1, 2, 3, 4, 5, 6, 7 |
+| W5A — Router de Envío | 60 | 72 | **91** | ≥90 | 1, 2, 3, 5, 6 |
+| W5B — Envío al Cliente | 52 | 59 | **91** | ≥90 | 0, 1, 2, 3, 4, 5, 6 |
 | W6 — Finalizador | 58 | 58 | ≥90 | 0, 1, 2, 3, 5 |
 | **Promedio** | **53,6** | **53,6** | **≥90** | |
 

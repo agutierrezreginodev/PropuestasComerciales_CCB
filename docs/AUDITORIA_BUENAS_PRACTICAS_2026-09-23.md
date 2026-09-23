@@ -1,5 +1,7 @@
 # Re-auditoría de buenas prácticas — 2026-09-23
 
+> **Actualizado el mismo día:** el cierre de la re-auditoría (con la evidencia de R1–R5: regresión automatizada, ruta de error y webhooks verificados con tráfico real, documentación completa) subió el promedio a **89,5/100** — ver [`AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md`](AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md).
+
 **Proyecto:** Pipeline CCB (Cámara de Comercio de Barranquilla — Servicios de Información)
 **Framework:** *Arquitectura e Ingeniería de Automatización en n8n: Guía de Buenas Prácticas, Resiliencia y Matriz de Evaluación* — rúbrica ponderada de **6 dimensiones sobre 100 puntos** + lista de comprobación de 11 requisitos.
 **Alcance:** los **11 flujos activos** del pipeline (W2B sigue retirado y fuera de alcance).

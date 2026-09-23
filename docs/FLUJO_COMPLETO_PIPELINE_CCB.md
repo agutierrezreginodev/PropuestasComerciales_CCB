@@ -9,8 +9,8 @@ que un lead pide información hasta que la propuesta se envía, se aprueba, se c
 precios, la generación del PDF, la aprobación interna y el envío al cliente.
 
 **Los números.** 27 flujos activos en n8n (12 principales + 13 subflujos + 2 operativos), 6 tablas de datos, 3 webhooks
-públicos autenticados y 2 páginas web. Puntaje de la última auditoría de buenas prácticas: **87,7/100**
-([re-auditoría del 23/09](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md)).
+públicos autenticados y 2 páginas web. Puntaje de la última auditoría de buenas prácticas: **89,5/100**
+([re-auditoría de cierre del 23/09](AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md)).
 
 ---
 
@@ -287,6 +287,6 @@ exitosas** (sí los de error), para que la base no crezca sin control.
 |---|---|
 | [FLUJOS_PIPELINE_CCB.md](FLUJOS_PIPELINE_CCB.md) | Ficha de cada flujo nuevo: por qué, cómo y con qué se relaciona |
 | [TESTING_PIPELINE_CCB.md](TESTING_PIPELINE_CCB.md) | Los 5 niveles de prueba, el protocolo de datos descartables y el checklist por cambio |
-| [AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md) | Puntaje por flujo y por dimensión, y lo que falta para cruzar 90 |
+| [AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md](AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md) | Puntaje por flujo y por dimensión (89,5/100) y lo que falta para cruzar 90 |
 | [COMPARATIVO_DEMO_VS_ACTUAL.md](COMPARATIVO_DEMO_VS_ACTUAL.md) | Qué cambió respecto del demo que se grabó |
 | [PLAN_TRABAJO_FRAMEWORK.md](PLAN_TRABAJO_FRAMEWORK.md) | El plan de remediación con su evidencia |

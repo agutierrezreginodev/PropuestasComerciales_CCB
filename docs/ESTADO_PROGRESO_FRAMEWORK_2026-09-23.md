@@ -5,7 +5,7 @@
 **Repo:** `ccb-workflows-git` (público, `agutierrezreginodev/PropuestasComerciales_CCB`)
 **Documentos relacionados:** [`PLAN_TRABAJO_FRAMEWORK.md`](PLAN_TRABAJO_FRAMEWORK.md) (tablero de ejecución), [`AUDITORIA_BUENAS_PRACTICAS_2026-09-22.md`](AUDITORIA_BUENAS_PRACTICAS_2026-09-22.md) (última evaluación completa), [`ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md) (estado anterior).
 
-> **Sobre el puntaje:** la re-auditoría numérica **ya está publicada** en [AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md): **promedio 87,7/100** (16/09: 53,6 → 22/09: 67,3 → 23/09: 87,7), con W4D en 92 y W5B en 90, y **10 de 11 requisitos cumplidos**. Acá se registra el estado por fase y los pendientes.
+> **Sobre el puntaje:** la re-auditoría numérica **ya está publicada** en [AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md): **promedio 89,5/100** (16/09: 53,6 → 22/09: 67,3 → 23/09 mañana: 87,7 → cierre: 89,5), con W4D en 92 y W5B en 90, y **10 de 11 requisitos cumplidos**. Acá se registra el estado por fase y los pendientes.
 
 ---
 

@@ -36,8 +36,8 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 | **R4** | Probar la rama de **rechazo/expiración** de la aprobación de IA (F7-03) | Rechazo real en Teams → motivo `aprobacion_rechazada`, revisión manual y **sin consumir ronda** | ☐ pendiente (requiere un clic del usuario) |
 | **R5** | Documentar el flujo completo | `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`: el recorrido de negocio de punta a punta + el mapa técnico de los 27 flujos y las 6 tablas | ☑ 23/09 — publicado (10 secciones) |
 | **R6** | Limpiar la fila basura de `Cotizaciones_CCB` (`id 21`) | Borrada con `dryRun` previo y confirmación del usuario; la tabla queda sin filas nulas | ☐ pendiente (requiere confirmación) |
-| **R7** | Re-auditoría final | Puntaje nuevo publicado con la evidencia de R1–R5 | ☐ pendiente |
-| **R8** | Sincronizar entrega | Snapshot, README, tablero, estado y memoria al día; un commit por unidad de trabajo | ☐ pendiente |
+| **R7** | Re-auditoría final | Puntaje nuevo publicado con la evidencia de R1–R5 | ☑ 23/09 — **89,5/100** (a 0,5 del umbral) |
+| **R8** | Sincronizar entrega | Snapshot, README, tablero, estado y memoria al día; un commit por unidad de trabajo | ☑ 23/09 — 28 archivos, tablero y estado actualizados |
 
 **Orden de ejecución:** R1 (rápido) → R2 → R3 → R5 → R4 y R6 (cuando el usuario pueda) → R7 → R8.
 
@@ -51,6 +51,19 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
   permite borrar filas.
 
 ## Evidencia
+
+### R7 y R8 — Re-auditoría de cierre y sincronización · 23/09
+
+`docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md`: **89,5/100** (mañana 87,7 → +1,8). Subieron **Testing**
+(11,7 → 12,8: la suite de regresión, la ruta de error y los webhooks verificados en vivo, y el procedimiento de 5
+niveles) y **Documentación** (13,4 → 14,0: el pipeline de punta a punta, el comparativo y la ficha de la regresión).
+Cinco flujos en 90 o más (W4D 94; W4A, W5A, W5B y W6 en 91) y ninguno por debajo de 85.
+
+Queda **a 0,5 puntos del umbral**, con el camino calculado: la v2 de la regresión (+0,2) y la poda de ejecuciones de
+instancia (+0,3) lo cruzan; el rechazo de la aprobación de IA (+0,1) y el cierre de `/metrics` con la credencial (+0,2)
+lo consolidan.
+
+Sincronización: 28 archivos de snapshot (27 activos + W2B retirado), README, tablero, estado y esta ficha al día.
 
 ### R5 — El pipeline de punta a punta · 23/09
 
