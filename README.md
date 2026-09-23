@@ -27,6 +27,11 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 | `Hgy02eqPhnsdJvkq` | [SUB] - CCB - Leer Configuración | [`workflows/sub-leer-configuracion.json`](workflows/sub-leer-configuracion.json) |
 | `GELWpskp0aYJ2zPg` | [SUB] - CCB - Leer Contexto Propuesta | [`workflows/sub-leer-contexto-propuesta.json`](workflows/sub-leer-contexto-propuesta.json) |
 | `ZwBFTBhwS9pjS69X` | [OPS] - CCB - Monitoreo del pipeline | [`workflows/ops-monitoreo-pipeline.json`](workflows/ops-monitoreo-pipeline.json) |
+| `8j6BCwXkgJCccyO1` | [SUB] - CCB - W4D Aprobar | [`workflows/w4d-sub-aprobar.json`](workflows/w4d-sub-aprobar.json) |
+| `Jgf514VxDINJ8ra3` | [SUB] - CCB - W4D Cancelar | [`workflows/w4d-sub-cancelar.json`](workflows/w4d-sub-cancelar.json) |
+| `iNSErCHs2iw33emJ` | [SUB] - CCB - W4D Revisión Manual | [`workflows/w4d-sub-revision-manual.json`](workflows/w4d-sub-revision-manual.json) |
+| `3NAcLF4jaZ1JBw0A` | [SUB] - CCB - W4D Corrección IA | [`workflows/w4d-sub-correccion-ia.json`](workflows/w4d-sub-correccion-ia.json) |
+| `POeFkqQp8e4cGfY3` | [SUB] - CCB - W4D Cierre de Corrección | [`workflows/w4d-sub-cierre-correccion.json`](workflows/w4d-sub-cierre-correccion.json) |
 
 El snapshot está **completo**: los 12 workflows del pipeline definitivo (11 activos + W2B retirado), el Error Workflow catch-all, los tres subflujos compartidos y el flujo de monitoreo operativo. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
 
