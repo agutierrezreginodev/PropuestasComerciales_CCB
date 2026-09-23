@@ -1,0 +1,552 @@
+{
+  "updatedAt": "2026-09-23T19:37:51.325Z",
+  "createdAt": "2026-09-23T19:37:51.325Z",
+  "id": "DgUfcoudk228kOw8",
+  "name": "[SUB] CCB - Regresion: Preparar filas",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "name": "When Executed by Another Workflow",
+      "position": [
+        -700,
+        0
+      ],
+      "id": "e31b607a-6c4f-47ec-a77d-2f12f067840f"
+    },
+    {
+      "parameters": {
+        "jsCode": "const casos = [\"APROBAR\", \"CANCELAR\", \"REVISION\", \"ERROR\", \"ENVIO\"];\nreturn casos.map((caso) => ({ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-' + caso, servicio: 'SOL-PRUEBA-REGRESION',\n  total_registros: 100, valor: 100000, iva: 19000, valor_total: 119000,\n  estado: 'EN_REVISION', ronda_correccion: 0, comentario_fausto: '',\n} }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar cotizaciones",
+      "position": [
+        -480,
+        0
+      ],
+      "id": "4eb6d346-fb12-4ae0-ac73-b0a5cd854edb"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id_solicitud"
+          ],
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "servicio": "={{ $json.servicio }}",
+            "total_registros": "={{ $json.total_registros }}",
+            "valor": "={{ $json.valor }}",
+            "iva": "={{ $json.iva }}",
+            "valor_total": "={{ $json.valor_total }}",
+            "estado": "={{ $json.estado }}",
+            "ronda_correccion": "={{ $json.ronda_correccion }}",
+            "comentario_fausto": "={{ $json.comentario_fausto }}"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Crear cotizaciones",
+      "position": [
+        -260,
+        0
+      ],
+      "id": "2cd482c4-3f1f-4bcd-9bee-29cde6f8883c"
+    },
+    {
+      "parameters": {
+        "jsCode": "const casos = [\"APROBAR\", \"CANCELAR\", \"REVISION\", \"ERROR\", \"ENVIO\"];\nreturn casos.map((caso) => ({ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-' + caso, remitente: 'regresion@ejemplo.test',\n  asunto: 'Prueba de regresion', nombre_cliente: 'Cliente de prueba',\n  email_cliente: 'pruebas@ejemplo.test', estado: 'EN_REVISION',\n  observaciones: 'SOL-PRUEBA-REGRESION',\n} }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar solicitudes",
+      "position": [
+        -40,
+        0
+      ],
+      "executeOnce": true,
+      "id": "460e6789-a41c-4357-a07d-05b44e370fb8"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id_solicitud"
+          ],
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "remitente": "={{ $json.remitente }}",
+            "asunto": "={{ $json.asunto }}",
+            "nombre_cliente": "={{ $json.nombre_cliente }}",
+            "email_cliente": "={{ $json.email_cliente }}",
+            "estado": "={{ $json.estado }}",
+            "observaciones": "={{ $json.observaciones }}"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Crear solicitudes",
+      "position": [
+        180,
+        0
+      ],
+      "id": "d2dc3b54-070a-46e5-89cc-b1e8d74f4884"
+    },
+    {
+      "parameters": {
+        "jsCode": "const casos = [\"APROBAR\", \"CANCELAR\", \"REVISION\", \"ERROR\", \"ENVIO\"];\nreturn casos.map((caso) => ({ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-' + caso, razon_social: 'Empresa de prueba',\n  nombre_solicitante: 'Solicitante de prueba', email_solicitante: 'pruebas@ejemplo.test',\n  servicio: 'Informacion Georreferenciada', cantidad_registros: 100,\n  comentarios: 'SOL-PRUEBA-REGRESION',\n} }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar criterios",
+      "position": [
+        400,
+        0
+      ],
+      "executeOnce": true,
+      "id": "8d176234-81cc-4d70-92ae-74833797438b"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "={{ $json.id_solicitud }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id_solicitud"
+          ],
+          "value": {
+            "id_solicitud": "={{ $json.id_solicitud }}",
+            "razon_social": "={{ $json.razon_social }}",
+            "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+            "email_solicitante": "={{ $json.email_solicitante }}",
+            "servicio": "={{ $json.servicio }}",
+            "cantidad_registros": "={{ $json.cantidad_registros }}",
+            "comentarios": "={{ $json.comentarios }}"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Crear criterios",
+      "position": [
+        620,
+        0
+      ],
+      "id": "53815aa9-53b6-4d39-ad45-87e682bea2fe"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Preparar cotizaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar cotizaciones": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Crear cotizaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Crear cotizaciones": {
+      "main": [
+        [
+          {
+            "node": "Preparar solicitudes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar solicitudes": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Crear solicitudes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Crear solicitudes": {
+      "main": [
+        [
+          {
+            "node": "Preparar criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar criterios": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Crear criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "05472484-65ed-400e-9bba-c498e0e83b09",
+  "activeVersionId": "05472484-65ed-400e-9bba-c498e0e83b09",
+  "versionCounter": 3,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T19:37:51.325Z",
+    "createdAt": "2026-09-23T19:37:51.325Z",
+    "versionId": "05472484-65ed-400e-9bba-c498e0e83b09",
+    "workflowId": "DgUfcoudk228kOw8",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "name": "When Executed by Another Workflow",
+        "position": [
+          -700,
+          0
+        ],
+        "id": "e31b607a-6c4f-47ec-a77d-2f12f067840f"
+      },
+      {
+        "parameters": {
+          "jsCode": "const casos = [\"APROBAR\", \"CANCELAR\", \"REVISION\", \"ERROR\", \"ENVIO\"];\nreturn casos.map((caso) => ({ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-' + caso, servicio: 'SOL-PRUEBA-REGRESION',\n  total_registros: 100, valor: 100000, iva: 19000, valor_total: 119000,\n  estado: 'EN_REVISION', ronda_correccion: 0, comentario_fausto: '',\n} }));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar cotizaciones",
+        "position": [
+          -480,
+          0
+        ],
+        "id": "4eb6d346-fb12-4ae0-ac73-b0a5cd854edb"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "id_solicitud"
+            ],
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "servicio": "={{ $json.servicio }}",
+              "total_registros": "={{ $json.total_registros }}",
+              "valor": "={{ $json.valor }}",
+              "iva": "={{ $json.iva }}",
+              "valor_total": "={{ $json.valor_total }}",
+              "estado": "={{ $json.estado }}",
+              "ronda_correccion": "={{ $json.ronda_correccion }}",
+              "comentario_fausto": "={{ $json.comentario_fausto }}"
+            }
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Crear cotizaciones",
+        "position": [
+          -260,
+          0
+        ],
+        "id": "2cd482c4-3f1f-4bcd-9bee-29cde6f8883c"
+      },
+      {
+        "parameters": {
+          "jsCode": "const casos = [\"APROBAR\", \"CANCELAR\", \"REVISION\", \"ERROR\", \"ENVIO\"];\nreturn casos.map((caso) => ({ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-' + caso, remitente: 'regresion@ejemplo.test',\n  asunto: 'Prueba de regresion', nombre_cliente: 'Cliente de prueba',\n  email_cliente: 'pruebas@ejemplo.test', estado: 'EN_REVISION',\n  observaciones: 'SOL-PRUEBA-REGRESION',\n} }));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar solicitudes",
+        "position": [
+          -40,
+          0
+        ],
+        "executeOnce": true,
+        "id": "460e6789-a41c-4357-a07d-05b44e370fb8"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "id_solicitud"
+            ],
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "remitente": "={{ $json.remitente }}",
+              "asunto": "={{ $json.asunto }}",
+              "nombre_cliente": "={{ $json.nombre_cliente }}",
+              "email_cliente": "={{ $json.email_cliente }}",
+              "estado": "={{ $json.estado }}",
+              "observaciones": "={{ $json.observaciones }}"
+            }
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Crear solicitudes",
+        "position": [
+          180,
+          0
+        ],
+        "id": "d2dc3b54-070a-46e5-89cc-b1e8d74f4884"
+      },
+      {
+        "parameters": {
+          "jsCode": "const casos = [\"APROBAR\", \"CANCELAR\", \"REVISION\", \"ERROR\", \"ENVIO\"];\nreturn casos.map((caso) => ({ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-' + caso, razon_social: 'Empresa de prueba',\n  nombre_solicitante: 'Solicitante de prueba', email_solicitante: 'pruebas@ejemplo.test',\n  servicio: 'Informacion Georreferenciada', cantidad_registros: 100,\n  comentarios: 'SOL-PRUEBA-REGRESION',\n} }));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar criterios",
+        "position": [
+          400,
+          0
+        ],
+        "executeOnce": true,
+        "id": "8d176234-81cc-4d70-92ae-74833797438b"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "ldABWugJR1GcFFyy",
+            "mode": "list",
+            "cachedResultName": "Criterios_Cotizacion"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "={{ $json.id_solicitud }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "id_solicitud"
+            ],
+            "value": {
+              "id_solicitud": "={{ $json.id_solicitud }}",
+              "razon_social": "={{ $json.razon_social }}",
+              "nombre_solicitante": "={{ $json.nombre_solicitante }}",
+              "email_solicitante": "={{ $json.email_solicitante }}",
+              "servicio": "={{ $json.servicio }}",
+              "cantidad_registros": "={{ $json.cantidad_registros }}",
+              "comentarios": "={{ $json.comentarios }}"
+            }
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Crear criterios",
+        "position": [
+          620,
+          0
+        ],
+        "id": "53815aa9-53b6-4d39-ad45-87e682bea2fe"
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Preparar cotizaciones",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar cotizaciones": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Crear cotizaciones",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Crear cotizaciones": {
+        "main": [
+          [
+            {
+              "node": "Preparar solicitudes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar solicitudes": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Crear solicitudes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Crear solicitudes": {
+        "main": [
+          [
+            {
+              "node": "Preparar criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar criterios": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Crear criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T19:37:52.189Z",
+        "id": 2970,
+        "workflowId": "DgUfcoudk228kOw8",
+        "versionId": "05472484-65ed-400e-9bba-c498e0e83b09",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

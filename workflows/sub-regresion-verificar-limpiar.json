@@ -1,0 +1,776 @@
+{
+  "updatedAt": "2026-09-23T19:37:52.763Z",
+  "createdAt": "2026-09-23T19:37:52.763Z",
+  "id": "OuE4SS9Jujz1dVif",
+  "name": "[SUB] CCB - Regresion: Verificar y limpiar",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "name": "When Executed by Another Workflow",
+      "position": [
+        -700,
+        0
+      ],
+      "id": "84616552-2c07-408d-b9bb-ec540dface6b"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB"
+        },
+        "limit": 500
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Leer cotizaciones",
+      "position": [
+        -480,
+        0
+      ],
+      "id": "fb2e82b7-7dc7-4334-8b67-d18bc935bb42"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB"
+        },
+        "limit": 500
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Leer solicitudes",
+      "position": [
+        -260,
+        0
+      ],
+      "executeOnce": true,
+      "id": "a5b4744b-8cf1-4288-aed7-0aaa0a957c7a"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB"
+        },
+        "limit": 500
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Leer errores",
+      "position": [
+        -40,
+        0
+      ],
+      "executeOnce": true,
+      "id": "8bc0f1f8-8500-4642-beaf-afe7cf783fa7"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Verifica el ESTADO REAL en las tablas (no lo que devolvieron los subflujos).\nconst leer = (nombre) => { try { return $(nombre).all().map((i) => i.json); } catch (e) { return []; } };\nconst cot = leer('Data Table - Leer cotizaciones');\nconst sol = leer('Data Table - Leer solicitudes');\nconst err = leer('Data Table - Leer errores');\nconst casos = [\n  { caso: 'aprobar',  id: 'SOL-PRUEBA-REGRESION-APROBAR',  esperado: 'APROBADA' },\n  { caso: 'cancelar', id: 'SOL-PRUEBA-REGRESION-CANCELAR', esperado: 'CANCELADA' },\n  { caso: 'revision', id: 'SOL-PRUEBA-REGRESION-REVISION', esperado: 'REVISION_MANUAL' },\n  { caso: 'error',    id: 'SOL-PRUEBA-REGRESION-ERROR',    esperado: 'fila en Errores_CCB con error_timestamp' },\n  { caso: 'envio',    id: 'SOL-PRUEBA-REGRESION-ENVIO',    esperado: 'ENVIADA en cotizacion y solicitud' },\n];\nconst filas = casos.map((c) => {\n  if (c.caso === 'error') {\n    const f = err.find((r) => r.id_solicitud === c.id) || {};\n    return { caso: c.caso, esperado: c.esperado, obtenido: f.error_timestamp ? 'fila con ' + f.error_timestamp : '(sin fila)', ok: !!f.error_timestamp };\n  }\n  const r = cot.find((x) => x.id_solicitud === c.id) || {};\n  if (c.caso === 'envio') {\n    const s = sol.find((x) => x.id_solicitud === c.id) || {};\n    const ok = r.estado === 'ENVIADA' && !!r.fecha_envio && s.estado === 'ENVIADA';\n    return { caso: c.caso, esperado: c.esperado, obtenido: 'cotizacion ' + (r.estado || '(sin fila)') + ' / solicitud ' + (s.estado || '(sin fila)'), ok };\n  }\n  return { caso: c.caso, esperado: c.esperado, obtenido: r.estado || '(sin fila)', ok: r.estado === c.esperado };\n});\nconst fallos = filas.filter((f) => !f.ok).length;\nconst resumen = filas.map((f) => (f.ok ? 'OK    ' : 'FALLO ') + f.caso + ': esperado ' + f.esperado + ' / obtenido ' + f.obtenido).join('\\n');\nreturn [{ json: {\n  metrica: 'regresion_pipeline', valor: (filas.length - fallos) + '/' + filas.length, unidad: 'casos ok',\n  estado: fallos === 0 ? 'ok' : 'FALLO',\n  actualizado_en: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss'),\n  filas, resumen,\n  subject: '[Regresion CCB] ' + (fallos === 0 ? 'ok' : 'FALLO') + ': ' + (filas.length - fallos) + '/' + filas.length + ' casos ok',\n  emailBody: '<p><b>Regresion del pipeline CCB</b></p><p>' + resumen.split('\\n').join('<br>') + '</p>',\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Comparar resultados",
+      "position": [
+        180,
+        0
+      ],
+      "executeOnce": true,
+      "id": "8b9ca8b7-49f8-4c3b-a70f-76a44dcfad0a"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "W3oJ4a8h0TAPO9ji",
+          "mode": "list",
+          "cachedResultName": "Metricas_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "metrica",
+              "keyValue": "={{ $json.metrica }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "metrica"
+          ],
+          "value": {
+            "metrica": "={{ $json.metrica }}",
+            "valor": "={{ $json.valor }}",
+            "unidad": "={{ $json.unidad }}",
+            "estado": "={{ $json.estado }}",
+            "actualizado_en": "={{ $json.actualizado_en }}"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Publicar semaforo",
+      "position": [
+        400,
+        0
+      ],
+      "id": "1e0db1f6-2459-4e86-88b6-984ed652ae6a"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "YAvQTqzsgJWjacVZ",
+          "mode": "list",
+          "cachedResultName": "Cotizaciones_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "servicio",
+              "keyValue": "SOL-PRUEBA-REGRESION"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Limpiar cotizaciones",
+      "position": [
+        620,
+        0
+      ],
+      "id": "b723c865-9823-4e8e-8491-68a266fa8218"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "u5gFYvTfuQRX71u5",
+          "mode": "list",
+          "cachedResultName": "Solicitudes_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "observaciones",
+              "keyValue": "SOL-PRUEBA-REGRESION"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Limpiar solicitudes",
+      "position": [
+        840,
+        0
+      ],
+      "id": "318d1fa0-fa32-45c9-8781-f90f90ee095d"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldABWugJR1GcFFyy",
+          "mode": "list",
+          "cachedResultName": "Criterios_Cotizacion"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "comentarios",
+              "keyValue": "SOL-PRUEBA-REGRESION"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Limpiar criterios",
+      "position": [
+        1060,
+        0
+      ],
+      "id": "10036dd2-d833-432e-937b-54b4c034a63d"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "matchType": "allConditions",
+        "dataTableId": {
+          "__rl": true,
+          "value": "lO46Xkqj0TTedLjI",
+          "mode": "list",
+          "cachedResultName": "Errores_CCB"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "SOL-PRUEBA-REGRESION-ERROR"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "name": "Data Table - Limpiar errores",
+      "position": [
+        1280,
+        0
+      ],
+      "id": "b00a28f2-da05-4720-ba9a-a65ca1502ebe"
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('Comparar resultados').first().json;\nreturn [{ json: c }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Devolver resumen",
+      "position": [
+        1500,
+        0
+      ],
+      "id": "ea60e395-2b62-47cb-ae5d-5f4b07fa725a"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer cotizaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer cotizaciones": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer solicitudes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer solicitudes": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Leer errores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Leer errores": {
+      "main": [
+        [
+          {
+            "node": "Comparar resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comparar resultados": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Publicar semaforo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Publicar semaforo": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Limpiar cotizaciones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Limpiar cotizaciones": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Limpiar solicitudes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Limpiar solicitudes": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Limpiar criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Limpiar criterios": {
+      "main": [
+        [
+          {
+            "node": "Data Table - Limpiar errores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Table - Limpiar errores": {
+      "main": [
+        [
+          {
+            "node": "Devolver resumen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
+  "activeVersionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
+  "versionCounter": 3,
+  "triggerCount": 0,
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-09-23T19:37:52.763Z",
+    "createdAt": "2026-09-23T19:37:52.763Z",
+    "versionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
+    "workflowId": "OuE4SS9Jujz1dVif",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "name": "When Executed by Another Workflow",
+        "position": [
+          -700,
+          0
+        ],
+        "id": "84616552-2c07-408d-b9bb-ec540dface6b"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB"
+          },
+          "limit": 500
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Leer cotizaciones",
+        "position": [
+          -480,
+          0
+        ],
+        "id": "fb2e82b7-7dc7-4334-8b67-d18bc935bb42"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB"
+          },
+          "limit": 500
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Leer solicitudes",
+        "position": [
+          -260,
+          0
+        ],
+        "executeOnce": true,
+        "id": "a5b4744b-8cf1-4288-aed7-0aaa0a957c7a"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB"
+          },
+          "limit": 500
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Leer errores",
+        "position": [
+          -40,
+          0
+        ],
+        "executeOnce": true,
+        "id": "8bc0f1f8-8500-4642-beaf-afe7cf783fa7"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Verifica el ESTADO REAL en las tablas (no lo que devolvieron los subflujos).\nconst leer = (nombre) => { try { return $(nombre).all().map((i) => i.json); } catch (e) { return []; } };\nconst cot = leer('Data Table - Leer cotizaciones');\nconst sol = leer('Data Table - Leer solicitudes');\nconst err = leer('Data Table - Leer errores');\nconst casos = [\n  { caso: 'aprobar',  id: 'SOL-PRUEBA-REGRESION-APROBAR',  esperado: 'APROBADA' },\n  { caso: 'cancelar', id: 'SOL-PRUEBA-REGRESION-CANCELAR', esperado: 'CANCELADA' },\n  { caso: 'revision', id: 'SOL-PRUEBA-REGRESION-REVISION', esperado: 'REVISION_MANUAL' },\n  { caso: 'error',    id: 'SOL-PRUEBA-REGRESION-ERROR',    esperado: 'fila en Errores_CCB con error_timestamp' },\n  { caso: 'envio',    id: 'SOL-PRUEBA-REGRESION-ENVIO',    esperado: 'ENVIADA en cotizacion y solicitud' },\n];\nconst filas = casos.map((c) => {\n  if (c.caso === 'error') {\n    const f = err.find((r) => r.id_solicitud === c.id) || {};\n    return { caso: c.caso, esperado: c.esperado, obtenido: f.error_timestamp ? 'fila con ' + f.error_timestamp : '(sin fila)', ok: !!f.error_timestamp };\n  }\n  const r = cot.find((x) => x.id_solicitud === c.id) || {};\n  if (c.caso === 'envio') {\n    const s = sol.find((x) => x.id_solicitud === c.id) || {};\n    const ok = r.estado === 'ENVIADA' && !!r.fecha_envio && s.estado === 'ENVIADA';\n    return { caso: c.caso, esperado: c.esperado, obtenido: 'cotizacion ' + (r.estado || '(sin fila)') + ' / solicitud ' + (s.estado || '(sin fila)'), ok };\n  }\n  return { caso: c.caso, esperado: c.esperado, obtenido: r.estado || '(sin fila)', ok: r.estado === c.esperado };\n});\nconst fallos = filas.filter((f) => !f.ok).length;\nconst resumen = filas.map((f) => (f.ok ? 'OK    ' : 'FALLO ') + f.caso + ': esperado ' + f.esperado + ' / obtenido ' + f.obtenido).join('\\n');\nreturn [{ json: {\n  metrica: 'regresion_pipeline', valor: (filas.length - fallos) + '/' + filas.length, unidad: 'casos ok',\n  estado: fallos === 0 ? 'ok' : 'FALLO',\n  actualizado_en: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss'),\n  filas, resumen,\n  subject: '[Regresion CCB] ' + (fallos === 0 ? 'ok' : 'FALLO') + ': ' + (filas.length - fallos) + '/' + filas.length + ' casos ok',\n  emailBody: '<p><b>Regresion del pipeline CCB</b></p><p>' + resumen.split('\\n').join('<br>') + '</p>',\n} }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Comparar resultados",
+        "position": [
+          180,
+          0
+        ],
+        "executeOnce": true,
+        "id": "8b9ca8b7-49f8-4c3b-a70f-76a44dcfad0a"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "W3oJ4a8h0TAPO9ji",
+            "mode": "list",
+            "cachedResultName": "Metricas_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "metrica",
+                "keyValue": "={{ $json.metrica }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "metrica"
+            ],
+            "value": {
+              "metrica": "={{ $json.metrica }}",
+              "valor": "={{ $json.valor }}",
+              "unidad": "={{ $json.unidad }}",
+              "estado": "={{ $json.estado }}",
+              "actualizado_en": "={{ $json.actualizado_en }}"
+            }
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Publicar semaforo",
+        "position": [
+          400,
+          0
+        ],
+        "id": "1e0db1f6-2459-4e86-88b6-984ed652ae6a"
+      },
+      {
+        "parameters": {
+          "operation": "deleteRows",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "YAvQTqzsgJWjacVZ",
+            "mode": "list",
+            "cachedResultName": "Cotizaciones_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "servicio",
+                "keyValue": "SOL-PRUEBA-REGRESION"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Limpiar cotizaciones",
+        "position": [
+          620,
+          0
+        ],
+        "id": "b723c865-9823-4e8e-8491-68a266fa8218"
+      },
+      {
+        "parameters": {
+          "operation": "deleteRows",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "u5gFYvTfuQRX71u5",
+            "mode": "list",
+            "cachedResultName": "Solicitudes_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "observaciones",
+                "keyValue": "SOL-PRUEBA-REGRESION"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Limpiar solicitudes",
+        "position": [
+          840,
+          0
+        ],
+        "id": "318d1fa0-fa32-45c9-8781-f90f90ee095d"
+      },
+      {
+        "parameters": {
+          "operation": "deleteRows",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "ldABWugJR1GcFFyy",
+            "mode": "list",
+            "cachedResultName": "Criterios_Cotizacion"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "comentarios",
+                "keyValue": "SOL-PRUEBA-REGRESION"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Limpiar criterios",
+        "position": [
+          1060,
+          0
+        ],
+        "id": "10036dd2-d833-432e-937b-54b4c034a63d"
+      },
+      {
+        "parameters": {
+          "operation": "deleteRows",
+          "matchType": "allConditions",
+          "dataTableId": {
+            "__rl": true,
+            "value": "lO46Xkqj0TTedLjI",
+            "mode": "list",
+            "cachedResultName": "Errores_CCB"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "SOL-PRUEBA-REGRESION-ERROR"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1.1,
+        "name": "Data Table - Limpiar errores",
+        "position": [
+          1280,
+          0
+        ],
+        "id": "b00a28f2-da05-4720-ba9a-a65ca1502ebe"
+      },
+      {
+        "parameters": {
+          "jsCode": "const c = $('Comparar resultados').first().json;\nreturn [{ json: c }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Devolver resumen",
+        "position": [
+          1500,
+          0
+        ],
+        "id": "ea60e395-2b62-47cb-ae5d-5f4b07fa725a"
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer cotizaciones",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer cotizaciones": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer solicitudes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer solicitudes": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Leer errores",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Leer errores": {
+        "main": [
+          [
+            {
+              "node": "Comparar resultados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Comparar resultados": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Publicar semaforo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Publicar semaforo": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Limpiar cotizaciones",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Limpiar cotizaciones": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Limpiar solicitudes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Limpiar solicitudes": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Limpiar criterios",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Limpiar criterios": {
+        "main": [
+          [
+            {
+              "node": "Data Table - Limpiar errores",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Data Table - Limpiar errores": {
+        "main": [
+          [
+            {
+              "node": "Devolver resumen",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Adrian Gutierrez",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-09-23T19:37:53.336Z",
+        "id": 2971,
+        "workflowId": "OuE4SS9Jujz1dVif",
+        "versionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      }
+    ]
+  }
+}

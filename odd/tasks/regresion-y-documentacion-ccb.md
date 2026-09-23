@@ -37,6 +37,7 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 | **R5** | Documentar el flujo completo | `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`: el recorrido de negocio de punta a punta + el mapa técnico de los 27 flujos y las 6 tablas | ☑ 23/09 — publicado (10 secciones) |
 | **R6** | Limpiar la fila basura de `Cotizaciones_CCB` (`id 21`) | Borrada con `dryRun` previo y confirmación del usuario; la tabla queda sin filas nulas | ☐ pendiente (requiere confirmación) |
 | **R7** | Re-auditoría final | Puntaje nuevo publicado con la evidencia de R1–R5 | ☑ 23/09 — **89,5/100** (a 0,5 del umbral) |
+| **R9** | v2 de la regresión: cubrir los caminos de envío y del motor | Dos casos más en el flujo de regresión | ◐ 23/09 — camino **envío** hecho (5/5 casos ok); el del **motor** queda pendiente |
 | **R8** | Sincronizar entrega | Snapshot, README, tablero, estado y memoria al día; un commit por unidad de trabajo | ☑ 23/09 — 28 archivos, tablero y estado actualizados |
 
 **Orden de ejecución:** R1 (rápido) → R2 → R3 → R5 → R4 y R6 (cuando el usuario pueda) → R7 → R8.
@@ -51,6 +52,27 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
   permite borrar filas.
 
 ## Evidencia
+
+### R9 — v2 de la regresión · 23/09
+
+**Hecho.** El flujo de regresión pasó de 4 a **5 casos** (se agregó `Cerrar envío`) y de 20 a **16 nodos**: se extrajeron
+`[SUB] CCB - Regresion: Preparar filas` (`DgUfcoudk228kOw8`, 7 nodos) y `[SUB] CCB - Regresion: Verificar y limpiar`
+(`OuE4SS9Jujz1dVif`, 11 nodos), con lo que el principal quedó bajo el límite de arquitectura y ahora puede crecer.
+
+**Verificación (ejecución `423112`, `success`, 0 nodos con error):** **5/5 casos ok** — `APROBADA`, `CANCELADA`,
+`REVISION_MANUAL`, fila en `Errores_CCB` con marca de tiempo y `ENVIADA` en la cotización **y** en la solicitud con
+`fecha_envio` — semáforo `5/5` publicado, correo con `{success: true}`, y **limpieza confirmada por `getRows` en las
+cuatro tablas** (Cotizaciones, Solicitudes, Criterios y Errores: 0 filas cada una).
+
+**Hallazgos:** (1) al mover nodos a un subflujo hay que revisar las expresiones del flujo que se queda: el nodo del correo
+seguía apuntando a un nodo movido (`Referenced node doesn't exist`) y se corrigió a `$json`. (2) El subflujo de contexto
+devuelve siempre un item bien formado aunque falte alguna lectura, así que un caso puede correr con datos parciales.
+(3) `Cerrar envío` necesita fila en **Solicitudes** y en **Criterios** (las lecturas del contexto no deben quedar vacías
+para que la cadena siga).
+
+**Pendiente declarado:** el camino del **motor** (`[SUB] Invocar Motor y Guardar Cotización` → W3) no se agregó: W3 lee
+una planilla de Excel con una credencial y su contrato de entrada son los criterios completos, así que exige su propia
+sesión de trabajo. Es el último caso que falta para cubrir los caminos críticos.
 
 ### R7 y R8 — Re-auditoría de cierre y sincronización · 23/09
 

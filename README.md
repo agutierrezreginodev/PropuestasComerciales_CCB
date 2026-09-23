@@ -28,6 +28,8 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 | `GELWpskp0aYJ2zPg` | [SUB] - CCB - Leer Contexto Propuesta | [`workflows/sub-leer-contexto-propuesta.json`](workflows/sub-leer-contexto-propuesta.json) |
 | `ZwBFTBhwS9pjS69X` | [OPS] - CCB - Monitoreo del pipeline | [`workflows/ops-monitoreo-pipeline.json`](workflows/ops-monitoreo-pipeline.json) |
 | `GVE3iNQ80y5Q9FEw` | [OPS] CCB - Regresión del pipeline | [`workflows/ops-regresion-pipeline.json`](workflows/ops-regresion-pipeline.json) |
+| `DgUfcoudk228kOw8` | [SUB] CCB - Regresion: Preparar filas | [`workflows/sub-regresion-preparar-filas.json`](workflows/sub-regresion-preparar-filas.json) |
+| `OuE4SS9Jujz1dVif` | [SUB] CCB - Regresion: Verificar y limpiar | [`workflows/sub-regresion-verificar-limpiar.json`](workflows/sub-regresion-verificar-limpiar.json) |
 | `AnPJGVWylmKEYWmJ` | [SUB] CCB - Enviar propuesta al cliente | [`workflows/sub-enviar-propuesta-cliente.json`](workflows/sub-enviar-propuesta-cliente.json) |
 | `1Zzkrg3dTkTrddgp` | [SUB] CCB - Cerrar envío | [`workflows/sub-cerrar-envio.json`](workflows/sub-cerrar-envio.json) |
 | `D2d9Og6UUvq13TJA` | [SUB] CCB - Cerrar error de envío | [`workflows/sub-cerrar-error-envio.json`](workflows/sub-cerrar-error-envio.json) |
@@ -43,7 +45,7 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 
 **Convención de nombres:** `[SUB]` para subflujos invocados desde otro flujo, `[OPS]` para flujos operativos de plataforma, y sin prefijo para los flujos principales del pipeline.
 
-El snapshot está **completo**: los 12 workflows del pipeline definitivo (11 activos + W2B retirado), el Error Workflow catch-all, los 13 subflujos compartidos y los dos flujos operativos (monitoreo del pipeline y regresión). Son 28 archivos: 27 workflows activos en la instancia más el formulario antiguo retirado. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
+El snapshot está **completo**: los 12 workflows del pipeline definitivo (11 activos + W2B retirado), el Error Workflow catch-all, los 15 subflujos compartidos y los dos flujos operativos (monitoreo del pipeline y regresión). Son 30 archivos: 29 workflows activos en la instancia más el formulario antiguo retirado. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
 
 ## Pipeline completo — Información Georreferenciada
 
@@ -126,7 +128,7 @@ Además, el bloque `shared` que n8n incluye en cada export (metadata de propieda
 
 **Qué NO se anonimizó (a propósito):** IDs de workflow, IDs de Data Table, ID del proyecto de n8n, IDs y nombres de credenciales. Son identificadores internos de n8n, no secretos explotables por sí solos, y modificarlos habría roto el valor del snapshot como respaldo fiel de lo que corre en producción. Tampoco se tocó la columna `comentario_fausto` de una Data Table: es un nombre de campo del esquema de datos, y renombrarlo en el snapshot lo dejaría inconsistente con la base real.
 
-**Mantenimiento:** el proceso está automatizado en [`scripts/export_workflows.py`](scripts/export_workflows.py). Exporta los 28 workflows desde la instancia, elimina el bloque `shared`, aplica exactamente la tabla de reemplazos de arriba y **termina con código de error si sobrevive algún correo fuera de los dominios de reemplazo**, para que una fuga no pueda colarse en un commit sin que nadie lo note.
+**Mantenimiento:** el proceso está automatizado en [`scripts/export_workflows.py`](scripts/export_workflows.py). Exporta los 30 workflows desde la instancia, elimina el bloque `shared`, aplica exactamente la tabla de reemplazos de arriba y **termina con código de error si sobrevive algún correo fuera de los dominios de reemplazo**, para que una fuga no pueda colarse en un commit sin que nadie lo note.
 
 ```bash
 N8N_API_URL="https://<instancia>" N8N_API_KEY="<clave>" python3 scripts/export_workflows.py

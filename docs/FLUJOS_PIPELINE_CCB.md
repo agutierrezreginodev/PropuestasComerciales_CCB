@@ -277,7 +277,7 @@ de configuración, de `Errores_CCB` (que alimentan los 8 flujos que registran er
 ---
 
 ## 9.bis `[OPS] CCB - Regresión del pipeline`
-**ID:** `GVE3iNQ80y5Q9FEw` · **Nodos:** 20 · **Plan:** R3 (feature `regresion-y-documentacion-ccb`)
+**ID:** `GVE3iNQ80y5Q9FEw` · **Nodos:** 16 · **Plan:** R3 y R9 (feature `regresion-y-documentacion-ccb`)
 
 **Por qué se creó.** La re-auditoría dejó *Testing* como la dimensión más baja (11,7/15): todo se verificaba a mano y
 cada cambio exigía repetir el procedimiento completo. Este flujo convierte esa verificación en una **prueba de regresión
@@ -287,20 +287,21 @@ repetible**: en un clic (o sola, cada lunes) recorre los caminos críticos y pub
 semanal`). En orden:
 
 1. `Ejecutar Leer Configuracion` (el subflujo de configuración: de ahí sale el destinatario del resumen).
-2. `Preparar filas de prueba` + `Data Table - Crear filas de prueba`: crea **cuatro filas descartables** en
-   `Cotizaciones_CCB` con ids fijos (`SOL-PRUEBA-REGRESION-APROBAR`, `-CANCELAR`, `-REVISION`, `-ERROR`) y
-   `servicio = SOL-PRUEBA-REGRESION`. Los ids son fijos a propósito: cada corrida **reutiliza** las mismas filas (upsert),
-   así la tabla no crece.
-3. Cuatro casos en cadena, cada uno con su nodo de preparación y su subflujo real:
+2. `Ejecutar Preparar filas` → **[SUB] CCB - Regresion: Preparar filas**: crea **cinco filas descartables** en
+   `Cotizaciones_CCB`, `Solicitudes_CCB` y `Criterios_Cotizacion` con ids fijos (`SOL-PRUEBA-REGRESION-APROBAR`,
+   `-CANCELAR`, `-REVISION`, `-ERROR`, `-ENVIO`). Los ids son fijos a propósito: cada corrida **reutiliza** las mismas
+   filas (upsert), así las tablas no crecen. Cada tabla lleva una marca para poder borrarlas de una sola vez
+   (`servicio`, `observaciones` y `comentarios` = `SOL-PRUEBA-REGRESION`).
+3. Cinco casos en cadena, cada uno con su nodo de preparación y su subflujo real:
    `W4D Aprobar` (espera `APROBADA`) → `W4D Cancelar` (espera `CANCELADA`) → `W4D Revisión Manual` con motivo `tope`
-   (espera `REVISION_MANUAL`) → `Registrar y Alertar Error` (espera una fila en `Errores_CCB` con `error_timestamp`).
-4. `Data Table - Leer cotizaciones` + `Data Table - Leer errores` y `Comparar resultados`: **verifica el estado real en
-   las tablas**, no lo que devolvieron los subflujos (así se detecta una regresión en el mapeo de un `update`).
-5. `Data Table - Publicar semaforo`: publica el resultado en `Metricas_CCB` como la métrica `regresion_pipeline`
-   (`valor` = casos ok, `estado` = `ok`/`FALLO`), visible junto a las demás métricas.
-6. `Data Table - Limpiar filas de prueba` y `Data Table - Limpiar errores de prueba`: borra **sus propias filas** de las
-   dos tablas (la de error también, para no ensuciar la métrica de errores del monitor).
-7. `Outlook - Enviar resumen de regresion`: manda el semáforo con el detalle caso por caso.
+   (espera `REVISION_MANUAL`) → `Registrar y Alertar Error` (espera una fila en `Errores_CCB` con `error_timestamp`) →
+   `Cerrar envío` (espera `ENVIADA` en la cotización **y** en la solicitud, con `fecha_envio`).
+4. `Ejecutar Verificar y limpiar` → **[SUB] CCB - Regresion: Verificar y limpiar**: lee las tres tablas y **verifica el
+   estado real**, no lo que devolvieron los subflujos (así se detecta una regresión en el mapeo de un `update`); publica
+   el resultado en `Metricas_CCB` como la métrica `regresion_pipeline` (`valor` = casos ok, `estado` = `ok`/`FALLO`);
+   **borra sus propias filas** de las cuatro tablas (incluida `Errores_CCB`, para no ensuciar la métrica de errores del
+   monitor) y devuelve el resumen.
+5. `Outlook - Enviar resumen de regresion`: manda el semáforo con el detalle caso por caso.
 
 **Detalle técnico.** La operación de borrado del nodo *Data Table* se llama **`deleteRows`** (la documentación la
 etiqueta "Delete", pero el valor interno es `deleteRows`; con `delete` el nodo falla con
@@ -310,6 +311,24 @@ para que cada caso corra **una sola vez** aunque los nodos de lectura devuelvan 
 **Relaciones.** No procesa propuestas reales: **prueba** los flujos. Llama a los subflujos de configuración, de error y a
 tres ramas de W4D; escribe y borra en `Cotizaciones_CCB` y `Errores_CCB`; publica en `Metricas_CCB` y avisa al correo de
 `alertas_email`. Los ids `SOL-PRUEBA-REGRESION-*` son la marca para reconocer sus filas.
+
+---
+
+## 9.ter Los dos subflujos de la regresión
+**Plan:** R9. El flujo de regresión tenía 20 nodos (el límite del criterio de arquitectura) y necesitaba crecer: se
+extrajeron la preparación y la verificación/limpieza, y quedó en **16 nodos**.
+
+### `[SUB] CCB - Regresion: Preparar filas` — `DgUfcoudk228kOw8` · 7 nodos
+**Por qué:** crear y reutilizar las filas de prueba de las tres tablas implicadas (`Cotizaciones_CCB`,
+`Solicitudes_CCB` y `Criterios_Cotizacion`) sin cargar el flujo principal. **Cómo funciona:** tres pares
+preparador + *upsert* (los preparadores llevan `executeOnce` para emitir su lista una sola vez). Las filas quedan
+marcadas con `SOL-PRUEBA-REGRESION`. **Relaciones:** lo llama el flujo de regresión.
+
+### `[SUB] CCB - Regresion: Verificar y limpiar` — `OuE4SS9Jujz1dVif` · 11 nodos
+**Por qué:** la verificación del estado real y la limpieza de las cuatro tablas. **Cómo funciona:** tres lecturas
+(cotizaciones, solicitudes y errores), `Comparar resultados` (compara contra lo esperado caso por caso), publica el
+semáforo en `Metricas_CCB`, borra con `deleteRows` las filas marcadas de las cuatro tablas y devuelve el resumen para el
+correo. **Relaciones:** lo llama el flujo de regresión; escribe y borra en cuatro tablas y publica en `Metricas_CCB`.
 
 ---
 
@@ -342,5 +361,6 @@ W1/W2A/W4A/W4B/W4D/W5A/W5B/W6 ──> [SUB] CCB - Registrar y Alertar Error
 W2A ──> [SUB] CCB - Invocar Motor y Guardar Cotización ──> W3
 [OPS] CCB - Monitoreo del pipeline ──> lee todo el pipeline ───┘
 catch-all ──> recibe los fallos no capturados de los 11 flujos activos
-[OPS] CCB - Regresion del pipeline ──> prueba los subflujos de error y tres ramas de W4D, y escribe/borra sus propias filas de prueba
+[OPS] CCB - Regresion del pipeline ──> [SUB] Regresion: Preparar filas / Verificar y limpiar
+   └──> prueba los subflujos de error, tres ramas de W4D y el cierre de envio
 ```

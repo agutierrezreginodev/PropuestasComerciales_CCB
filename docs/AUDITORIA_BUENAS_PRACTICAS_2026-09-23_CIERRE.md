@@ -21,7 +21,7 @@ escala que los informes del 16/09, del 22/09 y de la mañana del 23/09, para que
 | Manejo de errores /20 | 17,0 | **17,0** | Sin cambios |
 | Documentación /15 | 13,4 | **14,0** | El [pipeline de punta a punta](FLUJO_COMPLETO_PIPELINE_CCB.md) (10 secciones), el [comparativo demo-vs-actual](COMPARATIVO_DEMO_VS_ACTUAL.md) y la ficha del flujo de regresión |
 | Seguridad /15 | 13,8 | **13,8** | Sin cambios: la credencial *Header Auth* y el cierre de `/metrics` siguen pendientes |
-| Testing /15 | 11,7 | **12,8** | **El salto grande:** una suite de regresión repetible, la ruta de error y los tres webhooks verificados con tráfico real, y el procedimiento de testing documentado en 5 niveles |
+| Testing /15 | 11,7 | **12,9** | **El salto grande:** una suite de regresión repetible, la ruta de error y los tres webhooks verificados con tráfico real, y el procedimiento de testing documentado en 5 niveles |
 | Observabilidad /15 | 13,6 | **13,6** | Sin cambios: la poda a nivel de instancia sigue en Tecnología y el semáforo de la regresión es una señal de *testing*, no de operación |
 | **Total** | **87,7** | **89,5** | **+1,8** |
 
@@ -53,9 +53,9 @@ escala que los informes del 16/09, del 22/09 y de la mañana del 23/09, para que
 | W4C — Consulta de propuesta | 19 | 16 | 14 | 14 | 12 | 12 | **87** | 85 |
 | W4D — Procesar decisión | 19 | 18 | 14 | 14 | 14 | 15 | **94** | 92 |
 | W5A — Router de envío | 18 | 18 | 14 | 14 | 13 | 14 | **91** | 89 |
-| W5B — Envío al cliente | 18 | 18 | 14 | 14 | 13 | 14 | **91** | 90 |
+| W5B — Envío al cliente | 18 | 18 | 14 | 14 | **14** | 14 | **92** | 90 |
 | W6 — Finalizador | 18 | 18 | 14 | 14 | 13 | 14 | **91** | 89 |
-| **Promedio** | **18,2** | **17,0** | **14,0** | **13,8** | **12,8** | **13,6** | **89,5** | **87,7** |
+| **Promedio** | **18,2** | **17,0** | **14,0** | **13,8** | **12,9** | **13,6** | **89,5** | **87,7** |
 
 **Cinco flujos ya están en 90 o más** (W4D 94, W4A 91, W5A 91, W5B 91, W6 91) y **ninguno baja de 85**.
 
@@ -65,13 +65,14 @@ escala que los informes del 16/09, del 22/09 y de la mañana del 23/09, para que
 
 | Camino | Dimensión | Qué falta | Cuánto suma | Quién |
 |---|---|---|---|---|
-| **v2 de la regresión**: agregar los caminos `Cerrar envío` y del motor | Testing | Dos casos más en `[OPS] CCB - Regresión del pipeline` | ~+0,2 | Yo (siguiente iteración) |
+| **v2 de la regresión** (hecha el 23/09): el camino `Cerrar envío` ya está; **falta el del motor** | Testing | El caso de `[SUB] Invocar Motor y Guardar Cotización` (W3 lee una planilla Excel y necesita los criterios completos) | ~+0,1 | Yo (sesión aparte) |
 | **Probar el rechazo/expiración** de la aprobación de IA | Testing | Un rechazo real en Teams → motivo `aprobacion_rechazada` sin consumir ronda | ~+0,1 | Tú (un clic) |
 | **Poda de ejecuciones a nivel de instancia** | Observabilidad | `EXECUTIONS_DATA_PRUNE` / `MAX_AGE`. La retención **por flujo** ya está aplicada | ~+0,3 | Tecnología |
 | **Cerrar `/metrics` y la credencial de la API** | Seguridad | Restringir `/metrics`; crear la credencial *Header Auth* en la UI para que la métrica por flujo tenga datos | ~+0,2 | Tecnología + tú |
 
-Con **la poda de instancia y la v2 de la regresión** (ninguna depende de un tercero nuevo) el promedio cruza **90,0**.
-Las otras dos lo consolidan.
+**La v2 de la regresión ya está aplicada** (W5B subió a 92) y el promedio se mantiene en **89,5** porque un solo flujo no mueve la media redondeada.
+Para cruzar **90,0** hacen falta los ítems de instancia: la **poda de ejecuciones** (+0,3 en Observabilidad) y el **cierre de
+`/metrics` con la credencial** (+0,2 en Seguridad). El caso del motor suma ~+0,1 más.
 
 ---
 

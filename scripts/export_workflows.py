@@ -44,6 +44,8 @@ WORKFLOWS = {
     "sub-registrar-alertar-error": "2dY1kaT7I5a0eP2w",
     "sub-leer-configuracion": "Hgy02eqPhnsdJvkq",
     "ops-regresion-pipeline": "GVE3iNQ80y5Q9FEw",
+    "sub-regresion-preparar-filas": "DgUfcoudk228kOw8",
+    "sub-regresion-verificar-limpiar": "OuE4SS9Jujz1dVif",
     "ops-monitoreo-pipeline": "ZwBFTBhwS9pjS69X",
     "sub-leer-contexto-propuesta": "GELWpskp0aYJ2zPg",
     "w4d-sub-aprobar": "8j6BCwXkgJCccyO1",
