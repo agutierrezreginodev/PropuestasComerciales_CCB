@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T15:57:18.874Z",
+  "updatedAt": "2026-09-23T16:44:00.963Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB - Workflow 5A - Router de Envío",
@@ -436,9 +436,9 @@
   "settings": {
     "executionOrder": "v1",
     "saveDataErrorExecution": "all",
-    "saveDataSuccessExecution": "all",
+    "saveDataSuccessExecution": "none",
     "saveManualExecutions": true,
-    "saveExecutionProgress": true,
+    "saveExecutionProgress": false,
     "errorWorkflow": "Dh2lAQTzyoZBpXie",
     "binaryMode": "separate"
   },
@@ -451,7 +451,7 @@
   "pinData": {},
   "versionId": "03891099-f994-490c-b1f6-aeb849593596",
   "activeVersionId": "03891099-f994-490c-b1f6-aeb849593596",
-  "versionCounter": 54,
+  "versionCounter": 57,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
@@ -902,6 +902,22 @@
       {
         "createdAt": "2026-09-23T15:57:18.927Z",
         "id": 2852,
+        "workflowId": "gvIn6mbAn2Y1bMRR",
+        "versionId": "03891099-f994-490c-b1f6-aeb849593596",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T16:44:01.006Z",
+        "id": 2947,
+        "workflowId": "gvIn6mbAn2Y1bMRR",
+        "versionId": "03891099-f994-490c-b1f6-aeb849593596",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T16:44:01.027Z",
+        "id": 2948,
         "workflowId": "gvIn6mbAn2Y1bMRR",
         "versionId": "03891099-f994-490c-b1f6-aeb849593596",
         "event": "activated",

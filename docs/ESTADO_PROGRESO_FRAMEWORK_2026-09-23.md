@@ -14,7 +14,7 @@
 | Fase | Estado | Qué se hizo |
 |---|---|---|
 | **Fase 5 — Configuración centralizada** | ✅ **Cerrada** | Data Table `Configuracion_CCB` + subflujo `[SUB] - CCB - Leer Configuración`; ningún correo, URL ni destino escrito a mano en los 13 flujos |
-| **Fase 6 — Observabilidad** | ✅ **Cerrada** (salvo F6-04) | Timeouts, límites de lectura, enmascarado de PII, marca de tiempo de errores y monitoreo horario de las 4 métricas |
+| **Fase 6 — Observabilidad** | ✅ **Cerrada** (F6-04 parcial) | Timeouts, límites de lectura, enmascarado de PII, marca de tiempo de errores, monitoreo horario de las 4 métricas y **retención por flujo** en los routers de alta frecuencia |
 | **Fase 4 — Arquitectura** | 🔄 F4-01, **F4-02, F4-03 y F4-05 cerradas** | Subflujo de contexto de propuesta; **W4-D partido en router de 19 nodos + 5 subflujos**; dictamen sobre separar el PDF; catch-all con diseño propio |
 | **Fase 7 — Guardarraíles de IA** | ✅ **Cerrada y verificada (F7-01, F7-02, F7-03)** | Confianza baja → revisión manual; interruptor de la corrección asistida; **aprobación humana en Teams antes del recálculo y de la ronda** |
 | Fase 0 / 1 / 2 | ✅ Cerradas previamente | — |
@@ -72,6 +72,13 @@
 
 ## 5. Pendientes
 
+### 5.0 Dos pasos que dependen de la UI de n8n (no se pueden hacer por API)
+
+| Paso | Detalle |
+|---|---|
+| **Credencial para la métrica exacta por flujo** | El monitor ya consulta la API de ejecuciones y publica `tasa_error_por_flujo`, pero **n8n no usa las credenciales creadas por API**: el nodo recibe `401 - "'X-N8N-API-KEY' header required"` (la credencial existe pero el header no se envía). Se necesita **crear a mano en la UI** una credencial *Header Auth* (`X-N8N-API-KEY`) y apuntar los dos nodos `HTTP - Leer ejecuciones` / `HTTP - Leer workflow s` a ella. Mientras tanto el monitor tolera el fallo y publica "sin ejecuciones recientes". |
+| **Mover 14 flujos a la carpeta** `Servicios_Información_Cotizaciones_v2.0` | El API de carpetas devuelve 403 (necesita scopes `folder:*` y/o registrar la instancia). Alternativa: arrastrarlos en la UI (la lista está en `docs/FLUJOS_PIPELINE_CCB.md` y en el README). |
+
 ### 5.1 Decisiones del usuario
 
 | Tema | Detalle |
@@ -87,7 +94,7 @@
 2. **F4-05** — ejecutar la separación de la etapa de PDF (W3 quedaría en 17 nodos). El bloqueo ya no existe: se verificó que ningún flujo aguas abajo consume el binario del PDF.
 2. **Partir W2A (26) y W5B (26)** para cerrar el criterio de ≤20 nodos: no estaba contemplado en el plan y hay que decidirlo (mismo patrón que F4-03: agrupar por rama de servicio / responsabilidad).
 3. **F7-03** — según la decisión de arriba.
-4. **F6-04** — retención de ejecuciones (`EXECUTIONS_DATA_PRUNE` / `MAX_AGE`): requiere Tecnología.
+4. **F6-04** — retención: ya aplicada **por flujo** (`saveDataSuccessExecution: none` + `saveExecutionProgress: false` en W4A, W5A, W6 y el monitor, conservando los datos de error). La poda a nivel de instancia (`EXECUTIONS_DATA_PRUNE` / `MAX_AGE`) sigue requiriendo Tecnología.
 5. **Re-auditoría de cierre** — repetir el procedimiento de evaluación y publicar el puntaje nuevo.
 
 ### 5.3 Limpieza manual

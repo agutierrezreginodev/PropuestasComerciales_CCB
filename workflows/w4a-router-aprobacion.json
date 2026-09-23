@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T15:57:15.407Z",
+  "updatedAt": "2026-09-23T16:43:59.470Z",
   "createdAt": "2026-09-11T15:42:01.882Z",
   "id": "7gmpPMBJtEb0W3J5",
   "name": "CCB - Workflow 4A - Router de Aprobación",
@@ -324,9 +324,9 @@
   "settings": {
     "executionOrder": "v1",
     "saveDataErrorExecution": "all",
-    "saveDataSuccessExecution": "all",
+    "saveDataSuccessExecution": "none",
     "saveManualExecutions": true,
-    "saveExecutionProgress": true,
+    "saveExecutionProgress": false,
     "binaryMode": "separate",
     "errorWorkflow": "Dh2lAQTzyoZBpXie"
   },
@@ -339,7 +339,7 @@
   "pinData": {},
   "versionId": "6cfcdb26-9805-4433-b8bf-53454cfcdc8c",
   "activeVersionId": "6cfcdb26-9805-4433-b8bf-53454cfcdc8c",
-  "versionCounter": 52,
+  "versionCounter": 55,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
@@ -678,6 +678,22 @@
       {
         "createdAt": "2026-09-23T15:57:15.455Z",
         "id": 2846,
+        "workflowId": "7gmpPMBJtEb0W3J5",
+        "versionId": "6cfcdb26-9805-4433-b8bf-53454cfcdc8c",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T16:43:59.508Z",
+        "id": 2945,
+        "workflowId": "7gmpPMBJtEb0W3J5",
+        "versionId": "6cfcdb26-9805-4433-b8bf-53454cfcdc8c",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T16:43:59.525Z",
+        "id": 2946,
         "workflowId": "7gmpPMBJtEb0W3J5",
         "versionId": "6cfcdb26-9805-4433-b8bf-53454cfcdc8c",
         "event": "activated",
