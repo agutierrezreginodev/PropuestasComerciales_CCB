@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T14:26:16.386Z",
+  "updatedAt": "2026-09-23T15:35:11.966Z",
   "createdAt": "2026-09-23T14:17:56.787Z",
   "id": "iNSErCHs2iw33emJ",
   "name": "[SUB] - CCB - W4D Revisión Manual",
@@ -43,7 +43,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// F4-03: un solo subflujo para los tres motivos de revisión manual, sin consumir ronda.\n// F6-03: enmascara PII del texto libre y muestra nombre/razon social parciales.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst parcial = (t) => { const s = String(t === null || t === undefined ? '' : t).trim(); return s.length > 3 ? s.slice(0, 3) + '…' : s; };\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = $json || {};\nconst ctx = entrada.contexto || {};\nconst nombre = entrada.nombre_cliente || ctx.nombre_cliente || '';\nconst razon = entrada.razon_social || ctx.razon_social || '';\nconst servicio = entrada.servicio || ctx.servicio || 'servicio';\nconst pdf = entrada.pdf_url || ctx.pdf_url || '(sin documento)';\nconst id = entrada.id_solicitud || ctx.id_solicitud || '';\nconst comentario = entrada.Comentario || entrada.comentario || ctx.Comentario || '';\nconst ronda = Number(entrada.ronda_correccion || ctx.ronda_correccion) || 0;\nconst conf = String(entrada.confianza || '');\nconst cfg = (() => { try { return $('Ejecutar Leer Configuración').first().json._config || {}; } catch (e) { return {}; } })();\nconst iaHabilitada = String(cfg.ia_correccion_habilitada || 'true') !== 'false';\nconst motivo = ronda >= 3 ? 'tope' : (!iaHabilitada ? 'ia_desactivada' : 'confianza_baja');\nlet asunto, cuerpo;\nif (motivo === 'tope') {\n  asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + servicio + ' (' + id + ')';\n  cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + parcial(nombre || 'cliente')\n    + ' (' + parcial(razon || '-') + '). Requiere revisión manual.'\n    + '\\n\\nComentario del asesor: ' + limpiar(comentario || '(sin comentario)')\n    + '\\n\\nDocumento: ' + pdf;\n} else {\n  const detalle = motivo === 'ia_desactivada'\n    ? 'La corrección asistida por IA está desactivada por configuración.'\n    : ('La IA interpretó el pedido con confianza ' + (conf || 'baja') + '; no se aplicó ningún ajuste automáticamente.');\n  asunto = '[Propuesta CCB] Corrección pendiente de revisión manual — ' + servicio + ' (' + id + ')';\n  cuerpo = '<p>La solicitud de correcciones <b>no se aplicó automáticamente</b>.</p><ul>'\n    + '<li><b>Solicitud:</b> ' + id + '</li>'\n    + '<li><b>Motivo:</b> ' + detalle + '</li>'\n    + '<li><b>Interpretación de la IA:</b> ' + (entrada.resumen_cambios || '(sin resumen)') + '</li>'\n    + '<li><b>Comentario del asesor:</b> ' + (comentario || '(sin comentario)') + '</li></ul>'\n    + '<p>La propuesta queda en <b>revisión manual</b> y <b>no consumió una ronda</b> de corrección.</p>';\n}\nreturn { json: { ...entrada, id_solicitud: id, Comentario: comentario, motivo,\n                 _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
+        "jsCode": "// F4-03: un solo subflujo para los tres motivos de revisión manual, sin consumir ronda.\n// F6-03: enmascara PII del texto libre y muestra nombre/razon social parciales.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst parcial = (t) => { const s = String(t === null || t === undefined ? '' : t).trim(); return s.length > 3 ? s.slice(0, 3) + '…' : s; };\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = $json || {};\nconst ctx = entrada.contexto || {};\nconst nombre = entrada.nombre_cliente || ctx.nombre_cliente || '';\nconst razon = entrada.razon_social || ctx.razon_social || '';\nconst servicio = entrada.servicio || ctx.servicio || 'servicio';\nconst pdf = entrada.pdf_url || ctx.pdf_url || '(sin documento)';\nconst id = entrada.id_solicitud || ctx.id_solicitud || '';\nconst comentario = entrada.Comentario || entrada.comentario || ctx.Comentario || '';\nconst ronda = Number(entrada.ronda_correccion || ctx.ronda_correccion) || 0;\nconst conf = String(entrada.confianza || '');\nconst cfg = (() => { try { return $('Ejecutar Leer Configuración').first().json._config || {}; } catch (e) { return {}; } })();\nconst iaHabilitada = String(cfg.ia_correccion_habilitada || 'true') !== 'false';\n// F7-03: tambien se llega aca cuando el asesor no aprueba la correccion propuesta por la IA.\nconst motivo = (entrada.aprobado === false) ? 'aprobacion_rechazada'\n  : (ronda >= 3 ? 'tope' : (!iaHabilitada ? 'ia_desactivada' : 'confianza_baja'));\nlet asunto, cuerpo;\nif (motivo === 'tope') {\n  asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + servicio + ' (' + id + ')';\n  cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + parcial(nombre || 'cliente')\n    + ' (' + parcial(razon || '-') + '). Requiere revisión manual.'\n    + '\\n\\nComentario del asesor: ' + limpiar(comentario || '(sin comentario)')\n    + '\\n\\nDocumento: ' + pdf;\n} else {\n  const detalle = motivo === 'aprobacion_rechazada'\n    ? 'El asesor no aprobó el ajuste propuesto por la IA (o no respondió a tiempo).'\n    : motivo === 'ia_desactivada'\n    ? 'La corrección asistida por IA está desactivada por configuración.'\n    : ('La IA interpretó el pedido con confianza ' + (conf || 'baja') + '; no se aplicó ningún ajuste automáticamente.');\n  asunto = '[Propuesta CCB] Corrección pendiente de revisión manual — ' + servicio + ' (' + id + ')';\n  cuerpo = '<p>La solicitud de correcciones <b>no se aplicó automáticamente</b>.</p><ul>'\n    + '<li><b>Solicitud:</b> ' + id + '</li>'\n    + '<li><b>Motivo:</b> ' + detalle + '</li>'\n    + '<li><b>Interpretación de la IA:</b> ' + (entrada.resumen_cambios || '(sin resumen)') + '</li>'\n    + '<li><b>Comentario del asesor:</b> ' + (comentario || '(sin comentario)') + '</li></ul>'\n    + '<p>La propuesta queda en <b>revisión manual</b> y <b>no consumió una ronda</b> de corrección.</p>';\n}\nreturn { json: { ...entrada, id_solicitud: id, Comentario: comentario, motivo,\n                 _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
       },
       "id": "552eb342-e7cf-4dd1-ae14-6b33154393b3",
       "name": "Preparar aviso - Revisión manual",
@@ -124,7 +124,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// F4-03: el motivo se lee del nodo que arma el aviso; el update de Data Table reemplaza el item.\nconst aviso = (() => { try { return $('Preparar aviso - Revisión manual').first().json || {}; } catch (e) { return {}; } })();\nconst mensaje = aviso.motivo === 'tope'\n  ? 'Se alcanzó el máximo de 3 rondas de corrección. La propuesta queda en revisión manual y te vamos a contactar directamente.'\n  : 'La corrección quedó pendiente de revisión manual; no se consumió una ronda.';\nreturn { json: { ok: true, mensaje } };"
+        "jsCode": "// F4-03/F7-03: el motivo se lee del nodo que arma el aviso.\nconst aviso = (() => { try { return $('Preparar aviso - Revisión manual').first().json || {}; } catch (e) { return {}; } })();\nconst mensaje = aviso.motivo === 'tope'\n  ? 'Se alcanzó el máximo de 3 rondas de corrección. La propuesta queda en revisión manual y te vamos a contactar directamente.'\n  : (aviso.motivo === 'aprobacion_rechazada'\n     ? 'La corrección no fue aprobada. La propuesta queda en revisión manual y no se consumió una ronda.'\n     : 'La corrección quedó pendiente de revisión manual; no se consumió una ronda.');\nreturn { json: { ok: true, mensaje } };"
       },
       "id": "bc06e84f-786b-46c5-a995-3326b7604858",
       "name": "Confirmar aviso - Revisión manual",
@@ -199,15 +199,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "e6d3f755-2e43-4334-8b37-31ea7b49d88c",
-  "activeVersionId": "e6d3f755-2e43-4334-8b37-31ea7b49d88c",
-  "versionCounter": 7,
+  "versionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
+  "activeVersionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T14:26:16.387Z",
-    "createdAt": "2026-09-23T14:26:16.387Z",
-    "versionId": "e6d3f755-2e43-4334-8b37-31ea7b49d88c",
+    "updatedAt": "2026-09-23T15:35:11.967Z",
+    "createdAt": "2026-09-23T15:35:11.967Z",
+    "versionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
     "workflowId": "iNSErCHs2iw33emJ",
     "nodes": [
       {
@@ -246,7 +246,7 @@
       },
       {
         "parameters": {
-          "jsCode": "// F4-03: un solo subflujo para los tres motivos de revisión manual, sin consumir ronda.\n// F6-03: enmascara PII del texto libre y muestra nombre/razon social parciales.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst parcial = (t) => { const s = String(t === null || t === undefined ? '' : t).trim(); return s.length > 3 ? s.slice(0, 3) + '…' : s; };\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = $json || {};\nconst ctx = entrada.contexto || {};\nconst nombre = entrada.nombre_cliente || ctx.nombre_cliente || '';\nconst razon = entrada.razon_social || ctx.razon_social || '';\nconst servicio = entrada.servicio || ctx.servicio || 'servicio';\nconst pdf = entrada.pdf_url || ctx.pdf_url || '(sin documento)';\nconst id = entrada.id_solicitud || ctx.id_solicitud || '';\nconst comentario = entrada.Comentario || entrada.comentario || ctx.Comentario || '';\nconst ronda = Number(entrada.ronda_correccion || ctx.ronda_correccion) || 0;\nconst conf = String(entrada.confianza || '');\nconst cfg = (() => { try { return $('Ejecutar Leer Configuración').first().json._config || {}; } catch (e) { return {}; } })();\nconst iaHabilitada = String(cfg.ia_correccion_habilitada || 'true') !== 'false';\nconst motivo = ronda >= 3 ? 'tope' : (!iaHabilitada ? 'ia_desactivada' : 'confianza_baja');\nlet asunto, cuerpo;\nif (motivo === 'tope') {\n  asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + servicio + ' (' + id + ')';\n  cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + parcial(nombre || 'cliente')\n    + ' (' + parcial(razon || '-') + '). Requiere revisión manual.'\n    + '\\n\\nComentario del asesor: ' + limpiar(comentario || '(sin comentario)')\n    + '\\n\\nDocumento: ' + pdf;\n} else {\n  const detalle = motivo === 'ia_desactivada'\n    ? 'La corrección asistida por IA está desactivada por configuración.'\n    : ('La IA interpretó el pedido con confianza ' + (conf || 'baja') + '; no se aplicó ningún ajuste automáticamente.');\n  asunto = '[Propuesta CCB] Corrección pendiente de revisión manual — ' + servicio + ' (' + id + ')';\n  cuerpo = '<p>La solicitud de correcciones <b>no se aplicó automáticamente</b>.</p><ul>'\n    + '<li><b>Solicitud:</b> ' + id + '</li>'\n    + '<li><b>Motivo:</b> ' + detalle + '</li>'\n    + '<li><b>Interpretación de la IA:</b> ' + (entrada.resumen_cambios || '(sin resumen)') + '</li>'\n    + '<li><b>Comentario del asesor:</b> ' + (comentario || '(sin comentario)') + '</li></ul>'\n    + '<p>La propuesta queda en <b>revisión manual</b> y <b>no consumió una ronda</b> de corrección.</p>';\n}\nreturn { json: { ...entrada, id_solicitud: id, Comentario: comentario, motivo,\n                 _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
+          "jsCode": "// F4-03: un solo subflujo para los tres motivos de revisión manual, sin consumir ronda.\n// F6-03: enmascara PII del texto libre y muestra nombre/razon social parciales.\nconst limpiar = (t) => String(t === null || t === undefined ? '' : t)\n  .replace(/[\\w.+-]+@[\\w-]+\\.[\\w.]+/g, '<correo>')\n  .replace(/https?:\\/\\/\\S+/g, '<url>')\n  .replace(/\\b\\d{7,}\\b/g, '<num>');\nconst parcial = (t) => { const s = String(t === null || t === undefined ? '' : t).trim(); return s.length > 3 ? s.slice(0, 3) + '…' : s; };\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst entrada = $json || {};\nconst ctx = entrada.contexto || {};\nconst nombre = entrada.nombre_cliente || ctx.nombre_cliente || '';\nconst razon = entrada.razon_social || ctx.razon_social || '';\nconst servicio = entrada.servicio || ctx.servicio || 'servicio';\nconst pdf = entrada.pdf_url || ctx.pdf_url || '(sin documento)';\nconst id = entrada.id_solicitud || ctx.id_solicitud || '';\nconst comentario = entrada.Comentario || entrada.comentario || ctx.Comentario || '';\nconst ronda = Number(entrada.ronda_correccion || ctx.ronda_correccion) || 0;\nconst conf = String(entrada.confianza || '');\nconst cfg = (() => { try { return $('Ejecutar Leer Configuración').first().json._config || {}; } catch (e) { return {}; } })();\nconst iaHabilitada = String(cfg.ia_correccion_habilitada || 'true') !== 'false';\n// F7-03: tambien se llega aca cuando el asesor no aprueba la correccion propuesta por la IA.\nconst motivo = (entrada.aprobado === false) ? 'aprobacion_rechazada'\n  : (ronda >= 3 ? 'tope' : (!iaHabilitada ? 'ia_desactivada' : 'confianza_baja'));\nlet asunto, cuerpo;\nif (motivo === 'tope') {\n  asunto = '[Propuesta CCB] Tope de correcciones alcanzado — ' + servicio + ' (' + id + ')';\n  cuerpo = 'Se alcanzó el tope de 3 rondas de corrección para la propuesta de ' + parcial(nombre || 'cliente')\n    + ' (' + parcial(razon || '-') + '). Requiere revisión manual.'\n    + '\\n\\nComentario del asesor: ' + limpiar(comentario || '(sin comentario)')\n    + '\\n\\nDocumento: ' + pdf;\n} else {\n  const detalle = motivo === 'aprobacion_rechazada'\n    ? 'El asesor no aprobó el ajuste propuesto por la IA (o no respondió a tiempo).'\n    : motivo === 'ia_desactivada'\n    ? 'La corrección asistida por IA está desactivada por configuración.'\n    : ('La IA interpretó el pedido con confianza ' + (conf || 'baja') + '; no se aplicó ningún ajuste automáticamente.');\n  asunto = '[Propuesta CCB] Corrección pendiente de revisión manual — ' + servicio + ' (' + id + ')';\n  cuerpo = '<p>La solicitud de correcciones <b>no se aplicó automáticamente</b>.</p><ul>'\n    + '<li><b>Solicitud:</b> ' + id + '</li>'\n    + '<li><b>Motivo:</b> ' + detalle + '</li>'\n    + '<li><b>Interpretación de la IA:</b> ' + (entrada.resumen_cambios || '(sin resumen)') + '</li>'\n    + '<li><b>Comentario del asesor:</b> ' + (comentario || '(sin comentario)') + '</li></ul>'\n    + '<p>La propuesta queda en <b>revisión manual</b> y <b>no consumió una ronda</b> de corrección.</p>';\n}\nreturn { json: { ...entrada, id_solicitud: id, Comentario: comentario, motivo,\n                 _aviso_asunto: asunto, _aviso_cuerpo: cuerpo } };"
         },
         "id": "552eb342-e7cf-4dd1-ae14-6b33154393b3",
         "name": "Preparar aviso - Revisión manual",
@@ -327,7 +327,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// F4-03: el motivo se lee del nodo que arma el aviso; el update de Data Table reemplaza el item.\nconst aviso = (() => { try { return $('Preparar aviso - Revisión manual').first().json || {}; } catch (e) { return {}; } })();\nconst mensaje = aviso.motivo === 'tope'\n  ? 'Se alcanzó el máximo de 3 rondas de corrección. La propuesta queda en revisión manual y te vamos a contactar directamente.'\n  : 'La corrección quedó pendiente de revisión manual; no se consumió una ronda.';\nreturn { json: { ok: true, mensaje } };"
+          "jsCode": "// F4-03/F7-03: el motivo se lee del nodo que arma el aviso.\nconst aviso = (() => { try { return $('Preparar aviso - Revisión manual').first().json || {}; } catch (e) { return {}; } })();\nconst mensaje = aviso.motivo === 'tope'\n  ? 'Se alcanzó el máximo de 3 rondas de corrección. La propuesta queda en revisión manual y te vamos a contactar directamente.'\n  : (aviso.motivo === 'aprobacion_rechazada'\n     ? 'La corrección no fue aprobada. La propuesta queda en revisión manual y no se consumió una ronda.'\n     : 'La corrección quedó pendiente de revisión manual; no se consumió una ronda.');\nreturn { json: { ok: true, mensaje } };"
         },
         "id": "bc06e84f-786b-46c5-a995-3326b7604858",
         "name": "Confirmar aviso - Revisión manual",
@@ -402,18 +402,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T14:26:16.427Z",
-        "id": 2768,
+        "createdAt": "2026-09-23T15:35:12.008Z",
+        "id": 2797,
         "workflowId": "iNSErCHs2iw33emJ",
-        "versionId": "e6d3f755-2e43-4334-8b37-31ea7b49d88c",
+        "versionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T14:26:16.443Z",
-        "id": 2769,
+        "createdAt": "2026-09-23T15:35:12.022Z",
+        "id": 2798,
         "workflowId": "iNSErCHs2iw33emJ",
-        "versionId": "e6d3f755-2e43-4334-8b37-31ea7b49d88c",
+        "versionId": "f43b2301-9b48-4205-b3f7-8c10ef290330",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

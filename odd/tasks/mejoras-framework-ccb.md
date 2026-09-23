@@ -38,7 +38,7 @@ y el estado global en [`docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](../../doc
 | 9b | Bug: las alertas de error perdían el detalle (update de Data Table antes del subflujo) | F4-03 | ☑ | Orden invertido en W4B/W5A/W6/cierre; verificado con ejecución real | `f4-03` |
 | 10 | Guardarraíles de IA: `confianza: baja` → revisión humana | F7-01 | ☑ | `IF - ¿Confianza suficiente?` → revisión manual sin consumir ronda | `f7-01-02` |
 | 11 | Guardarraíles de IA: kill switch de la corrección asistida | F7-02 | ☑ | Clave `ia_correccion_habilitada` en `Configuracion_CCB` | `f7-01-02` |
-| 12 | Guardarraíles de IA: aprobación humana antes del recálculo | F7-03 | 🔶 | Dos caminos (Teams `sendAndWait` vs. página de revisión): decisión del usuario pendiente | — |
+| 12 | Guardarraíles de IA: aprobación humana antes del recálculo | F7-03 | ☑ | `sendAndWait` en Teams antes del recálculo; respuesta temprana del webhook; 3 workflows validados | `f7-03` |
 | 13 | Catch-all con diseño propio | F4-01 (pendiente) | ☐ | Contrato adaptado, sin perder fidelidad de diagnóstico | — |
 | 14 | Cierre documental: re-auditoría, tablero y estado actualizados | — | ☐ | Puntaje nuevo anotado y docs sincronizados | — |
 

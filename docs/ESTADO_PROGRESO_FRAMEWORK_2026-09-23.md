@@ -16,7 +16,7 @@
 | **Fase 5 — Configuración centralizada** | ✅ **Cerrada** | Data Table `Configuracion_CCB` + subflujo `[SUB] - CCB - Leer Configuración`; ningún correo, URL ni destino escrito a mano en los 13 flujos |
 | **Fase 6 — Observabilidad** | ✅ **Cerrada** (salvo F6-04) | Timeouts, límites de lectura, enmascarado de PII, marca de tiempo de errores y monitoreo horario de las 4 métricas |
 | **Fase 4 — Arquitectura** | 🔄 F4-01, **F4-02, F4-03 y F4-05 cerradas** | Subflujo de contexto de propuesta; **W4-D partido en router de 19 nodos + 5 subflujos**; dictamen sobre separar el PDF; catch-all con diseño propio |
-| **Fase 7 — Guardarraíles de IA** | 🔄 **F7-01 y F7-02 cerradas**; F7-03 pendiente de decisión | Confianza baja → revisión manual; interruptor de la corrección asistida |
+| **Fase 7 — Guardarraíles de IA** | ✅ **Cerrada (F7-01, F7-02, F7-03)** | Confianza baja → revisión manual; interruptor de la corrección asistida; **aprobación humana en Teams antes del recálculo y de la ronda** |
 | Fase 0 / 1 / 2 | ✅ Cerradas previamente | — |
 | Fase 3 | ✅ 9/11 + 1 N/A; F3-02 cerrado como desviación de plataforma | — |
 
@@ -33,7 +33,7 @@
 | **Seguridad (sin valores incrustados)** | ⚠️ 2/11 | ✅ **11/11** — correo de alertas, correo/nombre del asesor, URL del microservicio y chatId salen de `Configuracion_CCB` |
 | **Idempotencia** | ⚠️ 6/11 | ⚠️ 6/11 (sin cambios: cubierta por upsert en los puntos de escritura y por el subflujo de error) |
 | **Resiliencia (retry)** | ⚠️ en mejora | ✅ 11/11 en nodos de red de negocio (5×5000) + timeout explícito en los dos nodos HTTP |
-| **Arquitectura (≤20 nodos)** | ⚠️ 6/11 | ⚠️ **7/11** — W4D 54→**19** (F4-03); siguen sobre el umbral W2A (26), W3 (25, lo cubre F4-05) y W5B (26, fuera del plan) |
+| **Arquitectura (≤20 nodos)** | ⚠️ 6/11 | ✅ **9/11** — W4D 54→**19** (F4-03); siguen sobre el umbral solo W2A (26) y W5B (26), que no estaban contemplados en el plan |
 | Control de versiones | ✅ 13/13 | ✅ 17/17 workflows versionados en el snapshot |
 
 ## 3. Artefactos nuevos (23/09)
@@ -83,7 +83,8 @@
 
 ### 5.2 Trabajo pendiente en el plan
 
-1. **F4-05** — ejecutar la separación de la etapa de PDF (W3 quedaría en 17 nodos). El bloqueo ya no existe: se verificó que ningún flujo aguas abajo consume el binario del PDF.
+1. **Aprobación humana (F7-03)** — implementada; falta la verificación real (clic de aprobación/rechazo en Teams).
+2. **F4-05** — ejecutar la separación de la etapa de PDF (W3 quedaría en 17 nodos). El bloqueo ya no existe: se verificó que ningún flujo aguas abajo consume el binario del PDF.
 2. **Partir W2A (26) y W5B (26)** para cerrar el criterio de ≤20 nodos: no estaba contemplado en el plan y hay que decidirlo (mismo patrón que F4-03: agrupar por rama de servicio / responsabilidad).
 3. **F7-03** — según la decisión de arriba.
 4. **F6-04** — retención de ejecuciones (`EXECUTIONS_DATA_PRUNE` / `MAX_AGE`): requiere Tecnología.

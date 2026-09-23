@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T14:17:59.058Z",
+  "updatedAt": "2026-09-23T15:35:07.742Z",
   "createdAt": "2026-09-23T14:17:58.025Z",
   "id": "3NAcLF4jaZ1JBw0A",
   "name": "[SUB] - CCB - W4D Corrección IA",
@@ -349,6 +349,98 @@
         1600,
         0
       ]
+    },
+    {
+      "parameters": {
+        "resource": "chatMessage",
+        "operation": "sendAndWait",
+        "chatId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Ejecutar Leer Configuración').first().json._config.teams_chat_aprobacion }}"
+        },
+        "message": "={{ '⚠️ *Aprobación requerida — corrección de propuesta*\\n\\n'\n  + 'Solicitud: ' + $json.id_solicitud + '\\n'\n  + 'Servicio: ' + ($json.servicio || '-') + '\\n\\n'\n  + '*Pedido del asesor:* ' + ($json.comentario || '(sin comentario)') + '\\n\\n'\n  + '*Ajuste propuesto por la IA:* ' + ($json.resumen_cambios || '(sin resumen)') + '\\n\\n'\n  + 'Si aprobás, el motor recalcula y se consume una ronda de corrección. Si rechazás o no respondés, la propuesta queda en revisión manual y no se consume ronda.' }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "limitType": "afterTimeInterval",
+              "resumeAmount": 24,
+              "resumeUnit": "hours"
+            }
+          }
+        }
+      },
+      "id": "79b3ad49-1ec6-45a6-89c5-9c9cc6a4c571",
+      "name": "Teams - Pedir aprobación de la corrección",
+      "type": "n8n-nodes-base.microsoftTeams",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        -240
+      ],
+      "credentials": {
+        "microsoftTeamsOAuth2Api": {
+          "id": "XuEqB2riUsSUuZEr",
+          "name": "INT-ServiciosInformacion Microsoft Teams"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "webhookId": "91d19e82-c743-4cf1-986e-04d79a71ef89"
+    },
+    {
+      "parameters": {
+        "jsCode": "// F7-03: la respuesta de Teams no trae el contexto de la propuesta, asi que se vuelve a armar\n// desde 'Aplicar correcciones' (ancestro) y se normaliza la aprobacion sea cual sea su forma.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst ap = get('Aplicar correcciones');\nconst r = $json || {};\nconst aprobado = (r.approved === true) || (r.aprobado === true) || (r.data && r.data.approved === true);\nreturn { json: { ...ap, aprobado, aprobacion_cruda: r } };"
+      },
+      "id": "d85622ff-ec83-460c-9a0e-3d1471830fef",
+      "name": "Preservar contexto tras la aprobación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c-aprob",
+              "leftValue": "={{ $json.aprobado }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "962419ff-57ee-4df2-95e0-c83bf584563d",
+      "name": "IF - ¿Aprobó la corrección?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1680,
+        -240
+      ]
     }
   ],
   "connections": {
@@ -458,7 +550,7 @@
       "main": [
         [
           {
-            "node": "Re-invocar motor",
+            "node": "Teams - Pedir aprobación de la corrección",
             "type": "main",
             "index": 0
           }
@@ -522,6 +614,53 @@
           }
         ]
       ]
+    },
+    "Teams - Pedir aprobación de la corrección": {
+      "main": [
+        [
+          {
+            "node": "Preservar contexto tras la aprobación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preservar contexto tras la aprobación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preservar contexto tras la aprobación": {
+      "main": [
+        [
+          {
+            "node": "IF - ¿Aprobó la corrección?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - ¿Aprobó la corrección?": {
+      "main": [
+        [
+          {
+            "node": "Re-invocar motor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ejecutar Revisión Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -530,15 +669,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "12275300-3ea0-48d8-a3ec-889734906fed",
-  "activeVersionId": "12275300-3ea0-48d8-a3ec-889734906fed",
-  "versionCounter": 4,
+  "versionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
+  "activeVersionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
+  "versionCounter": 7,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T14:17:58.025Z",
-    "createdAt": "2026-09-23T14:17:58.025Z",
-    "versionId": "12275300-3ea0-48d8-a3ec-889734906fed",
+    "updatedAt": "2026-09-23T15:35:07.746Z",
+    "createdAt": "2026-09-23T15:35:07.746Z",
+    "versionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
     "workflowId": "3NAcLF4jaZ1JBw0A",
     "nodes": [
       {
@@ -883,6 +1022,98 @@
           1600,
           0
         ]
+      },
+      {
+        "parameters": {
+          "resource": "chatMessage",
+          "operation": "sendAndWait",
+          "chatId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ $('Ejecutar Leer Configuración').first().json._config.teams_chat_aprobacion }}"
+          },
+          "message": "={{ '⚠️ *Aprobación requerida — corrección de propuesta*\\n\\n'\n  + 'Solicitud: ' + $json.id_solicitud + '\\n'\n  + 'Servicio: ' + ($json.servicio || '-') + '\\n\\n'\n  + '*Pedido del asesor:* ' + ($json.comentario || '(sin comentario)') + '\\n\\n'\n  + '*Ajuste propuesto por la IA:* ' + ($json.resumen_cambios || '(sin resumen)') + '\\n\\n'\n  + 'Si aprobás, el motor recalcula y se consume una ronda de corrección. Si rechazás o no respondés, la propuesta queda en revisión manual y no se consume ronda.' }}",
+          "approvalOptions": {
+            "values": {
+              "approvalType": "double"
+            }
+          },
+          "options": {
+            "limitWaitTime": {
+              "values": {
+                "limitType": "afterTimeInterval",
+                "resumeAmount": 24,
+                "resumeUnit": "hours"
+              }
+            }
+          }
+        },
+        "id": "79b3ad49-1ec6-45a6-89c5-9c9cc6a4c571",
+        "name": "Teams - Pedir aprobación de la corrección",
+        "type": "n8n-nodes-base.microsoftTeams",
+        "typeVersion": 2,
+        "position": [
+          1200,
+          -240
+        ],
+        "credentials": {
+          "microsoftTeamsOAuth2Api": {
+            "id": "XuEqB2riUsSUuZEr",
+            "name": "INT-ServiciosInformacion Microsoft Teams"
+          }
+        },
+        "onError": "continueErrorOutput",
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "webhookId": "91d19e82-c743-4cf1-986e-04d79a71ef89"
+      },
+      {
+        "parameters": {
+          "jsCode": "// F7-03: la respuesta de Teams no trae el contexto de la propuesta, asi que se vuelve a armar\n// desde 'Aplicar correcciones' (ancestro) y se normaliza la aprobacion sea cual sea su forma.\nconst get = (name) => { try { return $(name).first().json || {}; } catch (e) { return {}; } };\nconst ap = get('Aplicar correcciones');\nconst r = $json || {};\nconst aprobado = (r.approved === true) || (r.aprobado === true) || (r.data && r.data.approved === true);\nreturn { json: { ...ap, aprobado, aprobacion_cruda: r } };"
+        },
+        "id": "d85622ff-ec83-460c-9a0e-3d1471830fef",
+        "name": "Preservar contexto tras la aprobación",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1440,
+          -240
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 2
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "c-aprob",
+                "leftValue": "={{ $json.aprobado }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "962419ff-57ee-4df2-95e0-c83bf584563d",
+        "name": "IF - ¿Aprobó la corrección?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          1680,
+          -240
+        ]
       }
     ],
     "connections": {
@@ -992,7 +1223,7 @@
         "main": [
           [
             {
-              "node": "Re-invocar motor",
+              "node": "Teams - Pedir aprobación de la corrección",
               "type": "main",
               "index": 0
             }
@@ -1056,6 +1287,53 @@
             }
           ]
         ]
+      },
+      "Teams - Pedir aprobación de la corrección": {
+        "main": [
+          [
+            {
+              "node": "Preservar contexto tras la aprobación",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Preservar contexto tras la aprobación",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preservar contexto tras la aprobación": {
+        "main": [
+          [
+            {
+              "node": "IF - ¿Aprobó la corrección?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF - ¿Aprobó la corrección?": {
+        "main": [
+          [
+            {
+              "node": "Re-invocar motor",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Ejecutar Revisión Manual",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -1064,10 +1342,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T14:18:40.370Z",
-        "id": 2755,
+        "createdAt": "2026-09-23T15:35:07.883Z",
+        "id": 2793,
         "workflowId": "3NAcLF4jaZ1JBw0A",
-        "versionId": "12275300-3ea0-48d8-a3ec-889734906fed",
+        "versionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-23T15:35:07.925Z",
+        "id": 2794,
+        "workflowId": "3NAcLF4jaZ1JBw0A",
+        "versionId": "154934d4-3654-47bd-8f4a-c1fae9357c1d",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

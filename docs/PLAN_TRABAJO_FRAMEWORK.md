@@ -314,7 +314,7 @@ Estado de las cuatro métricas del framework:
 |---|---|---|---|---|---|
 | F7-01 | Enrutar `confianza: "baja"` a revisión humana en vez de aplicar el ajuste igual | W4D | ▪▪ | Una corrección con confianza baja queda detenida esperando decisión | ☑ 23/09 — `IF - ¿Confianza suficiente?` → `Preparar aviso - Revisión manual` |
 | F7-02 | Kill switch para desactivar la corrección asistida por IA sin apagar el flujo entero | W4D | ▪▪ | Con el interruptor apagado, las correcciones van a revisión manual y el resto opera normal | ☑ 23/09 — clave `ia_correccion_habilitada` en `Configuracion_CCB` |
-| F7-03 | Mover la aprobación humana antes del recálculo y del incremento de ronda | W4D | ▪▪▪ | Ninguna ronda se consume sin que una persona lo haya autorizado | 🔶 pendiente de decisión — dos caminos, ver nota |
+| F7-03 | Mover la aprobación humana antes del recálculo y del incremento de ronda | W4D | ▪▪▪ | Ninguna ronda se consume sin que una persona lo haya autorizado | ☑ 23/09 — **camino A implementado**: aprobación en Teams con `sendAndWait` antes del recálculo (ver nota) |
 
 > **Nota — F7-01 / F7-02 (23/09):** la rama de corrección de W4-D ahora tiene dos guardas antes de tocar la propuesta:
 >
@@ -325,7 +325,20 @@ Estado de las cuatro métricas del framework:
 >
 > **Verificación:** la lógica del nodo nuevo se probó con `node` usando el código extraído de la instancia y los dos casos reales (confianza baja / IA desactivada), comprobando motivo, asunto y cuerpo generados. La ejecución de punta a punta de la rama queda en la regla de oro (requiere un POST real al webhook de decisión).
 
-> **Nota — F7-03 (23/09, decisión pendiente):** el requisito es que ninguna ronda se consuma sin autorización humana sobre la **propuesta de la IA**. Hoy el humano autoriza "solicitar correcciones", pero el ajuste de la IA se aplica y se recalcula sin que nadie lo vea antes. Hay dos caminos y cambian el producto, así que no se implementa sin decisión:
+> **Nota — F7-03 implementado (23/09, camino A):** la corrección asistida ya no se aplica sola. En `[SUB] - CCB - W4D Corrección IA` el flujo es ahora: guardarraíles (tope, interruptor, confianza) → **`Teams - Pedir aprobación de la corrección`** (`sendAndWait`, aprobación doble, espera máxima 24 h) con el pedido del asesor y el ajuste propuesto por la IA → `Preservar contexto tras la aprobación` (la respuesta de Teams no trae el contexto, así que se rearma desde `Aplicar correcciones` y se normaliza la aprobación sea cual sea su forma) → `IF - ¿Aprobó la corrección?`:
+>
+> - **Aprobada** → `Re-invocar motor` → recálculo y **recién ahí** se consume la ronda.
+> - **Rechazada, no respondida a tiempo o fallo al enviar** → `Ejecutar Revisión Manual` (sin consumir ronda), con el motivo `aprobacion_rechazada` en el aviso.
+>
+> **La ronda no se consume sin autorización humana explícita**, y el `IF - ¿Comentario ya procesado?` sigue evitando el doble consumo por reenvíos.
+>
+> Además, W4D **responde el webhook antes de esperar**: `Responder decisión - Corrección en aprobación` contesta *"Tu pedido quedó registrado; el asesor debe aprobar el ajuste propuesto por la IA"* y recién después se invoca la subrama, para que la página de revisión no quede colgada esperando la respuesta humana. W4D queda en **20 nodos** y C1 en **18** (ambos bajo el umbral).
+>
+> **Validación:** los tres workflows afectados validan `valid=true`, 0 errores y 0 advertencias con `n8n_validate_workflow`. La credencial de Teams usada es la real del pipeline (`INT-ServiciosInformacion Microsoft Teams`), no una inventada.
+>
+> **Pendiente de verificación real:** el clic de aprobación (y el rechazo) en Teams. El timeout y el rechazo se pueden probar dejando vencer la espera; la aprobación requiere que la persona apruebe en el chat. El chat hoy apunta al de pruebas (F0-05 diferida), lo que de hecho facilita la prueba.
+
+> **Nota — F7-03 (23/09, decisión que quedó documentada):** el requisito es que ninguna ronda se consuma sin autorización humana sobre la **propuesta de la IA**. Hoy el humano autoriza "solicitar correcciones", pero el ajuste de la IA se aplica y se recalcula sin que nadie lo vea antes. Hay dos caminos y cambian el producto, así que no se implementa sin decisión:
 >
 > | Camino | Cómo | Costo / riesgo |
 > |---|---|---|
