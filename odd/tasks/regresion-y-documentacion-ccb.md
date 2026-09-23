@@ -30,7 +30,7 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 
 | # | Tarea | Criterio de aceptación | Estado |
 |---|---|---|---|
-| **R1** | Restaurar el `httpMethod: GET` explícito en el webhook de W4C | El snapshot muestra el método y la consulta desde la página sigue respondiendo 200 | ☐ pendiente |
+| **R1** | Restaurar el `httpMethod: GET` explícito en el webhook de W4C | El snapshot muestra el método y el path responde como webhook vivo | ☑ 23/09 — commit `089af00` |
 | **R2** | Verificar con tráfico real la ruta de error compartida (`[SUB] CCB - Registrar y Alertar Error`) | Una ejecución real que falle deja fila en `Errores_CCB` con `error_timestamp` y mensaje enmascarado, envía el correo de alerta y **no corta** el flujo que la invoca | ☐ pendiente |
 | **R3** | Construir `[OPS] CCB - Regresión del pipeline` | El flujo corre los caminos críticos con filas descartables, publica un semáforo por camino, borra sus filas y reporta por correo | ☐ pendiente |
 | **R4** | Probar la rama de **rechazo/expiración** de la aprobación de IA (F7-03) | Rechazo real en Teams → motivo `aprobacion_rechazada`, revisión manual y **sin consumir ronda** | ☐ pendiente (requiere un clic del usuario) |
@@ -53,3 +53,18 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 ## Evidencia
 
 _(se completa al cerrar cada tarea: id de ejecución, filas afectadas, correo recibido y commit)_
+
+### R1 — `httpMethod: GET` explícito en el webhook de W4C · 23/09 · commit `089af00`
+
+- **Antes:** `{path: consultar-propuesta, httpMethod: null, authentication: headerAuth, responseMode: responseNode}`.
+- **Después:** `httpMethod: "GET"` explícito. `n8n_validate_workflow` → 9 nodos, 0 errores, 0 advertencias.
+- **Verificación contra la instancia viva** (no hay token disponible: vive en la credencial `headerAuth`, que el API
+  público no puede leer, y en el código de las páginas):
+  - `GET /webhook/consultar-propuesta` → **403** `Authorization data is wrong!` → el path está registrado, el método
+    GET llega al webhook y la autenticación se exige.
+  - `POST /webhook/solicitud-georreferenciada` → **403** y `POST /webhook/decidir-propuesta` → **403** → los otros dos
+    webhooks también están vivos y con auth.
+  - `GET` a los dos webhooks POST-only → **404** → la restricción de método funciona (n8n responde 404 cuando el método
+    no coincide).
+- **Pendiente declarado:** la respuesta **200 con credencial válida** no se puede probar sin el token; queda cubierta por
+  el uso real de las páginas.
