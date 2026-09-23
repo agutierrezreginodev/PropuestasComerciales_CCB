@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T16:18:02.859Z",
+  "updatedAt": "2026-09-23T18:41:15.201Z",
   "createdAt": "2026-09-10T20:16:16.917Z",
   "id": "VChcasvisGKekezR",
   "name": "[SUB] CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio",
@@ -207,10 +207,10 @@
         -624,
         656
       ],
-      "onError": "continueErrorOutput",
       "retryOnFail": true,
       "maxTries": 5,
-      "waitBetweenTries": 5000
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -272,10 +272,10 @@
         -624,
         880
       ],
-      "onError": "continueErrorOutput",
       "retryOnFail": true,
       "maxTries": 5,
-      "waitBetweenTries": 5000
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -337,10 +337,10 @@
         -624,
         1104
       ],
-      "onError": "continueErrorOutput",
       "retryOnFail": true,
       "maxTries": 5,
-      "waitBetweenTries": 5000
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -402,10 +402,10 @@
         -624,
         1328
       ],
-      "onError": "continueErrorOutput",
       "retryOnFail": true,
       "maxTries": 5,
-      "waitBetweenTries": 5000
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -468,7 +468,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        624,
+        368,
         1504
       ]
     },
@@ -481,7 +481,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -352,
+        -608,
         1504
       ]
     },
@@ -522,7 +522,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -112,
+        -416,
         1504
       ]
     },
@@ -537,8 +537,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -96,
-        416
+        16,
+        432
       ]
     },
     {
@@ -615,14 +615,6 @@
       ]
     },
     {
-      "id": "w2a-ejecutar-reg-alertar-guardado",
-      "name": "Ejecutar Registrar-y-Alertar (Guardado)",
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        -832,
-        1504
-      ],
       "parameters": {
         "workflowId": {
           "__rl": true,
@@ -633,7 +625,15 @@
         "options": {
           "waitForSubWorkflow": true
         }
-      }
+      },
+      "id": "w2a-ejecutar-reg-alertar-guardado",
+      "name": "Ejecutar Registrar-y-Alertar (Guardado)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -816,
+        1504
+      ]
     },
     {
       "parameters": {
@@ -652,8 +652,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        900,
-        -16
+        128,
+        912
       ]
     }
   ],
@@ -914,9 +914,9 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "4f7cc98a-d41d-4cb1-86e6-928a4a1ea26f",
+  "versionId": "b1fe3a9c-11ae-4c1a-b805-8679b05756b2",
   "activeVersionId": "4f7cc98a-d41d-4cb1-86e6-928a4a1ea26f",
-  "versionCounter": 131,
+  "versionCounter": 138,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {

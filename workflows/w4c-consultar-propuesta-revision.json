@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T15:57:17.827Z",
+  "updatedAt": "2026-09-23T18:41:59.384Z",
   "createdAt": "2026-09-15T15:09:07.764Z",
   "id": "KuLSIzBZgaRIjuSu",
   "name": "CCB - Workflow 4C - Consultar Propuesta para Revisión",
@@ -14,7 +14,8 @@
         "responseMode": "responseNode",
         "options": {
           "allowedOrigins": "https://revision-propuesta-ccb.vercel.app"
-        }
+        },
+        "httpMethod": "GET"
       },
       "id": "a1b2c3d4-2222-4a22-8a22-000000000001",
       "name": "Webhook - Consultar Propuesta",
@@ -315,15 +316,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
-  "activeVersionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
-  "versionCounter": 52,
+  "versionId": "6026daeb-9ddc-4ef2-81a8-d5c9e28f50d9",
+  "activeVersionId": "6026daeb-9ddc-4ef2-81a8-d5c9e28f50d9",
+  "versionCounter": 55,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:17.830Z",
-    "createdAt": "2026-09-23T15:57:17.830Z",
-    "versionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
+    "updatedAt": "2026-09-23T18:41:59.385Z",
+    "createdAt": "2026-09-23T18:41:59.385Z",
+    "versionId": "6026daeb-9ddc-4ef2-81a8-d5c9e28f50d9",
     "workflowId": "KuLSIzBZgaRIjuSu",
     "nodes": [
       {
@@ -333,7 +334,8 @@
           "responseMode": "responseNode",
           "options": {
             "allowedOrigins": "https://revision-propuesta-ccb.vercel.app"
-          }
+          },
+          "httpMethod": "GET"
         },
         "id": "a1b2c3d4-2222-4a22-8a22-000000000001",
         "name": "Webhook - Consultar Propuesta",
@@ -628,18 +630,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:17.885Z",
-        "id": 2849,
+        "createdAt": "2026-09-23T18:41:59.433Z",
+        "id": 2953,
         "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
+        "versionId": "6026daeb-9ddc-4ef2-81a8-d5c9e28f50d9",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:17.907Z",
-        "id": 2850,
+        "createdAt": "2026-09-23T18:41:59.451Z",
+        "id": 2954,
         "workflowId": "KuLSIzBZgaRIjuSu",
-        "versionId": "a09923eb-f5b5-49a4-9e35-0f81b191c1e1",
+        "versionId": "6026daeb-9ddc-4ef2-81a8-d5c9e28f50d9",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
