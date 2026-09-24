@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:29:27.424Z",
+  "updatedAt": "2026-09-24T16:54:08.998Z",
   "createdAt": "2026-09-23T16:00:29.916Z",
   "id": "D2d9Og6UUvq13TJA",
   "name": "[SUB] CCB · Envío — Cerrar el error de envío",
@@ -130,7 +130,7 @@
   "pinData": null,
   "versionId": "1368dcfb-edab-4ca7-8deb-ec84a8a855af",
   "activeVersionId": "1368dcfb-edab-4ca7-8deb-ec84a8a855af",
-  "versionCounter": 10,
+  "versionCounter": 12,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {

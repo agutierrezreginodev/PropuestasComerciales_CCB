@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:17.678Z",
+  "updatedAt": "2026-09-24T16:52:40.802Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
   "name": "CCB · W4D — Procesar la decisión",
@@ -690,7 +690,7 @@
   "pinData": {},
   "versionId": "42d55d08-59ef-4ec1-8612-668d9d99cf5c",
   "activeVersionId": "42d55d08-59ef-4ec1-8612-668d9d99cf5c",
-  "versionCounter": 245,
+  "versionCounter": 246,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {

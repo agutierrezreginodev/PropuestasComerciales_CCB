@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:08.231Z",
+  "updatedAt": "2026-09-24T16:52:32.290Z",
   "createdAt": "2026-09-15T13:24:42.298Z",
   "id": "u6KCMnLwFOp6Ja0N",
   "name": "CCB · W2C — Recepción del formulario externo",
@@ -357,7 +357,7 @@
   "pinData": {},
   "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
   "activeVersionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
-  "versionCounter": 71,
+  "versionCounter": 72,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {

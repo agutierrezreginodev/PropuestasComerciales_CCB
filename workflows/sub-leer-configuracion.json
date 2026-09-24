@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T14:06:24.792Z",
+  "updatedAt": "2026-09-24T16:54:05.141Z",
   "createdAt": "2026-09-23T13:30:53.252Z",
   "id": "Hgy02eqPhnsdJvkq",
   "name": "[SUB] CCB · Config — Leer la configuración",
@@ -103,7 +103,7 @@
   "pinData": null,
   "versionId": "40195e0a-c0b8-4cad-9c11-87dacb839d07",
   "activeVersionId": "40195e0a-c0b8-4cad-9c11-87dacb839d07",
-  "versionCounter": 19,
+  "versionCounter": 21,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {

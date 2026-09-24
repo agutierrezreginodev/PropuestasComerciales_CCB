@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:03.045Z",
+  "updatedAt": "2026-09-24T16:52:29.407Z",
   "createdAt": "2026-09-04T15:37:43.940Z",
   "id": "w6h0qSblUESIpSVc",
   "name": "CCB · W1 — Extracción de información del cliente",
@@ -974,7 +974,7 @@
   "pinData": {},
   "versionId": "04b67760-7553-4659-920d-86c25e424fd1",
   "activeVersionId": "04b67760-7553-4659-920d-86c25e424fd1",
-  "versionCounter": 494,
+  "versionCounter": 495,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {

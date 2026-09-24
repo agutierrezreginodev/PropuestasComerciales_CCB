@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:29:28.305Z",
+  "updatedAt": "2026-09-24T16:54:10.282Z",
   "createdAt": "2026-09-23T16:02:56.141Z",
   "id": "AnPJGVWylmKEYWmJ",
   "name": "[SUB] CCB · Envío — Enviar al cliente",
@@ -294,7 +294,7 @@
   "pinData": null,
   "versionId": "972ed315-2799-4c3c-b46b-541ccf935b53",
   "activeVersionId": "972ed315-2799-4c3c-b46b-541ccf935b53",
-  "versionCounter": 13,
+  "versionCounter": 15,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {

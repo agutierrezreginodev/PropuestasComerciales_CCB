@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T15:29:58.772Z",
+  "updatedAt": "2026-09-24T16:52:42.202Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
   "name": "CCB · W5A — Router de envío",
@@ -475,7 +475,7 @@
   "pinData": {},
   "versionId": "625cad96-4f62-451f-a169-c73fba6e2cde",
   "activeVersionId": "625cad96-4f62-451f-a169-c73fba6e2cde",
-  "versionCounter": 63,
+  "versionCounter": 64,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {

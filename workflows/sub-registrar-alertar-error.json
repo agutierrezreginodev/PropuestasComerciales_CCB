@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T16:31:50.966Z",
+  "updatedAt": "2026-09-24T16:54:11.428Z",
   "createdAt": "2026-09-22T19:27:26.926Z",
   "id": "2dY1kaT7I5a0eP2w",
   "name": "[SUB] CCB · Error — Registrar y alertar",
@@ -308,7 +308,7 @@
   "pinData": {},
   "versionId": "75884bf2-ee86-4378-a101-dafdcc6fc1bd",
   "activeVersionId": "75884bf2-ee86-4378-a101-dafdcc6fc1bd",
-  "versionCounter": 58,
+  "versionCounter": 60,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {

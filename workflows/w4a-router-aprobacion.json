@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T15:29:58.074Z",
+  "updatedAt": "2026-09-24T16:52:34.878Z",
   "createdAt": "2026-09-11T15:42:01.882Z",
   "id": "7gmpPMBJtEb0W3J5",
   "name": "CCB · W4A — Router de aprobación",
@@ -363,7 +363,7 @@
   "pinData": {},
   "versionId": "057219c3-2993-4ab7-afe6-94ab7715932b",
   "activeVersionId": "057219c3-2993-4ab7-afe6-94ab7715932b",
-  "versionCounter": 61,
+  "versionCounter": 62,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {

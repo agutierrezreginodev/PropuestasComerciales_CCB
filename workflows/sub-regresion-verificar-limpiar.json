@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T14:32:23.235Z",
+  "updatedAt": "2026-09-24T16:54:17.202Z",
   "createdAt": "2026-09-23T19:37:52.763Z",
   "id": "OuE4SS9Jujz1dVif",
   "name": "[SUB] CCB · Regresión — Verificar y limpiar",
@@ -390,7 +390,7 @@
   "pinData": null,
   "versionId": "3fa846e1-51a6-4be5-bd85-a7229748965f",
   "activeVersionId": "3fa846e1-51a6-4be5-bd85-a7229748965f",
-  "versionCounter": 12,
+  "versionCounter": 14,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {

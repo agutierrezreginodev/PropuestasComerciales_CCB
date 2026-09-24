@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T15:29:59.638Z",
+  "updatedAt": "2026-09-24T16:52:45.045Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB · W6 — Finalizador de cotizaciones",
@@ -447,7 +447,7 @@
   "pinData": {},
   "versionId": "4128a140-f64d-491b-a4a9-f7da347b2c05",
   "activeVersionId": "4128a140-f64d-491b-a4a9-f7da347b2c05",
-  "versionCounter": 69,
+  "versionCounter": 70,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {

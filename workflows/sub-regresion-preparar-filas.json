@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:55.215Z",
+  "updatedAt": "2026-09-24T16:54:15.997Z",
   "createdAt": "2026-09-23T19:37:51.325Z",
   "id": "DgUfcoudk228kOw8",
   "name": "[SUB] CCB · Regresión — Preparar filas",
@@ -270,7 +270,7 @@
   "pinData": null,
   "versionId": "05472484-65ed-400e-9bba-c498e0e83b09",
   "activeVersionId": "05472484-65ed-400e-9bba-c498e0e83b09",
-  "versionCounter": 6,
+  "versionCounter": 8,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
