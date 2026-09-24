@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:45.332Z",
+  "updatedAt": "2026-09-24T13:29:27.424Z",
   "createdAt": "2026-09-23T16:00:29.916Z",
   "id": "D2d9Og6UUvq13TJA",
   "name": "[SUB] CCB · Envío — Cerrar el error de envío",
@@ -83,7 +83,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] CCB - Cerrar error de envío (F4-03/W5B)\n\nCierra un envío fallido: marca `ERROR_ENVIO`, registra el error en `Errores_CCB` y alerta por correo.\n\n- **Entrada:** el item ya preparado por el flujo llamador (`id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error`, `emailBody`).\n- Llama a `[SUB] CCB - Registrar y Alertar Error`, que hace el registro y la alerta.",
+        "content": "## [SUB] CCB · Envío — Cerrar el error de envío (F4-03/W5B)\n\nCierra un envío fallido: marca `ERROR_ENVIO`, registra el error en `Errores_CCB` y alerta por correo.\n\n- **Entrada:** el item ya preparado por el flujo llamador (`id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error`, `emailBody`).\n- Llama a `[SUB] CCB · Error — Registrar y alertar`, que hace el registro y la alerta.",
         "height": 280,
         "width": 500,
         "color": 6
@@ -128,15 +128,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
-  "activeVersionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
-  "versionCounter": 7,
+  "versionId": "1368dcfb-edab-4ca7-8deb-ec84a8a855af",
+  "activeVersionId": "1368dcfb-edab-4ca7-8deb-ec84a8a855af",
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T13:14:45.334Z",
-    "createdAt": "2026-09-24T13:14:45.334Z",
-    "versionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
+    "updatedAt": "2026-09-24T13:29:27.425Z",
+    "createdAt": "2026-09-24T13:29:27.425Z",
+    "versionId": "1368dcfb-edab-4ca7-8deb-ec84a8a855af",
     "workflowId": "D2d9Og6UUvq13TJA",
     "nodes": [
       {
@@ -215,7 +215,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] CCB - Cerrar error de envío (F4-03/W5B)\n\nCierra un envío fallido: marca `ERROR_ENVIO`, registra el error en `Errores_CCB` y alerta por correo.\n\n- **Entrada:** el item ya preparado por el flujo llamador (`id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error`, `emailBody`).\n- Llama a `[SUB] CCB - Registrar y Alertar Error`, que hace el registro y la alerta.",
+          "content": "## [SUB] CCB · Envío — Cerrar el error de envío (F4-03/W5B)\n\nCierra un envío fallido: marca `ERROR_ENVIO`, registra el error en `Errores_CCB` y alerta por correo.\n\n- **Entrada:** el item ya preparado por el flujo llamador (`id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error`, `emailBody`).\n- Llama a `[SUB] CCB · Error — Registrar y alertar`, que hace el registro y la alerta.",
           "height": 280,
           "width": 500,
           "color": 6
@@ -260,18 +260,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T13:14:45.389Z",
-        "id": 3022,
+        "createdAt": "2026-09-24T13:29:27.458Z",
+        "id": 3048,
         "workflowId": "D2d9Og6UUvq13TJA",
-        "versionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
+        "versionId": "1368dcfb-edab-4ca7-8deb-ec84a8a855af",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:14:45.401Z",
-        "id": 3023,
+        "createdAt": "2026-09-24T13:29:27.482Z",
+        "id": 3049,
         "workflowId": "D2d9Og6UUvq13TJA",
-        "versionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
+        "versionId": "1368dcfb-edab-4ca7-8deb-ec84a8a855af",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

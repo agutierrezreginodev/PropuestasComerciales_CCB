@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:24.550Z",
+  "updatedAt": "2026-09-24T13:29:24.144Z",
   "createdAt": "2026-09-07T14:40:21.862Z",
   "id": "Dh2lAQTzyoZBpXie",
   "name": "CCB · Catch-all — Errores no capturados",
@@ -136,7 +136,7 @@
     },
     {
       "parameters": {
-        "content": "## Error Workflow (catch-all)\n\nAsignado como `errorWorkflow` centralizado de los **11 flujos activos** del pipeline (vía `settings.errorWorkflow`).\nCaptura cualquier fallo que el flujo de origen no haya manejado en una rama propia, lo registra en `Errores_CCB`\n(con marca de tiempo) y envía la alerta por Outlook al destinatario de `Configuracion_CCB.alertas_email`.\n\n**Diseño propio — no usa `[SUB] CCB - Registrar y Alertar Error` a propósito:** ese subflujo hace *upsert*\npor `id_solicitud + workflow_origen + nodo_fallido`, así que dos incidentes distintos del mismo nodo se pisarían\nentre sí. Acá el `id_solicitud` es fijo (`N/A (catch-all)`) y lo que importa es conservar el **historial de cada\nincidente**, así que se mantiene el insert propio (decisión de F4-01, 23/09).\n\nEl mensaje de error se enmascara (correos, URLs y números largos) antes de registrarlo y de alertarlo (F6-03).",
+        "content": "## Error Workflow (catch-all)\n\nAsignado como `errorWorkflow` centralizado de los **11 flujos activos** del pipeline (vía `settings.errorWorkflow`).\nCaptura cualquier fallo que el flujo de origen no haya manejado en una rama propia, lo registra en `Errores_CCB`\n(con marca de tiempo) y envía la alerta por Outlook al destinatario de `Configuracion_CCB.alertas_email`.\n\n**Diseño propio — no usa `[SUB] CCB · Error — Registrar y alertar` a propósito:** ese subflujo hace *upsert*\npor `id_solicitud + workflow_origen + nodo_fallido`, así que dos incidentes distintos del mismo nodo se pisarían\nentre sí. Acá el `id_solicitud` es fijo (`N/A (catch-all)`) y lo que importa es conservar el **historial de cada\nincidente**, así que se mantiene el insert propio (decisión de F4-01, 23/09).\n\nEl mensaje de error se enmascara (correos, URLs y números largos) antes de registrarlo y de alertarlo (F6-03).",
         "height": 136,
         "width": 700,
         "color": 4
@@ -225,15 +225,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "9390fdf5-2042-49a2-83d2-0e4bc28871f0",
-  "activeVersionId": "9390fdf5-2042-49a2-83d2-0e4bc28871f0",
-  "versionCounter": 51,
+  "versionId": "2bc7d8ca-c6d0-4d43-90ee-80da1a76abb6",
+  "activeVersionId": "2bc7d8ca-c6d0-4d43-90ee-80da1a76abb6",
+  "versionCounter": 54,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T13:14:24.551Z",
-    "createdAt": "2026-09-24T13:14:24.551Z",
-    "versionId": "9390fdf5-2042-49a2-83d2-0e4bc28871f0",
+    "updatedAt": "2026-09-24T13:29:24.146Z",
+    "createdAt": "2026-09-24T13:29:24.146Z",
+    "versionId": "2bc7d8ca-c6d0-4d43-90ee-80da1a76abb6",
     "workflowId": "Dh2lAQTzyoZBpXie",
     "nodes": [
       {
@@ -365,7 +365,7 @@
       },
       {
         "parameters": {
-          "content": "## Error Workflow (catch-all)\n\nAsignado como `errorWorkflow` centralizado de los **11 flujos activos** del pipeline (vía `settings.errorWorkflow`).\nCaptura cualquier fallo que el flujo de origen no haya manejado en una rama propia, lo registra en `Errores_CCB`\n(con marca de tiempo) y envía la alerta por Outlook al destinatario de `Configuracion_CCB.alertas_email`.\n\n**Diseño propio — no usa `[SUB] CCB - Registrar y Alertar Error` a propósito:** ese subflujo hace *upsert*\npor `id_solicitud + workflow_origen + nodo_fallido`, así que dos incidentes distintos del mismo nodo se pisarían\nentre sí. Acá el `id_solicitud` es fijo (`N/A (catch-all)`) y lo que importa es conservar el **historial de cada\nincidente**, así que se mantiene el insert propio (decisión de F4-01, 23/09).\n\nEl mensaje de error se enmascara (correos, URLs y números largos) antes de registrarlo y de alertarlo (F6-03).",
+          "content": "## Error Workflow (catch-all)\n\nAsignado como `errorWorkflow` centralizado de los **11 flujos activos** del pipeline (vía `settings.errorWorkflow`).\nCaptura cualquier fallo que el flujo de origen no haya manejado en una rama propia, lo registra en `Errores_CCB`\n(con marca de tiempo) y envía la alerta por Outlook al destinatario de `Configuracion_CCB.alertas_email`.\n\n**Diseño propio — no usa `[SUB] CCB · Error — Registrar y alertar` a propósito:** ese subflujo hace *upsert*\npor `id_solicitud + workflow_origen + nodo_fallido`, así que dos incidentes distintos del mismo nodo se pisarían\nentre sí. Acá el `id_solicitud` es fijo (`N/A (catch-all)`) y lo que importa es conservar el **historial de cada\nincidente**, así que se mantiene el insert propio (decisión de F4-01, 23/09).\n\nEl mensaje de error se enmascara (correos, URLs y números largos) antes de registrarlo y de alertarlo (F6-03).",
           "height": 136,
           "width": 700,
           "color": 4
@@ -453,18 +453,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T13:14:24.586Z",
-        "id": 3008,
+        "createdAt": "2026-09-24T13:29:24.189Z",
+        "id": 3042,
         "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "9390fdf5-2042-49a2-83d2-0e4bc28871f0",
+        "versionId": "2bc7d8ca-c6d0-4d43-90ee-80da1a76abb6",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:14:24.600Z",
-        "id": 3009,
+        "createdAt": "2026-09-24T13:29:24.214Z",
+        "id": 3043,
         "workflowId": "Dh2lAQTzyoZBpXie",
-        "versionId": "9390fdf5-2042-49a2-83d2-0e4bc28871f0",
+        "versionId": "2bc7d8ca-c6d0-4d43-90ee-80da1a76abb6",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

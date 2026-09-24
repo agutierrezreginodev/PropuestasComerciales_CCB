@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:27.816Z",
+  "updatedAt": "2026-09-24T13:29:42.756Z",
   "createdAt": "2026-09-23T13:49:39.140Z",
   "id": "GELWpskp0aYJ2zPg",
   "name": "[SUB] CCB · Contexto — Leer el contexto de la propuesta",
@@ -35,7 +35,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] CCB - Leer Contexto Propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
+        "content": "## [SUB] CCB · Contexto — Leer el contexto de la propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
         "height": 380,
         "width": 520,
         "color": 4
@@ -216,15 +216,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
-  "activeVersionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
-  "versionCounter": 13,
+  "versionId": "89d1b779-b09f-4232-a641-29a778cac2e1",
+  "activeVersionId": "89d1b779-b09f-4232-a641-29a778cac2e1",
+  "versionCounter": 16,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:02.683Z",
-    "createdAt": "2026-09-23T15:57:02.683Z",
-    "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
+    "updatedAt": "2026-09-24T13:29:42.757Z",
+    "createdAt": "2026-09-24T13:29:42.757Z",
+    "versionId": "89d1b779-b09f-4232-a641-29a778cac2e1",
     "workflowId": "GELWpskp0aYJ2zPg",
     "nodes": [
       {
@@ -255,7 +255,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] CCB - Leer Contexto Propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
+          "content": "## [SUB] CCB · Contexto — Leer el contexto de la propuesta (F4-02)\n\nBloque de tres lecturas que estaba duplicado idéntico en W4-B, W4-C y W4-D.\n\n- **Entrada:** el item del llamador (`inputSource: passthrough`); el `id_solicitud` se busca en el item,\n  en `body` o en `query`.\n- **Salida (un solo item):** `{ id_solicitud, cotizacion, criterios, solicitud }`.\n  Cada clave es la fila de su Data Table o `{}` si no existe.\n- Las tres lecturas llevan `alwaysOutputData`, así que una propuesta sin cotización no corta la cadena:\n  el llamador decide qué hacer con los datos faltantes (igual que antes, cuando usaba `get()` con fallback).\n\nCambiar el filtro o agregar una cuarta lectura se hace en un solo lugar para los tres flujos.",
           "height": 380,
           "width": 520,
           "color": 4
@@ -436,34 +436,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:02.733Z",
-        "id": 2833,
+        "createdAt": "2026-09-24T13:29:42.792Z",
+        "id": 3058,
         "workflowId": "GELWpskp0aYJ2zPg",
-        "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
+        "versionId": "89d1b779-b09f-4232-a641-29a778cac2e1",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:02.749Z",
-        "id": 2834,
+        "createdAt": "2026-09-24T13:29:42.804Z",
+        "id": 3059,
         "workflowId": "GELWpskp0aYJ2zPg",
-        "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-24T13:14:27.845Z",
-        "id": 3012,
-        "workflowId": "GELWpskp0aYJ2zPg",
-        "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-24T13:14:27.857Z",
-        "id": 3013,
-        "workflowId": "GELWpskp0aYJ2zPg",
-        "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
+        "versionId": "89d1b779-b09f-4232-a641-29a778cac2e1",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

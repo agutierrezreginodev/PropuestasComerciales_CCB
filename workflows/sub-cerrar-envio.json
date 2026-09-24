@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:43.923Z",
+  "updatedAt": "2026-09-24T13:29:26.439Z",
   "createdAt": "2026-09-23T16:00:28.724Z",
   "id": "1Zzkrg3dTkTrddgp",
   "name": "[SUB] CCB · Envío — Cerrar el envío",
@@ -174,7 +174,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] CCB - Cerrar envío (F4-03/W5B)\n\nCierra un envío exitoso: marca `ENVIADA` en `Cotizaciones_CCB` y `Solicitudes_CCB` y avisa al asesor por correo.\n\n- **Entrada:** el item del llamador (`id_solicitud`).\n- **Salida:** el item del aviso (confirmación).\n- Lee el contexto con `[SUB] CCB - Leer Contexto Propuesta` para el asunto y el cuerpo del aviso (razón social), y la configuración para el destinatario.",
+        "content": "## [SUB] CCB · Envío — Cerrar el envío (F4-03/W5B)\n\nCierra un envío exitoso: marca `ENVIADA` en `Cotizaciones_CCB` y `Solicitudes_CCB` y avisa al asesor por correo.\n\n- **Entrada:** el item del llamador (`id_solicitud`).\n- **Salida:** el item del aviso (confirmación).\n- Lee el contexto con `[SUB] CCB · Contexto — Leer el contexto de la propuesta` para el asunto y el cuerpo del aviso (razón social), y la configuración para el destinatario.",
         "height": 300,
         "width": 520,
         "color": 6
@@ -252,15 +252,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
-  "activeVersionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
-  "versionCounter": 13,
+  "versionId": "93211573-d327-424d-b29b-2cb0414b5df2",
+  "activeVersionId": "93211573-d327-424d-b29b-2cb0414b5df2",
+  "versionCounter": 16,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T13:14:43.924Z",
-    "createdAt": "2026-09-24T13:14:43.924Z",
-    "versionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
+    "updatedAt": "2026-09-24T13:29:26.441Z",
+    "createdAt": "2026-09-24T13:29:26.441Z",
+    "versionId": "93211573-d327-424d-b29b-2cb0414b5df2",
     "workflowId": "1Zzkrg3dTkTrddgp",
     "nodes": [
       {
@@ -430,7 +430,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] CCB - Cerrar envío (F4-03/W5B)\n\nCierra un envío exitoso: marca `ENVIADA` en `Cotizaciones_CCB` y `Solicitudes_CCB` y avisa al asesor por correo.\n\n- **Entrada:** el item del llamador (`id_solicitud`).\n- **Salida:** el item del aviso (confirmación).\n- Lee el contexto con `[SUB] CCB - Leer Contexto Propuesta` para el asunto y el cuerpo del aviso (razón social), y la configuración para el destinatario.",
+          "content": "## [SUB] CCB · Envío — Cerrar el envío (F4-03/W5B)\n\nCierra un envío exitoso: marca `ENVIADA` en `Cotizaciones_CCB` y `Solicitudes_CCB` y avisa al asesor por correo.\n\n- **Entrada:** el item del llamador (`id_solicitud`).\n- **Salida:** el item del aviso (confirmación).\n- Lee el contexto con `[SUB] CCB · Contexto — Leer el contexto de la propuesta` para el asunto y el cuerpo del aviso (razón social), y la configuración para el destinatario.",
           "height": 300,
           "width": 520,
           "color": 6
@@ -508,18 +508,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T13:14:43.958Z",
-        "id": 3020,
+        "createdAt": "2026-09-24T13:29:26.477Z",
+        "id": 3046,
         "workflowId": "1Zzkrg3dTkTrddgp",
-        "versionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
+        "versionId": "93211573-d327-424d-b29b-2cb0414b5df2",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:14:43.972Z",
-        "id": 3021,
+        "createdAt": "2026-09-24T13:29:26.491Z",
+        "id": 3047,
         "workflowId": "1Zzkrg3dTkTrddgp",
-        "versionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
+        "versionId": "93211573-d327-424d-b29b-2cb0414b5df2",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

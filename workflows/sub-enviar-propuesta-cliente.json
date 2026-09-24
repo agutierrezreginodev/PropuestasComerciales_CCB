@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:42.450Z",
+  "updatedAt": "2026-09-24T13:29:28.305Z",
   "createdAt": "2026-09-23T16:02:56.141Z",
   "id": "AnPJGVWylmKEYWmJ",
   "name": "[SUB] CCB · Envío — Enviar al cliente",
@@ -168,7 +168,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] CCB - Enviar propuesta al cliente (F4-03/W5B)\n\nEnvía la propuesta al cliente y cierra el envío.\n\n- **Entrada:** el item preparado por W5-B (`email_destinatario`, `emailBodyConAdjunto`, `emailBodySoloLink`, `adjuntar`, binario del PDF, `id_solicitud`).\n- **Salida:** la confirmación del cierre, o `{ ok:false, error, mensaje_error }` si el envío falla.\n- Decide adjunto vs. solo link por tamaño (`IF - ¿Adjuntar PDF? (<4MB)`), reinyecta el contexto (los nodos de Outlook lo pierden) y delega el cierre en `[SUB] CCB - Cerrar envío`.",
+        "content": "## [SUB] CCB · Envío — Enviar al cliente (F4-03/W5B)\n\nEnvía la propuesta al cliente y cierra el envío.\n\n- **Entrada:** el item preparado por W5-B (`email_destinatario`, `emailBodyConAdjunto`, `emailBodySoloLink`, `adjuntar`, binario del PDF, `id_solicitud`).\n- **Salida:** la confirmación del cierre, o `{ ok:false, error, mensaje_error }` si el envío falla.\n- Decide adjunto vs. solo link por tamaño (`IF - ¿Adjuntar PDF? (<4MB)`), reinyecta el contexto (los nodos de Outlook lo pierden) y delega el cierre en `[SUB] CCB · Envío — Cerrar el envío`.",
         "height": 340,
         "width": 540,
         "color": 6
@@ -292,15 +292,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
-  "activeVersionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
-  "versionCounter": 10,
+  "versionId": "972ed315-2799-4c3c-b46b-541ccf935b53",
+  "activeVersionId": "972ed315-2799-4c3c-b46b-541ccf935b53",
+  "versionCounter": 13,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T13:14:42.451Z",
-    "createdAt": "2026-09-24T13:14:42.451Z",
-    "versionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
+    "updatedAt": "2026-09-24T13:29:28.307Z",
+    "createdAt": "2026-09-24T13:29:28.307Z",
+    "versionId": "972ed315-2799-4c3c-b46b-541ccf935b53",
     "workflowId": "AnPJGVWylmKEYWmJ",
     "nodes": [
       {
@@ -464,7 +464,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] CCB - Enviar propuesta al cliente (F4-03/W5B)\n\nEnvía la propuesta al cliente y cierra el envío.\n\n- **Entrada:** el item preparado por W5-B (`email_destinatario`, `emailBodyConAdjunto`, `emailBodySoloLink`, `adjuntar`, binario del PDF, `id_solicitud`).\n- **Salida:** la confirmación del cierre, o `{ ok:false, error, mensaje_error }` si el envío falla.\n- Decide adjunto vs. solo link por tamaño (`IF - ¿Adjuntar PDF? (<4MB)`), reinyecta el contexto (los nodos de Outlook lo pierden) y delega el cierre en `[SUB] CCB - Cerrar envío`.",
+          "content": "## [SUB] CCB · Envío — Enviar al cliente (F4-03/W5B)\n\nEnvía la propuesta al cliente y cierra el envío.\n\n- **Entrada:** el item preparado por W5-B (`email_destinatario`, `emailBodyConAdjunto`, `emailBodySoloLink`, `adjuntar`, binario del PDF, `id_solicitud`).\n- **Salida:** la confirmación del cierre, o `{ ok:false, error, mensaje_error }` si el envío falla.\n- Decide adjunto vs. solo link por tamaño (`IF - ¿Adjuntar PDF? (<4MB)`), reinyecta el contexto (los nodos de Outlook lo pierden) y delega el cierre en `[SUB] CCB · Envío — Cerrar el envío`.",
           "height": 340,
           "width": 540,
           "color": 6
@@ -588,18 +588,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T13:14:42.486Z",
-        "id": 3018,
+        "createdAt": "2026-09-24T13:29:28.339Z",
+        "id": 3050,
         "workflowId": "AnPJGVWylmKEYWmJ",
-        "versionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
+        "versionId": "972ed315-2799-4c3c-b46b-541ccf935b53",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:14:42.499Z",
-        "id": 3019,
+        "createdAt": "2026-09-24T13:29:28.352Z",
+        "id": 3051,
         "workflowId": "AnPJGVWylmKEYWmJ",
-        "versionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
+        "versionId": "972ed315-2799-4c3c-b46b-541ccf935b53",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

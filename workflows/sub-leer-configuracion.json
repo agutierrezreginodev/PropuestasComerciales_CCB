@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:26.517Z",
+  "updatedAt": "2026-09-24T13:29:41.836Z",
   "createdAt": "2026-09-23T13:30:53.252Z",
   "id": "Hgy02eqPhnsdJvkq",
   "name": "[SUB] CCB · Config — Leer la configuración",
@@ -56,7 +56,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] CCB - Leer Configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
+        "content": "## [SUB] CCB · Config — Leer la configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
         "height": 320,
         "width": 520,
         "color": 4
@@ -101,15 +101,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
-  "activeVersionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
-  "versionCounter": 13,
+  "versionId": "60d8bcf1-b927-441d-b77c-798a7855192b",
+  "activeVersionId": "60d8bcf1-b927-441d-b77c-798a7855192b",
+  "versionCounter": 16,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:01.771Z",
-    "createdAt": "2026-09-23T15:57:01.771Z",
-    "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
+    "updatedAt": "2026-09-24T13:29:41.838Z",
+    "createdAt": "2026-09-24T13:29:41.838Z",
+    "versionId": "60d8bcf1-b927-441d-b77c-798a7855192b",
     "workflowId": "Hgy02eqPhnsdJvkq",
     "nodes": [
       {
@@ -161,7 +161,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] CCB - Leer Configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
+          "content": "## [SUB] CCB · Config — Leer la configuración (F5-01..F5-04)\n\nFuente única de verdad de los valores que antes estaban escritos a mano dentro de los nodos:\ncorreo de alertas técnicas, datos del asesor, URL del microservicio de PDF y destinos de Teams/aviso interno.\n\n- **Entrada:** pasa el item del llamador tal cual (`inputSource: passthrough`).\n- **Salida:** el mismo item + `_config` (objeto clave -> valor, leído de la Data Table `Configuracion_CCB`).\n- **Uso en el llamador:** `{{ $json._config.asesor_email }}` o, si el payload se reconstruye aguas abajo,\n  `{{ $('Ejecutar Leer Configuración').item.json._config.asesor_email }}` (el nodo llamador siempre es ancestro).\n\nCambiar un valor en la tabla se refleja en los 13 flujos sin tocar ningún workflow.",
           "height": 320,
           "width": 520,
           "color": 4
@@ -206,34 +206,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:01.805Z",
-        "id": 2831,
+        "createdAt": "2026-09-24T13:29:41.907Z",
+        "id": 3056,
         "workflowId": "Hgy02eqPhnsdJvkq",
-        "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
+        "versionId": "60d8bcf1-b927-441d-b77c-798a7855192b",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:01.816Z",
-        "id": 2832,
+        "createdAt": "2026-09-24T13:29:41.926Z",
+        "id": 3057,
         "workflowId": "Hgy02eqPhnsdJvkq",
-        "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-24T13:14:26.553Z",
-        "id": 3010,
-        "workflowId": "Hgy02eqPhnsdJvkq",
-        "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-24T13:14:26.565Z",
-        "id": 3011,
-        "workflowId": "Hgy02eqPhnsdJvkq",
-        "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
+        "versionId": "60d8bcf1-b927-441d-b77c-798a7855192b",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

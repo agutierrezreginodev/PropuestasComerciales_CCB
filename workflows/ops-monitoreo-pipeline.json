@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:58.652Z",
+  "updatedAt": "2026-09-24T13:29:25.343Z",
   "createdAt": "2026-09-23T13:44:00.657Z",
   "id": "ZwBFTBhwS9pjS69X",
   "name": "[OPS] CCB · Monitoreo — Métricas del pipeline",
@@ -226,7 +226,7 @@
     },
     {
       "parameters": {
-        "content": "## [OPS] CCB - Monitoreo del pipeline (F6-05)\n\nCorre cada hora y publica las cuatro metricas del framework en la Data Table `Metricas_CCB`\n(una fila por metrica, upsert por `metrica`, asi la tabla no crece):\n\n| Metrica | Fuente | Umbral |\n|---|---|---|\n| `tasa_error_pct` | `n8n_workflow_execution_duration_seconds_count{status}` en `/metrics` | 2% |\n| `ejecuciones_total` | idem | informativa |\n| `latencia_p95_ms` | buckets del histograma de duracion | informativa |\n| `saturacion_handles` | `n8n_nodejs_active_handles_total` | informativa |\n| `errores_ultima_hora` | `Errores_CCB` (columna `error_timestamp`) | 3 por hora |\n\nSi se supera un umbral, manda un correo al destinatario de `alertas_email` de\n`Configuracion_CCB`. La URL de `/metrics` tambien sale de esa tabla (`metricas_url`),\nasi que cambiar de instancia no requiere tocar el flujo.\n\n**Limitaciones conocidas:** `/metrics` es acumulado desde el arranque del proceso (no por\nventana) y no trae etiqueta de workflow, asi que la tasa de error es global; el desglose\npor flujo sale de `Errores_CCB`. La profundidad de cola real (workers) requeriria acceso a\nla cola de n8n, no disponible en la API publica.",
+        "content": "## [OPS] CCB · Monitoreo — Métricas del pipeline (F6-05)\n\nCorre cada hora y publica las cuatro metricas del framework en la Data Table `Metricas_CCB`\n(una fila por metrica, upsert por `metrica`, asi la tabla no crece):\n\n| Metrica | Fuente | Umbral |\n|---|---|---|\n| `tasa_error_pct` | `n8n_workflow_execution_duration_seconds_count{status}` en `/metrics` | 2% |\n| `ejecuciones_total` | idem | informativa |\n| `latencia_p95_ms` | buckets del histograma de duracion | informativa |\n| `saturacion_handles` | `n8n_nodejs_active_handles_total` | informativa |\n| `errores_ultima_hora` | `Errores_CCB` (columna `error_timestamp`) | 3 por hora |\n\nSi se supera un umbral, manda un correo al destinatario de `alertas_email` de\n`Configuracion_CCB`. La URL de `/metrics` tambien sale de esa tabla (`metricas_url`),\nasi que cambiar de instancia no requiere tocar el flujo.\n\n**Limitaciones conocidas:** `/metrics` es acumulado desde el arranque del proceso (no por\nventana) y no trae etiqueta de workflow, asi que la tasa de error es global; el desglose\npor flujo sale de `Errores_CCB`. La profundidad de cola real (workers) requeriria acceso a\nla cola de n8n, no disponible en la API publica.",
         "height": 420,
         "width": 560,
         "color": 5
@@ -427,15 +427,15 @@
   },
   "meta": null,
   "pinData": null,
-  "versionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
-  "activeVersionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
-  "versionCounter": 99,
+  "versionId": "f7b306fa-51b0-438e-987c-7be3b0c8d630",
+  "activeVersionId": "f7b306fa-51b0-438e-987c-7be3b0c8d630",
+  "versionCounter": 102,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T13:14:58.654Z",
-    "createdAt": "2026-09-24T13:14:58.654Z",
-    "versionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
+    "updatedAt": "2026-09-24T13:29:25.345Z",
+    "createdAt": "2026-09-24T13:29:25.345Z",
+    "versionId": "f7b306fa-51b0-438e-987c-7be3b0c8d630",
     "workflowId": "ZwBFTBhwS9pjS69X",
     "nodes": [
       {
@@ -657,7 +657,7 @@
       },
       {
         "parameters": {
-          "content": "## [OPS] CCB - Monitoreo del pipeline (F6-05)\n\nCorre cada hora y publica las cuatro metricas del framework en la Data Table `Metricas_CCB`\n(una fila por metrica, upsert por `metrica`, asi la tabla no crece):\n\n| Metrica | Fuente | Umbral |\n|---|---|---|\n| `tasa_error_pct` | `n8n_workflow_execution_duration_seconds_count{status}` en `/metrics` | 2% |\n| `ejecuciones_total` | idem | informativa |\n| `latencia_p95_ms` | buckets del histograma de duracion | informativa |\n| `saturacion_handles` | `n8n_nodejs_active_handles_total` | informativa |\n| `errores_ultima_hora` | `Errores_CCB` (columna `error_timestamp`) | 3 por hora |\n\nSi se supera un umbral, manda un correo al destinatario de `alertas_email` de\n`Configuracion_CCB`. La URL de `/metrics` tambien sale de esa tabla (`metricas_url`),\nasi que cambiar de instancia no requiere tocar el flujo.\n\n**Limitaciones conocidas:** `/metrics` es acumulado desde el arranque del proceso (no por\nventana) y no trae etiqueta de workflow, asi que la tasa de error es global; el desglose\npor flujo sale de `Errores_CCB`. La profundidad de cola real (workers) requeriria acceso a\nla cola de n8n, no disponible en la API publica.",
+          "content": "## [OPS] CCB · Monitoreo — Métricas del pipeline (F6-05)\n\nCorre cada hora y publica las cuatro metricas del framework en la Data Table `Metricas_CCB`\n(una fila por metrica, upsert por `metrica`, asi la tabla no crece):\n\n| Metrica | Fuente | Umbral |\n|---|---|---|\n| `tasa_error_pct` | `n8n_workflow_execution_duration_seconds_count{status}` en `/metrics` | 2% |\n| `ejecuciones_total` | idem | informativa |\n| `latencia_p95_ms` | buckets del histograma de duracion | informativa |\n| `saturacion_handles` | `n8n_nodejs_active_handles_total` | informativa |\n| `errores_ultima_hora` | `Errores_CCB` (columna `error_timestamp`) | 3 por hora |\n\nSi se supera un umbral, manda un correo al destinatario de `alertas_email` de\n`Configuracion_CCB`. La URL de `/metrics` tambien sale de esa tabla (`metricas_url`),\nasi que cambiar de instancia no requiere tocar el flujo.\n\n**Limitaciones conocidas:** `/metrics` es acumulado desde el arranque del proceso (no por\nventana) y no trae etiqueta de workflow, asi que la tasa de error es global; el desglose\npor flujo sale de `Errores_CCB`. La profundidad de cola real (workers) requeriria acceso a\nla cola de n8n, no disponible en la API publica.",
           "height": 420,
           "width": 560,
           "color": 5
@@ -851,18 +851,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T13:14:58.706Z",
-        "id": 3038,
+        "createdAt": "2026-09-24T13:29:25.387Z",
+        "id": 3044,
         "workflowId": "ZwBFTBhwS9pjS69X",
-        "versionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
+        "versionId": "f7b306fa-51b0-438e-987c-7be3b0c8d630",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:14:58.731Z",
-        "id": 3039,
+        "createdAt": "2026-09-24T13:29:25.407Z",
+        "id": 3045,
         "workflowId": "ZwBFTBhwS9pjS69X",
-        "versionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
+        "versionId": "f7b306fa-51b0-438e-987c-7be3b0c8d630",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

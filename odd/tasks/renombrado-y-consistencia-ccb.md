@@ -40,9 +40,13 @@ corregidos.
 | **B2a** | Re-exportar el snapshot | `workflows/*.json` con los nombres nuevos | ☑ 24/09 — 30 archivos re-exportados |
 | **B2b** | Alinear la documentación con los nombres nuevos | README, `FLUJOS_PIPELINE_CCB.md`, `FLUJO_COMPLETO_PIPELINE_CCB.md`, `COMPARATIVO_DEMO_VS_ACTUAL.md` | ☐ pendiente |
 | **B2c** | Corregir los seis desfases detectados en la revisión | Ver la tabla "Desfases" abajo | ☐ pendiente |
-| **B3** | Prueba de humo del renombrado | Validación 0 errores en los 30 y regresión `5/5` con ejecución real | ☐ pendiente |
+| **B3a** | Validar los 30 flujos con `n8n_validate_workflow` | 0 errores, salvo los 4 falsos positivos documentados en B4 | ☑ 24/09 — 29/30 `valid` con 0 errores |
+| **B3b** | Regresión del pipeline `5/5` | Ejecución real con semáforo 5/5 | ☐ pendiente — la corre el usuario en la UI |
+| **B4** | Dictamen sobre los 4 errores de validación del subflujo de PDF | Decisión tomada con evidencia, no por defecto | ☑ 24/09 — **falsos positivos por diseño**, no se tocan |
+| **B5** | Actualizar las 9 notas fijas que citan el nombre viejo | Las 9 notas con el nombre nuevo; nada más cambia | ☑ 24/09 — 12 sustituciones, 9 flujos, 0 problemas |
+| **B6** | Quitar el `pinData` de `[SUB] CCB · Error` | `pinData` vacío y el requisito de limpieza vuelve a cumplirse | ☑ 24/09 — `pinData: {}` confirmado |
 
-**Orden:** B1a → B1b → B1c → B2a → B2b/B2c → B3.
+**Orden:** B1a → B1b → B1c → B2a → B4 → B5 → B6 → B3a → B2b/B2c → B3b (la corre el usuario).
 
 ## Desfases detectados en la revisión previa (2026-09-24)
 
@@ -61,6 +65,33 @@ Verificados contra la instancia viva por API de solo lectura.
 **Decisión de estilo:** los documentos de auditoría **fechados** son evidencia histórica: no se reescriben en silencio,
 se les añade una **nota de errata** de una línea. Los documentos **vivos** (README, tablero, estado, plan del día) se
 corrigen directamente.
+
+## Hallazgo B4 — los 4 "errores" del subflujo de PDF son falsos positivos (24/09)
+
+`n8n_validate_workflow` marca **4 errores** en `[SUB] CCB · PDF — Generar el PDF` (`DF3emCmBBBB2HA3i`), uno por cada
+nodo `HTML - *` (Información Georreferenciada, Zonificación y Rutero, Ubicación de Nuevo Negocio, Información en Línea):
+
+```
+Expression format error in node 'HTML - <servicio>':
+Field 'assignments.assignments[0].value' Mixed literal text and expression requires = prefix
+```
+
+**No son un defecto.** Son los 4 "Mixed literal" que la auditoría del 23/09 declaraba preexistentes en W3: cuando F4-05
+extrajo el subflujo de PDF, se mudaron con las plantillas. La prueba de que **no** hay que "arreglarlos" está en el
+propio flujo, en el comentario del nodo Code `Interpolar plantilla HTML`:
+
+> Los templates HTML de los nodos Set contienen placeholders `{{ $json.campo }}` y `{{ .campo }}`. El nodo Set de n8n NO
+> interpola estos (un valor sin `=` es texto literal; con `=` n8n intenta evaluar el HTML completo como expresión JS y
+> revienta). Por eso la interpolación se hace acá.
+
+Los 4 nodos son `set` tv3.4 con un único campo `html` (212 KB, 138 KB, 132 KB y 116 KB de HTML) y más de 31 marcadores
+`{{ }}`. Añadir el prefijo `=` que pide el validador haría que n8n evaluara ~600 KB de HTML como expresión JavaScript:
+es exactamente lo que el diseño evita. **Decisión del usuario (24/09): documentarlos como falsos positivos y no tocar las
+plantillas.** El validador es heurístico (ve `{{ }}` en un campo de texto y asume expresión n8n); el diseño real mueve la
+interpolación al Code node.
+
+Consecuencia para B3a: el criterio "0 errores" se cumple en **29 de los 30** flujos. Los **10 warnings** del resto son
+informativos (`executeOnce is enabled`) en los 3 flujos de la regresión.
 
 ## Notas de ejecución
 
@@ -104,6 +135,25 @@ nuevo. El prefijo `[SUB]` se retiró de W2A, W3, W4B y W5B, según la decisión 
 de la proyección de comparación, con la nota correspondiente en el docstring. El renombrado de W1 quedó correcto
 (nombre nuevo, 3 cachés nuevos, `active: true` y el resto intacto).
 
-**Hallazgo colateral (fuera del alcance de B1, requiere decisión):** 9 notas fijas (sticky notes) dentro de los flujos
-citan el nombre **viejo** en su texto, por ejemplo `## [SUB] CCB - Cerrar envío (F4-03/W5B)`. No rompen nada, pero son
-una inconsistencia visible después del renombrado. La convención (§4) no las contempla.
+**Hallazgo colateral (resuelto en B5):** 9 notas fijas (sticky notes) dentro de los flujos citaban el nombre
+**viejo** en su texto, por ejemplo `## [SUB] CCB - Cerrar envío (F4-03/W5B)`. La convención (§4) no las contemplaba; el
+usuario decidió actualizarlas.
+
+### B5 y B6 — notas fijas y `pinData` · 24/09
+
+**Hecho.** 12 sustituciones literales de nombre viejo→nuevo repartidas en las 9 notas fijas, y `pinData` vaciado en
+`[SUB] CCB · Error — Registrar y alertar` (el item fijado `TEST-F4-01` era resto de la verificación R2 del 23/09).
+
+**Cómo:** `scripts/actualizar_notas_y_pindata.py` con `--dry-run` (por defecto) y `--apply`. Construye el mapa
+viejo→nuevo desde `RENOMBRES` y el respaldo pre-renombrado, sustituye **solo** dentro de `parameters.content` de los
+nodos `stickyNote` del `nodes` de nivel superior (ordenando de más largo a más corto) y envía `pinData: {}` únicamente
+en el flujo del error. Respaldo previo del estado post-renombrado en `/tmp/n8n-backup/notas-pindata-2026-09-24/`.
+
+**Verificación:**
+
+- `--dry-run`: 10 flujos en PLAN, 12 sustituciones + 1 item fijado, **0 `PUT`**.
+- `--apply`: 10 `PUT`, 10 aplicados, verificación por flujo contra el respaldo con "resto sin cambios".
+- **Idempotencia**: segunda y tercera corrida → 0 `PUT`, 10 "sin cambios".
+- **Verificación independiente del padre** de los 10 flujos contra el respaldo: **0 problemas**; `pinData` de
+  `2dY1kaT7I5a0eP2w` = `{}`; **0 nombres viejos** en las notas de los flujos activos; y los 4 nodos `HTML - *` del
+  subflujo de PDF **byte-idénticos** (el cambio fue solo la nota).

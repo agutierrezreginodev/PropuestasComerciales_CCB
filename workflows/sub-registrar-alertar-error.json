@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:13:35.839Z",
+  "updatedAt": "2026-09-24T13:29:43.664Z",
   "createdAt": "2026-09-22T19:27:26.926Z",
   "id": "2dY1kaT7I5a0eP2w",
   "name": "[SUB] CCB · Error — Registrar y alertar",
@@ -213,22 +213,10 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "When Executed by Another Workflow": [
-      {
-        "json": {
-          "id_solicitud": "TEST-F4-01",
-          "workflow_origen": "prueba-manual",
-          "nodo_fallido": "Piloto F4-01",
-          "mensaje_error": "Prueba del subflujo compartido",
-          "emailBody": "<p>Prueba del subflujo compartido F4-01</p>"
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "versionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
   "activeVersionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
-  "versionCounter": 46,
+  "versionCounter": 49,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -450,6 +438,22 @@
       {
         "createdAt": "2026-09-24T13:13:35.995Z",
         "id": 2985,
+        "workflowId": "2dY1kaT7I5a0eP2w",
+        "versionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:29:43.705Z",
+        "id": 3060,
+        "workflowId": "2dY1kaT7I5a0eP2w",
+        "versionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:29:43.718Z",
+        "id": 3061,
         "workflowId": "2dY1kaT7I5a0eP2w",
         "versionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
         "event": "activated",
