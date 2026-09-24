@@ -30,7 +30,7 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 
 | # | Tarea | Criterio de aceptación | Estado |
 |---|---|---|---|
-| **R1** | Restaurar el `httpMethod: GET` explícito en el webhook de W4C | El snapshot muestra el método y el path responde como webhook vivo | ☑ 23/09 — commit `089af00` |
+| **R1** | Restaurar el `httpMethod: GET` explícito en el webhook de W4C | El snapshot muestra el método y el path responde como webhook vivo | ☑ 23/09 — commit `5262486` |
 | **R2** | Verificar con tráfico real la ruta de error compartida (`[SUB] CCB - Registrar y Alertar Error`) | Una ejecución real que falle deja fila en `Errores_CCB` con `error_timestamp` y mensaje enmascarado, envía el correo de alerta y **no corta** el flujo que la invoca | ☑ 23/09 — ejecución `422821` |
 | **R3** | Construir `[OPS] CCB - Regresión del pipeline` | El flujo corre los caminos críticos con filas descartables, publica un semáforo por camino, borra sus filas y reporta por correo | ☑ 23/09 — flujo `GVE3iNQ80y5Q9FEw`, **4/4 casos ok** |
 | **R4** | Probar la rama de **rechazo/expiración** de la aprobación de IA (F7-03) | Rechazo real en Teams → motivo `aprobacion_rechazada`, revisión manual y **sin consumir ronda** | ☐ pendiente (requiere un clic del usuario) |
@@ -99,7 +99,7 @@ Incluye el hueco conocido declarado: si el correo de alerta falla, la ejecución
 
 _(se completa al cerrar cada tarea: id de ejecución, filas afectadas, correo recibido y commit)_
 
-### R1 — `httpMethod: GET` explícito en el webhook de W4C · 23/09 · commit `089af00`
+### R1 — `httpMethod: GET` explícito en el webhook de W4C · 23/09 · commit `5262486`
 
 - **Antes:** `{path: consultar-propuesta, httpMethod: null, authentication: headerAuth, responseMode: responseNode}`.
 - **Después:** `httpMethod: "GET"` explícito. `n8n_validate_workflow` → 9 nodos, 0 errores, 0 advertencias.
