@@ -75,11 +75,11 @@
 
 ## 5. Pendientes
 
-### 5.0 Dos pasos que dependen de la UI de n8n (no se pueden hacer por API)
+### 5.0 Un paso que depende de la UI de n8n (no se puede hacer por API)
 
 | Paso | Detalle |
 |---|---|
-| **Credencial para la métrica exacta por flujo** | El monitor ya consulta la API de ejecuciones y publica `tasa_error_por_flujo`, pero **n8n no usa las credenciales creadas por API**: el nodo recibe `401 - "'X-N8N-API-KEY' header required"` (la credencial existe pero el header no se envía). Se necesita **crear a mano en la UI** una credencial *Header Auth* (`X-N8N-API-KEY`) y apuntar los dos nodos `HTTP - Leer ejecuciones` / `HTTP - Leer workflow s` a ella. Mientras tanto el monitor tolera el fallo y publica "sin ejecuciones recientes". |
+| **Credencial para la métrica exacta por flujo** | ✅ **Resuelto el 24/09.** El diagnóstico anterior era incorrecto: la credencial *Header Auth* (`X-N8N-API-KEY`) ya existía y estaba asignada a los dos nodos HTTP; lo que fallaba era que el nodo no la usaba (`authentication` sin configurar, por eso el `401`), más un `ReferenceError` por zona muerta temporal en el nodo de métricas que tumbaba el cálculo entero. Se corrigió en los dos nodos `HTTP - Leer ejecuciones` / `HTTP - Leer workflows` (`authentication: "genericCredentialType"` + `genericAuthType: "httpHeaderAuth"`) y en el nodo de métricas. Verificado con la ejecución `428791`: las 6 métricas publicadas, con `tasa_error_por_flujo` real por primera vez. |
 | **Mover 14 flujos a la carpeta** `Servicios_Información_Cotizaciones_v2.0` | El API de carpetas devuelve 403 (necesita scopes `folder:*` y/o registrar la instancia). Alternativa: arrastrarlos en la UI (la lista está en `docs/FLUJOS_PIPELINE_CCB.md` y en el README). |
 
 ### 5.1 Decisiones del usuario
@@ -87,7 +87,7 @@
 | Tema | Detalle |
 |---|---|
 | **F7-03** (aprobación humana antes del recálculo) | Dos caminos: **A)** aprobación dentro de Teams (`sendAndWait`, no toca el front, requiere reordenar la respuesta del webhook y definir expiración) o **B)** aprobación en la página de revisión (nuevo estado + nuevo valor de decisión; toca el front y su deploy está bloqueado por la migración de Vercel). |
-| **Tasa de error exacta por flujo** | La métrica global ya se publica; el cálculo por flujo con denominador real necesita una credencial de API dentro de un workflow, y el API público no permite crearlas (403): la debe crear una persona desde la UI. |
+| **Tasa de error exacta por flujo** | ✅ **Resuelto el 24/09.** El diagnóstico anterior era incorrecto: la credencial *Header Auth* ya existía y ya estaba asignada a los dos nodos HTTP del monitor; lo que fallaba era que el nodo no la usaba (`authentication` sin configurar, de ahí el `401`), más un `ReferenceError` por zona muerta temporal que tumbaba el cálculo desde el 23/09. Ambas cosas arregladas y verificadas con la ejecución `428791`: las 6 métricas publicadas, con `tasa_error_por_flujo` real por primera vez. |
 | **`/metrics` expuesto sin autenticación** | Hoy publica 42 métricas de proceso de la instancia. Se usó como fuente del monitoreo; conviene restringirlo por red con Tecnología. |
 | **Push a GitHub** | 52 commits locales sin publicar en `ccb-workflows-git`. |
 

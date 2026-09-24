@@ -10,7 +10,7 @@ Fases 0–7 del plan de remediación cerradas, 54 commits locales sin push, 29 f
 
 | # | Tarea | Cuánto | Cierra | Impacto |
 |---|---|---|---|---|
-| A1 | **Crear la credencial *Header Auth* del monitor** (`X-N8N-API-KEY`) en la UI y apuntar los dos nodos HTTP (`HTTP - Leer ejecuciones`, `HTTP - Leer workflows`) a ella | 2 min | La métrica exacta por flujo queda con datos | **+0,2 Seguridad** |
+| A1 | ✅ **Credencial del monitor** — **hecho 24/09**. **No hubo que crear nada en la UI:** la credencial *Header Auth* (`X-N8N-API-KEY`) ya existía y estaba asignada a los dos nodos HTTP (`HTTP - Leer ejecuciones`, `HTTP - Leer workflows`); lo que faltaba era que el nodo la usara — `authentication: "genericCredentialType"` + `genericAuthType: "httpHeaderAuth"` en ambos. En el camino apareció un segundo bug: un `ReferenceError` por zona muerta temporal en el nodo de métricas que tumbaba el cálculo desde el 23/09, también arreglado | — | La métrica exacta por flujo queda con datos (ejecución `428791`: las 6 métricas publicadas, con `tasa_error_por_flujo` real) | **+0,2 Seguridad** |
 | A2 | **Mover los flujos a las carpetas** en la UI (arrastrar; la estructura está en [CONVENCION_NOMBRES_Y_CARPETAS_CCB.md](../../docs/CONVENCION_NOMBRES_Y_CARPETAS_CCB.md) §3) | 5 min | La carpeta del proyecto queda ordenada en 12 · 15 · 2 · 1 | Organización |
 | A3 | **Rechazar una tarjeta de aprobación en Teams** (o dejar vencer una) para probar la rama `aprobacion_rechazada` de F7-03 | 5 min | La última rama sin verificar de la corrección con IA | **+0,1 Testing** |
 | A4 | **Confirmar el borrado de la fila basura** de `Cotizaciones_CCB` (`id 21`, campos nulos) | 1 min | R6 cerrada | Higiene de datos |
@@ -78,14 +78,15 @@ Fases 0–7 del plan de remediación cerradas, 54 commits locales sin push, 29 f
 
 | Escenario | Cálculo | Resultado |
 |---|---|---|
-| Solo el trabajo técnico del día (B1–B4) | 89,5 + 0,1 (Testing) | **89,6** — no alcanza |
-| + A1 (credencial) | 89,6 + 0,2 (Seguridad) | **89,8** — no alcanza |
+| Trabajo técnico del día (B1–B4) — **hecho** | 89,5 + 0,1 (Testing) | 89,6 |
+| + A1 — **hecho el 24/09** | 89,6 + 0,2 (Seguridad) | **89,8 ← punto de partida actual** |
 | **+ C1 (poda de instancia)** | 89,8 + 0,3 (Observabilidad) | **90,1 ✅ cruza** |
 | **+ C2 (`/metrics`)** | 90,1 + 0,2 | **90,3 ✅ consolidado** |
 
-**Conclusión:** el umbral se cruza con **A1 + C1** (una credencial que se crea en dos minutos y una variable de instancia
-de Tecnología). El resto del día es consistencia (nombres, carpetas), verificación (B3, A3) y el último caso de la
-regresión (B4).
+**Conclusión (actualizada el 24/09):** el trabajo técnico del día y **A1 ya están hechos**, así que el punto de partida
+real es **89,8** y el umbral depende de **una sola cosa: C1**, la poda de ejecuciones a nivel de instancia, que es de
+Tecnología. Con C1 se cruza (90,1) y C2 lo consolida (90,3). El resto del día es consistencia (carpetas, A2) y las
+decisiones que quedan (A3, A4, A5).
 
 ---
 

@@ -93,5 +93,8 @@ Con el primer bloque ya se cruza el umbral; los otros dos lo consolidan.
 1. **Es una evaluación por evidencia documentada y verificación real, no una suite automatizada.** El puntaje de Testing refleja exactamente eso.
 2. **Las dimensiones de instancia** (retención de ejecuciones, exposición de `/metrics`, licencia de carpetas/Variables) no dependen de los workflows y quedan fuera del alcance de la mejora.
 3. **La métrica exacta de error por flujo está implementada pero sin datos**: n8n no usa las credenciales creadas por API (devuelve 401 al no enviar el header), así que hace falta crear la credencial Header Auth en la UI. Mientras tanto el monitor publica "sin ejecuciones recientes" sin romperse.
+
+> **Nota de errata (24/09):** el diagnóstico era incorrecto — la credencial ya existía y estaba asignada; el fallo era `authentication` sin configurar en los dos nodos HTTP, más un `ReferenceError` por zona muerta temporal en el nodo de métricas que congeló las 5 métricas ~28 h. Ambos arreglados y verificados (ejecución `428791`).
+
 4. **W2B sigue retirado** y no se audita; si se reactiva, arrastra sus hallazgos originales.
 5. Los puntajes por dimensión son **juicio experto con evidencia**, no una fórmula automática: se mantiene el mismo criterio del 16/09 y del 22/09 para que la serie sea comparable.

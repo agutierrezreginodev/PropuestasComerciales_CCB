@@ -96,7 +96,6 @@ PEND = {
 COMUNES = [
  ("Observabilidad","Poda de ejecuciones a nivel de instancia: hoy la retención es por flujo, no global.","`EXECUTIONS_DATA_PRUNE` / `MAX_AGE` en la instancia.","Tecnología","+0,3"),
  ("Seguridad","`/metrics` está expuesto sin autenticación.","Restringirlo o cerrarlo (o exponerlo solo en la red interna).","Tecnología","+0,2"),
- ("Seguridad","La métrica exacta por flujo no tiene datos: n8n no usa las credenciales creadas por API (401).","Crear la credencial *Header Auth* en la UI y apuntarla en los dos nodos HTTP del monitor.","Tú","+0,2 (habilita)"),
  ("Observabilidad","Si el correo de alerta falla, la ejecución igual queda en `success` y nadie se entera.","Rama de error en el nodo de correo del subflujo compartido.","Yo","—"),
 ]
 def inventario():
@@ -463,20 +462,22 @@ todos los puntos de escritura y guardarraíles en W4D, pero los webhooks públic
 </tbody></table>
 
 <h2 id="pendientes"><span class="n">6</span>Pendientes globales y el camino al 90</h2>
-<p class="lead">Cuatro pendientes que no son de un flujo en particular sino de la instancia o del conjunto. Dos son de
-Tecnología y son, literalmente, los que cruzan el umbral.</p>
+<p class="lead">Tres pendientes que no son de un flujo en particular sino de la instancia o del conjunto. Los dos que
+mueven el umbral son de Tecnología: lo que estaba en manos del proyecto —el trabajo técnico del día y la credencial del
+monitor— ya se hizo el 24/09.</p>
 {tabla_comunes()}
 <div class="card">
 <h4>El cálculo</h4>
 <table class="inv"><thead><tr><th>Escenario</th><th>Suma</th><th>Resultado</th></tr></thead><tbody>
-<tr><td>Solo el trabajo técnico pendiente (los casos de regresión y el hueco del correo)</td><td class="num">+0,2 Testing</td><td class="num"><b>89,7</b></td></tr>
-<tr><td>+ la credencial <i>Header Auth</i> del monitor (2 minutos en la UI)</td><td class="num">+0,2 Seguridad</td><td class="num"><b>89,9</b></td></tr>
-<tr><td><b>+ la poda de ejecuciones de instancia</b></td><td class="num">+0,3 Observabilidad</td><td class="num"><b class="ok">90,2 ✅ cruza</b></td></tr>
-<tr><td>+ cerrar o restringir <code>/metrics</code></td><td class="num">+0,2 Seguridad</td><td class="num"><b class="ok">90,4 ✅ consolidado</b></td></tr>
+<tr><td>Trabajo técnico del día (casos de regresión) — <b>hecho</b></td><td class="num">+0,1 Testing</td><td class="num"><b>89,6</b></td></tr>
+<tr><td>+ la credencial del monitor — <b>hecha el 24/09</b>, sin tocar la UI</td><td class="num">+0,2 Seguridad</td><td class="num"><b>89,8 ← punto de partida actual</b></td></tr>
+<tr><td><b>+ la poda de ejecuciones de instancia</b> (Tecnología)</td><td class="num">+0,3 Observabilidad</td><td class="num"><b class="ok">90,1 ✅ cruza</b></td></tr>
+<tr><td>+ cerrar o restringir <code>/metrics</code> (Tecnología)</td><td class="num">+0,2 Seguridad</td><td class="num"><b class="ok">90,3 ✅ consolidado</b></td></tr>
 </tbody></table>
-<p class="small muted">Los dos primeros escenarios suman lo que está en manos del proyecto; el umbral se cruza con la credencial y
-la poda de instancia. Los casos de regresión que faltan (routers, cierre por fechas) también empujan Testing, la
-dimensión más baja.</p>
+<p class="small muted">Los dos primeros escenarios ya están cumplidos: <b>todo lo que estaba en manos del proyecto se hizo</b>.
+El umbral depende de una sola cosa, la poda de ejecuciones de instancia (Tecnología), que mueve Observabilidad, la
+dimensión más baja junto con Seguridad. Los casos de regresión que aún faltan (routers, cierre por fechas) también
+empujan Testing.</p>
 </div>
 
 <h2 id="anexos"><span class="n">7</span>Anexos</h2>

@@ -117,7 +117,7 @@ cliente salen parciales** en los correos de alerta.
 |---|---|
 | La rama de **rechazo / expiración** de la aprobación en Teams | Pendiente de ejecutar con tráfico real (la aprobación **positiva** sí se verificó con un clic real: recálculo OK y ronda 0 → 1) |
 | La rama de **confianza baja** | Implementada; sin corrida real |
-| **Métrica exacta de error por flujo** | Implementada; n8n no usa las credenciales creadas por API (401), así que falta crear a mano la credencial *Header Auth* en la UI. Mientras tanto publica "sin ejecuciones recientes" sin romperse |
+| **Métrica exacta de error por flujo** | ✅ **Resuelto el 24/09.** El diagnóstico anterior era incorrecto: la credencial *Header Auth* ya existía y estaba asignada; fallaba que el nodo no la usaba (`authentication` sin configurar) más un `ReferenceError` por zona muerta temporal en el nodo de métricas. Corregidos ambos, la métrica publica datos reales (ejecución `428791`, 6 métricas) |
 | **Poda de ejecuciones** a nivel de instancia y cierre de `/metrics` | Depende de Tecnología |
 | **Mover los 17 flujos nuevos** a la carpeta `Servicios_Información_Cotizaciones_v2.0` | El API de carpetas responde 403: requiere una key con scopes `folder:*` y/o registrar la instancia, o arrastrarlos en la UI |
 | **Fila basura** en `Cotizaciones_CCB` (`id 21`, todos los campos nulos, `ENVIADA`, 2026-09-18) | Detectada; se puede borrar con `n8n_manage_datatable` |

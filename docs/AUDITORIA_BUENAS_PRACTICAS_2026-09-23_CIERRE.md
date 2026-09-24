@@ -25,6 +25,8 @@ escala que los informes del 16/09, del 22/09 y de la mañana del 23/09, para que
 | Observabilidad /15 | 13,6 | **13,6** | Sin cambios: la poda a nivel de instancia sigue en Tecnología y el semáforo de la regresión es una señal de *testing*, no de operación |
 | **Total** | **87,7** | **89,5** | **+1,8** |
 
+> **Nota de errata (24/09):** el diagnóstico era incorrecto — la credencial ya existía y estaba asignada; el fallo era `authentication` sin configurar en los dos nodos HTTP, más un `ReferenceError` por zona muerta temporal en el nodo de métricas que congeló las 5 métricas ~28 h. Ambos arreglados y verificados (ejecución `428791`).
+
 **Lo que sostiene el salto de Testing (11,7 → 12,8), con evidencia:**
 
 > **Nota de errata (24/09):** el párrafo dice «11,7 → 12,8»; la tabla de la sección 1 muestra Testing en **12,9**. Se conserva el texto original por ser evidencia histórica.
@@ -73,6 +75,8 @@ escala que los informes del 16/09, del 22/09 y de la mañana del 23/09, para que
 | **Probar el rechazo/expiración** de la aprobación de IA | Testing | Un rechazo real en Teams → motivo `aprobacion_rechazada` sin consumir ronda | ~+0,1 | Tú (un clic) |
 | **Poda de ejecuciones a nivel de instancia** | Observabilidad | `EXECUTIONS_DATA_PRUNE` / `MAX_AGE`. La retención **por flujo** ya está aplicada | ~+0,3 | Tecnología |
 | **Cerrar `/metrics` y la credencial de la API** | Seguridad | Restringir `/metrics`; crear la credencial *Header Auth* en la UI para que la métrica por flujo tenga datos | ~+0,2 | Tecnología + tú |
+
+> **Nota de errata (24/09):** el diagnóstico era incorrecto — la credencial ya existía y estaba asignada; el fallo era `authentication` sin configurar en los dos nodos HTTP, más un `ReferenceError` por zona muerta temporal en el nodo de métricas que congeló las 5 métricas ~28 h. Ambos arreglados y verificados (ejecución `428791`).
 
 **La v2 de la regresión ya está aplicada** (W5B subió a 92) y el promedio se mantiene en **89,5** porque un solo flujo no mueve la media redondeada.
 Para cruzar **90,0** hacen falta los ítems de instancia: la **poda de ejecuciones** (+0,3 en Observabilidad) y el **cierre de
