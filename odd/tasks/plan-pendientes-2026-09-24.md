@@ -21,6 +21,15 @@ Fases 0–7 del plan de remediación cerradas, 54 commits locales sin push, 29 f
 > usa la misma rama y el mismo procedimiento, y el resultado esperado es `REVISION_MANUAL` con motivo `aprobacion_rechazada`
 > **sin consumir ronda**.
 
+> **Legado de la instancia — analizado y resuelto el 24/09.** Había **31 flujos inactivos**. Se verificó que **ningún flujo
+> activo invocaba a uno inactivo** y que **no había referencias rotas**, así que ninguno estaba vivo de forma invisible.
+> Se clasificaron en: **22** versiones anteriores del pipeline (se conservan), **5** ajenos al proyecto (no se tocaron: la
+> instancia es organizacional y parecen de otra área) y **4** de prueba. Se borraron **3** por ser basura clara
+> (`My workflow 20`, con 0 nodos; `My workflow 17`, un `errorTrigger` suelto; `TEST_STATE_2TPL`), con respaldo previo.
+> El respaldo completo de los 31 está en `/tmp/n8n-backup/legado-2026-09-24/` (1,4 MB) — **no viven en el snapshot del
+> repo**, que solo exporta los 30 del proyecto. Estado tras limpiar: **57 flujos** (29 activos + 28 inactivos).
+> Para A2, la estructura queda en `12 · 15 · 2 · 1` más una carpeta `99 · Retirados` para lo que se conserva.
+
 ---
 
 ## Bloque B — Técnico (yo) · ~3 horas
