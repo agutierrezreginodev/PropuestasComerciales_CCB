@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T14:04:22.820Z",
+  "updatedAt": "2026-09-24T14:56:32.840Z",
   "createdAt": "2026-09-23T15:05:13.086Z",
   "id": "DF3emCmBBBB2HA3i",
   "name": "[SUB] CCB · PDF — Generar el PDF",
@@ -299,7 +299,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Construye la URL publica del PDF persistido por el microservicio.\n// BASE_URL: valor centralizado en la Data Table Configuracion_CCB (F5-03).\nconst BASE_URL = (($('Ejecutar Leer Configuración').first().json._config || {}).microservicio_pdf_url || '');\nlet id = $json.id_solicitud;\nif (!id) { try { id = $('When Executed by Another Workflow').first().json.id_solicitud; } catch (e) {} }\nif (!id) { try { id = $('Interpolar plantilla HTML').first().json.id_solicitud; } catch (e) {} }\nconst PDF_URL = id ? (BASE_URL + '/pdfs/' + id + '.pdf') : null;\n// F4-05: el PDF viaja por URL (pdf_url); nadie aguas abajo consume el binario, asi que no se cruza entre subflujos.\nreturn { json: { ...$json, id_solicitud: id, PDF_URL } };"
+        "jsCode": "// Construye la URL publica del PDF persistido por el microservicio.\n// BASE_URL: valor centralizado en la Data Table Configuracion_CCB (F5-03).\nconst BASE_URL = (($('Ejecutar Leer Configuración').first().json._config || {}).microservicio_pdf_url || '');\nlet id = $json.id_solicitud;\nif (!id) { try { id = $('When Executed by Another Workflow').first().json.id_solicitud; } catch (e) {} }\nif (!id) { try { id = $('Interpolar plantilla HTML').first().json.id_solicitud; } catch (e) {} }\nconst PDF_URL = id ? (BASE_URL + '/pdfs/' + id + '.pdf') : null;\n// F4-05: el PDF viaja por URL (pdf_url); nadie aguas abajo consume el binario, asi que no se cruza entre subflujos.\nif (!PDF_URL) {\n  // Un PDF sin URL publica no puede pasar como exito: W3 solo mira 'ok', y el microservicio\n  // solo persiste el archivo si recibe id_solicitud (si no lo recibe, el .pdf no existe en disco).\n  const mensaje = 'No se pudo construir la URL publica del PDF: falta \"id_solicitud\" en la entrada de la etapa de PDF, '\n    + 'asi que el microservicio no persistio el archivo (su persistencia depende de options.id_solicitud).';\n  return { json: { ...$json, id_solicitud: id, PDF_URL: null, ok: false, error: mensaje,\n                   nodo_fallido: 'Adjuntar PDF_URL', mensaje_error: mensaje } };\n}\nreturn { json: { ...$json, id_solicitud: id, PDF_URL } };"
       },
       "id": "644151f8-fe42-415f-8812-ee36104a071e",
       "name": "Adjuntar PDF_URL",
@@ -482,15 +482,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
-  "activeVersionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
-  "versionCounter": 25,
+  "versionId": "41291167-9f9c-46d3-9864-c08d75bbcaf9",
+  "activeVersionId": "41291167-9f9c-46d3-9864-c08d75bbcaf9",
+  "versionCounter": 28,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T14:04:22.829Z",
-    "createdAt": "2026-09-24T14:04:22.829Z",
-    "versionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
+    "updatedAt": "2026-09-24T14:56:32.848Z",
+    "createdAt": "2026-09-24T14:56:32.848Z",
+    "versionId": "41291167-9f9c-46d3-9864-c08d75bbcaf9",
     "workflowId": "DF3emCmBBBB2HA3i",
     "nodes": [
       {
@@ -785,7 +785,7 @@
       {
         "parameters": {
           "mode": "runOnceForEachItem",
-          "jsCode": "// Construye la URL publica del PDF persistido por el microservicio.\n// BASE_URL: valor centralizado en la Data Table Configuracion_CCB (F5-03).\nconst BASE_URL = (($('Ejecutar Leer Configuración').first().json._config || {}).microservicio_pdf_url || '');\nlet id = $json.id_solicitud;\nif (!id) { try { id = $('When Executed by Another Workflow').first().json.id_solicitud; } catch (e) {} }\nif (!id) { try { id = $('Interpolar plantilla HTML').first().json.id_solicitud; } catch (e) {} }\nconst PDF_URL = id ? (BASE_URL + '/pdfs/' + id + '.pdf') : null;\n// F4-05: el PDF viaja por URL (pdf_url); nadie aguas abajo consume el binario, asi que no se cruza entre subflujos.\nreturn { json: { ...$json, id_solicitud: id, PDF_URL } };"
+          "jsCode": "// Construye la URL publica del PDF persistido por el microservicio.\n// BASE_URL: valor centralizado en la Data Table Configuracion_CCB (F5-03).\nconst BASE_URL = (($('Ejecutar Leer Configuración').first().json._config || {}).microservicio_pdf_url || '');\nlet id = $json.id_solicitud;\nif (!id) { try { id = $('When Executed by Another Workflow').first().json.id_solicitud; } catch (e) {} }\nif (!id) { try { id = $('Interpolar plantilla HTML').first().json.id_solicitud; } catch (e) {} }\nconst PDF_URL = id ? (BASE_URL + '/pdfs/' + id + '.pdf') : null;\n// F4-05: el PDF viaja por URL (pdf_url); nadie aguas abajo consume el binario, asi que no se cruza entre subflujos.\nif (!PDF_URL) {\n  // Un PDF sin URL publica no puede pasar como exito: W3 solo mira 'ok', y el microservicio\n  // solo persiste el archivo si recibe id_solicitud (si no lo recibe, el .pdf no existe en disco).\n  const mensaje = 'No se pudo construir la URL publica del PDF: falta \"id_solicitud\" en la entrada de la etapa de PDF, '\n    + 'asi que el microservicio no persistio el archivo (su persistencia depende de options.id_solicitud).';\n  return { json: { ...$json, id_solicitud: id, PDF_URL: null, ok: false, error: mensaje,\n                   nodo_fallido: 'Adjuntar PDF_URL', mensaje_error: mensaje } };\n}\nreturn { json: { ...$json, id_solicitud: id, PDF_URL } };"
         },
         "id": "644151f8-fe42-415f-8812-ee36104a071e",
         "name": "Adjuntar PDF_URL",
@@ -968,18 +968,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T14:04:23.101Z",
-        "id": 3062,
+        "createdAt": "2026-09-24T14:56:33.006Z",
+        "id": 3080,
         "workflowId": "DF3emCmBBBB2HA3i",
-        "versionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
+        "versionId": "41291167-9f9c-46d3-9864-c08d75bbcaf9",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T14:04:23.205Z",
-        "id": 3063,
+        "createdAt": "2026-09-24T14:56:33.055Z",
+        "id": 3081,
         "workflowId": "DF3emCmBBBB2HA3i",
-        "versionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
+        "versionId": "41291167-9f9c-46d3-9864-c08d75bbcaf9",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
