@@ -55,6 +55,10 @@ Fases 0–7 del plan de remediación cerradas, 54 commits locales sin push, 29 f
 
 ## Bloque C — Tecnología · depende de su agenda
 
+> **La propuesta formal para Tecnología está redactada:** [PROPUESTA_TECNOLOGIA_2026-09-24.md](../../docs/PROPUESTA_TECNOLOGIA_2026-09-24.md).
+> Cubre este bloque completo (C1 poda, C2 `/metrics`) más el alojamiento del microservicio de PDF y, como opcional, el
+> MCP de instancia. Cada pedido va de caja cerrada y con su verificación del lado del proyecto.
+
 | # | Tarea | Por qué | Impacto |
 |---|---|---|---|
 | C1 | **Poda de ejecuciones a nivel de instancia** (`EXECUTIONS_DATA_PRUNE` / `MAX_AGE`) | La retención **por flujo** ya está aplicada (W4A, W5A, W6 y el monitor no guardan las ejecuciones exitosas), pero la poda global es de instancia | **+0,3 Observabilidad** |
