@@ -171,7 +171,9 @@ PROPUESTA_GENERADA ──► (el asesor decide)
 2. **Subflujo compartido `[SUB] Error — Registrar y alertar`.** Lo llaman los flujos que detectan un fallo: escribe una fila
    en **`Errores_CCB`** con `id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error` (con los datos personales
    enmascarados: `<correo>`, `<url>`, `<num>`) y `error_timestamp` en hora de Bogotá, y manda el correo de alerta. Devuelve
-   el item al llamador, así **el flujo que falló no se corta**.
+   el item al llamador, así **el flujo que falló no se corta**. Si el **envío del correo de alerta** falla, una rama de
+   error del subflujo registra ese fallo en `Errores_CCB` con claves propias (`workflow_origen = 'alerta-error'`) y
+   **también devuelve el item al llamador**, para no romper el mismo contrato.
 3. **Catch-all.** El `errorWorkflow` de los 11 flujos principales captura lo que no se detectó arriba y registra el
    incidente (conserva el historial: no hace *upsert*, inserta).
 
@@ -183,8 +185,10 @@ PROPUESTA_GENERADA ──► (el asesor decide)
 4. Causas habituales: el **túnel del microservicio de PDF caído** (es el punto más frágil), el **motor de cálculo
    rechazando** el caso, o **Teams/Outlook** sin credencial válida.
 
-**Lo que no se ve solo:** si el **correo de alerta** falla, la ejecución igual queda en `success` (el nodo tiene
-`onError: continueRegularOutput`). Es un hueco conocido y declarado en la re-auditoría.
+**Lo que no se ve solo:** si el **correo de alerta** falla, ya no queda silencioso: el subflujo compartido tiene una rama
+ de error que registra el fallo de envío en `Errores_CCB` con claves propias (`workflow_origen = 'alerta-error'`) y
+devuelve igualmente el item al llamador. (Cerró el hueco declarado el 24/09; verificado con tráfico real, regresión
+`428867`.)
 
 ---
 
@@ -232,7 +236,7 @@ PROPUESTA_GENERADA ──► (el asesor decide)
 
 | Subflujo | ID | Lo llaman |
 |---|---|---|
-| Error — Registrar y alertar | `2dY1kaT7I5a0eP2w` | 8 flujos + la regresión |
+| Error — Registrar y alertar | `2dY1kaT7I5a0eP2w` | 10 flujos (13 puntos de llamada); 8 flujos del pipeline lo alcanzan |
 | Config — Leer la configuración | `Hgy02eqPhnsdJvkq` | 9 flujos |
 | Contexto — Leer el contexto de la propuesta | `GELWpskp0aYJ2zPg` | W4B, W4C, W4D, W5B |
 | PDF — Generar el PDF | `DF3emCmBBBB2HA3i` | W3 |

@@ -100,6 +100,7 @@ origen. La regresión nueva **no** lo mejora (y no lo empeora).
 3. **Hueco de observabilidad declarado:** si el **correo de alerta** falla, la ejecución queda en `success` y nadie se
    entera (el nodo usa `onError: continueRegularOutput` para no cortar el flujo que falla). Cerrarlo exige una rama de
    error nueva en el subflujo compartido.
+   > Errata 24/09: este hueco quedó cerrado — el subflujo compartido tiene una rama de error que registra el fallo de envío en `Errores_CCB` con claves propias (`workflow_origen='alerta-error'`) y devuelve igualmente el item al llamador. Verificado con tráfico real (regresión 428867).
 4. **No verificado todavía:** el rechazo/expiración de la aprobación de IA; que el disparador semanal de la regresión se
    dispare solo (se probó con un webhook temporal); los caminos `Cerrar envío` y del motor dentro de la regresión.
 5. **W2B** sigue retirado y fuera de alcance.

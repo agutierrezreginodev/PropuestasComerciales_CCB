@@ -76,10 +76,10 @@ EVAL = {
 PEND = {
  "W1": [("Testing","Sin caso propio en la regresión: su camino (correo → enlace) no se ejercita automáticamente.","Agregar un caso que verifique la extracción y el envío del enlace.","Yo"),
         ("Manejo de errores","El reintento está en los nodos de red, pero no hay prueba del camino de error del correo.","Forzar un correo sin remitente reconocido y verificar el registro.","Yo")],
- "W2A": [("Observabilidad","Hereda el hueco del correo de alerta silencioso.","Registrar el fallo de envío de la alerta como un incidente más.","Yo")],
+ "W2A": [],
  "W2C": [("Manejo de errores","El webhook valida los campos (400) pero el fallo de escritura en la tabla no tiene rama propia.","Agregar rama de error en el guardado con registro y respuesta controlada.","Yo"),
          ("Testing","Sin caso propio en la regresión.","Caso que replique un POST del formulario con datos válidos y con faltantes.","Yo"),
-         ("Observabilidad","Hereda la poda de instancia y el hueco del correo de alerta.","Poda de ejecuciones (Tecnología).","Tecnología")],
+         ("Observabilidad","Hereda la poda de instancia.","Poda de ejecuciones (Tecnología).","Tecnología")],
  "W3": [("Manejo de errores","La lectura de la planilla Excel reintenta 3x2 s y tiene rama de error, pero su fallo no está cubierto por la regresión: el caso del motor asume que la planilla responde.","Caso que fuerce un fallo de lectura de la planilla y verifique el registro y el `ok:false`.","Yo")],
  "W4A": [("Testing","Es un router: se prueba de forma indirecta, sin caso propio.","Caso que verifique que detecta solo las propuestas en PROPUESTA_GENERADA.","Yo")],
  "W4B": [("Testing","El aviso a Teams se verificó con clics reales pero no está en la regresión.","Caso que compruebe el armado del aviso (sin enviar a Teams).","Yo"),
@@ -96,7 +96,6 @@ PEND = {
 COMUNES = [
  ("Observabilidad","Poda de ejecuciones a nivel de instancia: hoy la retención es por flujo, no global.","`EXECUTIONS_DATA_PRUNE` / `MAX_AGE` en la instancia.","Tecnología","+0,3"),
  ("Seguridad","`/metrics` está expuesto sin autenticación.","Restringirlo o cerrarlo (o exponerlo solo en la red interna).","Tecnología","+0,2"),
- ("Observabilidad","Si el correo de alerta falla, la ejecución igual queda en `success` y nadie se entera.","Rama de error en el nodo de correo del subflujo compartido.","Yo","—"),
 ]
 def inventario():
     ws = {w["id"]: w for w in cargar_workflows()}
@@ -367,7 +366,7 @@ en n8n</i>): seis dimensiones ponderadas sobre 100, más una lista de comprobaci
   <div class="kpi"><b>{max(SC)}<small>/100</small></b><span>el mejor flujo ({[f['clave'] for f in PIPE_EVAL if f['score']==max(SC)][0]})</span></div>
   <div class="kpi"><b>{min(SC)}<small>/100</small></b><span>el más bajo ({", ".join(f['clave'] for f in PIPE_EVAL if f['score']==min(SC))}) — ninguno por debajo de 85</span></div>
   <div class="kpi"><b>{sum(1 for f in PIPE_EVAL if f['score']>=90)}</b><span>flujos ya sobre el objetivo de 90</span></div>
-  <div class="kpi"><b>4</b><span>pendientes globales, dos de ellos de Tecnología</span></div>
+  <div class="kpi"><b>2</b><span>pendientes globales, ambos de Tecnología</span></div>
   <div class="kpi"><b>30</b><span>flujos en el proyecto (29 activos + 1 retirado)</span></div>
 </div>
 
@@ -462,9 +461,9 @@ todos los puntos de escritura y guardarraíles en W4D, pero los webhooks públic
 </tbody></table>
 
 <h2 id="pendientes"><span class="n">6</span>Pendientes globales y el camino al 90</h2>
-<p class="lead">Tres pendientes que no son de un flujo en particular sino de la instancia o del conjunto. Los dos que
-mueven el umbral son de Tecnología: lo que estaba en manos del proyecto —el trabajo técnico del día y la credencial del
-monitor— ya se hizo el 24/09.</p>
+<p class="lead">Dos pendientes que no son de un flujo en particular sino de la instancia o del conjunto. Los dos que
+mueven el umbral son de Tecnología: lo que estaba en manos del proyecto —el trabajo técnico del día, la credencial del
+monitor y el hueco del correo de alerta— ya se hizo el 24/09.</p>
 {tabla_comunes()}
 <div class="card">
 <h4>El cálculo</h4>
@@ -493,8 +492,9 @@ Cuando una mejora no se pudo ejecutar, el puntaje se mantiene conservador y el h
 <div class="card"><h4>Limitaciones declaradas</h4>
 <p class="small">(1) Es una evaluación por evidencia y verificación real, no una suite automatizada con integración continua:
 de ahí el 12,9 en Testing. (2) La poda de ejecuciones, <code>/metrics</code> y la licencia de carpetas son de instancia, no
-de los flujos. (3) Hueco conocido: si el <b>correo de alerta</b> falla, la ejecución queda en <code>success</code> y nadie se
-entera. (4) Sin verificar todavía: el rechazo de la aprobación de IA y el disparo automático semanal de la regresión.</p></div>
+de los flujos. (3) El hueco del <b>correo de alerta</b> quedó <b>cerrado el 24/09</b> (errata): si el envío falla, la ejecución
+sigue en <code>success</code>, pero el subflujo compartido registra el fallo en <code>Errores_CCB</code> con claves propias
+(<code>workflow_origen='alerta-error'</code>) y devuelve igualmente el item al llamador. (4) Sin verificar todavía: el rechazo de la aprobación de IA y el disparo automático semanal de la regresión.</p></div>
 <div class="card"><h4>Tablas de datos</h4>
 <p class="small"><code>Configuracion_CCB</code> (12 claves) · <code>Solicitudes_CCB</code> · <code>Criterios_Cotizacion</code>
 · <code>Cotizaciones_CCB</code> · <code>Errores_CCB</code> · <code>Metricas_CCB</code>. Las tres primeras alimentan el

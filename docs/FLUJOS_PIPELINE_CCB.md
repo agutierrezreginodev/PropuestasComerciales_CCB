@@ -38,7 +38,7 @@ un item con la misma forma o una ampliada, para que el llamador pueda seguir su 
 ---
 
 ## 2. `[SUB] CCB · Error — Registrar y alertar`
-**ID:** `2dY1kaT7I5a0eP2w` · **Nodos:** 6 · **Plan:** F4-01
+**ID:** `2dY1kaT7I5a0eP2w` · **Nodos:** 8 · **Plan:** F4-01
 
 **Por qué se creó.** El patrón `Preparar error → registrar en Errores_CCB → alertar por Outlook` estaba **replicado en
 los 11 flujos activos** (triplicado en W1, cuatro veces en W5B). Además, el registro y la alerta no siempre ocurrían en
@@ -50,8 +50,15 @@ nodo_fallido, mensaje_error, emailBody, subject?, alertar? }`, todo con defaults
 `Data Table - Registrar error` (**upsert** por `id_solicitud + workflow_origen + nodo_fallido`, con marca de tiempo) →
 `Outlook - Enviar alerta` (destinatario desde `Configuracion_CCB`) → `Devolver item al llamador` (siempre devuelve el
 item, aunque el correo falle). El registro ocurre **antes** de la alerta: un fallo del correo no pierde el registro.
+**Rama de error del envío.** `Outlook - Enviar alerta` usa `onError: continueErrorOutput`: **si el envío de la alerta
+falla** (salida de error), una rama nueva lo registra —`Preparar alerta fallida` → `Data Table - Registrar alerta fallida`
+(upsert en `Errores_CCB`) → `Devolver item al llamador`. El meta-incidente usa **claves propias**
+(`workflow_origen = 'alerta-error'`, `nodo_fallido = 'Outlook - Enviar alerta (envío fallido)'`) y guarda el mensaje real
+de Outlook en `mensaje_error`: el upsert matchea por `id_solicitud + workflow_origen + nodo_fallido`, así que con las
+mismas claves habría pisado el incidente original. La rama vuelve al `Devolver item al llamador` común para no romper el
+contrato de los 13 llamadores: el subflujo siempre reemite el item normalizado.
 
-**Relaciones.** Lo llaman **8 flujos** en sus ramas de error: W1, W2A, W4A, W4B, W4D (rama de recálculo), W5A, W5B y W6
+**Relaciones.** Lo **invocan directamente 10 flujos** (13 puntos de llamada): W1 (×3), W2A, W4A, W4B, W5A (×2), W6, los subflujos `[SUB] CCB · Motor — Invocar el motor y guardar`, `[SUB] CCB · W4D — Cierre de la corrección` y `[SUB] CCB · Envío — Cerrar el error de envío`, y `[OPS] CCB · Regresión — Prueba de regresión`. Mirado desde el negocio, **8 flujos del pipeline alcanzan este subflujo** en sus ramas de error: W1, W2A, W4A, W4B, W4D, W5A, W5B y W6
 (nodo `Ejecutar Registrar-y-Alertar`). No lo usa el **catch-all** (mantiene su propio registro, ver más abajo) ni las
 variantes B (W2C, W3, W4C y tres ramas de W4D): esas responden al llamador y no envían correo.
 

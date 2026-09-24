@@ -40,7 +40,7 @@ Fases 0–7 del plan de remediación cerradas, 54 commits locales sin push, 29 f
 | B2 | **Actualizar el repositorio** con los nombres nuevos: README, `FLUJOS_PIPELINE_CCB.md`, `FLUJO_COMPLETO_PIPELINE_CCB.md`, `COMPARATIVO_DEMO_VS_ACTUAL.md` y el snapshot | `grep` no encuentra nombres viejos en los docs; snapshot re-exportado | Consistencia |
 | B3 | **Prueba de humo del renombrado:** validar los 30 flujos y correr la regresión | Validación 0 errores y regresión `5/5` | Verificación |
 | B4 | ✅ **Caso del motor en la regresión** (`[SUB] CCB · Motor — Invocar el motor y guardar` → W3, que lee la planilla Excel y necesita los criterios completos) — **hecho 24/09** | La regresión pasa a `6/6` ✅ (ejecución `428586`) | **+0,1 Testing** |
-| B5 | *(Opcional)* **Cerrar el hueco del correo de alerta silencioso**: si el envío de la alerta falla, hoy la ejecución queda en `success` y nadie se entera | El fallo de envío queda registrado y visible | Observabilidad |
+| B5 | ✅ **Cerrar el hueco del correo de alerta silencioso** — **hecho 24/09** con una rama de error en el subflujo compartido que registra el meta-incidente con claves propias | El fallo de envío queda registrado y visible (regresión `428867`, sub-ejecución `428877`) | Observabilidad |
 | B6 | **Cerrar la sesión** con la evidencia en la ficha de la feature y la memoria del proyecto | Ficha y memoria actualizadas | Trazabilidad |
 
 > **B4 cerrada (24/09).** El caso del motor corre de punta a punta y verifica el **estado real** (no el retorno del
