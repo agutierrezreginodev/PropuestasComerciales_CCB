@@ -99,15 +99,15 @@ footer{border-top:1px solid var(--line);margin-top:44px;padding-top:18px;color:v
 <body>
 <header class="top"><div class="wrap">
   <h1>Pipeline CCB · Arquitectura, evaluación del framework y pendientes</h1>
-  <p>Servicios de Información — Cámara de Comercio de Barranquilla. Informe generado el 2026-09-23 a partir de la instancia viva de n8n y de la re-auditoría de buenas prácticas.</p>
+  <p>Servicios de Información — Cámara de Comercio de Barranquilla. Informe generado el 2026-09-24: el <b>inventario</b> (ids, activos y nodos) se lee en vivo de la instancia de n8n; la <b>evaluación por flujo</b> y los <b>pendientes</b> son constantes tomadas de la re-auditoría de cierre del 23/09, no una medición automática.</p>
   <div class="hero">
     <div class="ring"><span>89,5<small>/100</small></span></div>
     <div class="txt">
       <b>Aprobado con observaciones — a 0,5 puntos del umbral de 90</b>
       <div class="chips">
         <span class="chip">29 flujos activos</span>
-        <span class="chip">301 nodos en total</span>
-        <span class="chip">máximo por flujo: 19 nodos</span>
+        <span class="chip">301 nodos en total (sin notas fijas; 320 con notas)</span>
+        <span class="chip">máximo por flujo: 19 nodos sin notas / 20 con notas</span>
         <span class="chip">10 de 11 requisitos de la lista de comprobación</span>
         <span class="chip">7 de 11 flujos sobre 90</span>
       </div>
@@ -211,7 +211,9 @@ corrección y la manda a revisión manual (F7-02). (3) Antes de recalcular, se p
 
 <h2 id="inventario"><span class="n">3</span>Inventario: los 30 flujos</h2>
 <p class="lead">Datos leídos de la instancia viva: 29 activos, 301 nodos en total y un máximo
-de 19 nodos por flujo (el criterio del framework es no superar los 20).</p>
+de 19 nodos por flujo. El conteo <b>excluye las notas fijas (sticky notes)</b>: contando con ellas
+son 320 nodos y el máximo sube a 20. El criterio del framework es
+<b>≤20 nodos</b>, así que se cumple en ambos conteos.</p>
 
 <h3>Las 12 etapas del pipeline</h3>
 <table class='inv'><thead><tr><th>Clave</th><th>Flujo</th><th>Nodos</th><th>Estado</th><th>Rol</th><th>Lo llama</th><th>Puntaje</th><th>ID</th></tr></thead><tbody><tr><td><code>W1</code></td><td>Extracción de información del cliente</td><td class='num'>19</td><td><span class='pill ok'>activo</span></td><td class='rol'>Recibe el lead por correo o contacto directo y envía el enlace del formulario.</td><td class='rol'>—</td><td class='num'><b>85</b><small>/100</small></td><td><code class='id'>w6h0qSblUESIpSVc</code></td></tr><tr><td><code>W2A</code></td><td>Guardar criterios y cotizar</td><td class='num'>19</td><td><span class='pill ok'>activo</span></td><td class='rol'>Guarda los criterios del cliente e invoca el motor de cálculo.</td><td class='rol'>W2C</td><td class='num'><b>89</b><small>/100</small></td><td><code class='id'>VChcasvisGKekezR</code></td></tr><tr><td><code>W2C</code></td><td>Recepción del formulario externo</td><td class='num'>10</td><td><span class='pill ok'>activo</span></td><td class='rol'>Webhook del formulario: valida los campos obligatorios y responde.</td><td class='rol'>Página del formulario</td><td class='num'><b>85</b><small>/100</small></td><td><code class='id'>u6KCMnLwFOp6Ja0N</code></td></tr><tr><td><code>W3</code></td><td>Motor de criterios y precio</td><td class='num'>16</td><td><span class='pill ok'>activo</span></td><td class='rol'>Calcula el precio con el motor y genera el PDF de la propuesta.</td><td class='rol'>W2A · W4D</td><td class='num'><b>90</b><small>/100</small></td><td><code class='id'>cHOIOEFB5nbltN82</code></td></tr><tr><td><code>W4A</code></td><td>Router de aprobación</td><td class='num'>8</td><td><span class='pill ok'>activo</span></td><td class='rol'>Detecta las propuestas listas y avisa al asesor.</td><td class='rol'>Cron</td><td class='num'><b>91</b><small>/100</small></td><td><code class='id'>7gmpPMBJtEb0W3J5</code></td></tr><tr><td><code>W4B</code></td><td>Aprobación por Teams</td><td class='num'>11</td><td><span class='pill ok'>activo</span></td><td class='rol'>Notifica al asesor por Teams con el enlace a la página de revisión.</td><td class='rol'>W4A</td><td class='num'><b>90</b><small>/100</small></td><td><code class='id'>5RJdnHDQ8NuWZJG7</code></td></tr><tr><td><code>W4C</code></td><td>Consultar la propuesta para revisión</td><td class='num'>9</td><td><span class='pill ok'>activo</span></td><td class='rol'>Webhook de consulta: devuelve el contexto y el PDF a la página.</td><td class='rol'>Página de revisión</td><td class='num'><b>87</b><small>/100</small></td><td><code class='id'>KuLSIzBZgaRIjuSu</code></td></tr><tr><td><code>W4D</code></td><td>Procesar la decisión</td><td class='num'>19</td><td><span class='pill ok'>activo</span></td><td class='rol'>Webhook de decisión y router de las tres ramas (aprobar, cancelar, corregir).</td><td class='rol'>Página de revisión</td><td class='num'><b>94</b><small>/100</small></td><td><code class='id'>W0TDH4b0tHCNOzFQ</code></td></tr><tr><td><code>W5A</code></td><td>Router de envío</td><td class='num'>11</td><td><span class='pill ok'>activo</span></td><td class='rol'>Detecta las propuestas aprobadas listas para enviar.</td><td class='rol'>Cron</td><td class='num'><b>91</b><small>/100</small></td><td><code class='id'>gvIn6mbAn2Y1bMRR</code></td></tr><tr><td><code>W5B</code></td><td>Envío al cliente</td><td class='num'>19</td><td><span class='pill ok'>activo</span></td><td class='rol'>Envía la propuesta con el PDF y cierra el envío.</td><td class='rol'>W5A</td><td class='num'><b>92</b><small>/100</small></td><td><code class='id'>XWBHgbmtBubA4gqx</code></td></tr><tr><td><code>W6</code></td><td>Finalizador de cotizaciones</td><td class='num'>10</td><td><span class='pill ok'>activo</span></td><td class='rol'>Cierra automáticamente las cotizaciones de 30+ días.</td><td class='rol'>Cron</td><td class='num'><b>91</b><small>/100</small></td><td><code class='id'>mPwl4qUb0zQkmDHN</code></td></tr><tr><td><code>Catch-all</code></td><td>Errores no capturados</td><td class='num'>5</td><td><span class='pill ok'>activo</span></td><td class='rol'>Red de respaldo: registra los incidentes que no detecta nadie más.</td><td class='rol'>errorWorkflow de los 11</td><td class='num muted'>—</td><td><code class='id'>Dh2lAQTzyoZBpXie</code></td></tr></tbody></table>
@@ -348,7 +350,7 @@ todos los puntos de escritura y guardarraíles en W4D, pero los webhooks públic
 <tr><td>Nomenclatura formal</td><td><span class="pill ok">cumple</span></td><td>Convención única documentada (patrón <code>[PREFIJO] CCB · CLAVE — Título</code>)</td></tr>
 <tr><td>Resiliencia (reintentos y timeout)</td><td><span class="pill ok">cumple</span></td><td>Reintentos 5×5000 en los nodos de red y timeout explícito de 60 s en los dos HTTP</td></tr>
 <tr><td>Seguridad (sin valores incrustados)</td><td><span class="pill ok">cumple</span></td><td>Cero correos, URLs o destinatarios dentro de los nodos: todo sale de <code>Configuracion_CCB</code></td></tr>
-<tr><td>Arquitectura (máx. 20 nodos por flujo)</td><td><span class="pill ok">cumple</span></td><td>El flujo más grande tiene 19 nodos; el router de decisión bajó de 54 a 19</td></tr>
+<tr><td>Arquitectura (máx. 20 nodos por flujo)</td><td><span class="pill ok">cumple</span></td><td>El flujo más grande tiene 19 nodos sin notas (20 con notas); el conteo excluye las notas fijas; el router de decisión bajó de 54 a 19</td></tr>
 <tr><td>Observabilidad (4 métricas y umbral)</td><td><span class="pill ok">cumple</span></td><td>Flujo de monitoreo horario + <code>Metricas_CCB</code> + marca de tiempo en los 8 puntos de error</td></tr>
 <tr><td>Idempotencia</td><td><span class="pill warn" style="background:var(--warnbg);color:var(--warn);border:1px solid #fde68a">parcial</span></td><td>6 de 11: <i>upserts</i> en las escrituras y guardarraíl de comentario repetido en W4D; los webhooks públicos no tienen clave de origen</td></tr>
 </tbody></table>
@@ -375,10 +377,11 @@ dimensión más baja.</p>
 <div class="card"><h4>Cómo se evaluó</h4>
 <p class="small">La rúbrica del framework pondera seis dimensiones sobre 100 (Arquitectura y manejo de errores sobre 20;
 documentación, seguridad, testing y observabilidad sobre 15) más una lista de comprobación de 11 requisitos. El puntaje del
-pipeline es el <b>promedio de los 11 flujos principales</b>. Todo lo que afirma este informe se verificó <b>contra la
-instancia viva</b>: inventario por API, validación estructural, ejecuciones reales de la regresión y del monitoreo, y
-capturas de error provocadas a propósito. Cuando una mejora no se pudo ejecutar, el puntaje se mantiene conservador y el
-hueco queda declarado.</p></div>
+pipeline es el <b>promedio de los 11 flujos principales</b>. El <b>inventario</b> (ids, activos y nodos) se lee en vivo de la
+instancia de n8n; la <b>evaluación por flujo</b> y los <b>pendientes</b> son constantes tomadas de la re-auditoría de cierre
+del 23/09, no una medición automática. Esa evaluación se verificó <b>contra la instancia viva</b> en su momento: inventario por
+API, validación estructural, ejecuciones reales de la regresión y del monitoreo, y capturas de error provocadas a propósito.
+Cuando una mejora no se pudo ejecutar, el puntaje se mantiene conservador y el hueco queda declarado.</p></div>
 <div class="card"><h4>Limitaciones declaradas</h4>
 <p class="small">(1) Es una evaluación por evidencia y verificación real, no una suite automatizada con integración continua:
 de ahí el 12,9 en Testing. (2) La poda de ejecuciones, <code>/metrics</code> y la licencia de carpetas son de instancia, no
@@ -401,9 +404,10 @@ cálculo; la cuarta es el estado de la propuesta; las dos últimas son la salud 
 </div>
 
 <footer>
-  <p><b>Pipeline CCB</b> — informe de arquitectura y evaluación del framework · generado el 2026-09-23 ·
-  29 flujos activos · 301 nodos · puntaje <b>89,5/100</b> (umbral de producción crítica: 90).</p>
-  <p class="small">Este documento se genera desde la instancia viva de n8n y desde los informes de auditoría del repositorio.
-  No sustituye a los informes firmados: los resume para lectura rápida y para presentación.</p>
+  <p><b>Pipeline CCB</b> — informe de arquitectura y evaluación del framework · generado el 2026-09-24 ·
+  29 flujos activos · 301 nodos (sin notas fijas; 320 con notas) · puntaje <b>89,5/100</b> (umbral de producción crítica: 90).</p>
+  <p class="small">El inventario (ids, activos y nodos) se lee en vivo de la instancia de n8n; la evaluación por flujo y los
+  pendientes son constantes tomadas de la re-auditoría de cierre del 23/09, no una medición automática. Este documento no
+  sustituye a los informes firmados: los resume para lectura rápida y para presentación.</p>
 </footer>
 </div></body></html>

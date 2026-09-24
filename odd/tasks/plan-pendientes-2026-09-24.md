@@ -1,7 +1,7 @@
 # Plan de trabajo — pendientes para el 2026-09-24
 
 **Punto de partida:** pipeline en **89,5/100** ([re-auditoría de cierre](../../docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md)),
-Fases 0–7 del plan de remediación cerradas, 48 commits locales sin push, 29 flujos activos.
+Fases 0–7 del plan de remediación cerradas, 52 commits locales sin push, 29 flujos activos.
 **Objetivo del día:** cruzar el **umbral de 90** y dejar el proyecto ordenado para la entrega (nombres, carpetas y push).
 
 ---

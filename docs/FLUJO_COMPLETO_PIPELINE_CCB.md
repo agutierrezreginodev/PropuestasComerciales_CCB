@@ -8,7 +8,7 @@ puede entender el pipeline sin abrir n8n.
 que un lead pide información hasta que la propuesta se envía, se aprueba, se cierra o se cancela — con el cálculo de
 precios, la generación del PDF, la aprobación interna y el envío al cliente.
 
-**Los números.** 27 flujos activos en n8n (12 principales + 13 subflujos + 2 operativos), 6 tablas de datos, 3 webhooks
+**Los números.** 29 flujos activos en n8n (12 principales + 15 subflujos + 2 operativos), 6 tablas de datos, 3 webhooks
 públicos autenticados y 2 páginas web. Puntaje de la última auditoría de buenas prácticas: **89,5/100**
 ([re-auditoría de cierre del 23/09](AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md)).
 
@@ -20,7 +20,7 @@ públicos autenticados y 2 páginas web. Puntaje de la última auditoría de bue
   LEAD (correo de mercadeo / contacto directo)
         │
         ▼
-  W1 · Extracción información del cliente ──► envía el link del formulario
+  W1 · Extracción de información del cliente ──► envía el link del formulario
         │
         ▼
   📄 Formulario  informaciongeorreferenciada-ccb.vercel.app      ← lo completa el CLIENTE
@@ -29,39 +29,39 @@ públicos autenticados y 2 páginas web. Puntaje de la última auditoría de bue
   W2C · Recepción del formulario externo  (valida campos obligatorios → 400 si faltan)
         │
         ▼
-  W2A · Guardar criterios y cotizar  ──►  [SUB] Invocar Motor y Guardar Cotización ──► W3
+  W2A · Guardar criterios y cotizar  ──►  [SUB] Motor — Invocar el motor y guardar ──► W3
         │                                                                              │
-        │                                                          W3 · Motor de cálculo
-        │                                                              + [SUB] Generar PDF
+        │                                                          W3 · Motor de criterios y precio
+        │                                                              + [SUB] PDF — Generar el PDF
         │                                                                              │
         ▼                                                                              ▼
   Cotizaciones_CCB  (estado PROPUESTA_GENERADA)  ◄────────────────────────  pdf_url del PDF
         │
         ▼
-  W4A · Router de aprobación ──► W4B · Aprobación (Teams) ──► aviso al APROBADOR con el enlace
+  W4A · Router de aprobación ──► W4B · Aprobación por Teams ──► aviso al APROBADOR con el enlace
         │
         ▼
   📄 Página de revisión  revision-propuesta-ccb.vercel.app       ← decide el ASESOR
         │  GET  /webhook/consultar-propuesta   (W4C · muestra el contexto y el PDF)
         │  POST /webhook/decidir-propuesta     (W4D · registra la decisión)
         ▼
-  W4D · Procesar decisión  ── tres ramas ──┐
+  W4D · Procesar la decisión  ── tres ramas ──┐
         │                                  ├── APROBAR   → estado APROBADA
         │                                  ├── CANCELAR  → estado CANCELADA
         │                                  └── CORREGIR  → rama de IA con 3 guardarraíles
         ▼
-  W5A · Router de envío ──► W5B · Envío al cliente ──► [SUB] Enviar propuesta al cliente
+  W5A · Router de envío ──► W5B · Envío al cliente ──► [SUB] Envío — Enviar al cliente
         │                                                     (correo + PDF al CLIENTE)
-        │                                              ──► [SUB] Cerrar envío
+        │                                              ──► [SUB] Envío — Cerrar el envío
         │                                                     (estado ENVIADA + aviso interno)
         ▼
-  W6 · Finalizador de Cotizaciones  (cierre automático a los 30+ días)
+  W6 · Finalizador de cotizaciones  (cierre automático a los 30+ días)
 
   ── Red de respaldo transversal ──
-  [SUB] Registrar y Alertar Error  (lo llaman los flujos que fallan: fila + correo)
+  [SUB] Error — Registrar y alertar  (lo llaman los flujos que fallan: fila + correo)
   catch-all  (errorWorkflow de los 11 flujos principales: fallos no capturados)
-  [OPS] Monitoreo del pipeline  (cada hora: 4 métricas + aviso por umbral)
-  [OPS] Regresión del pipeline  (los lunes 6:00: prueba los caminos críticos)
+  [OPS] Monitoreo — Métricas del pipeline  (cada hora: 4 métricas + aviso por umbral)
+  [OPS] Regresión — Prueba de regresión  (los lunes 6:00: prueba los caminos críticos)
 ```
 
 ---
@@ -82,65 +82,65 @@ públicos autenticados y 2 páginas web. Puntaje de la última auditoría de bue
 
 ### Etapa 1 — El lead y el formulario
 
-1. Llega un lead por correo de mercadeo o contacto directo. **W1** (`Extracción información del cliente`) lo procesa y le
+1. Llega un lead por correo de mercadeo o contacto directo. **W1** (`Extracción de información del cliente`) lo procesa y le
    envía el enlace del formulario.
 2. El cliente completa el formulario en `informaciongeorreferenciada-ccb.vercel.app`. La página llama al webhook
    `solicitud-georreferenciada` con la cabecera de autenticación.
-3. **W2C** (`Recepción Formulario Externo`) valida que estén los campos obligatorios: si falta alguno responde **400** con
+3. **W2C** (`Recepción del formulario externo`) valida que estén los campos obligatorios: si falta alguno responde **400** con
    el detalle, sin tocar la base. Si están, sigue.
-4. **W2A** (`Guardar Criterios y Cotizar Servicio`) guarda los criterios del cliente y llama al subflujo
-   `[SUB] Invocar Motor y Guardar Cotización`, que invoca a **W3** y guarda el resultado.
-5. **W3** (`Motor Criterios y Precio`) calcula el precio con el motor de criterios y llama a
-   `[SUB] Generar PDF de Propuesta`, que pide el PDF al microservicio y devuelve la `pdf_url`.
+4. **W2A** (`Guardar criterios y cotizar`) guarda los criterios del cliente y llama al subflujo
+   `[SUB] Motor — Invocar el motor y guardar`, que invoca a **W3** y guarda el resultado.
+5. **W3** (`Motor de criterios y precio`) calcula el precio con el motor de criterios y llama a
+   `[SUB] PDF — Generar el PDF`, que pide el PDF al microservicio y devuelve la `pdf_url`.
 6. Queda una fila en **`Cotizaciones_CCB`** con `estado = PROPUESTA_GENERADA`, el valor, el IVA, el total y la `pdf_url`.
 
 **Si algo falla:** el error se registra y se avisa (ver §5). El cliente no recibe nada roto: la página muestra el error.
 
 ### Etapa 2 — La aprobación interna
 
-7. **W4A** (`Router de Aprobación`) detecta las cotizaciones en `PROPUESTA_GENERADA`.
-8. **W4B** (`Aprobación de Propuesta (Teams)`) avisa al asesor por Teams con el enlace a la página de revisión. Lee el
-   contexto de la propuesta con `[SUB] Leer Contexto Propuesta` y el chat desde la configuración.
-9. El asesor abre `revision-propuesta-ccb.vercel.app`, que consulta **W4C** (`Consultar Propuesta para Revisión`, webhook
+7. **W4A** (`Router de aprobación`) detecta las cotizaciones en `PROPUESTA_GENERADA`.
+8. **W4B** (`Aprobación por Teams`) avisa al asesor por Teams con el enlace a la página de revisión. Lee el
+   contexto de la propuesta con `[SUB] Contexto — Leer el contexto de la propuesta` y el chat desde la configuración.
+9. El asesor abre `revision-propuesta-ccb.vercel.app`, que consulta **W4C** (`Consultar la propuesta para revisión`, webhook
    `consultar-propuesta`) y muestra los datos, los criterios y el PDF.
 
 ### Etapa 3 — La decisión (las tres ramas)
 
-10. El asesor decide en la página. **W4D** (`Procesar Decisión de Propuesta`) recibe la decisión por el webhook
+10. El asesor decide en la página. **W4D** (`Procesar la decisión`) recibe la decisión por el webhook
     `decidir-propuesta`, valida que sea reconocible (si no, **400**) y responde **antes** de cualquier espera.
 
 | Rama | Qué hace | Estado final |
 |---|---|---|
-| **Aprobar** | `[SUB] W4D Aprobar`: guarda el comentario del asesor | `APROBADA` |
-| **Cancelar** | `[SUB] W4D Cancelar`: guarda el comentario | `CANCELADA` |
-| **Pedir correcciones** | `[SUB] W4D Corrección IA` (ver abajo) | `EN_REVISION` (ronda +1) o `REVISION_MANUAL` |
+| **Aprobar** | `[SUB] W4D — Aprobar`: guarda el comentario del asesor | `APROBADA` |
+| **Cancelar** | `[SUB] W4D — Cancelar`: guarda el comentario | `CANCELADA` |
+| **Pedir correcciones** | `[SUB] W4D — Corrección con IA` (ver abajo) | `EN_REVISION` (ronda +1) o `REVISION_MANUAL` |
 
 **La rama de correcciones, en orden, con sus tres guardarraíles:**
 
-1. Si ya hay **3 rondas** → `[SUB] W4D Revisión Manual` con motivo `tope` (no consume ronda).
+1. Si ya hay **3 rondas** → `[SUB] W4D — Revisión manual` con motivo `tope` (no consume ronda).
 2. Si el interruptor `ia_correccion_habilitada` está en **falso** → Revisión Manual con motivo `ia_desactivada`
    (no llama al modelo).
 3. La IA ajusta los criterios y declara su **confianza**. Cada valor se valida contra las listas cerradas y los inválidos
    se descartan.
 4. Si la confianza es **baja** → Revisión Manual con motivo `confianza_baja` (no se aplica nada).
 5. Se pide **aprobación humana por Teams** (`sendAndWait`, hasta 24 h) con el ajuste propuesto y el enlace.
-6. Aprobada → se recalcula con **W3** y sigue `[SUB] W4D Cierre de Corrección` (guarda la ronda, sube a `EN_REVISION` y
+6. Aprobada → se recalcula con **W3** y sigue `[SUB] W4D — Cierre de la corrección` (guarda la ronda, sube a `EN_REVISION` y
    avisa por Teams). Rechazada, sin respuesta o fallo de envío → Revisión Manual con motivo `aprobacion_rechazada`.
 
 Ninguno de los caminos a Revisión Manual **consume una ronda de corrección**.
 
 ### Etapa 4 — El envío al cliente
 
-11. **W5A** (`Router de Envío`) toma las cotizaciones aprobadas.
-12. **W5B** (`Envío al Cliente`) llama a `[SUB] Enviar propuesta al cliente`: correo con el PDF al cliente y luego
-    `[SUB] Cerrar envío`, que marca `ENVIADA` en `Cotizaciones_CCB` (con `fecha_envio` y `enviado_a`) y en
+11. **W5A** (`Router de envío`) toma las cotizaciones aprobadas.
+12. **W5B** (`Envío al cliente`) llama a `[SUB] Envío — Enviar al cliente`: correo con el PDF al cliente y luego
+    `[SUB] Envío — Cerrar el envío`, que marca `ENVIADA` en `Cotizaciones_CCB` (con `fecha_envio` y `enviado_a`) y en
     `Solicitudes_CCB`, y avisa internamente al asesor.
-13. Si el envío falla, `[SUB] Cerrar error de envío` registra el fallo y **el asesor igual recibe respuesta** (nadie queda
+13. Si el envío falla, `[SUB] Envío — Cerrar el error de envío` registra el fallo y **el asesor igual recibe respuesta** (nadie queda
     sin contestación).
 
 ### Etapa 5 — El cierre
 
-14. **W6** (`Finalizador de Cotizaciones`) cierra automáticamente las cotizaciones que llevan **30+ días** sin moverse.
+14. **W6** (`Finalizador de cotizaciones`) cierra automáticamente las cotizaciones que llevan **30+ días** sin moverse.
 
 ---
 
@@ -165,7 +165,7 @@ PROPUESTA_GENERADA ──► (el asesor decide)
 **Tres capas, en orden:**
 
 1. **Reintentos.** Todos los nodos de red reintentan 5 veces cada 5 segundos; los dos nodos HTTP tienen timeout de 60 s.
-2. **Subflujo compartido `[SUB] Registrar y Alertar Error`.** Lo llaman los flujos que detectan un fallo: escribe una fila
+2. **Subflujo compartido `[SUB] Error — Registrar y alertar`.** Lo llaman los flujos que detectan un fallo: escribe una fila
    en **`Errores_CCB`** con `id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error` (con los datos personales
    enmascarados: `<correo>`, `<url>`, `<num>`) y `error_timestamp` en hora de Bogotá, y manda el correo de alerta. Devuelve
    el item al llamador, así **el flujo que falló no se corta**.
@@ -189,7 +189,7 @@ PROPUESTA_GENERADA ──► (el asesor decide)
 
 | Tabla | ID | Qué guarda | Quién escribe | Quién lee |
 |---|---|---|---|---|
-| **Configuracion_CCB** | `8ChPkhKrjag6Jkcs` | 12 claves: correos, URL del microservicio, chat de Teams, interruptor de IA, URL de revisión, URL de la API | Se edita a mano | Todos (por `[SUB] Leer Configuración`) |
+| **Configuracion_CCB** | `8ChPkhKrjag6Jkcs` | 12 claves: correos, URL del microservicio, chat de Teams, interruptor de IA, URL de revisión, URL de la API | Se edita a mano | Todos (por `[SUB] Config — Leer la configuración`) |
 | **Solicitudes_CCB** | `u5gFYvTfuQRX71u5` | La solicitud del cliente | W2C / W2A | W4B, W4C, W5B |
 | **Criterios_Cotizacion** | `ldABWugJR1GcFFyy` | Los criterios de cotización (sector, registros, plan…) | W2A / W4D | W3, W4D, W5B |
 | **Cotizaciones_CCB** | `YAvQTqzsgJWjacVZ` | La propuesta: valores, `pdf_url`, estado, ronda, comentario, envío | W2A (motor), W4D, W5B, W6 | W4A, W4C, W4D, W5A, W5B, W6 |
@@ -206,48 +206,50 @@ PROPUESTA_GENERADA ──► (el asesor decide)
 
 ---
 
-## 7. El mapa técnico: los 27 flujos
+## 7. El mapa técnico: los 29 flujos
 
 ### Los 12 principales (lo que hace el negocio)
 
 | Flujo | ID | Rol |
 |---|---|---|
-| W1 · Extracción información del cliente | `w6h0qSblUESIpSVc` | Lead → link del formulario |
-| W2A · Guardar Criterios y Cotizar | `VChcasvisGKekezR` | Guarda criterios e invoca el motor |
-| W2C · Recepción Formulario Externo | `u6KCMnLwFOp6Ja0N` | Webhook del formulario (valida y responde) |
-| W3 · Motor Criterios y Precio | `cHOIOEFB5nbltN82` | Calcula y genera el PDF |
-| W4A · Router de Aprobación | `7gmpPMBJtEb0W3J5` | Detecta propuestas por aprobar |
-| W4B · Aprobación de Propuesta (Teams) | `5RJdnHDQ8NuWZJG7` | Avisa al asesor |
-| W4C · Consultar Propuesta para Revisión | `KuLSIzBZgaRIjuSu` | Webhook de consulta de la página |
-| W4D · Procesar Decisión de Propuesta | `W0TDH4b0tHCNOzFQ` | Webhook de decisión + router de ramas |
-| W5A · Router de Envío | `gvIn6mbAn2Y1bMRR` | Detecta aprobadas por enviar |
-| W5B · Envío al Cliente | `XWBHgbmtBubA4gqx` | Envía y cierra el envío |
-| W6 · Finalizador de Cotizaciones | `mPwl4qUb0zQkmDHN` | Cierre a los 30+ días |
-| Error Workflow (catch-all) | `Dh2lAQTzyoZBpXie` | Red de respaldo de fallos no capturados |
+| W1 · Extracción de información del cliente | `w6h0qSblUESIpSVc` | Lead → link del formulario |
+| W2A · Guardar criterios y cotizar | `VChcasvisGKekezR` | Guarda criterios e invoca el motor |
+| W2C · Recepción del formulario externo | `u6KCMnLwFOp6Ja0N` | Webhook del formulario (valida y responde) |
+| W3 · Motor de criterios y precio | `cHOIOEFB5nbltN82` | Calcula y genera el PDF |
+| W4A · Router de aprobación | `7gmpPMBJtEb0W3J5` | Detecta propuestas por aprobar |
+| W4B · Aprobación por Teams | `5RJdnHDQ8NuWZJG7` | Avisa al asesor |
+| W4C · Consultar la propuesta para revisión | `KuLSIzBZgaRIjuSu` | Webhook de consulta de la página |
+| W4D · Procesar la decisión | `W0TDH4b0tHCNOzFQ` | Webhook de decisión + router de ramas |
+| W5A · Router de envío | `gvIn6mbAn2Y1bMRR` | Detecta aprobadas por enviar |
+| W5B · Envío al cliente | `XWBHgbmtBubA4gqx` | Envía y cierra el envío |
+| W6 · Finalizador de cotizaciones | `mPwl4qUb0zQkmDHN` | Cierre a los 30+ días |
+| Catch-all — Errores no capturados | `Dh2lAQTzyoZBpXie` | Red de respaldo de fallos no capturados |
 
-### Los 13 subflujos (piezas reutilizables)
+### Los 15 subflujos (piezas reutilizables)
 
 | Subflujo | ID | Lo llaman |
 |---|---|---|
-| Registrar y Alertar Error | `2dY1kaT7I5a0eP2w` | 8 flujos + la regresión |
-| Leer Configuración | `Hgy02eqPhnsdJvkq` | 9 flujos |
-| Leer Contexto Propuesta | `GELWpskp0aYJ2zPg` | W4B, W4C, W4D, W5B |
-| Generar PDF de Propuesta | `DF3emCmBBBB2HA3i` | W3 |
-| Invocar Motor y Guardar Cotización | `MHWlUApSFT6gpBHs` | W2A |
-| Enviar propuesta al cliente | `AnPJGVWylmKEYWmJ` | W5B |
-| Cerrar envío | `1Zzkrg3dTkTrddgp` | W5B |
-| Cerrar error de envío | `D2d9Og6UUvq13TJA` | W5B |
-| W4D Aprobar / Cancelar | `8j6BCwXkgJCccyO1` / `Jgf514VxDINJ8ra3` | W4D |
-| W4D Revisión Manual | `iNSErCHs2iw33emJ` | W4D (4 motivos) |
-| W4D Corrección IA | `3NAcLF4jaZ1JBw0A` | W4D |
-| W4D Cierre de Corrección | `POeFkqQp8e4cGfY3` | W4D |
+| Error — Registrar y alertar | `2dY1kaT7I5a0eP2w` | 8 flujos + la regresión |
+| Config — Leer la configuración | `Hgy02eqPhnsdJvkq` | 9 flujos |
+| Contexto — Leer el contexto de la propuesta | `GELWpskp0aYJ2zPg` | W4B, W4C, W4D, W5B |
+| PDF — Generar el PDF | `DF3emCmBBBB2HA3i` | W3 |
+| Motor — Invocar el motor y guardar | `MHWlUApSFT6gpBHs` | W2A |
+| Envío — Enviar al cliente | `AnPJGVWylmKEYWmJ` | W5B |
+| Envío — Cerrar el envío | `1Zzkrg3dTkTrddgp` | W5B |
+| Envío — Cerrar el error de envío | `D2d9Og6UUvq13TJA` | W5B |
+| W4D — Aprobar / Cancelar | `8j6BCwXkgJCccyO1` / `Jgf514VxDINJ8ra3` | W4D |
+| W4D — Revisión manual | `iNSErCHs2iw33emJ` | W4D (4 motivos) |
+| W4D — Corrección con IA | `3NAcLF4jaZ1JBw0A` | W4D |
+| W4D — Cierre de la corrección | `POeFkqQp8e4cGfY3` | W4D |
+| Regresión — Preparar filas | `DgUfcoudk228kOw8` | La regresión |
+| Regresión — Verificar y limpiar | `OuE4SS9Jujz1dVif` | La regresión |
 
 ### Los 2 operativos (no procesan propuestas)
 
 | Flujo | ID | Rol |
 |---|---|---|
-| Monitoreo del pipeline | `ZwBFTBhwS9pjS69X` | Cada hora: 4 métricas + aviso por umbral |
-| Regresión del pipeline | `GVE3iNQ80y5Q9FEw` | Lunes 6:00: prueba los caminos críticos y publica el semáforo |
+| Monitoreo — Métricas del pipeline | `ZwBFTBhwS9pjS69X` | Cada hora: 4 métricas + aviso por umbral |
+| Regresión — Prueba de regresión | `GVE3iNQ80y5Q9FEw` | Lunes 6:00: prueba los caminos críticos y publica el semáforo |
 
 Detalle de cada flujo (por qué se creó, cómo funciona, con qué se relaciona): [FLUJOS_PIPELINE_CCB.md](FLUJOS_PIPELINE_CCB.md).
 
@@ -260,7 +262,7 @@ Detalle de cada flujo (por qué se creó, cómo funciona, con qué se relaciona)
 | **Cambiar un destinatario, una URL o el chat de Teams** | Editar la fila correspondiente en `Configuracion_CCB`. **No se toca ningún workflow.** |
 | **Apagar la corrección con IA** | Poner `ia_correccion_habilitada` en `false`. Las correcciones pasan a revisión manual y el resto sigue igual. |
 | **Ver el estado del pipeline** | `Metricas_CCB` (las 4 métricas + `regresion_pipeline`) o el correo del monitor. |
-| **Probar que todo sigue funcionando** | Lanzar a mano `[OPS] CCB - Regresión del pipeline` (o esperar el lunes). Deja el semáforo en `Metricas_CCB`. |
+| **Probar que todo sigue funcionando** | Lanzar a mano `[OPS] CCB · Regresión — Prueba de regresión` (o esperar el lunes). Deja el semáforo en `Metricas_CCB`. |
 | **Investigar un error** | El correo de alerta → `Errores_CCB` → la ejecución en n8n (§5). |
 | **Ver el PDF de una propuesta** | La columna `pdf_url` de `Cotizaciones_CCB`. |
 | **Saber quién consumió una ronda** | La columna `ronda_correccion` de `Cotizaciones_CCB` (máximo 3) y el comentario en `comentario_fausto`. |

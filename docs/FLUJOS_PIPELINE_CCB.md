@@ -24,9 +24,9 @@ Todos los flujos nuevos deben quedar en esa misma carpeta.
 
 | Prefijo | Se usa para | Ejemplos |
 |---|---|---|
-| `[SUB]` | Subflujo: se invoca desde otro flujo (`Execute Workflow`) | `[SUB] CCB - Registrar y Alertar Error` |
-| `[OPS]` | Flujo operativo/de plataforma: no procesa propuestas, opera el pipeline | `[OPS] CCB - Monitoreo del pipeline` |
-| (sin prefijo) | Flujo principal del pipeline | `CCB - Workflow 1 - Extracción información del cliente` |
+| `[SUB]` | Subflujo: se invoca desde otro flujo (`Execute Workflow`) | `[SUB] CCB · Error — Registrar y alertar` |
+| `[OPS]` | Flujo operativo/de plataforma: no procesa propuestas, opera el pipeline | `[OPS] CCB · Monitoreo — Métricas del pipeline` |
+| (sin prefijo) | Flujo principal del pipeline | `CCB · W1 — Extracción de información del cliente` |
 
 Los nodos dentro de los flujos siguen la convención `[Servicio] - [Acción/Recurso]` (p. ej. `Data Table - Leer cotización`,
 `Outlook - Enviar alerta`) y los de decisión `[Lógica] - [Condición]` (p. ej. `IF - ¿Rondas de corrección >= 3?`).
@@ -37,7 +37,7 @@ un item con la misma forma o una ampliada, para que el llamador pueda seguir su 
 
 ---
 
-## 2. `[SUB] CCB - Registrar y Alertar Error`
+## 2. `[SUB] CCB · Error — Registrar y alertar`
 **ID:** `2dY1kaT7I5a0eP2w` · **Nodos:** 6 · **Plan:** F4-01
 
 **Por qué se creó.** El patrón `Preparar error → registrar en Errores_CCB → alertar por Outlook` estaba **replicado en
@@ -57,7 +57,7 @@ variantes B (W2C, W3, W4C y tres ramas de W4D): esas responden al llamador y no 
 
 ---
 
-## 3. `[SUB] CCB - Leer Configuración`
+## 3. `[SUB] CCB · Config — Leer la configuración`
 **ID:** `Hgy02eqPhnsdJvkq` · **Nodos:** 4 · **Plan:** F5 (F5-01, F5-03)
 
 **Por qué se creó.** El correo de alertas, el correo y nombre del asesor, la URL del microservicio de PDF y el chat de
@@ -81,7 +81,7 @@ el subflujo de PDF, el subflujo de Revisión Manual y el flujo de monitoreo. Las
 
 ---
 
-## 4. `[SUB] CCB - Leer Contexto Propuesta`
+## 4. `[SUB] CCB · Contexto — Leer el contexto de la propuesta`
 **ID:** `GELWpskp0aYJ2zPg` · **Nodos:** 7 · **Plan:** F4-02
 
 **Por qué se creó.** El bloque de **tres lecturas idénticas** (`Cotizaciones_CCB` + `Criterios_Cotizacion` +
@@ -99,7 +99,7 @@ cadena, cada llamador decide qué hacer con los datos faltantes (igual que antes
 
 ---
 
-## 5. `[SUB] CCB - Generar PDF de Propuesta`
+## 5. `[SUB] CCB · PDF — Generar el PDF`
 **ID:** `DF3emCmBBBB2HA3i` · **Nodos:** 12 · **Plan:** F4-05
 
 **Por qué se creó.** W3 (motor de cálculo) mezclaba dos responsabilidades: **calcular el precio** y **armar la
@@ -123,39 +123,39 @@ por `PDF_URL` (W5B lo descarga desde ahí para adjuntarlo o mandar el enlace).
 ---
 
 ## 6. Los tres subflujos del envío (W5B)
-**Plan:** F4-03 (W5B pasó de 25 a **19 nodos** en el conteo del framework; reutiliza además `[SUB] CCB - Leer Contexto Propuesta`)
+**Plan:** F4-03 (W5B pasó de 25 a **19 nodos** en el conteo del framework; reutiliza además `[SUB] CCB · Contexto — Leer el contexto de la propuesta`)
 
 W5B hacía cuatro cosas en un solo lienzo: leer la propuesta, descargar el PDF, enviarlo y cerrar el estado. Se extrajeron
 las dos últimas para dejarlo bajo el umbral, **sin tocar la descarga del PDF ni la composición del correo** (los pasos con
 más riesgo de verificación real).
 
-### 6.1 `[SUB] CCB - Enviar propuesta al cliente` — `AnPJGVWylmKEYWmJ` · 9 nodos
+### 6.1 `[SUB] CCB · Envío — Enviar al cliente` — `AnPJGVWylmKEYWmJ` · 9 nodos
 **Por qué:** el envío al cliente y el cierre del envío son una sola responsabilidad ("enviar la propuesta"), y mezclados
 en W5B lo dejaban sobre el umbral de nodos. **Cómo funciona:** recibe el item preparado por W5B
 (`email_destinatario`, `emailBodyConAdjunto`, `emailBodySoloLink`, `adjuntar`, el binario del PDF e `id_solicitud`), decide
 con `IF - ¿Adjuntar PDF? (<4MB)` entre `Outlook - Enviar con adjunto` y `Outlook - Enviar solo link`, **reinyecta el
 contexto** (`Reinyectar contexto del envío`: los nodos de Outlook devuelven `{success:true}` y pierden los datos), delega
-el cierre en `[SUB] CCB - Cerrar envío` y devuelve `{ ok:true, id_solicitud, mensaje }`. Si el correo falla,
+el cierre en `[SUB] CCB · Envío — Cerrar el envío` y devuelve `{ ok:true, id_solicitud, mensaje }`. Si el correo falla,
 `Devolver fallo de envío` devuelve el item con `{ ok:false, error, mensaje_error }` para que W5B use su rama de error de
-siempre. **Relaciones:** lo llama W5B (`Ejecutar Enviar al Cliente`); llama a `[SUB] CCB - Cerrar envío`.
+siempre. **Relaciones:** lo llama W5B (`Ejecutar Enviar al Cliente`); llama a `[SUB] CCB · Envío — Cerrar el envío`.
 
-### 6.2 `[SUB] CCB - Cerrar envío` — `1Zzkrg3dTkTrddgp` · 6 nodos
+### 6.2 `[SUB] CCB · Envío — Cerrar el envío` — `1Zzkrg3dTkTrddgp` · 6 nodos
 **Por qué:** marcar `ENVIADA` en dos tablas y avisar al asesor es el cierre de un envío exitoso, y es reutilizable por
 cualquier flujo que envíe una propuesta. **Cómo funciona:** lee la configuración (destinatario del aviso) y el contexto
-con `[SUB] CCB - Leer Contexto Propuesta` (razón social para el cuerpo del aviso), marca `ENVIADA` en `Cotizaciones_CCB`
+con `[SUB] CCB · Contexto — Leer el contexto de la propuesta` (razón social para el cuerpo del aviso), marca `ENVIADA` en `Cotizaciones_CCB`
 (con `enviado_a` tomado del item del llamador y la fecha) y en `Solicitudes_CCB`, y notifica al asesor por correo.
-**Relaciones:** lo llama `[SUB] CCB - Enviar propuesta al cliente`.
+**Relaciones:** lo llama `[SUB] CCB · Envío — Enviar al cliente`.
 
-### 6.3 `[SUB] CCB - Cerrar error de envío` — `D2d9Og6UUvq13TJA` · 3 nodos
+### 6.3 `[SUB] CCB · Envío — Cerrar el error de envío` — `D2d9Og6UUvq13TJA` · 3 nodos
 **Por qué:** el cierre de un envío fallido (marcar `ERROR_ENVIO` + registrar + alertar) estaba dentro de W5B y es el mismo
 patrón que ya usa el subflujo de error compartido. **Cómo funciona:** recibe el item ya preparado por la rama de error de
 W5B (`id_solicitud`, `workflow_origen`, `nodo_fallido`, `mensaje_error`, `emailBody`), marca `ERROR_ENVIO` y llama a
-`[SUB] CCB - Registrar y Alertar Error`. **Relaciones:** lo llama W5B (`Ejecutar Cerrar Error de Envío`, alimentado por
+`[SUB] CCB · Error — Registrar y alertar`. **Relaciones:** lo llama W5B (`Ejecutar Cerrar Error de Envío`, alimentado por
 `Preparar alerta de fallo - Envío`); llama al subflujo compartido de error.
 
 ---
 
-## 7. `[SUB] CCB - Invocar Motor y Guardar Cotización`
+## 7. `[SUB] CCB · Motor — Invocar el motor y guardar`
 **ID:** `MHWlUApSFT6gpBHs` · **Nodos:** 10 · **Plan:** F4-03 (W2A pasó de 25 a **19 nodos**)
 
 **Por qué se creó.** W2-A (guardar criterios y cotizar) tenía 25 nodos: además de leer y validar el formulario, guardaba
@@ -169,14 +169,14 @@ del item del llamador) y evalúa `IF - Motor Retornó OK`:
 - **El motor calculó** → `Data Table - Guardar Cotización` (upsert por `id_solicitud`) → `Return - Cotización generada`
   devuelve la respuesta lista para el formulario.
 - **El motor rechazó el cálculo o lanzó una excepción** → `Preparar error - Motor rechazó la propuesta` (distingue
-  excepción de rechazo) → `[SUB] CCB - Registrar y Alertar Error` → `Return - Error (motor)`.
-- **Falló el guardado** → `Preparar error - Guardado de cotización` → `[SUB] CCB - Registrar y Alertar Error` →
+  excepción de rechazo) → `[SUB] CCB · Error — Registrar y alertar` → `Return - Error (motor)`.
+- **Falló el guardado** → `Preparar error - Guardado de cotización` → `[SUB] CCB · Error — Registrar y alertar` →
   `Return - Error (motor)`.
 
 Devuelve el item de respuesta en los tres casos, así que el flujo llamador no necesita enrutar el resultado.
 
 **Relaciones.** Lo llama **W2-A** (`Ejecutar Invocar Motor y Guardar Cotización`, alimentado por los cuatro
-`Preparar criterios para motor - …`); llama a **W3** (motor de cálculo) y a `[SUB] CCB - Registrar y Alertar Error`.
+`Preparar criterios para motor - …`); llama a **W3** (motor de cálculo) y a `[SUB] CCB · Error — Registrar y alertar`.
 Las ramas de error de validación de entrada y de guardado de criterios siguen viviendo en W2-A.
 
 ---
@@ -189,16 +189,16 @@ Ahora W4D es un **router de 20 nodos** y cada rama vive en su propio subflujo. L
 preservan: **400** `{ok:false, error}` cuando la decisión no se reconoce antes de leer la base, **200**
 `{ok:false, mensaje}` cuando no se reconoce después.
 
-### 8.1 `[SUB] CCB - W4D Aprobar` — `8j6BCwXkgJCccyO1` · 3 nodos
+### 8.1 `[SUB] CCB · W4D — Aprobar` — `8j6BCwXkgJCccyO1` · 3 nodos
 **Por qué:** la rama "aprobar" eran dos nodos dentro del lienzo gigante. **Cómo funciona:** recibe el item consolidado,
 `Data Table - Marcar APROBADA` (estado + comentario del asesor) y `Confirmar aprobación` devuelve el mensaje de
 confirmación que el router responde al asesor. **Relaciones:** lo llama W4D (`Ejecutar Aprobar`); el resultado vuelve por
 `Responder decisión`.
 
-### 8.2 `[SUB] CCB - W4D Cancelar` — `Jgf514VxDINJ8ra3` · 3 nodos
+### 8.2 `[SUB] CCB · W4D — Cancelar` — `Jgf514VxDINJ8ra3` · 3 nodos
 **Por qué / cómo / relaciones:** idéntico al anterior pero marca `CANCELADA` (`Ejecutar Cancelar`).
 
-### 8.3 `[SUB] CCB - W4D Revisión Manual` — `iNSErCHs2iw33emJ` · 6 nodos
+### 8.3 `[SUB] CCB · W4D — Revisión manual` — `iNSErCHs2iw33emJ` · 6 nodos
 **Por qué:** había **dos** cadenas casi iguales de "marcar `REVISION_MANUAL` + avisar" (tope de rondas y corrección no
 aplicada por confianza baja o IA desactivada). Se unificaron en un subflujo que calcula el **motivo** y arma el aviso:
 `Preparar aviso - Revisión manual` → `Data Table - Marcar REVISION_MANUAL` (`alwaysOutputData`: el aviso sale aunque la
@@ -207,7 +207,7 @@ el item) → `Confirmar aviso - Revisión manual`. **Motivos soportados:** `tope
 `confianza_baja` y `aprobacion_rechazada`. **Ninguno consume una ronda de corrección.** El nombre y la razón social del
 cliente salen **parciales** (F6-03) y el comentario del asesor se enmascara. **Relaciones:** lo llama C1 (tres caminos).
 
-### 8.4 `[SUB] CCB - W4D Corrección IA` — `3NAcLF4jaZ1JBw0A` · 18 nodos
+### 8.4 `[SUB] CCB · W4D — Corrección con IA` — `3NAcLF4jaZ1JBw0A` · 18 nodos
 **Por qué:** concentra todo el camino "solicitar correcciones": los guardarraíles de IA, el ajuste con el modelo, la
 re-invocación del motor y el traspaso al cierre. **Cómo funciona, en orden:**
 1. `Ejecutar Leer Configuración` (interruptor `ia_correccion_habilitada`, chat de aprobación, URL de revisión).
@@ -227,12 +227,12 @@ re-invocación del motor y el traspaso al cierre. **Cómo funciona, en orden:**
    - **aprobada** → `Re-invocar motor` (W3 recalcula) y sigue al cierre de corrección;
    - **rechazada, sin respuesta o fallo al enviar** → Revisión Manual (motivo `aprobacion_rechazada`).
 8. `Preservar contexto de la corrección` agrega el comentario del asesor y el contexto al resultado del motor, y llama a
-   `[SUB] CCB - W4D Cierre de Corrección`.
+   `[SUB] CCB · W4D — Cierre de la corrección`.
 
 **Relaciones:** lo llama W4D (`Ejecutar Corrección IA`) **después de responderle al asesor** (ver más abajo); llama a
 W3 por medio de `Re-invocar motor`, al subflujo de Revisión Manual y al subflujo de Cierre de Corrección.
 
-### 8.5 `[SUB] CCB - W4D Cierre de Corrección` — `POeFkqQp8e4cGfY3` · 17 nodos
+### 8.5 `[SUB] CCB · W4D — Cierre de la corrección` — `POeFkqQp8e4cGfY3` · 17 nodos
 **Por qué:** todo lo que pasa **después** del recálculo (verificar el resultado, guardar la ronda, avisar por Teams y
 manejar los dos fallos posibles) estaba mezclado con el resto del camino de correcciones.
 **Cómo funciona:** `IF - ¿Recálculo exitoso (ok)?` → si fue bien: `Data Table - Releer cotización` →
@@ -240,7 +240,7 @@ manejar los dos fallos posibles) estaba mezclado con el resto del camino de corr
 `Data Table - Guardar ronda y comentario` (ronda +1, estado `EN_REVISION`) → `Reconstruir mensaje simple` →
 `Teams - Enviar mensaje (corrección)` con el enlace a la página → confirmación. Si el motor rechazó el recálculo o
 lanzó una excepción: `Preparar error - Recálculo falló` → `Data Table - Marcar ERROR_CALCULO` →
-`[SUB] CCB - Registrar y Alertar Error` → confirmación de error. Si falla el mensaje de Teams:
+`[SUB] CCB · Error — Registrar y alertar` → confirmación de error. Si falla el mensaje de Teams:
 `Preparar error - Teams envío` → registra en `Errores_CCB` → confirma igual (el asesor no queda sin respuesta).
 **Relaciones:** lo llama C1; llama al subflujo de error y usa la configuración para el chat de Teams y la URL de revisión.
 
@@ -254,7 +254,7 @@ esperar la aprobación humana, para que la página de revisión no quede colgada
 
 ---
 
-## 9. `[OPS] CCB - Monitoreo del pipeline`
+## 9. `[OPS] CCB · Monitoreo — Métricas del pipeline`
 **ID:** `ZwBFTBhwS9pjS69X` · **Nodos:** 10 · **Plan:** F6-05
 
 **Por qué se creó.** El framework pide monitorear cuatro métricas (tasa de ejecución, tasa de error por flujo con umbral
@@ -276,7 +276,7 @@ de configuración, de `Errores_CCB` (que alimentan los 8 flujos que registran er
 
 ---
 
-## 9.bis `[OPS] CCB - Regresión del pipeline`
+## 9.bis `[OPS] CCB · Regresión — Prueba de regresión`
 **ID:** `GVE3iNQ80y5Q9FEw` · **Nodos:** 16 · **Plan:** R3 y R9 (feature `regresion-y-documentacion-ccb`)
 
 **Por qué se creó.** La re-auditoría dejó *Testing* como la dimensión más baja (11,7/15): todo se verificaba a mano y
@@ -287,16 +287,16 @@ repetible**: en un clic (o sola, cada lunes) recorre los caminos críticos y pub
 semanal`). En orden:
 
 1. `Ejecutar Leer Configuracion` (el subflujo de configuración: de ahí sale el destinatario del resumen).
-2. `Ejecutar Preparar filas` → **[SUB] CCB - Regresion: Preparar filas**: crea **cinco filas descartables** en
+2. `Ejecutar Preparar filas` → **[SUB] CCB · Regresión — Preparar filas**: crea **cinco filas descartables** en
    `Cotizaciones_CCB`, `Solicitudes_CCB` y `Criterios_Cotizacion` con ids fijos (`SOL-PRUEBA-REGRESION-APROBAR`,
    `-CANCELAR`, `-REVISION`, `-ERROR`, `-ENVIO`). Los ids son fijos a propósito: cada corrida **reutiliza** las mismas
    filas (upsert), así las tablas no crecen. Cada tabla lleva una marca para poder borrarlas de una sola vez
    (`servicio`, `observaciones` y `comentarios` = `SOL-PRUEBA-REGRESION`).
 3. Cinco casos en cadena, cada uno con su nodo de preparación y su subflujo real:
-   `W4D Aprobar` (espera `APROBADA`) → `W4D Cancelar` (espera `CANCELADA`) → `W4D Revisión Manual` con motivo `tope`
-   (espera `REVISION_MANUAL`) → `Registrar y Alertar Error` (espera una fila en `Errores_CCB` con `error_timestamp`) →
-   `Cerrar envío` (espera `ENVIADA` en la cotización **y** en la solicitud, con `fecha_envio`).
-4. `Ejecutar Verificar y limpiar` → **[SUB] CCB - Regresion: Verificar y limpiar**: lee las tres tablas y **verifica el
+   `W4D — Aprobar` (espera `APROBADA`) → `W4D — Cancelar` (espera `CANCELADA`) → `W4D — Revisión manual` con motivo `tope`
+   (espera `REVISION_MANUAL`) → `Error — Registrar y alertar` (espera una fila en `Errores_CCB` con `error_timestamp`) →
+   `Envío — Cerrar el envío` (espera `ENVIADA` en la cotización **y** en la solicitud, con `fecha_envio`).
+4. `Ejecutar Verificar y limpiar` → **[SUB] CCB · Regresión — Verificar y limpiar**: lee las tres tablas y **verifica el
    estado real**, no lo que devolvieron los subflujos (así se detecta una regresión en el mapeo de un `update`); publica
    el resultado en `Metricas_CCB` como la métrica `regresion_pipeline` (`valor` = casos ok, `estado` = `ok`/`FALLO`);
    **borra sus propias filas** de las cuatro tablas (incluida `Errores_CCB`, para no ensuciar la métrica de errores del
@@ -318,13 +318,13 @@ tres ramas de W4D; escribe y borra en `Cotizaciones_CCB` y `Errores_CCB`; public
 **Plan:** R9. El flujo de regresión tenía 20 nodos (el límite del criterio de arquitectura) y necesitaba crecer: se
 extrajeron la preparación y la verificación/limpieza, y quedó en **16 nodos**.
 
-### `[SUB] CCB - Regresion: Preparar filas` — `DgUfcoudk228kOw8` · 7 nodos
+### `[SUB] CCB · Regresión — Preparar filas` — `DgUfcoudk228kOw8` · 7 nodos
 **Por qué:** crear y reutilizar las filas de prueba de las tres tablas implicadas (`Cotizaciones_CCB`,
 `Solicitudes_CCB` y `Criterios_Cotizacion`) sin cargar el flujo principal. **Cómo funciona:** tres pares
 preparador + *upsert* (los preparadores llevan `executeOnce` para emitir su lista una sola vez). Las filas quedan
 marcadas con `SOL-PRUEBA-REGRESION`. **Relaciones:** lo llama el flujo de regresión.
 
-### `[SUB] CCB - Regresion: Verificar y limpiar` — `OuE4SS9Jujz1dVif` · 11 nodos
+### `[SUB] CCB · Regresión — Verificar y limpiar` — `OuE4SS9Jujz1dVif` · 11 nodos
 **Por qué:** la verificación del estado real y la limpieza de las cuatro tablas. **Cómo funciona:** tres lecturas
 (cotizaciones, solicitudes y errores), `Comparar resultados` (compara contra lo esperado caso por caso), publica el
 semáforo en `Metricas_CCB`, borra con `deleteRows` las filas marcadas de las cuatro tablas y devuelve el resumen para el
@@ -346,21 +346,21 @@ marca de tiempo, enmascarado del mensaje y reintentos en el envío del correo.
 ## 11. Mapa de dependencias (quién llama a quién)
 
 ```
-W4D (router) ──> [SUB] CCB - W4D Aprobar / Cancelar / Revisión Manual
+W4D (router) ──> [SUB] CCB · W4D — Aprobar / Cancelar / Revisión manual
    │                    │                                  ▲
    │                    │                                  │
-   └──> [SUB] CCB - W4D Corrección IA ──> W3 (motor) ───────┤
-                 │  ▲                 └──> [SUB] CCB - Generar PDF de Propuesta
-                 │  └──> [SUB] CCB - W4D Cierre de Corrección
-                 └─────> [SUB] CCB - Leer Configuración ─────┐
+   └──> [SUB] CCB · W4D — Corrección con IA ──> W3 (motor) ───────┤
+                 │  ▲                 └──> [SUB] CCB · PDF — Generar el PDF
+                 │  └──> [SUB] CCB · W4D — Cierre de la corrección
+                 └─────> [SUB] CCB · Config — Leer la configuración ─────┐
                                                             │
-W4B/W4C/W4D/W5B ──> [SUB] CCB - Leer Contexto Propuesta
-W5B ──> [SUB] CCB - Enviar propuesta al cliente ──> [SUB] CCB - Cerrar envío
-W5B ──> [SUB] CCB - Cerrar error de envío ──> [SUB] CCB - Registrar y Alertar Error           │
-W1/W2A/W4A/W4B/W4D/W5A/W5B/W6 ──> [SUB] CCB - Registrar y Alertar Error
-W2A ──> [SUB] CCB - Invocar Motor y Guardar Cotización ──> W3
-[OPS] CCB - Monitoreo del pipeline ──> lee todo el pipeline ───┘
+W4B/W4C/W4D/W5B ──> [SUB] CCB · Contexto — Leer el contexto de la propuesta
+W5B ──> [SUB] CCB · Envío — Enviar al cliente ──> [SUB] CCB · Envío — Cerrar el envío
+W5B ──> [SUB] CCB · Envío — Cerrar el error de envío ──> [SUB] CCB · Error — Registrar y alertar           │
+W1/W2A/W4A/W4B/W4D/W5A/W5B/W6 ──> [SUB] CCB · Error — Registrar y alertar
+W2A ──> [SUB] CCB · Motor — Invocar el motor y guardar ──> W3
+[OPS] CCB · Monitoreo — Métricas del pipeline ──> lee todo el pipeline ───┘
 catch-all ──> recibe los fallos no capturados de los 11 flujos activos
-[OPS] CCB - Regresion del pipeline ──> [SUB] Regresion: Preparar filas / Verificar y limpiar
+[OPS] CCB · Regresión — Prueba de regresión ──> [SUB] CCB · Regresión — Preparar filas / Verificar y limpiar
    └──> prueba los subflujos de error, tres ramas de W4D y el cierre de envio
 ```

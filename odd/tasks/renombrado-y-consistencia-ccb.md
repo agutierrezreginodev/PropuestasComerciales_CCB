@@ -38,10 +38,10 @@ corregidos.
 | **B1b** | Escribir `scripts/renombrar_workflows.py` con `--dry-run` y `--apply` | El dry-run lista los 30 cambios de nombre y los `cachedResultName` afectados, sin escribir | ☑ 24/09 — 30 PLAN, 47 cachés, 0 PUT |
 | **B1c** | Aplicar el renombrado en la instancia | Los 30 con el nombre nuevo; los llamadores con el `cachedResultName` nuevo; 0 cambios en IDs, webhooks y conexiones | ☑ 24/09 — 28 PUT, verificación independiente 0 problemas |
 | **B2a** | Re-exportar el snapshot | `workflows/*.json` con los nombres nuevos | ☑ 24/09 — 30 archivos re-exportados |
-| **B2b** | Alinear la documentación con los nombres nuevos | README, `FLUJOS_PIPELINE_CCB.md`, `FLUJO_COMPLETO_PIPELINE_CCB.md`, `COMPARATIVO_DEMO_VS_ACTUAL.md` | ☐ pendiente |
-| **B2c** | Corregir los seis desfases detectados en la revisión | Ver la tabla "Desfases" abajo | ☐ pendiente |
+| **B2b** | Alinear la documentación con los nombres nuevos | README, `FLUJOS_PIPELINE_CCB.md`, `FLUJO_COMPLETO_PIPELINE_CCB.md`, `COMPARATIVO_DEMO_VS_ACTUAL.md` | ☑ 24/09 — 0 nombres viejos en los 7 documentos vivos |
+| **B2c** | Corregir los desfases detectados en la revisión | Ver la tabla "Desfases" abajo | ☑ 24/09 — 8 desfases + 2 huecos extra |
 | **B3a** | Validar los 30 flujos con `n8n_validate_workflow` | 0 errores, salvo los 4 falsos positivos documentados en B4 | ☑ 24/09 — 29/30 `valid` con 0 errores |
-| **B3b** | Regresión del pipeline `5/5` | Ejecución real con semáforo 5/5 | ☐ pendiente — la corre el usuario en la UI |
+| **B3b** | Regresión del pipeline `5/5` | Ejecución real con semáforo 5/5 | ☑ 24/09 — ejecución `427975`, `5/5` |
 | **B4** | Dictamen sobre los 4 errores de validación del subflujo de PDF | Decisión tomada con evidencia, no por defecto | ☑ 24/09 — **falsos positivos por diseño**, no se tocan |
 | **B5** | Actualizar las 9 notas fijas que citan el nombre viejo | Las 9 notas con el nombre nuevo; nada más cambia | ☑ 24/09 — 12 sustituciones, 9 flujos, 0 problemas |
 | **B6** | Quitar el `pinData` de `[SUB] CCB · Error` | `pinData` vacío y el requisito de limpieza vuelve a cumplirse | ☑ 24/09 — `pinData: {}` confirmado |
@@ -139,6 +139,33 @@ de la proyección de comparación, con la nota correspondiente en el docstring. 
 **viejo** en su texto, por ejemplo `## [SUB] CCB - Cerrar envío (F4-03/W5B)`. La convención (§4) no las contemplaba; el
 usuario decidió actualizarlas.
 
+### B3b — regresión del pipeline · 24/09
+
+**Hecho.** El usuario corrió `[OPS] CCB · Regresión — Prueba de regresión` desde la UI (modo manual). Ejecución
+**`427975`**: `status: success`, `finished: true`, 15 nodos ejecutados, **0 nodos con error**, último nodo el envío del
+resumen. Duración: 69 s.
+
+**Semáforo publicado:** `Metricas_CCB.regresion_pipeline = 5/5`, con `actualizado_en: 2026-09-24 08:41:19` — la marca
+de esta corrida, no la anterior. Los cinco casos:
+
+| Caso | Esperado | Obtenido | ok |
+|---|---|---|---|
+| aprobar | `APROBADA` | `APROBADA` | ✅ |
+| cancelar | `CANCELADA` | `CANCELADA` | ✅ |
+| revisión manual | `REVISION_MANUAL` | `REVISION_MANUAL` | ✅ |
+| error | fila en `Errores_CCB` con `error_timestamp` | fila con `2026-09-24 08:40:56` | ✅ |
+| envío | `ENVIADA` en cotización y solicitud | cotización `ENVIADA` / solicitud `ENVIADA` | ✅ |
+
+**Qué cubre y qué no.** La regresión ejercita el router de decisión (W4D) con sus subflujos de aprobar, cancelar y
+revisión manual, el subflujo compartido de error y la cadena de envío con su cierre — todo ya con los nombres nuevos, y
+con filas descartables `SOL-PRUEBA-REGRESION-*` que el propio flujo limpia. **No cubre el camino del motor ni la
+generación del PDF** (es el caso `motor` que queda pendiente en el plan del día): el renombrado del subflujo de PDF
+no quedó ejercitado por esta corrida.
+
+**Conclusión de B3:** el renombrado no rompió ninguna referencia. Los 30 flujos validan sin errores propios (salvo los 4
+falsos positivos documentados en B4) y la regresión pasa `5/5` con tráfico real.
+
+
 ### B5 y B6 — notas fijas y `pinData` · 24/09
 
 **Hecho.** 12 sustituciones literales de nombre viejo→nuevo repartidas en las 9 notas fijas, y `pinData` vaciado en
@@ -157,3 +184,40 @@ en el flujo del error. Respaldo previo del estado post-renombrado en `/tmp/n8n-b
 - **Verificación independiente del padre** de los 10 flujos contra el respaldo: **0 problemas**; `pinData` de
   `2dY1kaT7I5a0eP2w` = `{}`; **0 nombres viejos** en las notas de los flujos activos; y los 4 nodos `HTML - *` del
   subflujo de PDF **byte-idénticos** (el cambio fue solo la nota).
+
+### B2b y B2c — documentación y desfases · 24/09
+
+**Hecho.** Nombres nuevos en `README.md` y los 6 documentos vivos (fichas, tablas, mapas de dependencias y
+llamadores), con los conteos de arquitectura ajustados: **29 activos** (12 principales + 15 subflujos + 2 operativos),
+30 archivos de snapshot y 17 flujos nuevos respecto del demo.
+
+**Verificación independiente del padre:** 0 apariciones de los 30 nombres viejos en `README.md` y los 6 documentos
+vivos. Los nombres viejos que quedan están donde deben: la tabla "Nombre actual → Nombre propuesto" de la convención (es
+el registro de la migración), la ficha histórica de la feature anterior y los documentos de auditoría fechados.
+
+**Los 8 desfases, corregidos:** `Configuracion_CCB` 10→**12** claves (ESTADO) y 7→**12** (PLAN); commits locales
+25→**52** (ESTADO) y 48→**52** (plan del día); el conteo de nodos declara que **excluye las notas fijas** (19 sin notas /
+20 con notas, criterio ≤20); la fila de *Limpieza (sin Pin Data)* queda marcada como reverificada el 24/09; y los 4
+errores del validador del subflujo de PDF quedan declarados como falsos positivos documentados. En los dos documentos de
+auditoría **fechados** se añadieron **notas de errata** (Testing 12,9; siete flujos ≥90 con W5B en 92) sin reescribir el
+texto original.
+
+**Huecos extra que encontró la revisión del padre y se cerraron en el mismo commit:** el `COMPARATIVO` decía "W3 25 → 16
+nodos" mientras el `PLAN` decía 25→17 (diferencia de conteo con/sin notas: ahora dice "17 nodos; 16 sin contar las notas
+fijas"), y `TESTING_PIPELINE_CCB.md` seguía con el Testing previo al cierre (11,7 → **12,9**, apuntando a la re-auditoría
+de cierre).
+
+**Generador del informe:** `scripts/generar_informe_html.py` ahora declara el conteo con/sin notas y aclara que el
+**inventario es vivo** pero la **evaluación por flujo y los pendientes son constantes** de la re-auditoría de cierre del
+23/09 (no una medición automática). `docs/informe-pipeline-ccb.html` regenerado con el script.
+
+### Pendientes que esta unidad deja abiertos (requieren decisión)
+
+1. **Nota del subflujo de PDF con un número falso:** la nota fija de `[SUB] CCB · PDF — Generar el PDF` dice "W3 pasó de
+   25 a **19** nodos"; el valor real es 17 (16 sin la nota).
+2. **Comentario desactualizado en un nodo Code:** `w5b-envio-al-cliente.json` cita `[SUB] CCB - Leer Contexto
+   Propuesta` dentro del código de un nodo (no es el `name` ni un `cachedResultName`).
+3. **Legado de la instancia:** hay **31 flujos inactivos** ajenos al proyecto (`CCB_Propuestas_v2*`, `CCB - Fase 1/2*`,
+   duplicados `copy`, `My workflow 17/19/20`, `TEST_STATE_2TPL`, etc.). El informe cuenta solo los 30 del proyecto. Es
+   lo que hay que resolver antes de ordenar carpetas (A2).
+4. **Push:** 53 commits locales sin publicar.

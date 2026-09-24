@@ -107,9 +107,10 @@ def inventario():
     for fid, grupo, clave, nombre, rol, llamadores in FLUJOS:
         w = ws.get(fid, {})
         reales = len([n for n in w.get("nodes", []) if n["type"] != "n8n-nodes-base.stickyNote"])
+        con_notas = len(w.get("nodes", []))
         ev = EVAL.get(clave)
         filas.append(dict(id=fid, grupo=grupo, clave=clave, nombre=nombre, rol=rol, llamadores=llamadores,
-                          activo=bool(w.get("active")), nodos=reales, real=reales,
+                          activo=bool(w.get("active")), nodos=reales, con_notas=con_notas, real=reales,
                           descripcion=(w.get("description") or ""), ev=ev,
                           score=(sum([ev["arq"],ev["err"],ev["doc"],ev["seg"],ev["tst"],ev["obs"]]) if ev else None),
                           pend=PEND.get(clave, [])))
@@ -317,15 +318,15 @@ footer{{border-top:1px solid var(--line);margin-top:44px;padding-top:18px;color:
 <body>
 <header class="top"><div class="wrap">
   <h1>Pipeline CCB · Arquitectura, evaluación del framework y pendientes</h1>
-  <p>Servicios de Información — Cámara de Comercio de Barranquilla. Informe generado el {datetime.date.today().isoformat()} a partir de la instancia viva de n8n y de la re-auditoría de buenas prácticas.</p>
+  <p>Servicios de Información — Cámara de Comercio de Barranquilla. Informe generado el {datetime.date.today().isoformat()}: el <b>inventario</b> (ids, activos y nodos) se lee en vivo de la instancia de n8n; la <b>evaluación por flujo</b> y los <b>pendientes</b> son constantes tomadas de la re-auditoría de cierre del 23/09, no una medición automática.</p>
   <div class="hero">
     <div class="ring"><span>{B}<small>/100</small></span></div>
     <div class="txt">
       <b>Aprobado con observaciones — a {FALTA} puntos del umbral de 90</b>
       <div class="chips">
         <span class="chip">{len(ACT)} flujos activos</span>
-        <span class="chip">{sum(f['nodos'] for f in ACT)} nodos en total</span>
-        <span class="chip">máximo por flujo: {max(f['nodos'] for f in ACT)} nodos</span>
+        <span class="chip">{sum(f['nodos'] for f in ACT)} nodos en total (sin notas fijas; {sum(f['con_notas'] for f in ACT)} con notas)</span>
+        <span class="chip">máximo por flujo: {max(f['nodos'] for f in ACT)} nodos sin notas / {max(f['con_notas'] for f in ACT)} con notas</span>
         <span class="chip">10 de 11 requisitos de la lista de comprobación</span>
         <span class="chip">{sum(1 for f in PIPE_EVAL if f['score']>=90)} de {len(PIPE_EVAL)} flujos sobre 90</span>
       </div>
@@ -429,7 +430,9 @@ corrección y la manda a revisión manual (F7-02). (3) Antes de recalcular, se p
 
 <h2 id="inventario"><span class="n">3</span>Inventario: los 30 flujos</h2>
 <p class="lead">Datos leídos de la instancia viva: {len(ACT)} activos, {sum(f['nodos'] for f in ACT)} nodos en total y un máximo
-de {max(f['nodos'] for f in ACT)} nodos por flujo (el criterio del framework es no superar los 20).</p>
+de {max(f['nodos'] for f in ACT)} nodos por flujo. El conteo <b>excluye las notas fijas (sticky notes)</b>: contando con ellas
+son {sum(f['con_notas'] for f in ACT)} nodos y el máximo sube a {max(f['con_notas'] for f in ACT)}. El criterio del framework es
+<b>≤20 nodos</b>, así que se cumple en ambos conteos.</p>
 
 <h3>Las 12 etapas del pipeline</h3>
 {tabla_inventario(PIPE, con_eval=True)}
@@ -456,7 +459,7 @@ todos los puntos de escritura y guardarraíles en W4D, pero los webhooks públic
 <tr><td>Nomenclatura formal</td><td><span class="pill ok">cumple</span></td><td>Convención única documentada (patrón <code>[PREFIJO] CCB · CLAVE — Título</code>)</td></tr>
 <tr><td>Resiliencia (reintentos y timeout)</td><td><span class="pill ok">cumple</span></td><td>Reintentos 5×5000 en los nodos de red y timeout explícito de 60 s en los dos HTTP</td></tr>
 <tr><td>Seguridad (sin valores incrustados)</td><td><span class="pill ok">cumple</span></td><td>Cero correos, URLs o destinatarios dentro de los nodos: todo sale de <code>Configuracion_CCB</code></td></tr>
-<tr><td>Arquitectura (máx. 20 nodos por flujo)</td><td><span class="pill ok">cumple</span></td><td>El flujo más grande tiene {max(f['nodos'] for f in ACT)} nodos; el router de decisión bajó de 54 a 19</td></tr>
+<tr><td>Arquitectura (máx. 20 nodos por flujo)</td><td><span class="pill ok">cumple</span></td><td>El flujo más grande tiene {max(f['nodos'] for f in ACT)} nodos sin notas ({max(f['con_notas'] for f in ACT)} con notas); el conteo excluye las notas fijas; el router de decisión bajó de 54 a 19</td></tr>
 <tr><td>Observabilidad (4 métricas y umbral)</td><td><span class="pill ok">cumple</span></td><td>Flujo de monitoreo horario + <code>Metricas_CCB</code> + marca de tiempo en los 8 puntos de error</td></tr>
 <tr><td>Idempotencia</td><td><span class="pill warn" style="background:var(--warnbg);color:var(--warn);border:1px solid #fde68a">parcial</span></td><td>6 de 11: <i>upserts</i> en las escrituras y guardarraíl de comentario repetido en W4D; los webhooks públicos no tienen clave de origen</td></tr>
 </tbody></table>
@@ -483,10 +486,11 @@ dimensión más baja.</p>
 <div class="card"><h4>Cómo se evaluó</h4>
 <p class="small">La rúbrica del framework pondera seis dimensiones sobre 100 (Arquitectura y manejo de errores sobre 20;
 documentación, seguridad, testing y observabilidad sobre 15) más una lista de comprobación de 11 requisitos. El puntaje del
-pipeline es el <b>promedio de los 11 flujos principales</b>. Todo lo que afirma este informe se verificó <b>contra la
-instancia viva</b>: inventario por API, validación estructural, ejecuciones reales de la regresión y del monitoreo, y
-capturas de error provocadas a propósito. Cuando una mejora no se pudo ejecutar, el puntaje se mantiene conservador y el
-hueco queda declarado.</p></div>
+pipeline es el <b>promedio de los 11 flujos principales</b>. El <b>inventario</b> (ids, activos y nodos) se lee en vivo de la
+instancia de n8n; la <b>evaluación por flujo</b> y los <b>pendientes</b> son constantes tomadas de la re-auditoría de cierre
+del 23/09, no una medición automática. Esa evaluación se verificó <b>contra la instancia viva</b> en su momento: inventario por
+API, validación estructural, ejecuciones reales de la regresión y del monitoreo, y capturas de error provocadas a propósito.
+Cuando una mejora no se pudo ejecutar, el puntaje se mantiene conservador y el hueco queda declarado.</p></div>
 <div class="card"><h4>Limitaciones declaradas</h4>
 <p class="small">(1) Es una evaluación por evidencia y verificación real, no una suite automatizada con integración continua:
 de ahí el 12,9 en Testing. (2) La poda de ejecuciones, <code>/metrics</code> y la licencia de carpetas son de instancia, no
@@ -510,9 +514,10 @@ cálculo; la cuarta es el estado de la propuesta; las dos últimas son la salud 
 
 <footer>
   <p><b>Pipeline CCB</b> — informe de arquitectura y evaluación del framework · generado el {datetime.date.today().isoformat()} ·
-  {len(ACT)} flujos activos · {sum(f['nodos'] for f in ACT)} nodos · puntaje <b>{B}/100</b> (umbral de producción crítica: 90).</p>
-  <p class="small">Este documento se genera desde la instancia viva de n8n y desde los informes de auditoría del repositorio.
-  No sustituye a los informes firmados: los resume para lectura rápida y para presentación.</p>
+  {len(ACT)} flujos activos · {sum(f['nodos'] for f in ACT)} nodos (sin notas fijas; {sum(f['con_notas'] for f in ACT)} con notas) · puntaje <b>{B}/100</b> (umbral de producción crítica: 90).</p>
+  <p class="small">El inventario (ids, activos y nodos) se lee en vivo de la instancia de n8n; la evaluación por flujo y los
+  pendientes son constantes tomadas de la re-auditoría de cierre del 23/09, no una medición automática. Este documento no
+  sustituye a los informes firmados: los resume para lectura rápida y para presentación.</p>
 </footer>
 </div></body></html>"""
 

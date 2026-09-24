@@ -9,8 +9,8 @@ resultado. La validación estructural no alcanza: esta misma sesión encontró *
 renombrado, un IF sin su salida de error y un payload que se perdía al cruzar un subflujo) que solo aparecieron al
 ejecutar.
 
-**Dimensión del framework:** *Testing /15*. Hoy el pipeline está en **11,7/15**; la distancia al umbral de 90 del
-framework está concentrada acá (ver [re-auditoría del 23/09](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md), sección 4).
+**Dimensión del framework:** *Testing /15*. Tras el cierre del 23/09 el pipeline está en **12,9/15**; la distancia al umbral de 90 del
+framework está concentrada acá (ver [re-auditoría de cierre del 23/09](AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md), sección 1).
 
 ---
 
@@ -175,12 +175,12 @@ Cada verificación deja cuatro datos, en este orden:
 
 Hoy el testing es **manual y documentado**. La brecha con la rúbrica se cierra con un flujo de regresión:
 
-**Diseño propuesto — `[OPS] CCB - Regresión del pipeline`** (trigger manual/semanal):
+**Diseño propuesto — `[OPS] CCB · Regresión — Prueba de regresión`** (trigger manual/semanal):
 
 1. Crea sus propias filas `SOL-PRUEBA-REGRESION` en las tablas implicadas (copias de filas reales).
 2. Ejecuta en secuencia los caminos críticos con datos fijados:
-   `W4D Aprobar` → `W4D Cancelar` → `W4D Revisión Manual (tope)` → `Registrar y Alertar Error` →
-   `Invocar Motor y Guardar Cotización` → `Enviar propuesta al cliente` → `Cerrar envío`.
+   `[SUB] W4D — Aprobar` → `[SUB] W4D — Cancelar` → `[SUB] W4D — Revisión manual (tope)` → `[SUB] Error — Registrar y alertar` →
+   `[SUB] Motor — Invocar el motor y guardar` → `[SUB] Envío — Enviar al cliente` → `[SUB] Envío — Cerrar el envío`.
 3. Compara los resultados contra lo esperado (respuesta, estado de las filas, registros de error) y publica un
    **semáforo** por camino (una fila por caso en una Data Table `Regresion_CCB` o en el correo de resumen).
 4. Borra sus propias filas al terminar y reporta el resultado en un correo al destinatario de alertas.

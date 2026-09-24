@@ -27,6 +27,8 @@ escala que los informes del 16/09, del 22/09 y de la mañana del 23/09, para que
 
 **Lo que sostiene el salto de Testing (11,7 → 12,8), con evidencia:**
 
+> **Nota de errata (24/09):** el párrafo dice «11,7 → 12,8»; la tabla de la sección 1 muestra Testing en **12,9**. Se conserva el texto original por ser evidencia histórica.
+
 1. **Suite de regresión repetible** (`[OPS] CCB - Regresión del pipeline`, `GVE3iNQ80y5Q9FEw`): recorre cuatro caminos
    críticos con filas descartables, **verifica el estado real en las tablas**, publica el semáforo en `Metricas_CCB`
    (`regresion_pipeline = 4/4`), limpia sus filas y avisa por correo. Corre sola los lunes y a mano cuando se quiera.
@@ -58,6 +60,8 @@ escala que los informes del 16/09, del 22/09 y de la mañana del 23/09, para que
 | **Promedio** | **18,2** | **17,0** | **14,0** | **13,8** | **12,9** | **13,6** | **89,5** | **87,7** |
 
 **Cinco flujos ya están en 90 o más** (W4D 94, W4A 91, W5A 91, W5B 91, W6 91) y **ninguno baja de 85**.
+
+> **Nota de errata (24/09):** el párrafo dice «cinco» y cita W5B en 91; la tabla de arriba muestra **siete** flujos en 90 o más (W3 90, W4A 91, W4B 90, W4D 94, W5A 91, W5B **92**, W6 91) y W5B en **92**. Se conserva el texto original por ser evidencia histórica.
 
 ---
 

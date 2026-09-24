@@ -10,42 +10,42 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 
 | ID en n8n | Nombre en n8n | Archivo |
 |---|---|---|
-| `w6h0qSblUESIpSVc` | CCB - Workflow 1 - Extracción información del cliente | [`workflows/w1-extraccion-informacion-cliente.json`](workflows/w1-extraccion-informacion-cliente.json) |
-| `u6KCMnLwFOp6Ja0N` | CCB - Workflow 2C - Recepción Formulario Externo (Georreferenciada) | [`workflows/w2c-recepcion-formulario-externo.json`](workflows/w2c-recepcion-formulario-externo.json) |
-| `VChcasvisGKekezR` | CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio | [`workflows/w2a-guardar-criterios-cotizar-servicio.json`](workflows/w2a-guardar-criterios-cotizar-servicio.json) |
-| `lIcdT6nGd0w1G2i0` | CCB - Workflow 2B - Formulario de Solicitud *(**retirado, `active: false`** — no recibe tráfico real. Confirmado por historial: una sola ejecución en toda su vida, de prueba manual el 14/09, sin terminar. Se conserva en el snapshot como referencia histórica del formulario multi-página original)* | [`workflows/w2-formulario-solicitud.json`](workflows/w2-formulario-solicitud.json) |
-| `cHOIOEFB5nbltN82` | CCB - Workflow 3 - Motor Criterios y Precio | [`workflows/w3-motor-criterios-precio.json`](workflows/w3-motor-criterios-precio.json) |
-| `7gmpPMBJtEb0W3J5` | CCB - Workflow 4A - Router de Aprobación | [`workflows/w4a-router-aprobacion.json`](workflows/w4a-router-aprobacion.json) |
-| `5RJdnHDQ8NuWZJG7` | CCB - Workflow 4B - Aprobación de Propuesta (Teams) | [`workflows/w4b-aprobacion-propuesta-teams.json`](workflows/w4b-aprobacion-propuesta-teams.json) |
-| `KuLSIzBZgaRIjuSu` | CCB - Workflow 4C - Consultar Propuesta para Revisión | [`workflows/w4c-consultar-propuesta-revision.json`](workflows/w4c-consultar-propuesta-revision.json) |
-| `W0TDH4b0tHCNOzFQ` | CCB - Workflow 4D - Procesar Decisión de Propuesta | [`workflows/w4d-procesar-decision-propuesta.json`](workflows/w4d-procesar-decision-propuesta.json) |
-| `gvIn6mbAn2Y1bMRR` | CCB - Workflow 5A - Router de Envío | [`workflows/w5a-router-envio.json`](workflows/w5a-router-envio.json) |
-| `XWBHgbmtBubA4gqx` | CCB - Workflow 5B - Envío al Cliente | [`workflows/w5b-envio-al-cliente.json`](workflows/w5b-envio-al-cliente.json) |
-| `mPwl4qUb0zQkmDHN` | CCB - Workflow 6 - Finalizador de Cotizaciones | [`workflows/w6-finalizador-cotizaciones.json`](workflows/w6-finalizador-cotizaciones.json) |
-| `Dh2lAQTzyoZBpXie` | CCB - Error Workflow (catch-all) | [`workflows/error-workflow-catchall.json`](workflows/error-workflow-catchall.json) |
-| `2dY1kaT7I5a0eP2w` | [SUB] - CCB - Registrar y Alertar Error | [`workflows/sub-registrar-alertar-error.json`](workflows/sub-registrar-alertar-error.json) |
-| `Hgy02eqPhnsdJvkq` | [SUB] - CCB - Leer Configuración | [`workflows/sub-leer-configuracion.json`](workflows/sub-leer-configuracion.json) |
-| `GELWpskp0aYJ2zPg` | [SUB] - CCB - Leer Contexto Propuesta | [`workflows/sub-leer-contexto-propuesta.json`](workflows/sub-leer-contexto-propuesta.json) |
-| `ZwBFTBhwS9pjS69X` | [OPS] - CCB - Monitoreo del pipeline | [`workflows/ops-monitoreo-pipeline.json`](workflows/ops-monitoreo-pipeline.json) |
-| `GVE3iNQ80y5Q9FEw` | [OPS] CCB - Regresión del pipeline | [`workflows/ops-regresion-pipeline.json`](workflows/ops-regresion-pipeline.json) |
-| `DgUfcoudk228kOw8` | [SUB] CCB - Regresion: Preparar filas | [`workflows/sub-regresion-preparar-filas.json`](workflows/sub-regresion-preparar-filas.json) |
-| `OuE4SS9Jujz1dVif` | [SUB] CCB - Regresion: Verificar y limpiar | [`workflows/sub-regresion-verificar-limpiar.json`](workflows/sub-regresion-verificar-limpiar.json) |
-| `AnPJGVWylmKEYWmJ` | [SUB] CCB - Enviar propuesta al cliente | [`workflows/sub-enviar-propuesta-cliente.json`](workflows/sub-enviar-propuesta-cliente.json) |
-| `1Zzkrg3dTkTrddgp` | [SUB] CCB - Cerrar envío | [`workflows/sub-cerrar-envio.json`](workflows/sub-cerrar-envio.json) |
-| `D2d9Og6UUvq13TJA` | [SUB] CCB - Cerrar error de envío | [`workflows/sub-cerrar-error-envio.json`](workflows/sub-cerrar-error-envio.json) |
-| `MHWlUApSFT6gpBHs` | [SUB] CCB - Invocar Motor y Guardar Cotización | [`workflows/sub-invocar-motor-guardar-cotizacion.json`](workflows/sub-invocar-motor-guardar-cotizacion.json) |
-| `8j6BCwXkgJCccyO1` | [SUB] - CCB - W4D Aprobar | [`workflows/w4d-sub-aprobar.json`](workflows/w4d-sub-aprobar.json) |
-| `Jgf514VxDINJ8ra3` | [SUB] - CCB - W4D Cancelar | [`workflows/w4d-sub-cancelar.json`](workflows/w4d-sub-cancelar.json) |
-| `iNSErCHs2iw33emJ` | [SUB] - CCB - W4D Revisión Manual | [`workflows/w4d-sub-revision-manual.json`](workflows/w4d-sub-revision-manual.json) |
-| `3NAcLF4jaZ1JBw0A` | [SUB] - CCB - W4D Corrección IA | [`workflows/w4d-sub-correccion-ia.json`](workflows/w4d-sub-correccion-ia.json) |
-| `POeFkqQp8e4cGfY3` | [SUB] - CCB - W4D Cierre de Corrección | [`workflows/w4d-sub-cierre-correccion.json`](workflows/w4d-sub-cierre-correccion.json) |
-| `DF3emCmBBBB2HA3i` | [SUB] - CCB - Generar PDF de Propuesta | [`workflows/sub-generar-pdf-propuesta.json`](workflows/sub-generar-pdf-propuesta.json) |
+| `w6h0qSblUESIpSVc` | CCB · W1 — Extracción de información del cliente | [`workflows/w1-extraccion-informacion-cliente.json`](workflows/w1-extraccion-informacion-cliente.json) |
+| `u6KCMnLwFOp6Ja0N` | CCB · W2C — Recepción del formulario externo | [`workflows/w2c-recepcion-formulario-externo.json`](workflows/w2c-recepcion-formulario-externo.json) |
+| `VChcasvisGKekezR` | CCB · W2A — Guardar criterios y cotizar | [`workflows/w2a-guardar-criterios-cotizar-servicio.json`](workflows/w2a-guardar-criterios-cotizar-servicio.json) |
+| `lIcdT6nGd0w1G2i0` | [RETIRADO] CCB · W2B — Formulario antiguo *(**retirado, `active: false`** — no recibe tráfico real. Confirmado por historial: una sola ejecución en toda su vida, de prueba manual el 14/09, sin terminar. Se conserva en el snapshot como referencia histórica del formulario multi-página original)* | [`workflows/w2-formulario-solicitud.json`](workflows/w2-formulario-solicitud.json) |
+| `cHOIOEFB5nbltN82` | CCB · W3 — Motor de criterios y precio | [`workflows/w3-motor-criterios-precio.json`](workflows/w3-motor-criterios-precio.json) |
+| `7gmpPMBJtEb0W3J5` | CCB · W4A — Router de aprobación | [`workflows/w4a-router-aprobacion.json`](workflows/w4a-router-aprobacion.json) |
+| `5RJdnHDQ8NuWZJG7` | CCB · W4B — Aprobación por Teams | [`workflows/w4b-aprobacion-propuesta-teams.json`](workflows/w4b-aprobacion-propuesta-teams.json) |
+| `KuLSIzBZgaRIjuSu` | CCB · W4C — Consultar la propuesta para revisión | [`workflows/w4c-consultar-propuesta-revision.json`](workflows/w4c-consultar-propuesta-revision.json) |
+| `W0TDH4b0tHCNOzFQ` | CCB · W4D — Procesar la decisión | [`workflows/w4d-procesar-decision-propuesta.json`](workflows/w4d-procesar-decision-propuesta.json) |
+| `gvIn6mbAn2Y1bMRR` | CCB · W5A — Router de envío | [`workflows/w5a-router-envio.json`](workflows/w5a-router-envio.json) |
+| `XWBHgbmtBubA4gqx` | CCB · W5B — Envío al cliente | [`workflows/w5b-envio-al-cliente.json`](workflows/w5b-envio-al-cliente.json) |
+| `mPwl4qUb0zQkmDHN` | CCB · W6 — Finalizador de cotizaciones | [`workflows/w6-finalizador-cotizaciones.json`](workflows/w6-finalizador-cotizaciones.json) |
+| `Dh2lAQTzyoZBpXie` | CCB · Catch-all — Errores no capturados | [`workflows/error-workflow-catchall.json`](workflows/error-workflow-catchall.json) |
+| `2dY1kaT7I5a0eP2w` | [SUB] CCB · Error — Registrar y alertar | [`workflows/sub-registrar-alertar-error.json`](workflows/sub-registrar-alertar-error.json) |
+| `Hgy02eqPhnsdJvkq` | [SUB] CCB · Config — Leer la configuración | [`workflows/sub-leer-configuracion.json`](workflows/sub-leer-configuracion.json) |
+| `GELWpskp0aYJ2zPg` | [SUB] CCB · Contexto — Leer el contexto de la propuesta | [`workflows/sub-leer-contexto-propuesta.json`](workflows/sub-leer-contexto-propuesta.json) |
+| `ZwBFTBhwS9pjS69X` | [OPS] CCB · Monitoreo — Métricas del pipeline | [`workflows/ops-monitoreo-pipeline.json`](workflows/ops-monitoreo-pipeline.json) |
+| `GVE3iNQ80y5Q9FEw` | [OPS] CCB · Regresión — Prueba de regresión | [`workflows/ops-regresion-pipeline.json`](workflows/ops-regresion-pipeline.json) |
+| `DgUfcoudk228kOw8` | [SUB] CCB · Regresión — Preparar filas | [`workflows/sub-regresion-preparar-filas.json`](workflows/sub-regresion-preparar-filas.json) |
+| `OuE4SS9Jujz1dVif` | [SUB] CCB · Regresión — Verificar y limpiar | [`workflows/sub-regresion-verificar-limpiar.json`](workflows/sub-regresion-verificar-limpiar.json) |
+| `AnPJGVWylmKEYWmJ` | [SUB] CCB · Envío — Enviar al cliente | [`workflows/sub-enviar-propuesta-cliente.json`](workflows/sub-enviar-propuesta-cliente.json) |
+| `1Zzkrg3dTkTrddgp` | [SUB] CCB · Envío — Cerrar el envío | [`workflows/sub-cerrar-envio.json`](workflows/sub-cerrar-envio.json) |
+| `D2d9Og6UUvq13TJA` | [SUB] CCB · Envío — Cerrar el error de envío | [`workflows/sub-cerrar-error-envio.json`](workflows/sub-cerrar-error-envio.json) |
+| `MHWlUApSFT6gpBHs` | [SUB] CCB · Motor — Invocar el motor y guardar | [`workflows/sub-invocar-motor-guardar-cotizacion.json`](workflows/sub-invocar-motor-guardar-cotizacion.json) |
+| `8j6BCwXkgJCccyO1` | [SUB] CCB · W4D — Aprobar | [`workflows/w4d-sub-aprobar.json`](workflows/w4d-sub-aprobar.json) |
+| `Jgf514VxDINJ8ra3` | [SUB] CCB · W4D — Cancelar | [`workflows/w4d-sub-cancelar.json`](workflows/w4d-sub-cancelar.json) |
+| `iNSErCHs2iw33emJ` | [SUB] CCB · W4D — Revisión manual | [`workflows/w4d-sub-revision-manual.json`](workflows/w4d-sub-revision-manual.json) |
+| `3NAcLF4jaZ1JBw0A` | [SUB] CCB · W4D — Corrección con IA | [`workflows/w4d-sub-correccion-ia.json`](workflows/w4d-sub-correccion-ia.json) |
+| `POeFkqQp8e4cGfY3` | [SUB] CCB · W4D — Cierre de la corrección | [`workflows/w4d-sub-cierre-correccion.json`](workflows/w4d-sub-cierre-correccion.json) |
+| `DF3emCmBBBB2HA3i` | [SUB] CCB · PDF — Generar el PDF | [`workflows/sub-generar-pdf-propuesta.json`](workflows/sub-generar-pdf-propuesta.json) |
 
 **Carpeta en n8n:** los 12 flujos originales viven en la carpeta `Servicios_Información_Cotizaciones_v2.0`; los flujos nuevos deben quedar en esa misma carpeta (ver [docs/FLUJOS_PIPELINE_CCB.md](docs/FLUJOS_PIPELINE_CCB.md), que además documenta cada uno: por qué se creó, cómo funciona y con qué flujos se relaciona).
 
 **Convención de nombres:** `[SUB]` para subflujos invocados desde otro flujo, `[OPS]` para flujos operativos de plataforma, y sin prefijo para los flujos principales del pipeline.
 
-El snapshot está **completo**: los 12 workflows del pipeline definitivo (11 activos + W2B retirado), el Error Workflow catch-all, los 15 subflujos compartidos y los dos flujos operativos (monitoreo del pipeline y regresión). Son 30 archivos: 29 workflows activos en la instancia más el formulario antiguo retirado. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
+El snapshot está **completo**: los 12 workflows del pipeline definitivo (11 activos + W2B retirado), el flujo catch-all, los 15 subflujos compartidos y los dos flujos operativos (monitoreo del pipeline y regresión). Son 30 archivos: 29 workflows activos en la instancia más el formulario antiguo retirado. Se exportan con [`scripts/export_workflows.py`](scripts/export_workflows.py) (ver *Mantenimiento*).
 
 ## Pipeline completo — Información Georreferenciada
 
@@ -60,7 +60,7 @@ Recorrido de punta a punta, verificado en vivo con datos reales (16/09/2026), si
    - *Cancelar* termina el flujo sin llegar nunca a entrega.
 6. Al aprobar, un router (W5-A) dispara el envío al cliente (W5-B): PDF adjunto (o solo link si supera 4MB) + confirmación interna al asesor.
 7. Un cierre automático (W6) marca como finalizadas las cotizaciones enviadas que llevan 30+ días sin respuesta.
-8. Un **Error Workflow catch-all** transversal captura cualquier fallo no manejado explícitamente por el flujo de origen, lo registra y envía una alerta técnica con flujo, tipo de error, nodo fallido y mensaje.
+8. Un **flujo catch-all** transversal captura cualquier fallo no manejado explícitamente por el flujo de origen, lo registra y envía una alerta técnica con flujo, tipo de error, nodo fallido y mensaje.
 
 ### Diagramas interactivos del sistema (Archify)
 
@@ -147,4 +147,4 @@ Ese historial reemplazó a la rama publicada el 16/09/2026, y las ramas que aún
 
 **Última actualización:** 2026-09-23 (cierre) — Fase 5 (configuración centralizada), Fase 6 (timeouts, límites, PII, marcas de tiempo y monitoreo horario), F4-02 (contexto de propuesta compartido), F4-03 (W4-D partido en un router de 19 nodos + 5 subflujos), F7-01/F7-02 (guardarraíles de la corrección asistida por IA) y corrección de dos defectos en los avisos de error y de tope. Snapshot con SUB flujos y flujo operativo incluidos.
 
-**Actualización previa:** 2026-09-16 (mañana) — se re-exportaron Workflow 1 (fixes de extracción por IA y filtro de correo), Workflow 3 (mapeos de organización jurídica y ubicación geográfica, corrección de género en "todos"), Error Workflow catch-all (campo de tipo de error agregado), y el formulario legacy (Workflow 2); se agregaron los workflows nuevos del formulario de Información Georreferenciada (Workflow 2C y Workflow 2A); y se corrigió la exposición de datos personales descrita arriba.
+**Actualización previa:** 2026-09-16 (mañana) — se re-exportaron Workflow 1 (fixes de extracción por IA y filtro de correo), Workflow 3 (mapeos de organización jurídica y ubicación geográfica, corrección de género en "todos"), el flujo catch-all (campo de tipo de error agregado), y el formulario legacy (Workflow 2); se agregaron los workflows nuevos del formulario de Información Georreferenciada (Workflow 2C y Workflow 2A); y se corrigió la exposición de datos personales descrita arriba.

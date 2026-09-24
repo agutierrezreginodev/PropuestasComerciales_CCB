@@ -36,11 +36,13 @@
 | **Arquitectura (≤20 nodos)** | ⚠️ 6/11 | ✅ **11/11** — W4D 54→**19** (F4-03); **ningún flujo activo supera los 20 nodos** (W2A 25→19, W5B 25→19, W4D 54→19, W3 25→17) |
 | Control de versiones | ✅ 13/13 | ✅ 17/17 workflows versionados en el snapshot |
 
+> **Actualización (24/09):** el requisito *Limpieza (sin Pin Data)* se volvió a verificar y quedó **11/11**: se eliminó el único `pinData` que quedaba (el del subflujo de error).
+
 ## 3. Artefactos nuevos (23/09)
 
 | Artefacto | ID | Rol |
 |---|---|---|
-| Data Table `Configuracion_CCB` | `8ChPkhKrjag6Jkcs` | Fuente única de verdad de la configuración (10 claves) |
+| Data Table `Configuracion_CCB` | `8ChPkhKrjag6Jkcs` | Fuente única de verdad de la configuración (12 claves) |
 | Data Table `Metricas_CCB` | `W3oJ4a8h0TAPO9ji` | Publicación de las 4 métricas del framework (upsert por métrica: no crece) |
 | Subflujo `[SUB] - CCB - Leer Configuración` | `Hgy02eqPhnsdJvkq` | Entrega la configuración adjunta al item del llamador (`_config`) |
 | Subflujo `[SUB] - CCB - Leer Contexto Propuesta` | `GELWpskp0aYJ2zPg` | Reemplaza el bloque de 3 lecturas duplicado en W4B/W4C/W4D |
@@ -69,6 +71,7 @@
 - Corrida de punta a punta de las ramas de error de W4A/W5A/W1/W2A/W4B/W5B/W4D con el subflujo compartido.
 - Ramas nuevas de W4D: confianza baja, IA desactivada, y las de F3-03/F3-07/F3-10/F3-11.
 - Separación del PDF (F4-05) requiere generar un PDF real antes de darse por hecha.
+- **Falsos positivos documentados (24/09):** los 4 errores del validador en el subflujo `[SUB] CCB · PDF — Generar el PDF` (`Mixed literal text and expression requires = prefix`) son falsos positivos: sus 4 nodos `set` llevan plantillas HTML con `{{ }}` que el nodo Code `Interpolar plantilla HTML` interpola a propósito (añadir `=` haría que n8n evaluara el HTML completo como expresión y rompería la generación). No hay que «arreglarlos», solo documentarlos.
 
 ## 5. Pendientes
 
@@ -86,7 +89,7 @@
 | **F7-03** (aprobación humana antes del recálculo) | Dos caminos: **A)** aprobación dentro de Teams (`sendAndWait`, no toca el front, requiere reordenar la respuesta del webhook y definir expiración) o **B)** aprobación en la página de revisión (nuevo estado + nuevo valor de decisión; toca el front y su deploy está bloqueado por la migración de Vercel). |
 | **Tasa de error exacta por flujo** | La métrica global ya se publica; el cálculo por flujo con denominador real necesita una credencial de API dentro de un workflow, y el API público no permite crearlas (403): la debe crear una persona desde la UI. |
 | **`/metrics` expuesto sin autenticación** | Hoy publica 42 métricas de proceso de la instancia. Se usó como fuente del monitoreo; conviene restringirlo por red con Tecnología. |
-| **Push a GitHub** | 25 commits locales sin publicar en `ccb-workflows-git`. |
+| **Push a GitHub** | 52 commits locales sin publicar en `ccb-workflows-git`. |
 
 ### 5.2 Trabajo pendiente en el plan
 

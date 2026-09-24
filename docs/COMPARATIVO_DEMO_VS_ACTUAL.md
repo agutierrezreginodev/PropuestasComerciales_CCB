@@ -16,20 +16,20 @@ No hay afirmaciones tomadas de memoria.
 
 | # | Paso del demo | Estado | Qué cambió |
 |---|---|---|---|
-| 1 | **W1** `CCB - Workflow 1 - Extracción información del cliente` (`w6h0qSblUESIpSVc`) — correo de mercadeo o contacto directo → link del form | ✅ Activo, mismo ID | Por dentro: el registro y la alerta de error se extrajeron a un subflujo compartido |
+| 1 | **W1** `CCB · W1 — Extracción de información del cliente` (`w6h0qSblUESIpSVc`) — correo de mercadeo o contacto directo → link del form | ✅ Activo, mismo ID | Por dentro: el registro y la alerta de error se extrajeron a un subflujo compartido |
 | 2 | **📄** `informaciongeorreferenciada-ccb.vercel.app` — el cliente completa el formulario | ✅ **HTTP 200** | Sin cambios (página externa) |
-| 3 | **W2C** `CCB - Workflow 2C - Recepción Formulario Externo (Georreferenciada)` (`u6KCMnLwFOp6Ja0N`) | ✅ Activo, mismo ID | Sin cambios funcionales |
-| 4 | **W2A** hoy `[SUB] CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio` (`VChcasvisGKekezR`) | ✅ Activo, **mismo ID** | **Renombrado** (lleva `[SUB]` porque lo invoca W2C). 25 → **19 nodos**; el motor y el guardado salieron a un subflujo |
-| 5 | **W3** hoy `[SUB] CCB - Workflow 3 - Motor Criterios y Precio` (`cHOIOEFB5nbltN82`) | ✅ Activo, **mismo ID** | **Renombrado**. 25 → **16 nodos**; la generación del PDF salió a un subflujo. Mismo PDF, misma URL |
-| 6 | **W4A** `CCB - Workflow 4A - Router de Aprobación` (`7gmpPMBJtEb0W3J5`) | ✅ Activo, mismo ID | Sin cambios funcionales (8 nodos) |
-| 7 | **W4B** hoy `[SUB] CCB - Workflow 4B - Aprobación de Propuesta (Teams)` (`5RJdnHDQ8NuWZJG7`) | ✅ Activo, **mismo ID** | **Renombrado**. 14 → **11 nodos**; la lectura de contexto salió a un subflujo |
+| 3 | **W2C** `CCB · W2C — Recepción del formulario externo` (`u6KCMnLwFOp6Ja0N`) | ✅ Activo, mismo ID | Sin cambios funcionales |
+| 4 | **W2A** hoy `CCB · W2A — Guardar criterios y cotizar` (`VChcasvisGKekezR`) | ✅ Activo, **mismo ID** | **Renombrado** (perdió el `[SUB]`: es una etapa del pipeline). 25 → **19 nodos**; el motor y el guardado salieron a un subflujo |
+| 5 | **W3** hoy `CCB · W3 — Motor de criterios y precio` (`cHOIOEFB5nbltN82`) | ✅ Activo, **mismo ID** | **Renombrado**. 25 → **16 nodos**; la generación del PDF salió a un subflujo. Mismo PDF, misma URL |
+| 6 | **W4A** `CCB · W4A — Router de aprobación` (`7gmpPMBJtEb0W3J5`) | ✅ Activo, mismo ID | Sin cambios funcionales (8 nodos) |
+| 7 | **W4B** hoy `CCB · W4B — Aprobación por Teams` (`5RJdnHDQ8NuWZJG7`) | ✅ Activo, **mismo ID** | **Renombrado**. 14 → **11 nodos**; la lectura de contexto salió a un subflujo |
 | 8 | **📄** `revision-propuesta-ccb.vercel.app` — se revisa el PDF y se decide | ✅ **HTTP 200** | Sin cambios (página externa) |
-| 9 | **W4C** `CCB - Workflow 4C - Consultar Propuesta para Revisión` (`KuLSIzBZgaRIjuSu`) | ✅ Activo, mismo ID | 12 → **9 nodos** (contexto a subflujo) |
-| 10 | **W4D** `CCB - Workflow 4D - Procesar Decisión de Propuesta` (`W0TDH4b0tHCNOzFQ`) | ✅ Activo, mismo ID | **54 → 19 nodos** + 5 subflujos de rama. **La rama de IA tiene 3 guardarraíles nuevos** (ver §3) |
-| 11 | **W5A** `CCB - Workflow 5A - Router de Envío` (`gvIn6mbAn2Y1bMRR`) | ✅ Activo, mismo ID | Sin cambios funcionales (11 nodos) |
-| 12 | **W5B** hoy `[SUB] CCB - Workflow 5B - Envío al Cliente` (`XWBHgbmtBubA4gqx`) | ✅ Activo, **mismo ID** | **Renombrado**. 25 → **19 nodos** + 3 subflujos (enviar, cerrar envío, cerrar error) |
-| 13 | **W6** `CCB - Workflow 6 - Finalizador de Cotizaciones` (`mPwl4qUb0zQkmDHN`) | ✅ Activo, mismo ID | 12 → **10 nodos** (contexto a subflujo) |
-| 14 | **Error Workflow (catch-all)** `Dh2lAQTzyoZBpXie` | ✅ Activo, mismo ID | Se conserva con su diseño propio (no se migró al subflujo compartido, para no pisar el historial de incidentes) |
+| 9 | **W4C** `CCB · W4C — Consultar la propuesta para revisión` (`KuLSIzBZgaRIjuSu`) | ✅ Activo, mismo ID | 12 → **9 nodos** (contexto a subflujo) |
+| 10 | **W4D** `CCB · W4D — Procesar la decisión` (`W0TDH4b0tHCNOzFQ`) | ✅ Activo, mismo ID | **54 → 19 nodos** + 5 subflujos de rama. **La rama de IA tiene 3 guardarraíles nuevos** (ver §3) |
+| 11 | **W5A** `CCB · W5A — Router de envío` (`gvIn6mbAn2Y1bMRR`) | ✅ Activo, mismo ID | Sin cambios funcionales (11 nodos) |
+| 12 | **W5B** hoy `CCB · W5B — Envío al cliente` (`XWBHgbmtBubA4gqx`) | ✅ Activo, **mismo ID** | **Renombrado**. 25 → **19 nodos** + 3 subflujos (enviar, cerrar envío, cerrar error) |
+| 13 | **W6** `CCB · W6 — Finalizador de cotizaciones` (`mPwl4qUb0zQkmDHN`) | ✅ Activo, mismo ID | 12 → **10 nodos** (contexto a subflujo) |
+| 14 | **Catch-all — Errores no capturados** `Dh2lAQTzyoZBpXie` | ✅ Activo, mismo ID | Se conserva con su diseño propio (no se migró al subflujo compartido, para no pisar el historial de incidentes) |
 
 **Los 12 workflows del demo siguen activos, con el mismo ID.** Eso significa que **las URLs de los webhooks, las
 credenciales y la configuración de las dos páginas siguen apuntando al mismo lugar**: no hay nada que reconectar.
@@ -41,28 +41,31 @@ ahí es que **ahora exigen la cabecera de autenticación** (`X-CCB-Auth`), que l
 
 ---
 
-## 2. Lo que se agregó (14 flujos nuevos)
+## 2. Lo que se agregó (17 flujos nuevos)
 
-Ninguno de estos aparece en el recorrido del cliente: son piezas internas que los 12 originales invocan, más un flujo
-operativo de monitoreo.
+Ninguno de estos aparece en el recorrido del cliente: son piezas internas que los flujos originales (o la regresión)
+invocan, más los dos flujos operativos.
 
 | Flujo nuevo | ID | Qué resuelve |
 |---|---|---|
-| `[SUB] CCB - Registrar y Alertar Error` | `2dY1kaT7I5a0eP2w` | El registro y la alerta de error estaban duplicados en 8 flujos; ahora es uno solo |
-| `[SUB] CCB - Leer Configuración` | `Hgy02eqPhnsdJvkq` | Lee los 11 valores de `Configuracion_CCB`; ningún nodo tiene correos ni URLs escritos a mano |
-| `[SUB] CCB - Leer Contexto Propuesta` | `GELWpskp0aYJ2zPg` | Las tres lecturas de contexto de W4B/W4C/W4D/W5B |
-| `[SUB] CCB - Generar PDF de Propuesta` | `DF3emCmBBBB2HA3i` | La etapa de PDF salió de W3 (25 → 16 nodos) |
-| `[SUB] CCB - Invocar Motor y Guardar Cotización` | `MHWlUApSFT6gpBHs` | La invocación del motor y el guardado, fuera de W2A |
-| `[SUB] CCB - Enviar propuesta al cliente` | `AnPJGVWylmKEYWmJ` | El envío al cliente, fuera de W5B |
-| `[SUB] CCB - Cerrar envío` | `1Zzkrg3dTkTrddgp` | El cierre correcto del envío |
-| `[SUB] CCB - Cerrar error de envío` | `D2d9Og6UUvq13TJA` | El cierre cuando el envío falla |
-| `[SUB] CCB - W4D Aprobar` / `Cancelar` | `8j6BCwXkgJCccyO1` / `Jgf514VxDINJ8ra3` | Las dos ramas simples de W4D |
-| `[SUB] CCB - W4D Revisión Manual` | `iNSErCHs2iw33emJ` | Unifica las dos cadenas casi iguales de revisión manual (tope, IA apagada, confianza baja, aprobación rechazada) |
-| `[SUB] CCB - W4D Corrección IA` | `3NAcLF4jaZ1JBw0A` | Todo el camino de correcciones con IA, con sus guardarraíles |
-| `[SUB] CCB - W4D Cierre de Corrección` | `POeFkqQp8e4cGfY3` | Lo que pasa después del recálculo (guardar ronda, avisar, manejar fallos) |
-| **`[OPS] CCB - Monitoreo del pipeline`** | `ZwBFTBhwS9pjS69X` | **Nuevo**: cada hora publica las 4 métricas del framework y avisa si se supera un umbral |
+| `[SUB] CCB · Error — Registrar y alertar` | `2dY1kaT7I5a0eP2w` | El registro y la alerta de error estaban duplicados en 8 flujos; ahora es uno solo |
+| `[SUB] CCB · Config — Leer la configuración` | `Hgy02eqPhnsdJvkq` | Lee los 12 valores de `Configuracion_CCB`; ningún nodo tiene correos ni URLs escritos a mano |
+| `[SUB] CCB · Contexto — Leer el contexto de la propuesta` | `GELWpskp0aYJ2zPg` | Las tres lecturas de contexto de W4B/W4C/W4D/W5B |
+| `[SUB] CCB · PDF — Generar el PDF` | `DF3emCmBBBB2HA3i` | La etapa de PDF salió de W3 (25 → 17 nodos; 16 sin contar las notas fijas) |
+| `[SUB] CCB · Motor — Invocar el motor y guardar` | `MHWlUApSFT6gpBHs` | La invocación del motor y el guardado, fuera de W2A |
+| `[SUB] CCB · Envío — Enviar al cliente` | `AnPJGVWylmKEYWmJ` | El envío al cliente, fuera de W5B |
+| `[SUB] CCB · Envío — Cerrar el envío` | `1Zzkrg3dTkTrddgp` | El cierre correcto del envío |
+| `[SUB] CCB · Envío — Cerrar el error de envío` | `D2d9Og6UUvq13TJA` | El cierre cuando el envío falla |
+| `[SUB] CCB · W4D — Aprobar` / `Cancelar` | `8j6BCwXkgJCccyO1` / `Jgf514VxDINJ8ra3` | Las dos ramas simples de W4D |
+| `[SUB] CCB · W4D — Revisión manual` | `iNSErCHs2iw33emJ` | Unifica las dos cadenas casi iguales de revisión manual (tope, IA apagada, confianza baja, aprobación rechazada) |
+| `[SUB] CCB · W4D — Corrección con IA` | `3NAcLF4jaZ1JBw0A` | Todo el camino de correcciones con IA, con sus guardarraíles |
+| `[SUB] CCB · W4D — Cierre de la corrección` | `POeFkqQp8e4cGfY3` | Lo que pasa después del recálculo (guardar ronda, avisar, manejar fallos) |
+| **`[OPS] CCB · Monitoreo — Métricas del pipeline`** | `ZwBFTBhwS9pjS69X` | **Nuevo**: cada hora publica las 4 métricas del framework y avisa si se supera un umbral |
+| `[SUB] CCB · Regresión — Preparar filas` | `DgUfcoudk228kOw8` | Crea las filas descartables que usa la regresión en tres tablas |
+| `[SUB] CCB · Regresión — Verificar y limpiar` | `OuE4SS9Jujz1dVif` | Verifica el estado real, publica el semáforo y limpia lo que creó |
+| **`[OPS] CCB · Regresión — Prueba de regresión`** | `GVE3iNQ80y5Q9FEw` | **Nuevo**: recorre los caminos críticos cada lunes y a mano |
 
-**Total hoy: 26 workflows activos** (los 12 del demo + 14 nuevos). En el repo hay **27 archivos** de snapshot: los 26
+**Total hoy: 29 workflows activos** (los 12 del demo + 17 nuevos). En el repo hay **30 archivos** de snapshot: los 29
 activos más el formulario antiguo (`W2B`), que quedó retirado pero se conserva como referencia histórica.
 
 ---
@@ -94,7 +97,7 @@ cliente salen parciales** en los correos de alerta.
 
 | Indicador | En el demo | Hoy |
 |---|---|---|
-| Workflows activos | 12 | **26** (12 + 14 nuevos) |
+| Workflows activos | 12 | **29** (12 + 17 nuevos) |
 | Flujo más grande | 54 nodos (W4D) | **19 nodos** |
 | Valores incrustados en nodos (correos, URLs, destinatarios) | 20+ | **0** |
 | Cadenas de error que perdían el detalle | 4 | **0** |
@@ -116,7 +119,7 @@ cliente salen parciales** en los correos de alerta.
 | La rama de **confianza baja** | Implementada; sin corrida real |
 | **Métrica exacta de error por flujo** | Implementada; n8n no usa las credenciales creadas por API (401), así que falta crear a mano la credencial *Header Auth* en la UI. Mientras tanto publica "sin ejecuciones recientes" sin romperse |
 | **Poda de ejecuciones** a nivel de instancia y cierre de `/metrics` | Depende de Tecnología |
-| **Mover los 14 flujos nuevos** a la carpeta `Servicios_Información_Cotizaciones_v2.0` | El API de carpetas responde 403: requiere una key con scopes `folder:*` y/o registrar la instancia, o arrastrarlos en la UI |
+| **Mover los 17 flujos nuevos** a la carpeta `Servicios_Información_Cotizaciones_v2.0` | El API de carpetas responde 403: requiere una key con scopes `folder:*` y/o registrar la instancia, o arrastrarlos en la UI |
 | **Fila basura** en `Cotizaciones_CCB` (`id 21`, todos los campos nulos, `ENVIADA`, 2026-09-18) | Detectada; se puede borrar con `n8n_manage_datatable` |
 | El nodo webhook de **W4C** perdió el parámetro explícito `httpMethod: GET` | Queda con el valor por defecto de n8n, que es GET: **el comportamiento es el mismo**, pero conviene volver a dejarlo explícito para que el contrato no dependa de un valor implícito |
 
@@ -130,5 +133,5 @@ Todo lo demás del video sigue siendo exacto.
 
 Si se vuelve a grabar, el orden visual recomendado es: el formulario → la cotización y el PDF → el aviso de Teams → la
 página de revisión → aprobar (o pedir correcciones y autorizar en Teams) → el correo al cliente → el cierre. Y para la
-explicación interna, el orden de los 26 flujos por familia: los 7 principales + el catch-all, los 17 subflujos y el flujo
-operativo de monitoreo.
+explicación interna, el orden de los 29 flujos por familia: los 11 principales + el catch-all, los 15 subflujos y los 2 flujos
+operativos.
