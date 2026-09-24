@@ -99,7 +99,19 @@ PARAM_KEYS = {
 }
 
 EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
-ALLOWED_EMAIL_DOMAINS = {"example.com"}
+# Dominios y TLD reservados por RFC 2606 / RFC 6761: no pueden ser reales, asi que un
+# correo de prueba en ellos no es una fuga y no debe ensuciar el guardian. El flujo de
+# regresion usa `ejemplo.test` a proposito.
+ALLOWED_EMAIL_DOMAINS = {"example.com", "example.org", "example.net"}
+ALLOWED_EMAIL_TLDS = {".test", ".invalid", ".example", ".localhost"}
+
+
+def es_correo_de_prueba(address: str) -> bool:
+    """True si el correo esta en un dominio o TLD reservado para pruebas."""
+    dominio = address.rpartition("@")[2].lower()
+    if dominio in ALLOWED_EMAIL_DOMAINS:
+        return True
+    return any(dominio.endswith(tld) for tld in ALLOWED_EMAIL_TLDS)
 
 
 def fetch(base: str, key: str, workflow_id: str) -> dict:
@@ -180,7 +192,7 @@ def main() -> int:
         surviving = {
             address
             for address in EMAIL_RE.findall(text)
-            if address.split("@")[1].lower() not in ALLOWED_EMAIL_DOMAINS
+            if not es_correo_de_prueba(address)
         }
         if surviving:
             leaks[filename] = sorted(mask(address) for address in surviving)

@@ -45,6 +45,7 @@ corregidos.
 | **B4** | Dictamen sobre los 4 errores de validación del subflujo de PDF | Decisión tomada con evidencia, no por defecto | ☑ 24/09 — **falsos positivos por diseño**, no se tocan |
 | **B5** | Actualizar las 9 notas fijas que citan el nombre viejo | Las 9 notas con el nombre nuevo; nada más cambia | ☑ 24/09 — 12 sustituciones, 9 flujos, 0 problemas |
 | **B6** | Quitar el `pinData` de `[SUB] CCB · Error` | `pinData` vacío y el requisito de limpieza vuelve a cumplirse | ☑ 24/09 — `pinData: {}` confirmado |
+| **B7** | Corregir las afirmaciones obsoletas dentro de los flujos | Números y nombres de las notas al día; el guardián de anonimización con señal | ☑ 24/09 — 4 flujos + el export a 0 |
 
 **Orden:** B1a → B1b → B1c → B2a → B4 → B5 → B6 → B3a → B2b/B2c → B3b (la corre el usuario).
 
@@ -211,13 +212,46 @@ de cierre).
 **inventario es vivo** pero la **evaluación por flujo y los pendientes son constantes** de la re-auditoría de cierre del
 23/09 (no una medición automática). `docs/informe-pipeline-ccb.html` regenerado con el script.
 
+### B7 — afirmaciones obsoletas dentro de los flujos · 24/09
+
+El encargo era cerrar "los 2 detalles de consistencia" que quedaban. En vez de arreglarlos de a uno se buscó **la clase
+completa**: se recorrieron los 30 flujos buscando nombres viejos en **cualquier** campo de nodo y afirmaciones numéricas
+dentro de las notas fijas. Aparecieron **4 casos reales** (y 2 comprobaciones que salieron bien).
+
+| # | Dónde | Decía | Real (verificado) |
+|---|---|---|---|
+| 1 | Nota de `[SUB] CCB · PDF` | "W3 pasó de 25 a **19** nodos" | **17** nodos (16 sin contar las notas) |
+| 2 | Nota de `[SUB] CCB · Config` | "se refleja en los **13** flujos" | **12** la invocan directo; **22** la alcanzan |
+| 3 | Nota de `CCB · W4C` | "**Los 3 nodos de lectura** usan `alwaysOutputData=true`" | Esos nodos se mudaron a `[SUB] CCB · Contexto` en F4-02; W4C delega |
+| 4 | Comentario del Code node de `CCB · W5B` | citaba `[SUB] CCB - Leer Contexto Propuesta` | nombre nuevo |
+
+**Comprobaciones que salieron bien** (no se tocaron): la nota del catch-all dice "11 flujos activos" y son exactamente
+**11** los que tienen ese `errorWorkflow`; y los `'Regresion: …'` de los 3 Code nodes de la regresión son **valores de
+comentario de prueba**, no referencias a un flujo.
+
+**Cómo:** `scripts/corregir_notas_obsoletas.py`, con la misma red que los anteriores (respaldo previo, `--dry-run`,
+verificación contra respaldo tras cada `PUT`, idempotencia) más un `--verify-only` de solo lectura. Cada sustitución
+valida que la cadena "antes" aparezca **exactamente una vez** en su campo antes de aplicarla.
+
+**Incidente durante la aplicación (no afectó el resultado):** el `PUT` del subflujo de PDF perdió la respuesta por un
+`TimeoutError`, pero **sí se había confirmado** en n8n (comprobado por relectura: el cambio estaba y `updatedAt` había
+avanzado). El script se endureció para releer y decidir por el estado observado en vez de fallar a ciegas.
+
+**Verificación independiente del padre:** las 5 sustituciones presentes en vivo; comparación de los 4 flujos contra el
+respaldo → **nada más cambió**; la línea 3 del `jsCode` de W5B (que es una referencia a un **nodo** del propio flujo,
+`$('Ejecutar Leer Contexto Propuesta')`) **intacta**, y ese nodo existe; 0 nombres viejos en los 4 flujos.
+
+**Hallazgo extra que se cerró de paso — el guardián de anonimización estaba anulado:** `scripts/export_workflows.py`
+salía con **código 1** porque la regresión usa direcciones de prueba en `ejemplo.test` y la lista de dominios permitidos
+solo tenía `example.com`. El aviso era benigno (dominio reservado por RFC 2606, no puede ser real), pero **el guardián
+existe para cazar correos reales antes de commitear a un repo público**, y con ruido permanente se vuelve inútil. Se
+amplió a los dominios y TLDs reservados (`example.com/.org/.net`, `.test`, `.invalid`, `.example`, `.localhost`) con la
+función `es_correo_de_prueba`, verificada contra 9 casos: acepta los de prueba y sigue **rechazando** los reales,
+incluido el truco de sufijo `alguien@example.com.evil.io`. El export vuelve a salir **0**.
+
 ### Pendientes que esta unidad deja abiertos (requieren decisión)
 
-1. **Nota del subflujo de PDF con un número falso:** la nota fija de `[SUB] CCB · PDF — Generar el PDF` dice "W3 pasó de
-   25 a **19** nodos"; el valor real es 17 (16 sin la nota).
-2. **Comentario desactualizado en un nodo Code:** `w5b-envio-al-cliente.json` cita `[SUB] CCB - Leer Contexto
-   Propuesta` dentro del código de un nodo (no es el `name` ni un `cachedResultName`).
-3. **Legado de la instancia:** hay **31 flujos inactivos** ajenos al proyecto (`CCB_Propuestas_v2*`, `CCB - Fase 1/2*`,
+1. **Legado de la instancia:** hay **31 flujos inactivos** ajenos al proyecto (`CCB_Propuestas_v2*`, `CCB - Fase 1/2*`,
    duplicados `copy`, `My workflow 17/19/20`, `TEST_STATE_2TPL`, etc.). El informe cuenta solo los 30 del proyecto. Es
    lo que hay que resolver antes de ordenar carpetas (A2).
-4. **Push:** 53 commits locales sin publicar.
+2. **Push:** 53 commits locales sin publicar.

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:29:30.811Z",
+  "updatedAt": "2026-09-24T14:04:22.820Z",
   "createdAt": "2026-09-23T15:05:13.086Z",
   "id": "DF3emCmBBBB2HA3i",
   "name": "[SUB] CCB · PDF — Generar el PDF",
@@ -325,7 +325,7 @@
     },
     {
       "parameters": {
-        "content": "## [SUB] CCB · PDF — Generar el PDF (F4-05)\n\nEtapa de presentación del motor, separada del cálculo de precio (W3 pasó de 25 a 19 nodos).\n\n- **Entrada:** el item calculado por W3 (`servicio`, campos del cálculo, `id_solicitud`).\n- **Salida:** el mismo item + `PDF_URL` (link público del PDF en el microservicio), o `{ ok: false, error, mensaje_error }` si el microservicio falla o el servicio no es reconocido.\n- **Ya no devuelve el binario del PDF:** nadie aguas abajo lo consume (se verificó), y así se evita cruzar binarios entre subflujos.\n- Las plantillas HTML (100–212 KB cada una) y la interpolación viven acá; la URL del microservicio y los datos del asesor salen de `Configuracion_CCB`.",
+        "content": "## [SUB] CCB · PDF — Generar el PDF (F4-05)\n\nEtapa de presentación del motor, separada del cálculo de precio (W3 pasó de 25 a 17 nodos; 16 sin contar las notas fijas).\n\n- **Entrada:** el item calculado por W3 (`servicio`, campos del cálculo, `id_solicitud`).\n- **Salida:** el mismo item + `PDF_URL` (link público del PDF en el microservicio), o `{ ok: false, error, mensaje_error }` si el microservicio falla o el servicio no es reconocido.\n- **Ya no devuelve el binario del PDF:** nadie aguas abajo lo consume (se verificó), y así se evita cruzar binarios entre subflujos.\n- Las plantillas HTML (100–212 KB cada una) y la interpolación viven acá; la URL del microservicio y los datos del asesor salen de `Configuracion_CCB`.",
         "height": 340,
         "width": 520,
         "color": 3
@@ -482,15 +482,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "f92d31c3-ab42-42ee-935a-2b4e7abce342",
-  "activeVersionId": "f92d31c3-ab42-42ee-935a-2b4e7abce342",
-  "versionCounter": 22,
+  "versionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
+  "activeVersionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
+  "versionCounter": 25,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T13:29:30.820Z",
-    "createdAt": "2026-09-24T13:29:30.820Z",
-    "versionId": "f92d31c3-ab42-42ee-935a-2b4e7abce342",
+    "updatedAt": "2026-09-24T14:04:22.829Z",
+    "createdAt": "2026-09-24T14:04:22.829Z",
+    "versionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
     "workflowId": "DF3emCmBBBB2HA3i",
     "nodes": [
       {
@@ -811,7 +811,7 @@
       },
       {
         "parameters": {
-          "content": "## [SUB] CCB · PDF — Generar el PDF (F4-05)\n\nEtapa de presentación del motor, separada del cálculo de precio (W3 pasó de 25 a 19 nodos).\n\n- **Entrada:** el item calculado por W3 (`servicio`, campos del cálculo, `id_solicitud`).\n- **Salida:** el mismo item + `PDF_URL` (link público del PDF en el microservicio), o `{ ok: false, error, mensaje_error }` si el microservicio falla o el servicio no es reconocido.\n- **Ya no devuelve el binario del PDF:** nadie aguas abajo lo consume (se verificó), y así se evita cruzar binarios entre subflujos.\n- Las plantillas HTML (100–212 KB cada una) y la interpolación viven acá; la URL del microservicio y los datos del asesor salen de `Configuracion_CCB`.",
+          "content": "## [SUB] CCB · PDF — Generar el PDF (F4-05)\n\nEtapa de presentación del motor, separada del cálculo de precio (W3 pasó de 25 a 17 nodos; 16 sin contar las notas fijas).\n\n- **Entrada:** el item calculado por W3 (`servicio`, campos del cálculo, `id_solicitud`).\n- **Salida:** el mismo item + `PDF_URL` (link público del PDF en el microservicio), o `{ ok: false, error, mensaje_error }` si el microservicio falla o el servicio no es reconocido.\n- **Ya no devuelve el binario del PDF:** nadie aguas abajo lo consume (se verificó), y así se evita cruzar binarios entre subflujos.\n- Las plantillas HTML (100–212 KB cada una) y la interpolación viven acá; la URL del microservicio y los datos del asesor salen de `Configuracion_CCB`.",
           "height": 340,
           "width": 520,
           "color": 3
@@ -968,18 +968,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T13:29:30.932Z",
-        "id": 3052,
+        "createdAt": "2026-09-24T14:04:23.101Z",
+        "id": 3062,
         "workflowId": "DF3emCmBBBB2HA3i",
-        "versionId": "f92d31c3-ab42-42ee-935a-2b4e7abce342",
+        "versionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:29:30.975Z",
-        "id": 3053,
+        "createdAt": "2026-09-24T14:04:23.205Z",
+        "id": 3063,
         "workflowId": "DF3emCmBBBB2HA3i",
-        "versionId": "f92d31c3-ab42-42ee-935a-2b4e7abce342",
+        "versionId": "6c5b98b3-5410-4fb0-8629-4a422dd122cf",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
