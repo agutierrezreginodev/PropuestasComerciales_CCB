@@ -61,7 +61,7 @@ públicos autenticados y 2 páginas web. Puntaje de la última auditoría de bue
   [SUB] Error — Registrar y alertar  (lo llaman los flujos que fallan: fila + correo)
   catch-all  (errorWorkflow de los 11 flujos principales: fallos no capturados)
   [OPS] Monitoreo — Métricas del pipeline  (cada hora: 4 métricas + aviso por umbral)
-  [OPS] Regresión — Prueba de regresión  (los lunes 6:00: prueba los caminos críticos)
+  [OPS] Regresión — Prueba de regresión  (los lunes 6:00: prueba los 6 caminos críticos)
 ```
 
 ---
@@ -91,8 +91,11 @@ públicos autenticados y 2 páginas web. Puntaje de la última auditoría de bue
 4. **W2A** (`Guardar criterios y cotizar`) guarda los criterios del cliente y llama al subflujo
    `[SUB] Motor — Invocar el motor y guardar`, que invoca a **W3** y guarda el resultado.
 5. **W3** (`Motor de criterios y precio`) calcula el precio con el motor de criterios y llama a
-   `[SUB] PDF — Generar el PDF`, que pide el PDF al microservicio y devuelve la `pdf_url`.
-6. Queda una fila en **`Cotizaciones_CCB`** con `estado = PROPUESTA_GENERADA`, el valor, el IVA, el total y la `pdf_url`.
+   `[SUB] PDF — Generar el PDF`, que pide el PDF al microservicio, **lo persiste** y devuelve la `pdf_url`
+   (`…/pdfs/{id_solicitud}.pdf`). Si no puede construir la URL pública (por ejemplo, si falta `id_solicitud`), el
+   subflujo devuelve el fallo como **error** (`ok: false` con el motivo), no como éxito.
+6. Queda una fila en **`Cotizaciones_CCB`** con `estado = PROPUESTA_GENERADA`, el valor, el IVA, el total y la
+   `pdf_url` (servible en `/pdfs/{id_solicitud}.pdf`).
 
 **Si algo falla:** el error se registra y se avisa (ver §5). El cliente no recibe nada roto: la página muestra el error.
 
@@ -249,7 +252,7 @@ PROPUESTA_GENERADA ──► (el asesor decide)
 | Flujo | ID | Rol |
 |---|---|---|
 | Monitoreo — Métricas del pipeline | `ZwBFTBhwS9pjS69X` | Cada hora: 4 métricas + aviso por umbral |
-| Regresión — Prueba de regresión | `GVE3iNQ80y5Q9FEw` | Lunes 6:00: prueba los caminos críticos y publica el semáforo |
+| Regresión — Prueba de regresión | `GVE3iNQ80y5Q9FEw` | Lunes 6:00: prueba los 6 caminos críticos y publica el semáforo (`6/6`) |
 
 Detalle de cada flujo (por qué se creó, cómo funciona, con qué se relaciona): [FLUJOS_PIPELINE_CCB.md](FLUJOS_PIPELINE_CCB.md).
 
@@ -276,7 +279,7 @@ exitosas** (sí los de error), para que la base no crezca sin control.
 
 | Dependencia | Riesgo | Qué hacer si falla |
 |---|---|---|
-| **Microservicio de PDF** (túnel ngrok) | Es el punto más frágil: si el túnel cae, no se generan PDFs | Reiniciar el túnel y actualizar `microservicio_pdf_url` |
+| **Microservicio de PDF** (túnel ngrok) | Es el punto más frágil: si el túnel cae, no se generan PDFs ni quedan servibles en `/pdfs/{id_solicitud}.pdf` | Reiniciar el túnel y actualizar `microservicio_pdf_url` |
 | **Motor de cálculo (W3)** | Si rechaza un caso, la propuesta queda en `ERROR_CALCULO` | Revisar los criterios; el error queda registrado |
 | **Teams / Outlook** (credenciales OAuth) | Si la credencial vence, no salen avisos ni correos | Renovar la credencial en n8n |
 | **n8n (instancia)** | La retención a nivel de instancia y el `/metrics` sin autenticar dependen de Tecnología | — |

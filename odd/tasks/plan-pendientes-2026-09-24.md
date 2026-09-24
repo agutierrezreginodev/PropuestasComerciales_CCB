@@ -1,7 +1,7 @@
 # Plan de trabajo — pendientes para el 2026-09-24
 
 **Punto de partida:** pipeline en **89,5/100** ([re-auditoría de cierre](../../docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md)),
-Fases 0–7 del plan de remediación cerradas, 52 commits locales sin push, 29 flujos activos.
+Fases 0–7 del plan de remediación cerradas, 54 commits locales sin push, 29 flujos activos.
 **Objetivo del día:** cruzar el **umbral de 90** y dejar el proyecto ordenado para la entrega (nombres, carpetas y push).
 
 ---
@@ -30,9 +30,17 @@ Fases 0–7 del plan de remediación cerradas, 52 commits locales sin push, 29 f
 | B1 | **Renombrar los 30 flujos** por script, según la tabla de la convención, y **refrescar los `cachedResultName`** de los ~19 nodos que llaman a otro flujo | Los 30 con el nombre nuevo; los llamadores apuntan al nombre nuevo; 0 errores de validación | Consistencia |
 | B2 | **Actualizar el repositorio** con los nombres nuevos: README, `FLUJOS_PIPELINE_CCB.md`, `FLUJO_COMPLETO_PIPELINE_CCB.md`, `COMPARATIVO_DEMO_VS_ACTUAL.md` y el snapshot | `grep` no encuentra nombres viejos en los docs; snapshot re-exportado | Consistencia |
 | B3 | **Prueba de humo del renombrado:** validar los 30 flujos y correr la regresión | Validación 0 errores y regresión `5/5` | Verificación |
-| B4 | **Caso del motor en la regresión** (`[SUB] Invocar Motor y Guardar Cotización` → W3, que lee la planilla Excel y necesita los criterios completos) | La regresión pasa a `6/6` | **+0,1 Testing** |
+| B4 | ✅ **Caso del motor en la regresión** (`[SUB] CCB · Motor — Invocar el motor y guardar` → W3, que lee la planilla Excel y necesita los criterios completos) — **hecho 24/09** | La regresión pasa a `6/6` ✅ (ejecución `428586`) | **+0,1 Testing** |
 | B5 | *(Opcional)* **Cerrar el hueco del correo de alerta silencioso**: si el envío de la alerta falla, hoy la ejecución queda en `success` y nadie se entera | El fallo de envío queda registrado y visible | Observabilidad |
 | B6 | **Cerrar la sesión** con la evidencia en la ficha de la feature y la memoria del proyecto | Ficha y memoria actualizadas | Trazabilidad |
+
+> **B4 cerrada (24/09).** El caso del motor corre de punta a punta y verifica el **estado real** (no el retorno del
+> subflujo): la regresión quedó en **`6/6`** con la ejecución **`428586`** (0 nodos con error, 0 filas sucias). El camino
+> destapó **dos hallazgos que no estaban en el plan**: (1) un **bug de producción** en la etapa de PDF — `Normalizar
+> Criterios` (W3) descartaba `id_solicitud`, así que el microservicio no persistía el archivo y `pdf_url` quedaba vacío;
+> ahora el PDF se persiste y se sirve en `/pdfs/{id_solicitud}.pdf`; y (2) los **routers de cron (W4A/W5A/W6) procesaban
+> las filas de prueba** `SOL-PRUEBA-*` cuando un tick caía a mitad de una corrida — se añadió el guardián `Descartar
+> filas de prueba`. Detalle completo en [`caso-motor-regresion-ccb.md`](caso-motor-regresion-ccb.md).
 
 ---
 

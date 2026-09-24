@@ -171,22 +171,36 @@ Cada verificación deja cuatro datos, en este orden:
 
 ---
 
-## 9. Regresión automatizada (lo que falta para cruzar el umbral de 90)
+## 9. Regresión automatizada
 
-Hoy el testing es **manual y documentado**. La brecha con la rúbrica se cierra con un flujo de regresión:
-
-**Diseño propuesto — `[OPS] CCB · Regresión — Prueba de regresión`** (trigger manual/semanal):
+Hoy el testing es **manual y documentado**, y los caminos críticos ya se validan en un clic (o solos, los lunes) con el
+flujo `[OPS] CCB · Regresión — Prueba de regresión` (`GVE3iNQ80y5Q9FEw`, trigger manual/semanal). En un solo recorrido:
 
 1. Crea sus propias filas `SOL-PRUEBA-REGRESION` en las tablas implicadas (copias de filas reales).
-2. Ejecuta en secuencia los caminos críticos con datos fijados:
-   `[SUB] W4D — Aprobar` → `[SUB] W4D — Cancelar` → `[SUB] W4D — Revisión manual (tope)` → `[SUB] Error — Registrar y alertar` →
-   `[SUB] Motor — Invocar el motor y guardar` → `[SUB] Envío — Enviar al cliente` → `[SUB] Envío — Cerrar el envío`.
-3. Compara los resultados contra lo esperado (respuesta, estado de las filas, registros de error) y publica un
-   **semáforo** por camino (una fila por caso en una Data Table `Regresion_CCB` o en el correo de resumen).
+2. Ejecuta en secuencia los **seis casos** con datos fijados: `[SUB] CCB · W4D — Aprobar` → `[SUB] CCB · W4D — Cancelar`
+   → `[SUB] CCB · W4D — Revisión manual` (motivo `tope`) → `[SUB] CCB · Error — Registrar y alertar` →
+   `[SUB] CCB · Envío — Cerrar el envío` → **caso del motor** (`[SUB] CCB · Motor — Invocar el motor y guardar` → W3 →
+   `[SUB] CCB · PDF — Generar el PDF`).
+3. Compara los resultados contra lo esperado **leyendo el estado real** de las filas, no el retorno de los subflujos
+   (así se detecta una regresión en el mapeo de un `update`), y publica un **semáforo** `X/6` como la métrica
+   `regresion_pipeline` en `Metricas_CCB`.
 4. Borra sus propias filas al terminar y reporta el resultado en un correo al destinatario de alertas.
 
-Con eso, cada cambio de un flujo se valida contra los caminos críticos en un clic, y la dimensión *Testing* sube a la par
-de *Observabilidad*.
+### El caso del motor (sexto caso, 24/09)
+
+Es el único camino crítico del pipeline que la regresión no cubría. `Preparar caso motor` emite **un** item con el
+contrato completo del motor y `id_solicitud = 'SOL-PRUEBA-REGRESION-MOTOR'`; `Ejecutar Motor` invoca
+`[SUB] CCB · Motor — Invocar el motor y guardar` (`MHWlUApSFT6gpBHs`) → W3 (`cHOIOEFB5nbltN82`) →
+`[SUB] CCB · PDF — Generar el PDF` (`DF3emCmBBBB2HA3i`).
+
+**Qué verifica** (estado real en `Cotizaciones_CCB`, no el retorno del subflujo): `estado = 'PROPUESTA_GENERADA'`,
+`total_registros > 0`, `valor_total > 0`, `fecha_calculo` presente, `pdf_url` presente y **ninguna** fila en
+`Errores_CCB` para ese `id_solicitud`. Las aserciones son **de rango**, no de valor exacto: así el caso no se rompe
+cuando crece la base de empresas. Su diseño y los dos hallazgos que destapó (el bug de `pdf_url` y los routers de cron
+procesando filas de prueba) están en la ficha [`caso-motor-regresion-ccb.md`](../odd/tasks/caso-motor-regresion-ccb.md).
+
+Con esto, cada cambio de un flujo se valida contra los caminos críticos en un clic, y la dimensión *Testing* sube a la
+par de *Observabilidad*.
 
 ---
 

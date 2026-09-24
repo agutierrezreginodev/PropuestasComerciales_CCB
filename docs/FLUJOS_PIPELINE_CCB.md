@@ -277,7 +277,7 @@ de configuración, de `Errores_CCB` (que alimentan los 8 flujos que registran er
 ---
 
 ## 9.bis `[OPS] CCB · Regresión — Prueba de regresión`
-**ID:** `GVE3iNQ80y5Q9FEw` · **Nodos:** 16 · **Plan:** R3 y R9 (feature `regresion-y-documentacion-ccb`)
+**ID:** `GVE3iNQ80y5Q9FEw` · **Nodos:** 18 · **Plan:** R3 y R9 (feature `regresion-y-documentacion-ccb`)
 
 **Por qué se creó.** La re-auditoría dejó *Testing* como la dimensión más baja (11,7/15): todo se verificaba a mano y
 cada cambio exigía repetir el procedimiento completo. Este flujo convierte esa verificación en una **prueba de regresión
@@ -292,10 +292,13 @@ semanal`). En orden:
    `-CANCELAR`, `-REVISION`, `-ERROR`, `-ENVIO`). Los ids son fijos a propósito: cada corrida **reutiliza** las mismas
    filas (upsert), así las tablas no crecen. Cada tabla lleva una marca para poder borrarlas de una sola vez
    (`servicio`, `observaciones` y `comentarios` = `SOL-PRUEBA-REGRESION`).
-3. Cinco casos en cadena, cada uno con su nodo de preparación y su subflujo real:
-   `W4D — Aprobar` (espera `APROBADA`) → `W4D — Cancelar` (espera `CANCELADA`) → `W4D — Revisión manual` con motivo `tope`
-   (espera `REVISION_MANUAL`) → `Error — Registrar y alertar` (espera una fila en `Errores_CCB` con `error_timestamp`) →
-   `Envío — Cerrar el envío` (espera `ENVIADA` en la cotización **y** en la solicitud, con `fecha_envio`).
+3. Seis casos en cadena, cada uno con su nodo de preparación y su subflujo real:
+   `[SUB] CCB · W4D — Aprobar` (espera `APROBADA`) → `[SUB] CCB · W4D — Cancelar` (espera `CANCELADA`) →
+   `[SUB] CCB · W4D — Revisión manual` con motivo `tope` (espera `REVISION_MANUAL`) →
+   `[SUB] CCB · Error — Registrar y alertar` (espera una fila en `Errores_CCB` con `error_timestamp`) →
+   `[SUB] CCB · Envío — Cerrar el envío` (espera `ENVIADA` en la cotización **y** en la solicitud, con `fecha_envio`) →
+   **caso del motor**: `[SUB] CCB · Motor — Invocar el motor y guardar` → W3 → `[SUB] CCB · PDF — Generar el PDF`
+   (espera `PROPUESTA_GENERADA` con `total_registros > 0`, `valor_total > 0`, `fecha_calculo` y `pdf_url`, y sin fila de error).
 4. `Ejecutar Verificar y limpiar` → **[SUB] CCB · Regresión — Verificar y limpiar**: lee las tres tablas y **verifica el
    estado real**, no lo que devolvieron los subflujos (así se detecta una regresión en el mapeo de un `update`); publica
    el resultado en `Metricas_CCB` como la métrica `regresion_pipeline` (`valor` = casos ok, `estado` = `ok`/`FALLO`);
@@ -316,7 +319,7 @@ tres ramas de W4D; escribe y borra en `Cotizaciones_CCB` y `Errores_CCB`; public
 
 ## 9.ter Los dos subflujos de la regresión
 **Plan:** R9. El flujo de regresión tenía 20 nodos (el límite del criterio de arquitectura) y necesitaba crecer: se
-extrajeron la preparación y la verificación/limpieza, y quedó en **16 nodos**.
+extrajeron la preparación y la verificación/limpieza, y quedó en **18 nodos**.
 
 ### `[SUB] CCB · Regresión — Preparar filas` — `DgUfcoudk228kOw8` · 7 nodos
 **Por qué:** crear y reutilizar las filas de prueba de las tres tablas implicadas (`Cotizaciones_CCB`,
@@ -326,9 +329,37 @@ marcadas con `SOL-PRUEBA-REGRESION`. **Relaciones:** lo llama el flujo de regres
 
 ### `[SUB] CCB · Regresión — Verificar y limpiar` — `OuE4SS9Jujz1dVif` · 11 nodos
 **Por qué:** la verificación del estado real y la limpieza de las cuatro tablas. **Cómo funciona:** tres lecturas
-(cotizaciones, solicitudes y errores), `Comparar resultados` (compara contra lo esperado caso por caso), publica el
-semáforo en `Metricas_CCB`, borra con `deleteRows` las filas marcadas de las cuatro tablas y devuelve el resumen para el
-correo. **Relaciones:** lo llama el flujo de regresión; escribe y borra en cuatro tablas y publica en `Metricas_CCB`.
+(cotizaciones, solicitudes y errores), `Comparar resultados` (compara contra lo esperado caso por caso, ahora **seis**:
+el arreglo `casos` ganó la entrada `motor` con su propia rama de aserciones), publica el semáforo en `Metricas_CCB`,
+borra con `deleteRows` las filas marcadas de las cuatro tablas y devuelve el resumen para el correo. Los dos `deleteRows`
+de limpieza (cotizaciones y errores) pasaron a `matchType: anyCondition` con una segunda condición por
+`id_solicitud = 'SOL-PRUEBA-REGRESION-MOTOR'`, para borrar también la fila del caso del motor. **Relaciones:** lo llama el
+flujo de regresión; escribe y borra en cuatro tablas y publica en `Metricas_CCB`.
+
+---
+
+## 9.quater El guardián de los routers de producción (W4A, W5A, W6)
+
+**Qué es.** Los tres flujos que leen `Cotizaciones_CCB` filtrando por `estado` — **`CCB · W4A — Router de aprobación`**
+(`PROPUESTA_GENERADA`), **`CCB · W5A — Router de envío`** (`APROBADA`) y **`CCB · W6 — Finalizador de cotizaciones`**
+(`ENVIADA`) — llevan un nodo `Code` llamado **`Descartar filas de prueba`** intercalado entre la lectura y
+**`Validar id_solicitud presente`**:
+
+```
+Data Table - Leer cotizaciones <ESTADO> → Descartar filas de prueba → Validar id_solicitud presente → …
+```
+
+**Por qué.** Los tres son routers de cron (W4A y W5A cada 15 minutos; W6 a las 3:00). La regresión siembra filas
+descartables `SOL-PRUEBA-*` y tarda ~110 s; si un tick del cron cae a mitad de una corrida, el router procesaba esas
+filas: las marcaba con un estado nuevo, intentaba enviar correos de verdad y ensuciaba `Errores_CCB`. El guardián
+descarta silenciosamente toda fila cuyo `id_solicitud` empieza por `SOL-PRUEBA`; si no queda ninguna, devuelve una lista
+vacía y la cadena se detiene **sin registrar ningún error**. **No reutiliza el `IF` existente a propósito:** su rama
+falsa va a `Preparar error - id_solicitud faltante` → `Ejecutar Registrar-y-Alertar`, así que excluir una fila de prueba
+por ahí ensuciaría `Errores_CCB`, que es justo lo que se quiere evitar. El nodo `Data Table` no soporta operadores en el
+filtro (solo igualdad y `matchType`), así que la exclusión se hace en código.
+
+**Coste.** Un nodo por flujo: W4A 9 → **10** (9 sin la nota fija), W5A 12 → **13** (12 sin nota), W6 11 → **12**
+(11 sin nota). Los tres quedan muy por debajo del límite de 20.
 
 ---
 
@@ -362,5 +393,5 @@ W2A ──> [SUB] CCB · Motor — Invocar el motor y guardar ──> W3
 [OPS] CCB · Monitoreo — Métricas del pipeline ──> lee todo el pipeline ───┘
 catch-all ──> recibe los fallos no capturados de los 11 flujos activos
 [OPS] CCB · Regresión — Prueba de regresión ──> [SUB] CCB · Regresión — Preparar filas / Verificar y limpiar
-   └──> prueba los subflujos de error, tres ramas de W4D y el cierre de envio
+   └──> prueba los subflujos de error, tres ramas de W4D, el cierre de envío y el camino del motor (Motor → W3 → PDF)
 ```

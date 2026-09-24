@@ -42,7 +42,7 @@ FLUJOS = [
  ("Hgy02eqPhnsdJvkq","sub","Config","Leer la configuración","Devuelve el item del llamador con las 12 claves de configuración adjuntas.","9 flujos"),
  ("GELWpskp0aYJ2zPg","sub","Contexto","Leer el contexto de la propuesta","Lee cotización, criterios y solicitud en un solo item.","W4B · W4C · W4D · W5B"),
  ("DF3emCmBBBB2HA3i","sub","PDF","Generar el PDF","Pide el PDF al microservicio y devuelve la URL.","W3"),
- ("MHWlUApSFT6gpBHs","sub","Motor","Invocar el motor y guardar","Invoca W3, guarda la cotización y maneja el rechazo del motor.","W2A"),
+ ("MHWlUApSFT6gpBHs","sub","Motor","Invocar el motor y guardar","Invoca W3, guarda la cotización y maneja el rechazo del motor.","W2A · la regresión"),
  ("AnPJGVWylmKEYWmJ","sub","Envío","Enviar al cliente","Arma y envía el correo con el PDF adjunto.","W5B"),
  ("1Zzkrg3dTkTrddgp","sub","Envío","Cerrar el envío","Marca ENVIADA en cotización y solicitud y avisa internamente.","W5B · la regresión"),
  ("D2d9Og6UUvq13TJA","sub","Envío","Cerrar el error de envío","Registra el fallo de envío y responde igual al asesor.","W5B"),
@@ -54,7 +54,7 @@ FLUJOS = [
  ("DgUfcoudk228kOw8","sub","Regresión","Preparar filas","Crea las filas descartables en tres tablas.","la regresión"),
  ("OuE4SS9Jujz1dVif","sub","Regresión","Verificar y limpiar","Verifica el estado real, publica el semáforo y borra las cuatro tablas.","la regresión"),
  ("ZwBFTBhwS9pjS69X","ops","Monitoreo","Métricas del pipeline","Cada hora publica las 4 métricas del framework y avisa por umbral.","Cron horario"),
- ("GVE3iNQ80y5Q9FEw","ops","Regresión","Prueba de regresión","Corre 5 caminos críticos con filas descartables y publica el semáforo.","Cron semanal + a mano"),
+ ("GVE3iNQ80y5Q9FEw","ops","Regresión","Prueba de regresión","Corre 6 caminos críticos con filas descartables y publica el semáforo.","Cron semanal + a mano"),
  ("lIcdT6nGd0w1G2i0","retirado","W2B","Formulario antiguo","Retirado: el formulario vive en la página nueva.","—"),
 ]
 
@@ -76,13 +76,11 @@ EVAL = {
 PEND = {
  "W1": [("Testing","Sin caso propio en la regresión: su camino (correo → enlace) no se ejercita automáticamente.","Agregar un caso que verifique la extracción y el envío del enlace.","Yo"),
         ("Manejo de errores","El reintento está en los nodos de red, pero no hay prueba del camino de error del correo.","Forzar un correo sin remitente reconocido y verificar el registro.","Yo")],
- "W2A": [("Testing","El camino del motor no está en la regresión: es el caso más valioso que falta.","Caso `motor` en la regresión (W3 lee la planilla Excel y necesita los criterios completos).","Yo"),
-         ("Observabilidad","Hereda el hueco del correo de alerta silencioso.","Registrar el fallo de envío de la alerta como un incidente más.","Yo")],
+ "W2A": [("Observabilidad","Hereda el hueco del correo de alerta silencioso.","Registrar el fallo de envío de la alerta como un incidente más.","Yo")],
  "W2C": [("Manejo de errores","El webhook valida los campos (400) pero el fallo de escritura en la tabla no tiene rama propia.","Agregar rama de error en el guardado con registro y respuesta controlada.","Yo"),
          ("Testing","Sin caso propio en la regresión.","Caso que replique un POST del formulario con datos válidos y con faltantes.","Yo"),
          ("Observabilidad","Hereda la poda de instancia y el hueco del correo de alerta.","Poda de ejecuciones (Tecnología).","Tecnología")],
- "W3": [("Testing","Su camino (motor + PDF) no está en la regresión.","Caso `motor`: cubre el cálculo y la generación del PDF.","Yo"),
-        ("Manejo de errores","La lectura de la planilla Excel es una dependencia externa sin reintento propio.","Añadir reintento y un mensaje específico si el Excel no está disponible.","Yo")],
+ "W3": [("Manejo de errores","La lectura de la planilla Excel reintenta 3x2 s y tiene rama de error, pero su fallo no está cubierto por la regresión: el caso del motor asume que la planilla responde.","Caso que fuerce un fallo de lectura de la planilla y verifique el registro y el `ok:false`.","Yo")],
  "W4A": [("Testing","Es un router: se prueba de forma indirecta, sin caso propio.","Caso que verifique que detecta solo las propuestas en PROPUESTA_GENERADA.","Yo")],
  "W4B": [("Testing","El aviso a Teams se verificó con clics reales pero no está en la regresión.","Caso que compruebe el armado del aviso (sin enviar a Teams).","Yo"),
          ("Observabilidad","Hereda la poda de instancia.","Poda de ejecuciones (Tecnología).","Tecnología")],
@@ -424,7 +422,7 @@ corrección y la manda a revisión manual (F7-02). (3) Antes de recalcular, se p
   <div class="kpi"><b>[SUB] CCB · Error</b><span>Registra el incidente en <code>Errores_CCB</code> con PII enmascarada, avisa por correo y <b>devuelve el item al llamador</b> para que el flujo que falló no se corte. Lo usan 8 flujos.</span></div>
   <div class="kpi"><b>CCB · Catch-all</b><span>Es el <code>errorWorkflow</code> de los 11 flujos: captura lo que nadie detectó y conserva el historial de incidentes.</span></div>
   <div class="kpi"><b>[OPS] CCB · Monitoreo</b><span>Cada hora publica las 4 métricas del framework (tasa de ejecución, tasa de error por flujo, latencia p95 y saturación) en <code>Metricas_CCB</code> y avisa si se supera un umbral.</span></div>
-  <div class="kpi"><b>[OPS] CCB · Regresión</b><span>Los lunes o a mano: corre 5 caminos críticos con filas descartables, <b>verifica el estado real</b>, publica el semáforo y limpia lo que creó.</span></div>
+  <div class="kpi"><b>[OPS] CCB · Regresión</b><span>Los lunes o a mano: corre 6 caminos críticos con filas descartables, <b>verifica el estado real</b>, publica el semáforo y limpia lo que creó.</span></div>
 </div>
 </div>
 
@@ -477,7 +475,7 @@ Tecnología y son, literalmente, los que cruzan el umbral.</p>
 <tr><td>+ cerrar o restringir <code>/metrics</code></td><td class="num">+0,2 Seguridad</td><td class="num"><b class="ok">90,4 ✅ consolidado</b></td></tr>
 </tbody></table>
 <p class="small muted">Los dos primeros escenarios suman lo que está en manos del proyecto; el umbral se cruza con la credencial y
-la poda de instancia. Los casos de regresión que faltan (motor, routers, cierre por fechas) también empujan Testing, la
+la poda de instancia. Los casos de regresión que faltan (routers, cierre por fechas) también empujan Testing, la
 dimensión más baja.</p>
 </div>
 
@@ -495,8 +493,7 @@ Cuando una mejora no se pudo ejecutar, el puntaje se mantiene conservador y el h
 <p class="small">(1) Es una evaluación por evidencia y verificación real, no una suite automatizada con integración continua:
 de ahí el 12,9 en Testing. (2) La poda de ejecuciones, <code>/metrics</code> y la licencia de carpetas son de instancia, no
 de los flujos. (3) Hueco conocido: si el <b>correo de alerta</b> falla, la ejecución queda en <code>success</code> y nadie se
-entera. (4) Sin verificar todavía: el rechazo de la aprobación de IA, el disparo automático semanal de la regresión y el
-camino del motor dentro de la regresión.</p></div>
+entera. (4) Sin verificar todavía: el rechazo de la aprobación de IA y el disparo automático semanal de la regresión.</p></div>
 <div class="card"><h4>Tablas de datos</h4>
 <p class="small"><code>Configuracion_CCB</code> (12 claves) · <code>Solicitudes_CCB</code> · <code>Criterios_Cotizacion</code>
 · <code>Cotizaciones_CCB</code> · <code>Errores_CCB</code> · <code>Metricas_CCB</code>. Las tres primeras alimentan el
