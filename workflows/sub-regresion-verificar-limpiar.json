@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:56.660Z",
+  "updatedAt": "2026-09-24T14:32:23.235Z",
   "createdAt": "2026-09-23T19:37:52.763Z",
   "id": "OuE4SS9Jujz1dVif",
   "name": "[SUB] CCB · Regresión — Verificar y limpiar",
@@ -82,7 +82,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Verifica el ESTADO REAL en las tablas (no lo que devolvieron los subflujos).\nconst leer = (nombre) => { try { return $(nombre).all().map((i) => i.json); } catch (e) { return []; } };\nconst cot = leer('Data Table - Leer cotizaciones');\nconst sol = leer('Data Table - Leer solicitudes');\nconst err = leer('Data Table - Leer errores');\nconst casos = [\n  { caso: 'aprobar',  id: 'SOL-PRUEBA-REGRESION-APROBAR',  esperado: 'APROBADA' },\n  { caso: 'cancelar', id: 'SOL-PRUEBA-REGRESION-CANCELAR', esperado: 'CANCELADA' },\n  { caso: 'revision', id: 'SOL-PRUEBA-REGRESION-REVISION', esperado: 'REVISION_MANUAL' },\n  { caso: 'error',    id: 'SOL-PRUEBA-REGRESION-ERROR',    esperado: 'fila en Errores_CCB con error_timestamp' },\n  { caso: 'envio',    id: 'SOL-PRUEBA-REGRESION-ENVIO',    esperado: 'ENVIADA en cotizacion y solicitud' },\n];\nconst filas = casos.map((c) => {\n  if (c.caso === 'error') {\n    const f = err.find((r) => r.id_solicitud === c.id) || {};\n    return { caso: c.caso, esperado: c.esperado, obtenido: f.error_timestamp ? 'fila con ' + f.error_timestamp : '(sin fila)', ok: !!f.error_timestamp };\n  }\n  const r = cot.find((x) => x.id_solicitud === c.id) || {};\n  if (c.caso === 'envio') {\n    const s = sol.find((x) => x.id_solicitud === c.id) || {};\n    const ok = r.estado === 'ENVIADA' && !!r.fecha_envio && s.estado === 'ENVIADA';\n    return { caso: c.caso, esperado: c.esperado, obtenido: 'cotizacion ' + (r.estado || '(sin fila)') + ' / solicitud ' + (s.estado || '(sin fila)'), ok };\n  }\n  return { caso: c.caso, esperado: c.esperado, obtenido: r.estado || '(sin fila)', ok: r.estado === c.esperado };\n});\nconst fallos = filas.filter((f) => !f.ok).length;\nconst resumen = filas.map((f) => (f.ok ? 'OK    ' : 'FALLO ') + f.caso + ': esperado ' + f.esperado + ' / obtenido ' + f.obtenido).join('\\n');\nreturn [{ json: {\n  metrica: 'regresion_pipeline', valor: (filas.length - fallos) + '/' + filas.length, unidad: 'casos ok',\n  estado: fallos === 0 ? 'ok' : 'FALLO',\n  actualizado_en: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss'),\n  filas, resumen,\n  subject: '[Regresion CCB] ' + (fallos === 0 ? 'ok' : 'FALLO') + ': ' + (filas.length - fallos) + '/' + filas.length + ' casos ok',\n  emailBody: '<p><b>Regresion del pipeline CCB</b></p><p>' + resumen.split('\\n').join('<br>') + '</p>',\n} }];"
+        "jsCode": "// Verifica el ESTADO REAL en las tablas (no lo que devolvieron los subflujos).\nconst leer = (nombre) => { try { return $(nombre).all().map((i) => i.json); } catch (e) { return []; } };\nconst cot = leer('Data Table - Leer cotizaciones');\nconst sol = leer('Data Table - Leer solicitudes');\nconst err = leer('Data Table - Leer errores');\nconst casos = [\n  { caso: 'aprobar',  id: 'SOL-PRUEBA-REGRESION-APROBAR',  esperado: 'APROBADA' },\n  { caso: 'cancelar', id: 'SOL-PRUEBA-REGRESION-CANCELAR', esperado: 'CANCELADA' },\n  { caso: 'revision', id: 'SOL-PRUEBA-REGRESION-REVISION', esperado: 'REVISION_MANUAL' },\n  { caso: 'error',    id: 'SOL-PRUEBA-REGRESION-ERROR',    esperado: 'fila en Errores_CCB con error_timestamp' },\n  { caso: 'envio',    id: 'SOL-PRUEBA-REGRESION-ENVIO',    esperado: 'ENVIADA en cotizacion y solicitud' },\n  { caso: 'motor',    id: 'SOL-PRUEBA-REGRESION-MOTOR',    esperado: 'PROPUESTA_GENERADA con total_registros>0, valor_total>0 y pdf_url' },\n];\nconst filas = casos.map((c) => {\n  if (c.caso === 'error') {\n    const f = err.find((r) => r.id_solicitud === c.id) || {};\n    return { caso: c.caso, esperado: c.esperado, obtenido: f.error_timestamp ? 'fila con ' + f.error_timestamp : '(sin fila)', ok: !!f.error_timestamp };\n  }\n  const r = cot.find((x) => x.id_solicitud === c.id) || {};\n  if (c.caso === 'envio') {\n    const s = sol.find((x) => x.id_solicitud === c.id) || {};\n    const ok = r.estado === 'ENVIADA' && !!r.fecha_envio && s.estado === 'ENVIADA';\n    return { caso: c.caso, esperado: c.esperado, obtenido: 'cotizacion ' + (r.estado || '(sin fila)') + ' / solicitud ' + (s.estado || '(sin fila)'), ok };\n  }\n  if (c.caso === 'motor') {\n    const conError = err.some((e) => e.id_solicitud === c.id);\n    const total = Number(r.total_registros);\n    const valor = Number(r.valor_total);\n    const ok = r.estado === 'PROPUESTA_GENERADA' && total > 0 && valor > 0 && !!r.fecha_calculo && !!r.pdf_url && !conError;\n    const partes = [\n      'cotizacion ' + (r.estado || '(sin fila)'),\n      'total ' + (Number.isFinite(total) ? total : '(sin dato)'),\n      'valor_total ' + (Number.isFinite(valor) ? valor : '(sin dato)'),\n      'pdf ' + (r.pdf_url ? 'si' : 'no'),\n    ];\n    if (conError) partes.push('ERROR registrado en Errores_CCB');\n    return { caso: c.caso, esperado: c.esperado, obtenido: partes.join(' / '), ok };\n  }\n  return { caso: c.caso, esperado: c.esperado, obtenido: r.estado || '(sin fila)', ok: r.estado === c.esperado };\n});\nconst fallos = filas.filter((f) => !f.ok).length;\nconst resumen = filas.map((f) => (f.ok ? 'OK    ' : 'FALLO ') + f.caso + ': esperado ' + f.esperado + ' / obtenido ' + f.obtenido).join('\\n');\nreturn [{ json: {\n  metrica: 'regresion_pipeline', valor: (filas.length - fallos) + '/' + filas.length, unidad: 'casos ok',\n  estado: fallos === 0 ? 'ok' : 'FALLO',\n  actualizado_en: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss'),\n  filas, resumen,\n  subject: '[Regresion CCB] ' + (fallos === 0 ? 'ok' : 'FALLO') + ': ' + (filas.length - fallos) + '/' + filas.length + ' casos ok',\n  emailBody: '<p><b>Regresion del pipeline CCB</b></p><p>' + resumen.split('\\n').join('<br>') + '</p>',\n} }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -139,7 +139,7 @@
     {
       "parameters": {
         "operation": "deleteRows",
-        "matchType": "allConditions",
+        "matchType": "anyCondition",
         "dataTableId": {
           "__rl": true,
           "value": "YAvQTqzsgJWjacVZ",
@@ -151,6 +151,10 @@
             {
               "keyName": "servicio",
               "keyValue": "SOL-PRUEBA-REGRESION"
+            },
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "SOL-PRUEBA-REGRESION-MOTOR"
             }
           ]
         }
@@ -223,7 +227,7 @@
     {
       "parameters": {
         "operation": "deleteRows",
-        "matchType": "allConditions",
+        "matchType": "anyCondition",
         "dataTableId": {
           "__rl": true,
           "value": "lO46Xkqj0TTedLjI",
@@ -235,6 +239,10 @@
             {
               "keyName": "id_solicitud",
               "keyValue": "SOL-PRUEBA-REGRESION-ERROR"
+            },
+            {
+              "keyName": "id_solicitud",
+              "keyValue": "SOL-PRUEBA-REGRESION-MOTOR"
             }
           ]
         }
@@ -380,15 +388,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
-  "activeVersionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
-  "versionCounter": 6,
+  "versionId": "3fa846e1-51a6-4be5-bd85-a7229748965f",
+  "activeVersionId": "3fa846e1-51a6-4be5-bd85-a7229748965f",
+  "versionCounter": 12,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T19:37:52.763Z",
-    "createdAt": "2026-09-23T19:37:52.763Z",
-    "versionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
+    "updatedAt": "2026-09-24T14:32:23.236Z",
+    "createdAt": "2026-09-24T14:32:23.236Z",
+    "versionId": "3fa846e1-51a6-4be5-bd85-a7229748965f",
     "workflowId": "OuE4SS9Jujz1dVif",
     "nodes": [
       {
@@ -466,7 +474,7 @@
       },
       {
         "parameters": {
-          "jsCode": "// Verifica el ESTADO REAL en las tablas (no lo que devolvieron los subflujos).\nconst leer = (nombre) => { try { return $(nombre).all().map((i) => i.json); } catch (e) { return []; } };\nconst cot = leer('Data Table - Leer cotizaciones');\nconst sol = leer('Data Table - Leer solicitudes');\nconst err = leer('Data Table - Leer errores');\nconst casos = [\n  { caso: 'aprobar',  id: 'SOL-PRUEBA-REGRESION-APROBAR',  esperado: 'APROBADA' },\n  { caso: 'cancelar', id: 'SOL-PRUEBA-REGRESION-CANCELAR', esperado: 'CANCELADA' },\n  { caso: 'revision', id: 'SOL-PRUEBA-REGRESION-REVISION', esperado: 'REVISION_MANUAL' },\n  { caso: 'error',    id: 'SOL-PRUEBA-REGRESION-ERROR',    esperado: 'fila en Errores_CCB con error_timestamp' },\n  { caso: 'envio',    id: 'SOL-PRUEBA-REGRESION-ENVIO',    esperado: 'ENVIADA en cotizacion y solicitud' },\n];\nconst filas = casos.map((c) => {\n  if (c.caso === 'error') {\n    const f = err.find((r) => r.id_solicitud === c.id) || {};\n    return { caso: c.caso, esperado: c.esperado, obtenido: f.error_timestamp ? 'fila con ' + f.error_timestamp : '(sin fila)', ok: !!f.error_timestamp };\n  }\n  const r = cot.find((x) => x.id_solicitud === c.id) || {};\n  if (c.caso === 'envio') {\n    const s = sol.find((x) => x.id_solicitud === c.id) || {};\n    const ok = r.estado === 'ENVIADA' && !!r.fecha_envio && s.estado === 'ENVIADA';\n    return { caso: c.caso, esperado: c.esperado, obtenido: 'cotizacion ' + (r.estado || '(sin fila)') + ' / solicitud ' + (s.estado || '(sin fila)'), ok };\n  }\n  return { caso: c.caso, esperado: c.esperado, obtenido: r.estado || '(sin fila)', ok: r.estado === c.esperado };\n});\nconst fallos = filas.filter((f) => !f.ok).length;\nconst resumen = filas.map((f) => (f.ok ? 'OK    ' : 'FALLO ') + f.caso + ': esperado ' + f.esperado + ' / obtenido ' + f.obtenido).join('\\n');\nreturn [{ json: {\n  metrica: 'regresion_pipeline', valor: (filas.length - fallos) + '/' + filas.length, unidad: 'casos ok',\n  estado: fallos === 0 ? 'ok' : 'FALLO',\n  actualizado_en: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss'),\n  filas, resumen,\n  subject: '[Regresion CCB] ' + (fallos === 0 ? 'ok' : 'FALLO') + ': ' + (filas.length - fallos) + '/' + filas.length + ' casos ok',\n  emailBody: '<p><b>Regresion del pipeline CCB</b></p><p>' + resumen.split('\\n').join('<br>') + '</p>',\n} }];"
+          "jsCode": "// Verifica el ESTADO REAL en las tablas (no lo que devolvieron los subflujos).\nconst leer = (nombre) => { try { return $(nombre).all().map((i) => i.json); } catch (e) { return []; } };\nconst cot = leer('Data Table - Leer cotizaciones');\nconst sol = leer('Data Table - Leer solicitudes');\nconst err = leer('Data Table - Leer errores');\nconst casos = [\n  { caso: 'aprobar',  id: 'SOL-PRUEBA-REGRESION-APROBAR',  esperado: 'APROBADA' },\n  { caso: 'cancelar', id: 'SOL-PRUEBA-REGRESION-CANCELAR', esperado: 'CANCELADA' },\n  { caso: 'revision', id: 'SOL-PRUEBA-REGRESION-REVISION', esperado: 'REVISION_MANUAL' },\n  { caso: 'error',    id: 'SOL-PRUEBA-REGRESION-ERROR',    esperado: 'fila en Errores_CCB con error_timestamp' },\n  { caso: 'envio',    id: 'SOL-PRUEBA-REGRESION-ENVIO',    esperado: 'ENVIADA en cotizacion y solicitud' },\n  { caso: 'motor',    id: 'SOL-PRUEBA-REGRESION-MOTOR',    esperado: 'PROPUESTA_GENERADA con total_registros>0, valor_total>0 y pdf_url' },\n];\nconst filas = casos.map((c) => {\n  if (c.caso === 'error') {\n    const f = err.find((r) => r.id_solicitud === c.id) || {};\n    return { caso: c.caso, esperado: c.esperado, obtenido: f.error_timestamp ? 'fila con ' + f.error_timestamp : '(sin fila)', ok: !!f.error_timestamp };\n  }\n  const r = cot.find((x) => x.id_solicitud === c.id) || {};\n  if (c.caso === 'envio') {\n    const s = sol.find((x) => x.id_solicitud === c.id) || {};\n    const ok = r.estado === 'ENVIADA' && !!r.fecha_envio && s.estado === 'ENVIADA';\n    return { caso: c.caso, esperado: c.esperado, obtenido: 'cotizacion ' + (r.estado || '(sin fila)') + ' / solicitud ' + (s.estado || '(sin fila)'), ok };\n  }\n  if (c.caso === 'motor') {\n    const conError = err.some((e) => e.id_solicitud === c.id);\n    const total = Number(r.total_registros);\n    const valor = Number(r.valor_total);\n    const ok = r.estado === 'PROPUESTA_GENERADA' && total > 0 && valor > 0 && !!r.fecha_calculo && !!r.pdf_url && !conError;\n    const partes = [\n      'cotizacion ' + (r.estado || '(sin fila)'),\n      'total ' + (Number.isFinite(total) ? total : '(sin dato)'),\n      'valor_total ' + (Number.isFinite(valor) ? valor : '(sin dato)'),\n      'pdf ' + (r.pdf_url ? 'si' : 'no'),\n    ];\n    if (conError) partes.push('ERROR registrado en Errores_CCB');\n    return { caso: c.caso, esperado: c.esperado, obtenido: partes.join(' / '), ok };\n  }\n  return { caso: c.caso, esperado: c.esperado, obtenido: r.estado || '(sin fila)', ok: r.estado === c.esperado };\n});\nconst fallos = filas.filter((f) => !f.ok).length;\nconst resumen = filas.map((f) => (f.ok ? 'OK    ' : 'FALLO ') + f.caso + ': esperado ' + f.esperado + ' / obtenido ' + f.obtenido).join('\\n');\nreturn [{ json: {\n  metrica: 'regresion_pipeline', valor: (filas.length - fallos) + '/' + filas.length, unidad: 'casos ok',\n  estado: fallos === 0 ? 'ok' : 'FALLO',\n  actualizado_en: DateTime.now().setZone('America/Bogota').toFormat('yyyy-MM-dd HH:mm:ss'),\n  filas, resumen,\n  subject: '[Regresion CCB] ' + (fallos === 0 ? 'ok' : 'FALLO') + ': ' + (filas.length - fallos) + '/' + filas.length + ' casos ok',\n  emailBody: '<p><b>Regresion del pipeline CCB</b></p><p>' + resumen.split('\\n').join('<br>') + '</p>',\n} }];"
         },
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
@@ -523,7 +531,7 @@
       {
         "parameters": {
           "operation": "deleteRows",
-          "matchType": "allConditions",
+          "matchType": "anyCondition",
           "dataTableId": {
             "__rl": true,
             "value": "YAvQTqzsgJWjacVZ",
@@ -535,6 +543,10 @@
               {
                 "keyName": "servicio",
                 "keyValue": "SOL-PRUEBA-REGRESION"
+              },
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "SOL-PRUEBA-REGRESION-MOTOR"
               }
             ]
           }
@@ -607,7 +619,7 @@
       {
         "parameters": {
           "operation": "deleteRows",
-          "matchType": "allConditions",
+          "matchType": "anyCondition",
           "dataTableId": {
             "__rl": true,
             "value": "lO46Xkqj0TTedLjI",
@@ -619,6 +631,10 @@
               {
                 "keyName": "id_solicitud",
                 "keyValue": "SOL-PRUEBA-REGRESION-ERROR"
+              },
+              {
+                "keyName": "id_solicitud",
+                "keyValue": "SOL-PRUEBA-REGRESION-MOTOR"
               }
             ]
           }
@@ -764,26 +780,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T19:37:53.336Z",
-        "id": 2971,
+        "createdAt": "2026-09-24T14:32:23.274Z",
+        "id": 3074,
         "workflowId": "OuE4SS9Jujz1dVif",
-        "versionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-24T13:14:56.805Z",
-        "id": 3036,
-        "workflowId": "OuE4SS9Jujz1dVif",
-        "versionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
+        "versionId": "3fa846e1-51a6-4be5-bd85-a7229748965f",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:14:56.857Z",
-        "id": 3037,
+        "createdAt": "2026-09-24T14:32:23.290Z",
+        "id": 3075,
         "workflowId": "OuE4SS9Jujz1dVif",
-        "versionId": "3cc87123-a88b-4de0-b79c-f034dc815477",
+        "versionId": "3fa846e1-51a6-4be5-bd85-a7229748965f",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

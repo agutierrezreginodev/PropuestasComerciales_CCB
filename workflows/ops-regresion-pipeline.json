@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:15:00.520Z",
+  "updatedAt": "2026-09-24T14:39:15.760Z",
   "createdAt": "2026-09-23T18:53:35.700Z",
   "id": "GVE3iNQ80y5Q9FEw",
   "name": "[OPS] CCB · Regresión — Prueba de regresión",
@@ -13,12 +13,10 @@
           "interval": [
             {
               "field": "weeks",
-              "weeksInterval": 1,
               "triggerAtDay": [
                 1
               ],
-              "triggerAtHour": 6,
-              "triggerAtMinute": 0
+              "triggerAtHour": 6
             }
           ]
         }
@@ -27,7 +25,7 @@
       "typeVersion": 1.2,
       "name": "Schedule - Regresion semanal",
       "position": [
-        -700,
+        -704,
         0
       ],
       "id": "ac9ff61c-fa83-4935-b21e-2fbc19225f1f"
@@ -38,7 +36,7 @@
       "typeVersion": 1,
       "name": "Trigger manual",
       "position": [
-        -700,
+        -704,
         160
       ],
       "id": "3c088edf-6f4b-42b0-9236-b4c055d22969"
@@ -72,7 +70,7 @@
       "typeVersion": 2,
       "name": "Preparar caso aprobar",
       "position": [
-        180,
+        192,
         0
       ],
       "executeOnce": true,
@@ -107,7 +105,7 @@
       "typeVersion": 2,
       "name": "Preparar caso cancelar",
       "position": [
-        620,
+        624,
         0
       ],
       "executeOnce": true,
@@ -129,7 +127,7 @@
       "typeVersion": 1.2,
       "name": "Ejecutar W4D Cancelar",
       "position": [
-        840,
+        848,
         0
       ],
       "id": "6038f42d-ed06-44f6-badd-1ba9a608100d"
@@ -142,7 +140,7 @@
       "typeVersion": 2,
       "name": "Preparar caso revision manual",
       "position": [
-        1060,
+        1072,
         0
       ],
       "executeOnce": true,
@@ -177,7 +175,7 @@
       "typeVersion": 2,
       "name": "Preparar caso error",
       "position": [
-        1500,
+        1504,
         0
       ],
       "executeOnce": true,
@@ -199,7 +197,7 @@
       "typeVersion": 1.2,
       "name": "Ejecutar Registrar y Alertar Error",
       "position": [
-        1720,
+        1728,
         0
       ],
       "id": "e4b3c12b-6886-488d-908e-1ad272e244c3"
@@ -218,8 +216,8 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        3040,
-        0
+        3264,
+        16
       ],
       "webhookId": "22e5eb95-bac0-4ea2-8b7f-ce27e0ce5162",
       "credentials": {
@@ -246,7 +244,7 @@
       "typeVersion": 1.2,
       "name": "Ejecutar Preparar filas",
       "position": [
-        -260,
+        -256,
         0
       ],
       "id": "ab8cdfe6-0292-482e-b76b-d9e45f095c15"
@@ -259,7 +257,7 @@
       "typeVersion": 2,
       "name": "Preparar caso cerrar envio",
       "position": [
-        1720,
+        1968,
         0
       ],
       "executeOnce": true,
@@ -281,8 +279,8 @@
       "typeVersion": 1.2,
       "name": "Ejecutar Cerrar envio",
       "position": [
-        1940,
-        0
+        2176,
+        16
       ],
       "id": "1663efeb-5089-4ec1-adb1-ced4f73175ac"
     },
@@ -302,10 +300,45 @@
       "typeVersion": 1.2,
       "name": "Ejecutar Verificar y limpiar",
       "position": [
-        2160,
-        0
+        2832,
+        16
       ],
       "id": "c9ce1362-79bd-4f06-9656-967f391e9ea3"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-MOTOR',\n  servicio: 'Información Georreferenciada',\n  tipo_servicio: 'Georreferenciada',\n  tipo_organizacion: 'Personas Jurídicas; Personas Naturales; Establecimientos; Entidades sin ánimo de lucro',\n  municipios: 'Todo el Departamento del Atlántico',\n  sectores: 'Comercio al por mayor y al por menor',\n  tamano_empresa: 'Microempresas; Pequeñas empresas; Medianas empresas; Grandes empresas',\n  indiferente_ventas: true,\n  nombre_solicitante: 'Solicitante de prueba',\n  razon_social: 'Empresa de prueba',\n  email_solicitante: 'pruebas@ejemplo.test',\n  telefono_solicitante: '3000000000',\n  ciudad: 'Barranquilla',\n} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Preparar caso motor",
+      "position": [
+        2384,
+        16
+      ],
+      "executeOnce": true,
+      "id": "c25989af-dd2a-58ec-a9eb-9c3106396526"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "MHWlUApSFT6gpBHs",
+          "mode": "id",
+          "cachedResultName": "[SUB] CCB · Motor — Invocar el motor y guardar"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "name": "Ejecutar Motor",
+      "position": [
+        2608,
+        16
+      ],
+      "id": "8e3ffc32-8a52-52fd-bfb7-a4de2fb52de3"
     }
   ],
   "connections": {
@@ -434,7 +467,7 @@
       "main": [
         [
           {
-            "node": "Ejecutar Verificar y limpiar",
+            "node": "Preparar caso motor",
             "type": "main",
             "index": 0
           }
@@ -473,10 +506,33 @@
           }
         ]
       ]
+    },
+    "Preparar caso motor": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Motor": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Verificar y limpiar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
   "staticData": {
     "node:Schedule - Regresion semanal": {
@@ -484,16 +540,16 @@
     }
   },
   "meta": null,
-  "pinData": null,
-  "versionId": "8668ad5f-529b-4052-8483-eec15edcbcb7",
-  "activeVersionId": "8668ad5f-529b-4052-8483-eec15edcbcb7",
-  "versionCounter": 30,
+  "pinData": {},
+  "versionId": "d9323f1d-3891-49aa-9299-57b1fe6e71cb",
+  "activeVersionId": "d12abf97-0316-4d38-9144-bb7418aa7ebf",
+  "versionCounter": 38,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T13:15:00.521Z",
-    "createdAt": "2026-09-24T13:15:00.521Z",
-    "versionId": "8668ad5f-529b-4052-8483-eec15edcbcb7",
+    "updatedAt": "2026-09-24T14:30:46.268Z",
+    "createdAt": "2026-09-24T14:30:46.268Z",
+    "versionId": "d12abf97-0316-4d38-9144-bb7418aa7ebf",
     "workflowId": "GVE3iNQ80y5Q9FEw",
     "nodes": [
       {
@@ -791,10 +847,45 @@
         "typeVersion": 1.2,
         "name": "Ejecutar Verificar y limpiar",
         "position": [
-          2160,
+          2600,
           0
         ],
         "id": "c9ce1362-79bd-4f06-9656-967f391e9ea3"
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: {\n  id_solicitud: 'SOL-PRUEBA-REGRESION-MOTOR',\n  servicio: 'Información Georreferenciada',\n  tipo_servicio: 'Georreferenciada',\n  tipo_organizacion: 'Personas Jurídicas; Personas Naturales; Establecimientos; Entidades sin ánimo de lucro',\n  municipios: 'Todo el Departamento del Atlántico',\n  sectores: 'Comercio al por mayor y al por menor',\n  tamano_empresa: 'Microempresas; Pequeñas empresas; Medianas empresas; Grandes empresas',\n  indiferente_ventas: true,\n  nombre_solicitante: 'Solicitante de prueba',\n  razon_social: 'Empresa de prueba',\n  email_solicitante: 'pruebas@ejemplo.test',\n  telefono_solicitante: '3000000000',\n  ciudad: 'Barranquilla',\n} }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Preparar caso motor",
+        "position": [
+          2160,
+          0
+        ],
+        "executeOnce": true,
+        "id": "c25989af-dd2a-58ec-a9eb-9c3106396526"
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "MHWlUApSFT6gpBHs",
+            "mode": "id",
+            "cachedResultName": "[SUB] CCB · Motor — Invocar el motor y guardar"
+          },
+          "options": {
+            "waitForSubWorkflow": true
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "name": "Ejecutar Motor",
+        "position": [
+          2380,
+          0
+        ],
+        "id": "8e3ffc32-8a52-52fd-bfb7-a4de2fb52de3"
       }
     ],
     "connections": {
@@ -923,7 +1014,7 @@
         "main": [
           [
             {
-              "node": "Ejecutar Verificar y limpiar",
+              "node": "Preparar caso motor",
               "type": "main",
               "index": 0
             }
@@ -962,6 +1053,28 @@
             }
           ]
         ]
+      },
+      "Preparar caso motor": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Motor",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ejecutar Motor": {
+        "main": [
+          [
+            {
+              "node": "Ejecutar Verificar y limpiar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -970,18 +1083,34 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T13:15:00.569Z",
-        "id": 3040,
+        "createdAt": "2026-09-24T14:30:46.324Z",
+        "id": 3070,
         "workflowId": "GVE3iNQ80y5Q9FEw",
-        "versionId": "8668ad5f-529b-4052-8483-eec15edcbcb7",
+        "versionId": "d12abf97-0316-4d38-9144-bb7418aa7ebf",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:15:00.588Z",
-        "id": 3041,
+        "createdAt": "2026-09-24T14:30:46.344Z",
+        "id": 3071,
         "workflowId": "GVE3iNQ80y5Q9FEw",
-        "versionId": "8668ad5f-529b-4052-8483-eec15edcbcb7",
+        "versionId": "d12abf97-0316-4d38-9144-bb7418aa7ebf",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T14:39:10.187Z",
+        "id": 3076,
+        "workflowId": "GVE3iNQ80y5Q9FEw",
+        "versionId": "d12abf97-0316-4d38-9144-bb7418aa7ebf",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T14:39:10.215Z",
+        "id": 3077,
+        "workflowId": "GVE3iNQ80y5Q9FEw",
+        "versionId": "d12abf97-0316-4d38-9144-bb7418aa7ebf",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
