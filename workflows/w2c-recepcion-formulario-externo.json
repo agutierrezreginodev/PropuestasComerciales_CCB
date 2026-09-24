@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T13:41:44.598Z",
+  "updatedAt": "2026-09-24T13:14:08.231Z",
   "createdAt": "2026-09-15T13:24:42.298Z",
   "id": "u6KCMnLwFOp6Ja0N",
-  "name": "CCB - Workflow 2C - Recepción Formulario Externo (Georreferenciada)",
+  "name": "CCB · W2C — Recepción del formulario externo",
   "description": "W2C — Recepcion Formulario Externo (Georreferenciada). Recibe por webhook autenticado (Header Auth + CORS al dominio del formulario) los datos del formulario publico estatico (formulario-solicitud-ccb en Vercel) para Informacion Georreferenciada, y delega guardado/cotizacion al sub-workflow W2A. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
@@ -357,7 +357,7 @@
   "pinData": {},
   "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
   "activeVersionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
-  "versionCounter": 68,
+  "versionCounter": 71,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
@@ -718,6 +718,22 @@
       {
         "createdAt": "2026-09-23T13:41:44.660Z",
         "id": 2725,
+        "workflowId": "u6KCMnLwFOp6Ja0N",
+        "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:08.269Z",
+        "id": 2990,
+        "workflowId": "u6KCMnLwFOp6Ja0N",
+        "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:08.285Z",
+        "id": 2991,
         "workflowId": "u6KCMnLwFOp6Ja0N",
         "versionId": "29df0a38-1319-41f9-9c31-e82d76f30d9f",
         "event": "activated",

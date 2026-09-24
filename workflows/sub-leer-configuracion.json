@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:57:01.770Z",
+  "updatedAt": "2026-09-24T13:14:26.517Z",
   "createdAt": "2026-09-23T13:30:53.252Z",
   "id": "Hgy02eqPhnsdJvkq",
-  "name": "[SUB] CCB - Leer Configuración",
+  "name": "[SUB] CCB · Config — Leer la configuración",
   "description": "Subflujo compartido que entrega la configuración centralizada (Data Table Configuracion_CCB) adjunta al item del llamador. Sistema: n8n Data Tables. Área propietaria: Servicios de Información CCB. Escalado: canal de alertas técnicas del pipeline.",
   "active": true,
   "isArchived": false,
@@ -103,7 +103,7 @@
   "pinData": null,
   "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
   "activeVersionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
-  "versionCounter": 10,
+  "versionCounter": 13,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -216,6 +216,22 @@
       {
         "createdAt": "2026-09-23T15:57:01.816Z",
         "id": 2832,
+        "workflowId": "Hgy02eqPhnsdJvkq",
+        "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:26.553Z",
+        "id": 3010,
+        "workflowId": "Hgy02eqPhnsdJvkq",
+        "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:26.565Z",
+        "id": 3011,
         "workflowId": "Hgy02eqPhnsdJvkq",
         "versionId": "0c7d71dc-7a43-4a14-9ed7-6d16ea020a70",
         "event": "activated",

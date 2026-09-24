@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T16:06:29.110Z",
+  "updatedAt": "2026-09-24T13:14:42.450Z",
   "createdAt": "2026-09-23T16:02:56.141Z",
   "id": "AnPJGVWylmKEYWmJ",
-  "name": "[SUB] CCB - Enviar propuesta al cliente",
+  "name": "[SUB] CCB · Envío — Enviar al cliente",
   "description": "Subflujo del envío al cliente: adjunta el PDF o manda el enlace y cierra el envío. Sistema: Microsoft Outlook + n8n Data Tables. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -138,7 +138,7 @@
           "__rl": true,
           "value": "1Zzkrg3dTkTrddgp",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Cerrar envío"
+          "cachedResultName": "[SUB] CCB · Envío — Cerrar el envío"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -292,15 +292,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
-  "activeVersionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
-  "versionCounter": 7,
+  "versionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
+  "activeVersionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T16:06:29.111Z",
-    "createdAt": "2026-09-23T16:06:29.111Z",
-    "versionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
+    "updatedAt": "2026-09-24T13:14:42.451Z",
+    "createdAt": "2026-09-24T13:14:42.451Z",
+    "versionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
     "workflowId": "AnPJGVWylmKEYWmJ",
     "nodes": [
       {
@@ -434,7 +434,7 @@
             "__rl": true,
             "value": "1Zzkrg3dTkTrddgp",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Cerrar envío"
+            "cachedResultName": "[SUB] CCB · Envío — Cerrar el envío"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -588,18 +588,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T16:06:29.160Z",
-        "id": 2879,
+        "createdAt": "2026-09-24T13:14:42.486Z",
+        "id": 3018,
         "workflowId": "AnPJGVWylmKEYWmJ",
-        "versionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
+        "versionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T16:06:29.179Z",
-        "id": 2880,
+        "createdAt": "2026-09-24T13:14:42.499Z",
+        "id": 3019,
         "workflowId": "AnPJGVWylmKEYWmJ",
-        "versionId": "0b94f0f7-b080-48de-a6eb-1f6de9872725",
+        "versionId": "2f4ab13b-083b-436f-b32c-7e89a61ef211",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

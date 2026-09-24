@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-11T20:10:23.272Z",
+  "updatedAt": "2026-09-24T13:13:24.860Z",
   "createdAt": "2026-09-04T20:17:52.538Z",
   "id": "lIcdT6nGd0w1G2i0",
-  "name": "CCB - Workflow 2B - Formulario de Solicitud",
+  "name": "[RETIRADO] CCB · W2B — Formulario antiguo",
   "description": null,
   "active": false,
   "isArchived": false,
@@ -1740,7 +1740,7 @@
   "pinData": {},
   "versionId": "e23e306f-2e5e-4d1b-899f-a76730529ed3",
   "activeVersionId": null,
-  "versionCounter": 293,
+  "versionCounter": 294,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": null

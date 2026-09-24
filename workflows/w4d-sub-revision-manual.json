@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:57:00.105Z",
+  "updatedAt": "2026-09-24T13:14:49.263Z",
   "createdAt": "2026-09-23T14:17:56.787Z",
   "id": "iNSErCHs2iw33emJ",
-  "name": "[SUB] CCB - W4D Revisión Manual",
+  "name": "[SUB] CCB · W4D — Revisión manual",
   "description": "Subflujo del router de decisión: deja la propuesta en REVISION_MANUAL y avisa al asesor. Cubre los tres motivos (tope de rondas, IA desactivada, confianza baja de la IA) sin consumir ronda (F4-03, F7-01, F7-02).",
   "active": true,
   "isArchived": false,
@@ -26,7 +26,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -199,15 +199,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
-  "activeVersionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
-  "versionCounter": 16,
+  "versionId": "fc93ffeb-8e23-4fb8-b007-96c497b8a316",
+  "activeVersionId": "fc93ffeb-8e23-4fb8-b007-96c497b8a316",
+  "versionCounter": 19,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:00.106Z",
-    "createdAt": "2026-09-23T15:57:00.106Z",
-    "versionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
+    "updatedAt": "2026-09-24T13:14:49.264Z",
+    "createdAt": "2026-09-24T13:14:49.264Z",
+    "versionId": "fc93ffeb-8e23-4fb8-b007-96c497b8a316",
     "workflowId": "iNSErCHs2iw33emJ",
     "nodes": [
       {
@@ -229,7 +229,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -402,18 +402,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:00.148Z",
-        "id": 2829,
+        "createdAt": "2026-09-24T13:14:49.297Z",
+        "id": 3028,
         "workflowId": "iNSErCHs2iw33emJ",
-        "versionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
+        "versionId": "fc93ffeb-8e23-4fb8-b007-96c497b8a316",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:00.162Z",
-        "id": 2830,
+        "createdAt": "2026-09-24T13:14:49.310Z",
+        "id": 3029,
         "workflowId": "iNSErCHs2iw33emJ",
-        "versionId": "abfae0db-3b4a-40a7-99af-1edfefebc162",
+        "versionId": "fc93ffeb-8e23-4fb8-b007-96c497b8a316",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:57:10.316Z",
+  "updatedAt": "2026-09-24T13:14:03.045Z",
   "createdAt": "2026-09-04T15:37:43.940Z",
   "id": "w6h0qSblUESIpSVc",
-  "name": "CCB - Workflow 1 - Extracción información del cliente",
+  "name": "CCB · W1 — Extracción de información del cliente",
   "description": "W1 — Extracción información del cliente. Recibe correos entrantes del buzón de mercadeo (o contacto directo del cliente), extrae nombre/telefono/email con IA (OpenRouter GPT-4o-mini) y envia al cliente el enlace del formulario de solicitud. Integra: Microsoft Outlook (trigger + envio), OpenRouter, Data Table (Solicitudes_CCB, Errores_CCB). Area propietaria: Servicios de Informacion - CCB. Errores escalan a Errores_CCB + alerta Outlook + Error Workflow catch-all.",
   "active": true,
   "isArchived": false,
@@ -687,7 +687,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -708,7 +708,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -729,7 +729,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -965,22 +965,22 @@
       "lastTimeChecked": "2026-09-17T19:14:17.081Z"
     },
     "node:Outlook - Nuevo correo recibido": {
-      "lastTimeChecked": "2026-09-23T15:57:10.378Z"
+      "lastTimeChecked": "2026-09-24T13:14:03.125Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
-  "activeVersionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
-  "versionCounter": 490,
+  "versionId": "04b67760-7553-4659-920d-86c25e424fd1",
+  "activeVersionId": "04b67760-7553-4659-920d-86c25e424fd1",
+  "versionCounter": 494,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:10.317Z",
-    "createdAt": "2026-09-23T15:57:10.317Z",
-    "versionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
+    "updatedAt": "2026-09-24T13:14:03.046Z",
+    "createdAt": "2026-09-24T13:14:03.046Z",
+    "versionId": "04b67760-7553-4659-920d-86c25e424fd1",
     "workflowId": "w6h0qSblUESIpSVc",
     "nodes": [
       {
@@ -1663,7 +1663,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1684,7 +1684,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1705,7 +1705,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1934,18 +1934,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:10.364Z",
-        "id": 2839,
+        "createdAt": "2026-09-24T13:14:03.105Z",
+        "id": 2986,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
+        "versionId": "04b67760-7553-4659-920d-86c25e424fd1",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:10.595Z",
-        "id": 2840,
+        "createdAt": "2026-09-24T13:14:03.337Z",
+        "id": 2987,
         "workflowId": "w6h0qSblUESIpSVc",
-        "versionId": "3139fb4c-03f1-44b9-836c-dead04898e09",
+        "versionId": "04b67760-7553-4659-920d-86c25e424fd1",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

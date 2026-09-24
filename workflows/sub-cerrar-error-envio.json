@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T16:00:30.858Z",
+  "updatedAt": "2026-09-24T13:14:45.332Z",
   "createdAt": "2026-09-23T16:00:29.916Z",
   "id": "D2d9Og6UUvq13TJA",
-  "name": "[SUB] CCB - Cerrar error de envío",
+  "name": "[SUB] CCB · Envío — Cerrar el error de envío",
   "description": "Subflujo del envío al cliente: marca ERROR_ENVIO, registra el error y alerta. Sistema: n8n Data Tables + Microsoft Outlook. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -74,7 +74,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -128,15 +128,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "76220c44-f3eb-4bf6-9b06-03e24d462a37",
-  "activeVersionId": "76220c44-f3eb-4bf6-9b06-03e24d462a37",
-  "versionCounter": 4,
+  "versionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
+  "activeVersionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
+  "versionCounter": 7,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T16:00:29.916Z",
-    "createdAt": "2026-09-23T16:00:29.916Z",
-    "versionId": "76220c44-f3eb-4bf6-9b06-03e24d462a37",
+    "updatedAt": "2026-09-24T13:14:45.334Z",
+    "createdAt": "2026-09-24T13:14:45.334Z",
+    "versionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
     "workflowId": "D2d9Og6UUvq13TJA",
     "nodes": [
       {
@@ -206,7 +206,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -260,10 +260,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T16:00:31.823Z",
-        "id": 2860,
+        "createdAt": "2026-09-24T13:14:45.389Z",
+        "id": 3022,
         "workflowId": "D2d9Og6UUvq13TJA",
-        "versionId": "76220c44-f3eb-4bf6-9b06-03e24d462a37",
+        "versionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:45.401Z",
+        "id": 3023,
+        "workflowId": "D2d9Og6UUvq13TJA",
+        "versionId": "0e488d2a-63ac-42b4-b8ca-e6b09cc733a5",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

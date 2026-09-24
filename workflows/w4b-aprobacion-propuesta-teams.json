@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:57:16.653Z",
+  "updatedAt": "2026-09-24T13:14:14.204Z",
   "createdAt": "2026-09-11T15:41:10.905Z",
   "id": "5RJdnHDQ8NuWZJG7",
-  "name": "[SUB] CCB - Workflow 4B - Aprobación de Propuesta (Teams)",
+  "name": "CCB · W4B — Aprobación por Teams",
   "description": "W4B (sub-workflow) — Aprobacion de Propuesta (Teams). Invocado por W4A: notifica al asesor comercial por Microsoft Teams con enlace a la pagina de revision (revision-propuesta-ccb en Vercel). Area propietaria: Servicios de Informacion / Asesoria Comercial - CCB.",
   "active": true,
   "isArchived": false,
@@ -220,7 +220,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -233,7 +233,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -254,7 +254,7 @@
           "__rl": true,
           "value": "GELWpskp0aYJ2zPg",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
+          "cachedResultName": "[SUB] CCB · Contexto — Leer el contexto de la propuesta"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -407,15 +407,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "cb13c111-4cb8-410c-a57e-cfffce93b75b",
-  "activeVersionId": "cb13c111-4cb8-410c-a57e-cfffce93b75b",
-  "versionCounter": 170,
+  "versionId": "3e8c9e59-a8aa-4380-9435-8ffce125ba7d",
+  "activeVersionId": "3e8c9e59-a8aa-4380-9435-8ffce125ba7d",
+  "versionCounter": 173,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:16.654Z",
-    "createdAt": "2026-09-23T15:57:16.654Z",
-    "versionId": "cb13c111-4cb8-410c-a57e-cfffce93b75b",
+    "updatedAt": "2026-09-24T13:14:14.206Z",
+    "createdAt": "2026-09-24T13:14:14.206Z",
+    "versionId": "3e8c9e59-a8aa-4380-9435-8ffce125ba7d",
     "workflowId": "5RJdnHDQ8NuWZJG7",
     "nodes": [
       {
@@ -631,7 +631,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -644,7 +644,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -665,7 +665,7 @@
             "__rl": true,
             "value": "GELWpskp0aYJ2zPg",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
+            "cachedResultName": "[SUB] CCB · Contexto — Leer el contexto de la propuesta"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -812,18 +812,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:16.690Z",
-        "id": 2847,
+        "createdAt": "2026-09-24T13:14:14.246Z",
+        "id": 2996,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "cb13c111-4cb8-410c-a57e-cfffce93b75b",
+        "versionId": "3e8c9e59-a8aa-4380-9435-8ffce125ba7d",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:16.703Z",
-        "id": 2848,
+        "createdAt": "2026-09-24T13:14:14.259Z",
+        "id": 2997,
         "workflowId": "5RJdnHDQ8NuWZJG7",
-        "versionId": "cb13c111-4cb8-410c-a57e-cfffce93b75b",
+        "versionId": "3e8c9e59-a8aa-4380-9435-8ffce125ba7d",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

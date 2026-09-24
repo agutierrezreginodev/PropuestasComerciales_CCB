@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:57:02.682Z",
+  "updatedAt": "2026-09-24T13:14:27.816Z",
   "createdAt": "2026-09-23T13:49:39.140Z",
   "id": "GELWpskp0aYJ2zPg",
-  "name": "[SUB] CCB - Leer Contexto Propuesta",
+  "name": "[SUB] CCB · Contexto — Leer el contexto de la propuesta",
   "description": "Subflujo compartido que lee el contexto de una propuesta (cotización, criterios y solicitud) por id_solicitud y lo devuelve en un solo item. Sistema: n8n Data Tables. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -218,7 +218,7 @@
   "pinData": null,
   "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
   "activeVersionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
-  "versionCounter": 10,
+  "versionCounter": 13,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -446,6 +446,22 @@
       {
         "createdAt": "2026-09-23T15:57:02.749Z",
         "id": 2834,
+        "workflowId": "GELWpskp0aYJ2zPg",
+        "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:27.845Z",
+        "id": 3012,
+        "workflowId": "GELWpskp0aYJ2zPg",
+        "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:27.857Z",
+        "id": 3013,
         "workflowId": "GELWpskp0aYJ2zPg",
         "versionId": "a146c553-a12f-45c6-b72d-ea0ca04e7402",
         "event": "activated",

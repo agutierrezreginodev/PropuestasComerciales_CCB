@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T19:37:51.325Z",
+  "updatedAt": "2026-09-24T13:14:55.215Z",
   "createdAt": "2026-09-23T19:37:51.325Z",
   "id": "DgUfcoudk228kOw8",
-  "name": "[SUB] CCB - Regresion: Preparar filas",
+  "name": "[SUB] CCB · Regresión — Preparar filas",
   "description": null,
   "active": true,
   "isArchived": false,
@@ -270,7 +270,7 @@
   "pinData": null,
   "versionId": "05472484-65ed-400e-9bba-c498e0e83b09",
   "activeVersionId": "05472484-65ed-400e-9bba-c498e0e83b09",
-  "versionCounter": 3,
+  "versionCounter": 6,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -542,6 +542,22 @@
       {
         "createdAt": "2026-09-23T19:37:52.189Z",
         "id": 2970,
+        "workflowId": "DgUfcoudk228kOw8",
+        "versionId": "05472484-65ed-400e-9bba-c498e0e83b09",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:55.244Z",
+        "id": 3034,
+        "workflowId": "DgUfcoudk228kOw8",
+        "versionId": "05472484-65ed-400e-9bba-c498e0e83b09",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:55.258Z",
+        "id": 3035,
         "workflowId": "DgUfcoudk228kOw8",
         "versionId": "05472484-65ed-400e-9bba-c498e0e83b09",
         "event": "activated",

@@ -1,0 +1,109 @@
+# Feature: renombrado de los 30 flujos y consistencia del repositorio
+
+**Creada:** 2026-09-24 · **Origen:** [plan de pendientes del 24/09](plan-pendientes-2026-09-24.md)
+(bloque B, tareas B1–B3) y la revisión previa del informe de cierre, que detectó seis desfases documentales.
+
+## Objetivo
+
+Aplicar en la instancia viva la [convención de nombres](../../docs/CONVENCION_NOMBRES_Y_CARPETAS_CCB.md) a los **30
+flujos** (29 activos + 1 retirado), refrescar los `cachedResultName` de los nodos `Execute Workflow`, y dejar el
+repositorio **consistente** con la instancia: snapshot re-exportado, documentación alineada y los desfases numéricos
+corregidos.
+
+## Alcance
+
+- **Dentro:** los 30 flujos del proyecto en la instancia viva (solo el campo `name` y los `cachedResultName`); el repo
+  `ccb-workflows-git` (script de renombrado, snapshot, README, docs y la ficha ODD); la verificación con la regresión.
+- **Fuera:** los **31 flujos inactivos de legado** que viven en la instancia y no son del proyecto (decisión aparte); el
+  movimiento de flujos a carpetas (es en la UI, tarea A2); la creación de la credencial *Header Auth* (A1); cualquier
+  cambio de lógica, credencial, webhook o conexión.
+
+## Criterio de cierre
+
+1. Los 30 flujos llevan el nombre nuevo en la instancia y **ningún** `cachedResultName` queda con el nombre viejo.
+2. Respaldo crudo previo al renombrado, guardado y referenciado en esta ficha.
+3. El snapshot del repo re-exportado muestra los nombres nuevos; `grep` no encuentra nombres viejos en `README.md` ni en
+   `docs/` (salvo en documentos históricos con nota de errata).
+4. Los seis desfases detectados en la revisión quedan corregidos o explícitamente anotados.
+5. Prueba de humo: validación estructural de los 30 flujos con **0 errores** y regresión del pipeline en **5/5**.
+6. Un commit por unidad de trabajo.
+
+---
+
+## Tareas
+
+| # | Tarea | Criterio de aceptación | Estado |
+|---|---|---|---|
+| **B1a** | Respaldar los 30 flujos crudos antes de tocar nada | JSON crudo de los 30 en el respaldo, con la fecha del día | ☑ 24/09 — 30 flujos, 1,9 MB, `MANIFEST.json` con sha256 |
+| **B1b** | Escribir `scripts/renombrar_workflows.py` con `--dry-run` y `--apply` | El dry-run lista los 30 cambios de nombre y los `cachedResultName` afectados, sin escribir | ☑ 24/09 — 30 PLAN, 47 cachés, 0 PUT |
+| **B1c** | Aplicar el renombrado en la instancia | Los 30 con el nombre nuevo; los llamadores con el `cachedResultName` nuevo; 0 cambios en IDs, webhooks y conexiones | ☑ 24/09 — 28 PUT, verificación independiente 0 problemas |
+| **B2a** | Re-exportar el snapshot | `workflows/*.json` con los nombres nuevos | ☑ 24/09 — 30 archivos re-exportados |
+| **B2b** | Alinear la documentación con los nombres nuevos | README, `FLUJOS_PIPELINE_CCB.md`, `FLUJO_COMPLETO_PIPELINE_CCB.md`, `COMPARATIVO_DEMO_VS_ACTUAL.md` | ☐ pendiente |
+| **B2c** | Corregir los seis desfases detectados en la revisión | Ver la tabla "Desfases" abajo | ☐ pendiente |
+| **B3** | Prueba de humo del renombrado | Validación 0 errores en los 30 y regresión `5/5` con ejecución real | ☐ pendiente |
+
+**Orden:** B1a → B1b → B1c → B2a → B2b/B2c → B3.
+
+## Desfases detectados en la revisión previa (2026-09-24)
+
+Verificados contra la instancia viva por API de solo lectura.
+
+| # | Desfase | Valor real | Dónde |
+|---|---|---|---|
+| 1 | El texto dice "cinco flujos en 90 o más" y cita W5B en 91 | **Siete** (W3 90, W4A 91, W4B 90, W4D 94, W5A 91, W5B **92**, W6 91) | `docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md` §2 |
+| 2 | Claves de `Configuracion_CCB`: 10 y 7 según el doc | **12** (confirmado en la tabla `8ChPkhKrjag6Jkcs`) | `docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md:43`, `docs/PLAN_TRABAJO_FRAMEWORK.md:232` |
+| 3 | Commits locales sin push: 25 y 48 | **50** | `docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md:89`, `odd/tasks/plan-pendientes-2026-09-24.md:4` |
+| 4 | "Testing (11,7 → 12,8)" contra la tabla, que dice 12,9 | **12,9** | `docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md` §1 |
+| 5 | "El flujo más grande tiene 19 nodos" sin declarar que excluye sticky notes | 19 sin sticky; **20** con sticky en W1, W2A, W4D y W5B (siguen cumpliendo ≤20) | Informe HTML y re-auditoría de cierre |
+| 6 | El informe se presenta como "generado desde la instancia viva" | El **inventario** es vivo; los **nombres** son la convención objetivo y la **evaluación está hardcodeada** en `scripts/generar_informe_html.py` | `docs/informe-pipeline-ccb.html`, `scripts/generar_informe_html.py` |
+| 7 | La lista de comprobación marca "Limpieza (sin Pin Data): cumple — Sin pin data en ningún flujo" | **1 flujo activo sí tiene `pinData`**: `[SUB] CCB · Error — Registrar y alertar`, con un item fijado (`TEST-F4-01`, resto del R2 del 23/09) | `docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md` §4, informe HTML §5 |
+
+**Decisión de estilo:** los documentos de auditoría **fechados** son evidencia histórica: no se reescriben en silencio,
+se les añade una **nota de errata** de una línea. Los documentos **vivos** (README, tablero, estado, plan del día) se
+corrigen directamente.
+
+## Notas de ejecución
+
+- **Nada se da por bueno sin ejecución real** (regla de oro del proyecto): el renombrado cierra con la regresión.
+- El renombrado **no cambia IDs ni webhooks**: los tres paths públicos (`solicitud-georreferenciada`,
+  `consultar-propuesta`, `decidir-propuesta`) y las credenciales quedan igual.
+- Las filas viejas de `Errores_CCB` conservan el nombre anterior en `workflow_origen`: es historial y no se toca.
+- La API pública no devuelve la carpeta del flujo: la verificación de carpetas es visual en la UI (tarea A2).
+- Valores reales de anonimización en `scripts/anonymization.local.json` (git-ignored), nunca en los workflows.
+- Credenciales de la instancia por variables de entorno (`N8N_API_URL`, `N8N_API_KEY`), nunca en el repo.
+
+## Evidencia
+
+### B1 — renombrado de los 30 flujos · 24/09
+
+**Hecho.** Los 30 flujos llevan el nombre de la convención y los 47 `cachedResultName` de los llamadores apuntan al nombre
+nuevo. El prefijo `[SUB]` se retiró de W2A, W3, W4B y W5B, según la decisión registrada en la convención.
+
+**Cómo se hizo, con red de seguridad:**
+
+1. **Respaldo crudo** de los 30 flujos en `/tmp/n8n-backup/renombrado-2026-09-24/` (1,9 MB) con `MANIFEST.json`
+   (id, nombre, activo, nodos y sha256 por flujo).
+2. **Script `scripts/renombrar_workflows.py`** con `--dry-run` (por defecto), `--apply` y `--only <id>`. Solo modifica
+   `name` y `parameters.workflowId.cachedResultName`; filtra `settings` (`binaryMode` y `timeSavedMode` son de solo
+   lectura) y omite `description` cuando es nula.
+3. **Tabla verificada de forma independiente**: 30/30 entradas idénticas a las de la convención, con 30 usos de `·`
+   (U+00B7) y 30 de `—` (U+2014), sin guiones ASCII ni `–` (U+2013) y sin punto final.
+4. **Dos canarios antes de la corrida completa**: el flujo retirado (payload aceptado) y `[SUB] CCB · Error` (flujo
+   **activo** con un cambio de caché). Inspección profunda del canario activo: `active`, `description`, `pinData`,
+   `settings`, `connections`, `tags`, `triggerCount`, `isArchived` y `meta` **idénticos**, y la firma estructural
+   (tipo, typeVersion, nombre de nodo, credenciales y path de webhook) sin cambios.
+5. **Corrida completa**: 28 `PUT` → 27 aplicados y 2 canarios idempotentes.
+6. **Verificación independiente del script** (escrita por el padre) de los 30 flujos contra el respaldo: **0 problemas**.
+   47 `cachedResultName` correctos, 5 nodos que apuntan a los 30 sin el campo (no se tocan: el campo es opcional y
+   n8n resuelve por ID), 30 nombres únicos y **29 activos preservados**.
+7. **Idempotencia probada**: segunda corrida de `--apply` → 30 "sin cambios", **0 `PUT`**, salida 0.
+
+**Falso positivo corregido en el verificador.** La primera corrida marcó un FALLO en W1 por `staticData`. Se investigó:
+`staticData` guarda el cursor de sondeo del trigger de Outlook y **avanza solo** (`node:Outlook - Nuevo correo recibido`:
+`lastTimeChecked` pasó de `2026-09-23T15:57` a `2026-09-24T13:14` sin intervención del `PUT`). Se excluyó `staticData`
+de la proyección de comparación, con la nota correspondiente en el docstring. El renombrado de W1 quedó correcto
+(nombre nuevo, 3 cachés nuevos, `active: true` y el resto intacto).
+
+**Hallazgo colateral (fuera del alcance de B1, requiere decisión):** 9 notas fijas (sticky notes) dentro de los flujos
+citan el nombre **viejo** en su texto, por ejemplo `## [SUB] CCB - Cerrar envío (F4-03/W5B)`. No rompen nada, pero son
+una inconsistencia visible después del renombrado. La convención (§4) no las contempla.

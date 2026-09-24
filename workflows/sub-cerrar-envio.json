@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T16:04:57.272Z",
+  "updatedAt": "2026-09-24T13:14:43.923Z",
   "createdAt": "2026-09-23T16:00:28.724Z",
   "id": "1Zzkrg3dTkTrddgp",
-  "name": "[SUB] CCB - Cerrar envío",
+  "name": "[SUB] CCB · Envío — Cerrar el envío",
   "description": "Subflujo del envío al cliente: marca ENVIADA en Cotizaciones y Solicitudes y avisa al asesor. Sistema: n8n Data Tables + Microsoft Outlook. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -26,7 +26,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -47,7 +47,7 @@
           "__rl": true,
           "value": "GELWpskp0aYJ2zPg",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
+          "cachedResultName": "[SUB] CCB · Contexto — Leer el contexto de la propuesta"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -252,15 +252,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
-  "activeVersionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
-  "versionCounter": 10,
+  "versionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
+  "activeVersionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
+  "versionCounter": 13,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T16:04:57.273Z",
-    "createdAt": "2026-09-23T16:04:57.273Z",
-    "versionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
+    "updatedAt": "2026-09-24T13:14:43.924Z",
+    "createdAt": "2026-09-24T13:14:43.924Z",
+    "versionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
     "workflowId": "1Zzkrg3dTkTrddgp",
     "nodes": [
       {
@@ -282,7 +282,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -303,7 +303,7 @@
             "__rl": true,
             "value": "GELWpskp0aYJ2zPg",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
+            "cachedResultName": "[SUB] CCB · Contexto — Leer el contexto de la propuesta"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -508,18 +508,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T16:04:57.319Z",
-        "id": 2874,
+        "createdAt": "2026-09-24T13:14:43.958Z",
+        "id": 3020,
         "workflowId": "1Zzkrg3dTkTrddgp",
-        "versionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
+        "versionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T16:04:57.336Z",
-        "id": 2875,
+        "createdAt": "2026-09-24T13:14:43.972Z",
+        "id": 3021,
         "workflowId": "1Zzkrg3dTkTrddgp",
-        "versionId": "f82527d5-c2b1-48b8-850e-0f99fdc7b169",
+        "versionId": "59b6f7c4-6675-4aeb-8cea-bb6f1bbc6302",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

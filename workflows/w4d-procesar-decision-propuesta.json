@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:56:56.562Z",
+  "updatedAt": "2026-09-24T13:14:17.678Z",
   "createdAt": "2026-09-15T15:20:09.653Z",
   "id": "W0TDH4b0tHCNOzFQ",
-  "name": "CCB - Workflow 4D - Procesar Decisión de Propuesta",
+  "name": "CCB · W4D — Procesar la decisión",
   "description": "W4D — Procesar Decision de Propuesta. Webhook autenticado (Header Auth) que recibe la decision del asesor: aprobar, cancelar o solicitar correcciones. En correccion, un asistente de IA (OpenRouter) ajusta los criterios guardados, validados contra listas cerradas de valores permitidos, y reinvoca el motor (W3); tope de 3 rondas antes de escalar a revision manual. Flujo de mayor riesgo del pipeline segun la auditoria de buenas practicas. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
@@ -369,7 +369,7 @@
           "__rl": true,
           "value": "GELWpskp0aYJ2zPg",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
+          "cachedResultName": "[SUB] CCB · Contexto — Leer el contexto de la propuesta"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -390,7 +390,7 @@
           "__rl": true,
           "value": "8j6BCwXkgJCccyO1",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - W4D Aprobar"
+          "cachedResultName": "[SUB] CCB · W4D — Aprobar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -411,7 +411,7 @@
           "__rl": true,
           "value": "Jgf514VxDINJ8ra3",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - W4D Cancelar"
+          "cachedResultName": "[SUB] CCB · W4D — Cancelar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -432,7 +432,7 @@
           "__rl": true,
           "value": "3NAcLF4jaZ1JBw0A",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - W4D Corrección IA"
+          "cachedResultName": "[SUB] CCB · W4D — Corrección con IA"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -688,15 +688,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
-  "activeVersionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
-  "versionCounter": 242,
+  "versionId": "42d55d08-59ef-4ec1-8612-668d9d99cf5c",
+  "activeVersionId": "42d55d08-59ef-4ec1-8612-668d9d99cf5c",
+  "versionCounter": 245,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:56:56.563Z",
-    "createdAt": "2026-09-23T15:56:56.563Z",
-    "versionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
+    "updatedAt": "2026-09-24T13:14:17.680Z",
+    "createdAt": "2026-09-24T13:14:17.680Z",
+    "versionId": "42d55d08-59ef-4ec1-8612-668d9d99cf5c",
     "workflowId": "W0TDH4b0tHCNOzFQ",
     "nodes": [
       {
@@ -1061,7 +1061,7 @@
             "__rl": true,
             "value": "GELWpskp0aYJ2zPg",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Leer Contexto Propuesta"
+            "cachedResultName": "[SUB] CCB · Contexto — Leer el contexto de la propuesta"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1082,7 +1082,7 @@
             "__rl": true,
             "value": "8j6BCwXkgJCccyO1",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - W4D Aprobar"
+            "cachedResultName": "[SUB] CCB · W4D — Aprobar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1103,7 +1103,7 @@
             "__rl": true,
             "value": "Jgf514VxDINJ8ra3",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - W4D Cancelar"
+            "cachedResultName": "[SUB] CCB · W4D — Cancelar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1124,7 +1124,7 @@
             "__rl": true,
             "value": "3NAcLF4jaZ1JBw0A",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - W4D Corrección IA"
+            "cachedResultName": "[SUB] CCB · W4D — Corrección con IA"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1374,18 +1374,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:56:56.606Z",
-        "id": 2823,
+        "createdAt": "2026-09-24T13:14:17.726Z",
+        "id": 3000,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
+        "versionId": "42d55d08-59ef-4ec1-8612-668d9d99cf5c",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:56:56.622Z",
-        "id": 2824,
+        "createdAt": "2026-09-24T13:14:17.744Z",
+        "id": 3001,
         "workflowId": "W0TDH4b0tHCNOzFQ",
-        "versionId": "3d604e2b-7f52-4fe9-9e60-4d4d35010fc0",
+        "versionId": "42d55d08-59ef-4ec1-8612-668d9d99cf5c",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

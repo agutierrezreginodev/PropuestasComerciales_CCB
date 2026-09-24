@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:56:41.432Z",
+  "updatedAt": "2026-09-24T13:13:35.839Z",
   "createdAt": "2026-09-22T19:27:26.926Z",
   "id": "2dY1kaT7I5a0eP2w",
-  "name": "[SUB] CCB - Registrar y Alertar Error",
+  "name": "[SUB] CCB · Error — Registrar y alertar",
   "description": "Subflujo compartido que registra un error en Errores_CCB y alerta por Outlook. Contrato: { id_solicitud, workflow_origen, nodo_fallido, mensaje_error, emailBody, subject?, alertar? } con defaults. Lo usan 8 flujos del pipeline (F4-01). Sistema: n8n Data Tables + Microsoft Outlook. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -131,7 +131,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] - CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -226,15 +226,15 @@
       }
     ]
   },
-  "versionId": "08238346-f048-4a44-a46a-1adeebf634fb",
-  "activeVersionId": "08238346-f048-4a44-a46a-1adeebf634fb",
-  "versionCounter": 43,
+  "versionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
+  "activeVersionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
+  "versionCounter": 46,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T13:42:07.874Z",
-    "createdAt": "2026-09-23T13:42:07.874Z",
-    "versionId": "08238346-f048-4a44-a46a-1adeebf634fb",
+    "updatedAt": "2026-09-24T13:13:35.841Z",
+    "createdAt": "2026-09-24T13:13:35.841Z",
+    "versionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
     "workflowId": "2dY1kaT7I5a0eP2w",
     "nodes": [
       {
@@ -361,7 +361,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] - CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -440,50 +440,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T13:42:07.917Z",
-        "id": 2732,
+        "createdAt": "2026-09-24T13:13:35.929Z",
+        "id": 2984,
         "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "08238346-f048-4a44-a46a-1adeebf634fb",
+        "versionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T13:42:07.929Z",
-        "id": 2733,
+        "createdAt": "2026-09-24T13:13:35.995Z",
+        "id": 2985,
         "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "08238346-f048-4a44-a46a-1adeebf634fb",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T13:59:11.755Z",
-        "id": 2749,
-        "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "08238346-f048-4a44-a46a-1adeebf634fb",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T13:59:11.776Z",
-        "id": 2750,
-        "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "08238346-f048-4a44-a46a-1adeebf634fb",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T15:56:41.479Z",
-        "id": 2803,
-        "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "08238346-f048-4a44-a46a-1adeebf634fb",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T15:56:41.494Z",
-        "id": 2804,
-        "workflowId": "2dY1kaT7I5a0eP2w",
-        "versionId": "08238346-f048-4a44-a46a-1adeebf634fb",
+        "versionId": "48d499ba-ca90-43e7-bca2-2337beebda0d",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

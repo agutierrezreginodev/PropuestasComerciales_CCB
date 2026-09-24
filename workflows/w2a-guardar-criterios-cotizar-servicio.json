@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T18:41:15.201Z",
+  "updatedAt": "2026-09-24T13:14:06.034Z",
   "createdAt": "2026-09-10T20:16:16.917Z",
   "id": "VChcasvisGKekezR",
-  "name": "[SUB] CCB - Workflow 2A - Guardar Criterios y Cotizar Servicio",
+  "name": "CCB · W2A — Guardar criterios y cotizar",
   "description": "W2A (sub-workflow) — Guardar Criterios y Cotizar Servicio. Invocado por los flujos de recepcion de formulario (hoy: W2C). Guarda los criterios en Criterios_Cotizacion, ejecuta el motor de precio (W3) y guarda la cotizacion en Cotizaciones_CCB. Integra: Data Table, Execute Workflow (W3), Outlook. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
@@ -620,7 +620,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -641,7 +641,7 @@
           "__rl": true,
           "value": "MHWlUApSFT6gpBHs",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Invocar Motor y Guardar Cotización"
+          "cachedResultName": "[SUB] CCB · Motor — Invocar el motor y guardar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -914,15 +914,15 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "b1fe3a9c-11ae-4c1a-b805-8679b05756b2",
-  "activeVersionId": "4f7cc98a-d41d-4cb1-86e6-928a4a1ea26f",
-  "versionCounter": 138,
+  "versionId": "cd33167e-0af8-4de7-aff7-ab3ebedf9daa",
+  "activeVersionId": "cd33167e-0af8-4de7-aff7-ab3ebedf9daa",
+  "versionCounter": 141,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T16:18:02.861Z",
-    "createdAt": "2026-09-23T16:18:02.861Z",
-    "versionId": "4f7cc98a-d41d-4cb1-86e6-928a4a1ea26f",
+    "updatedAt": "2026-09-24T13:14:06.035Z",
+    "createdAt": "2026-09-24T13:14:06.035Z",
+    "versionId": "cd33167e-0af8-4de7-aff7-ab3ebedf9daa",
     "workflowId": "VChcasvisGKekezR",
     "nodes": [
       {
@@ -1125,10 +1125,10 @@
           -624,
           656
         ],
-        "onError": "continueErrorOutput",
         "retryOnFail": true,
         "maxTries": 5,
-        "waitBetweenTries": 5000
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1190,10 +1190,10 @@
           -624,
           880
         ],
-        "onError": "continueErrorOutput",
         "retryOnFail": true,
         "maxTries": 5,
-        "waitBetweenTries": 5000
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1255,10 +1255,10 @@
           -624,
           1104
         ],
-        "onError": "continueErrorOutput",
         "retryOnFail": true,
         "maxTries": 5,
-        "waitBetweenTries": 5000
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1320,10 +1320,10 @@
           -624,
           1328
         ],
-        "onError": "continueErrorOutput",
         "retryOnFail": true,
         "maxTries": 5,
-        "waitBetweenTries": 5000
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1386,7 +1386,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          624,
+          368,
           1504
         ]
       },
@@ -1399,7 +1399,7 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -352,
+          -608,
           1504
         ]
       },
@@ -1440,7 +1440,7 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3.4,
         "position": [
-          -112,
+          -416,
           1504
         ]
       },
@@ -1455,8 +1455,8 @@
         "type": "n8n-nodes-base.stickyNote",
         "typeVersion": 1,
         "position": [
-          -96,
-          416
+          16,
+          432
         ]
       },
       {
@@ -1533,25 +1533,25 @@
         ]
       },
       {
-        "id": "w2a-ejecutar-reg-alertar-guardado",
-        "name": "Ejecutar Registrar-y-Alertar (Guardado)",
-        "type": "n8n-nodes-base.executeWorkflow",
-        "typeVersion": 1.2,
-        "position": [
-          -832,
-          1504
-        ],
         "parameters": {
           "workflowId": {
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
           }
-        }
+        },
+        "id": "w2a-ejecutar-reg-alertar-guardado",
+        "name": "Ejecutar Registrar-y-Alertar (Guardado)",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.2,
+        "position": [
+          -816,
+          1504
+        ]
       },
       {
         "parameters": {
@@ -1559,7 +1559,7 @@
             "__rl": true,
             "value": "MHWlUApSFT6gpBHs",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Invocar Motor y Guardar Cotización"
+            "cachedResultName": "[SUB] CCB · Motor — Invocar el motor y guardar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -1570,8 +1570,8 @@
         "type": "n8n-nodes-base.executeWorkflow",
         "typeVersion": 1.2,
         "position": [
-          900,
-          -16
+          128,
+          912
         ]
       }
     ],
@@ -1826,18 +1826,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T16:18:02.915Z",
-        "id": 2883,
+        "createdAt": "2026-09-24T13:14:06.097Z",
+        "id": 2988,
         "workflowId": "VChcasvisGKekezR",
-        "versionId": "4f7cc98a-d41d-4cb1-86e6-928a4a1ea26f",
+        "versionId": "cd33167e-0af8-4de7-aff7-ab3ebedf9daa",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T16:18:02.936Z",
-        "id": 2884,
+        "createdAt": "2026-09-24T13:14:06.121Z",
+        "id": 2989,
         "workflowId": "VChcasvisGKekezR",
-        "versionId": "4f7cc98a-d41d-4cb1-86e6-928a4a1ea26f",
+        "versionId": "cd33167e-0af8-4de7-aff7-ab3ebedf9daa",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

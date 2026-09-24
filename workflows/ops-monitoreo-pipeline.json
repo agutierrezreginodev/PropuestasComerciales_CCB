@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T16:44:04.258Z",
+  "updatedAt": "2026-09-24T13:14:58.652Z",
   "createdAt": "2026-09-23T13:44:00.657Z",
   "id": "ZwBFTBhwS9pjS69X",
-  "name": "[OPS] CCB - Monitoreo del pipeline",
+  "name": "[OPS] CCB · Monitoreo — Métricas del pipeline",
   "description": "Monitoreo horario del pipeline CCB: publica tasa de error, ejecuciones, latencia p95 y saturacion en la Data Table Metricas_CCB y alerta por correo si se supera un umbral. Sistema: endpoint Prometheus de la instancia + Data Tables. Area propietaria: Servicios de Informacion CCB.",
   "active": true,
   "isArchived": false,
@@ -33,7 +33,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -427,15 +427,15 @@
   },
   "meta": null,
   "pinData": null,
-  "versionId": "2d8a94db-57a5-4ddd-9a60-1158ea709907",
-  "activeVersionId": "2d8a94db-57a5-4ddd-9a60-1158ea709907",
-  "versionCounter": 96,
+  "versionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
+  "activeVersionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
+  "versionCounter": 99,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T16:43:34.694Z",
-    "createdAt": "2026-09-23T16:43:34.694Z",
-    "versionId": "2d8a94db-57a5-4ddd-9a60-1158ea709907",
+    "updatedAt": "2026-09-24T13:14:58.654Z",
+    "createdAt": "2026-09-24T13:14:58.654Z",
+    "versionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
     "workflowId": "ZwBFTBhwS9pjS69X",
     "nodes": [
       {
@@ -464,7 +464,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -851,34 +851,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T16:43:34.778Z",
-        "id": 2943,
+        "createdAt": "2026-09-24T13:14:58.706Z",
+        "id": 3038,
         "workflowId": "ZwBFTBhwS9pjS69X",
-        "versionId": "2d8a94db-57a5-4ddd-9a60-1158ea709907",
+        "versionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T16:43:34.815Z",
-        "id": 2944,
+        "createdAt": "2026-09-24T13:14:58.731Z",
+        "id": 3039,
         "workflowId": "ZwBFTBhwS9pjS69X",
-        "versionId": "2d8a94db-57a5-4ddd-9a60-1158ea709907",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T16:44:04.310Z",
-        "id": 2951,
-        "workflowId": "ZwBFTBhwS9pjS69X",
-        "versionId": "2d8a94db-57a5-4ddd-9a60-1158ea709907",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T16:44:04.331Z",
-        "id": 2952,
-        "workflowId": "ZwBFTBhwS9pjS69X",
-        "versionId": "2d8a94db-57a5-4ddd-9a60-1158ea709907",
+        "versionId": "606e50a2-3943-4c37-a466-3f7a7c86cf19",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

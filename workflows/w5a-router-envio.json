@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T16:44:00.963Z",
+  "updatedAt": "2026-09-24T13:14:19.375Z",
   "createdAt": "2026-09-11T18:20:04.807Z",
   "id": "gvIn6mbAn2Y1bMRR",
-  "name": "CCB - Workflow 5A - Router de Envío",
+  "name": "CCB · W5A — Router de envío",
   "description": "W5A — Router de Envio. Corre cada 15 minutos: busca cotizaciones APROBADA, las marca EN_ENVIO y despacha cada una al sub-workflow de envio al cliente (W5B). Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
@@ -233,7 +233,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -304,7 +304,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -449,15 +449,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "03891099-f994-490c-b1f6-aeb849593596",
-  "activeVersionId": "03891099-f994-490c-b1f6-aeb849593596",
-  "versionCounter": 57,
+  "versionId": "90efd459-b51c-47ec-9bca-57a98d1e3325",
+  "activeVersionId": "90efd459-b51c-47ec-9bca-57a98d1e3325",
+  "versionCounter": 60,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:18.875Z",
-    "createdAt": "2026-09-23T15:57:18.875Z",
-    "versionId": "03891099-f994-490c-b1f6-aeb849593596",
+    "updatedAt": "2026-09-24T13:14:19.376Z",
+    "createdAt": "2026-09-24T13:14:19.376Z",
+    "versionId": "90efd459-b51c-47ec-9bca-57a98d1e3325",
     "workflowId": "gvIn6mbAn2Y1bMRR",
     "nodes": [
       {
@@ -686,7 +686,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -757,7 +757,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -892,34 +892,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:18.911Z",
-        "id": 2851,
+        "createdAt": "2026-09-24T13:14:19.411Z",
+        "id": 3002,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "03891099-f994-490c-b1f6-aeb849593596",
+        "versionId": "90efd459-b51c-47ec-9bca-57a98d1e3325",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:18.927Z",
-        "id": 2852,
+        "createdAt": "2026-09-24T13:14:19.427Z",
+        "id": 3003,
         "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "03891099-f994-490c-b1f6-aeb849593596",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T16:44:01.006Z",
-        "id": 2947,
-        "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "03891099-f994-490c-b1f6-aeb849593596",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T16:44:01.027Z",
-        "id": 2948,
-        "workflowId": "gvIn6mbAn2Y1bMRR",
-        "versionId": "03891099-f994-490c-b1f6-aeb849593596",
+        "versionId": "90efd459-b51c-47ec-9bca-57a98d1e3325",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

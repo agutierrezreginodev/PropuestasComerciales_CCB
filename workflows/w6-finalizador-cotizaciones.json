@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T16:44:02.523Z",
+  "updatedAt": "2026-09-24T13:14:22.995Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
-  "name": "CCB - Workflow 6 - Finalizador de Cotizaciones",
+  "name": "CCB · W6 — Finalizador de cotizaciones",
   "description": "W6 — Finalizador de Cotizaciones. Corre diariamente a las 3am: marca FINALIZADA toda cotizacion ENVIADA con 30+ dias sin respuesta del cliente, en Cotizaciones_CCB y Solicitudes_CCB. Cierre automatico sin intervencion humana — ver kill switch pendiente en el plan de remediacion. Area propietaria: Servicios de Informacion - CCB.",
   "active": true,
   "isArchived": false,
@@ -240,7 +240,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -421,15 +421,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
-  "activeVersionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
-  "versionCounter": 63,
+  "versionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
+  "activeVersionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
+  "versionCounter": 66,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:21.664Z",
-    "createdAt": "2026-09-23T15:57:21.664Z",
-    "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
+    "updatedAt": "2026-09-24T13:14:22.997Z",
+    "createdAt": "2026-09-24T13:14:22.997Z",
+    "versionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
@@ -665,7 +665,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -836,34 +836,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:21.708Z",
-        "id": 2855,
+        "createdAt": "2026-09-24T13:14:23.032Z",
+        "id": 3006,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
+        "versionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:21.725Z",
-        "id": 2856,
+        "createdAt": "2026-09-24T13:14:23.053Z",
+        "id": 3007,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
-        "event": "activated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T16:44:02.567Z",
-        "id": 2949,
-        "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
-        "event": "deactivated",
-        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
-      },
-      {
-        "createdAt": "2026-09-23T16:44:02.615Z",
-        "id": 2950,
-        "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "b7c0cd6b-cd2f-456f-9edb-1667c3f2fed0",
+        "versionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

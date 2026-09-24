@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T16:30:14.326Z",
+  "updatedAt": "2026-09-24T13:14:39.819Z",
   "createdAt": "2026-09-23T16:17:59.172Z",
   "id": "MHWlUApSFT6gpBHs",
-  "name": "[SUB] CCB - Invocar Motor y Guardar Cotización",
+  "name": "[SUB] CCB · Motor — Invocar el motor y guardar",
   "description": "Subflujo de W2-A: invoca el motor de cálculo (W3), restaura id_solicitud y guarda la cotización; devuelve la respuesta lista para el formulario. Sistema: W3 + n8n Data Tables. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -26,7 +26,7 @@
           "__rl": true,
           "value": "cHOIOEFB5nbltN82",
           "mode": "list",
-          "cachedResultName": "CCB - Motor Criterios y Precio v2",
+          "cachedResultName": "CCB · W3 — Motor de criterios y precio",
           "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
         },
         "workflowInputs": {
@@ -229,7 +229,7 @@
           "__rl": true,
           "value": "2dY1kaT7I5a0eP2w",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+          "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -424,15 +424,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
-  "activeVersionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
-  "versionCounter": 7,
+  "versionId": "b44d9404-88a9-414e-91be-55ef9d0d092a",
+  "activeVersionId": "b44d9404-88a9-414e-91be-55ef9d0d092a",
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T16:30:14.328Z",
-    "createdAt": "2026-09-23T16:30:14.328Z",
-    "versionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
+    "updatedAt": "2026-09-24T13:14:39.820Z",
+    "createdAt": "2026-09-24T13:14:39.820Z",
+    "versionId": "b44d9404-88a9-414e-91be-55ef9d0d092a",
     "workflowId": "MHWlUApSFT6gpBHs",
     "nodes": [
       {
@@ -454,7 +454,7 @@
             "__rl": true,
             "value": "cHOIOEFB5nbltN82",
             "mode": "list",
-            "cachedResultName": "CCB - Motor Criterios y Precio v2",
+            "cachedResultName": "CCB · W3 — Motor de criterios y precio",
             "cachedResultUrl": "/workflow/cHOIOEFB5nbltN82"
           },
           "workflowInputs": {
@@ -657,7 +657,7 @@
             "__rl": true,
             "value": "2dY1kaT7I5a0eP2w",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Registrar y Alertar Error"
+            "cachedResultName": "[SUB] CCB · Error — Registrar y alertar"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -852,18 +852,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T16:30:14.373Z",
-        "id": 2886,
+        "createdAt": "2026-09-24T13:14:39.855Z",
+        "id": 3016,
         "workflowId": "MHWlUApSFT6gpBHs",
-        "versionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
+        "versionId": "b44d9404-88a9-414e-91be-55ef9d0d092a",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T16:30:14.390Z",
-        "id": 2887,
+        "createdAt": "2026-09-24T13:14:39.869Z",
+        "id": 3017,
         "workflowId": "MHWlUApSFT6gpBHs",
-        "versionId": "49bc4a8e-7236-4314-9e6a-f5eef1c5691e",
+        "versionId": "b44d9404-88a9-414e-91be-55ef9d0d092a",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:57:06.384Z",
+  "updatedAt": "2026-09-24T13:14:34.074Z",
   "createdAt": "2026-09-23T15:05:13.086Z",
   "id": "DF3emCmBBBB2HA3i",
-  "name": "[SUB] CCB - Generar PDF de Propuesta",
+  "name": "[SUB] CCB · PDF — Generar el PDF",
   "description": "Subflujo compartido que genera el PDF de la propuesta: elige la plantilla por servicio, interpola los datos y llama al microservicio. Sistema: n8n Set/HTTP + microservicio de PDF. Área propietaria: Servicios de Información CCB.",
   "active": true,
   "isArchived": false,
@@ -26,7 +26,7 @@
           "__rl": true,
           "value": "Hgy02eqPhnsdJvkq",
           "mode": "id",
-          "cachedResultName": "[SUB] CCB - Leer Configuración"
+          "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
         },
         "options": {
           "waitForSubWorkflow": true
@@ -482,15 +482,15 @@
   "staticData": null,
   "meta": null,
   "pinData": null,
-  "versionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
-  "activeVersionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
-  "versionCounter": 16,
+  "versionId": "a43dc859-f6b6-413b-9248-c3bbf2a1631f",
+  "activeVersionId": "a43dc859-f6b6-413b-9248-c3bbf2a1631f",
+  "versionCounter": 19,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-23T15:57:06.392Z",
-    "createdAt": "2026-09-23T15:57:06.392Z",
-    "versionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
+    "updatedAt": "2026-09-24T13:14:34.082Z",
+    "createdAt": "2026-09-24T13:14:34.082Z",
+    "versionId": "a43dc859-f6b6-413b-9248-c3bbf2a1631f",
     "workflowId": "DF3emCmBBBB2HA3i",
     "nodes": [
       {
@@ -512,7 +512,7 @@
             "__rl": true,
             "value": "Hgy02eqPhnsdJvkq",
             "mode": "id",
-            "cachedResultName": "[SUB] CCB - Leer Configuración"
+            "cachedResultName": "[SUB] CCB · Config — Leer la configuración"
           },
           "options": {
             "waitForSubWorkflow": true
@@ -968,18 +968,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-23T15:57:06.522Z",
-        "id": 2835,
+        "createdAt": "2026-09-24T13:14:34.206Z",
+        "id": 3014,
         "workflowId": "DF3emCmBBBB2HA3i",
-        "versionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
+        "versionId": "a43dc859-f6b6-413b-9248-c3bbf2a1631f",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-23T15:57:06.577Z",
-        "id": 2836,
+        "createdAt": "2026-09-24T13:14:34.250Z",
+        "id": 3015,
         "workflowId": "DF3emCmBBBB2HA3i",
-        "versionId": "705769c2-2a3d-42cf-9336-78b4c9f75d0b",
+        "versionId": "a43dc859-f6b6-413b-9248-c3bbf2a1631f",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }

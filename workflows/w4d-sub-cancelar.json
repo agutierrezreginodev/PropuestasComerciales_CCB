@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-23T15:56:50.680Z",
+  "updatedAt": "2026-09-24T13:14:47.886Z",
   "createdAt": "2026-09-23T14:17:01.625Z",
   "id": "Jgf514VxDINJ8ra3",
-  "name": "[SUB] CCB - W4D Cancelar",
+  "name": "[SUB] CCB · W4D — Cancelar",
   "description": "Subflujo del router de decisión: marca la cotización como CANCELADA y devuelve la confirmación al router (F4-03).",
   "active": true,
   "isArchived": false,
@@ -107,7 +107,7 @@
   "pinData": null,
   "versionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
   "activeVersionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
-  "versionCounter": 7,
+  "versionCounter": 10,
   "triggerCount": 0,
   "tags": [],
   "activeVersion": {
@@ -232,6 +232,22 @@
       {
         "createdAt": "2026-09-23T15:56:50.719Z",
         "id": 2814,
+        "workflowId": "Jgf514VxDINJ8ra3",
+        "versionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
+        "event": "activated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:47.921Z",
+        "id": 3026,
+        "workflowId": "Jgf514VxDINJ8ra3",
+        "versionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
+        "event": "deactivated",
+        "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
+      },
+      {
+        "createdAt": "2026-09-24T13:14:47.934Z",
+        "id": 3027,
         "workflowId": "Jgf514VxDINJ8ra3",
         "versionId": "7fa8f4e6-36a9-4c9b-965c-49db232bb57b",
         "event": "activated",
