@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-24T13:14:22.995Z",
+  "updatedAt": "2026-09-24T15:29:59.638Z",
   "createdAt": "2026-09-11T19:52:09.084Z",
   "id": "mPwl4qUb0zQkmDHN",
   "name": "CCB · W6 — Finalizador de cotizaciones",
@@ -282,6 +282,19 @@
         "options": {}
       },
       "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Los flujos de produccion no deben actuar sobre las filas descartables de la regresion\n// (SOL-PRUEBA-*). Sin este filtro, un tick del cron que caiga a mitad de una corrida procesa\n// una fila de prueba: cambia su estado, intenta enviar correos y ensucia Errores_CCB.\n// El filtro del nodo Data Table solo soporta igualdad, asi que la exclusion se hace aca.\n// Si no queda ninguna fila, la lista vacia detiene la cadena sin registrar ningun error.\nreturn $input.all()\n  .filter((item) => !String((item.json || {}).id_solicitud || '').startsWith('SOL-PRUEBA'))\n  .map((item) => ({ json: item.json }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "name": "Descartar filas de prueba",
+      "position": [
+        360,
+        0
+      ],
+      "id": "13cb4256-a533-58a5-be62-6f87120bd0a1"
     }
   ],
   "connections": {
@@ -341,7 +354,7 @@
       "main": [
         [
           {
-            "node": "Validar id_solicitud presente",
+            "node": "Descartar filas de prueba",
             "type": "main",
             "index": 0
           }
@@ -403,6 +416,17 @@
           }
         ]
       ]
+    },
+    "Descartar filas de prueba": {
+      "main": [
+        [
+          {
+            "node": "Validar id_solicitud presente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -421,15 +445,15 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
-  "activeVersionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
-  "versionCounter": 66,
+  "versionId": "4128a140-f64d-491b-a4a9-f7da347b2c05",
+  "activeVersionId": "4128a140-f64d-491b-a4a9-f7da347b2c05",
+  "versionCounter": 69,
   "triggerCount": 1,
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-09-24T13:14:22.997Z",
-    "createdAt": "2026-09-24T13:14:22.997Z",
-    "versionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
+    "updatedAt": "2026-09-24T15:29:59.639Z",
+    "createdAt": "2026-09-24T15:29:59.639Z",
+    "versionId": "4128a140-f64d-491b-a4a9-f7da347b2c05",
     "workflowId": "mPwl4qUb0zQkmDHN",
     "nodes": [
       {
@@ -707,6 +731,19 @@
           "options": {}
         },
         "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "// Los flujos de produccion no deben actuar sobre las filas descartables de la regresion\n// (SOL-PRUEBA-*). Sin este filtro, un tick del cron que caiga a mitad de una corrida procesa\n// una fila de prueba: cambia su estado, intenta enviar correos y ensucia Errores_CCB.\n// El filtro del nodo Data Table solo soporta igualdad, asi que la exclusion se hace aca.\n// Si no queda ninguna fila, la lista vacia detiene la cadena sin registrar ningun error.\nreturn $input.all()\n  .filter((item) => !String((item.json || {}).id_solicitud || '').startsWith('SOL-PRUEBA'))\n  .map((item) => ({ json: item.json }));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "name": "Descartar filas de prueba",
+        "position": [
+          360,
+          0
+        ],
+        "id": "13cb4256-a533-58a5-be62-6f87120bd0a1"
       }
     ],
     "connections": {
@@ -766,7 +803,7 @@
         "main": [
           [
             {
-              "node": "Validar id_solicitud presente",
+              "node": "Descartar filas de prueba",
               "type": "main",
               "index": 0
             }
@@ -828,6 +865,17 @@
             }
           ]
         ]
+      },
+      "Descartar filas de prueba": {
+        "main": [
+          [
+            {
+              "node": "Validar id_solicitud presente",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Adrian Gutierrez",
@@ -836,18 +884,18 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-09-24T13:14:23.032Z",
-        "id": 3006,
+        "createdAt": "2026-09-24T15:29:59.673Z",
+        "id": 3086,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
+        "versionId": "4128a140-f64d-491b-a4a9-f7da347b2c05",
         "event": "deactivated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       },
       {
-        "createdAt": "2026-09-24T13:14:23.053Z",
-        "id": 3007,
+        "createdAt": "2026-09-24T15:29:59.692Z",
+        "id": 3087,
         "workflowId": "mPwl4qUb0zQkmDHN",
-        "versionId": "ac24addf-1187-4312-b03b-ce3c59cb4a25",
+        "versionId": "4128a140-f64d-491b-a4a9-f7da347b2c05",
         "event": "activated",
         "userId": "406d9037-16bf-4f94-a7b9-19da8cd226f1"
       }
