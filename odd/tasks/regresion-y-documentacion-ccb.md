@@ -33,11 +33,11 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 | **R1** | Restaurar el `httpMethod: GET` explícito en el webhook de W4C | El snapshot muestra el método y el path responde como webhook vivo | ☑ 23/09 — commit `5262486` |
 | **R2** | Verificar con tráfico real la ruta de error compartida (`[SUB] CCB - Registrar y Alertar Error`) | Una ejecución real que falle deja fila en `Errores_CCB` con `error_timestamp` y mensaje enmascarado, envía el correo de alerta y **no corta** el flujo que la invoca | ☑ 23/09 — ejecución `422821` |
 | **R3** | Construir `[OPS] CCB - Regresión del pipeline` | El flujo corre los caminos críticos con filas descartables, publica un semáforo por camino, borra sus filas y reporta por correo | ☑ 23/09 — flujo `GVE3iNQ80y5Q9FEw`, **4/4 casos ok** |
-| **R4** | Probar la rama de **rechazo/expiración** de la aprobación de IA (F7-03) | Rechazo real en Teams → motivo `aprobacion_rechazada`, revisión manual y **sin consumir ronda** | ☐ pendiente (requiere un clic del usuario) |
+| **R4** | Probar la rama de **rechazo/expiración** de la aprobación de IA (F7-03) | Rechazo real en Teams → motivo `aprobacion_rechazada`, revisión manual y **sin consumir ronda** | ☑ 24/09 — verificado por HTTP sin clic manual (ejecuciones `429585` y `429598`); `ronda_correccion` quedó en 0 |
 | **R5** | Documentar el flujo completo | `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`: el recorrido de negocio de punta a punta + el mapa técnico de los 27 flujos y las 6 tablas | ☑ 23/09 — publicado (10 secciones) |
-| **R6** | Limpiar la fila basura de `Cotizaciones_CCB` (`id 21`) | Borrada con `dryRun` previo y confirmación del usuario; la tabla queda sin filas nulas | ☐ pendiente (requiere confirmación) |
+| **R6** | Limpiar la fila basura de `Cotizaciones_CCB` (`id 21`) | Borrada; **ninguna fila sin `id_solicitud`** y ninguna casi vacía (no "sin filas nulas": 7 columnas son `null` por diseño en ese servicio) | ☑ 25/09 — borrada el 24/09 por el usuario y **verificada el 25/09 leyendo la tabla viva**: 2 filas, 0 sin `id_solicitud`, 0 casi vacías. De paso se limpiaron **6 filas `SOL-PRUEBA-*`** que habían quedado de verificaciones anteriores |
 | **R7** | Re-auditoría final | Puntaje nuevo publicado con la evidencia de R1–R5 | ☑ 23/09 — **89,5/100** (a 0,5 del umbral) |
-| **R9** | v2 de la regresión: cubrir los caminos de envío y del motor | Dos casos más en el flujo de regresión | ◐ 23/09 — camino **envío** hecho (5/5 casos ok); el del **motor** queda pendiente |
+| **R9** | v2 de la regresión: cubrir los caminos de envío y del motor | Dos casos más en el flujo de regresión | ☑ 24/09 — **6/6 casos ok** (ejecución `428586`): camino **envío** (5/5, 23/09) y camino **motor** (24/09) |
 | **R8** | Sincronizar entrega | Snapshot, README, tablero, estado y memoria al día; un commit por unidad de trabajo | ☑ 23/09 — 28 archivos, tablero y estado actualizados |
 
 **Orden de ejecución:** R1 (rápido) → R2 → R3 → R5 → R4 y R6 (cuando el usuario pueda) → R7 → R8.
@@ -73,6 +73,18 @@ para que la cadena siga).
 **Pendiente declarado:** el camino del **motor** (`[SUB] Invocar Motor y Guardar Cotización` → W3) no se agregó: W3 lee
 una planilla de Excel con una credencial y su contrato de entrada son los criterios completos, así que exige su propia
 sesión de trabajo. Es el último caso que falta para cubrir los caminos críticos.
+
+### R9 — v2 de la regresión: caso del motor (cierre) · 24/09
+
+**Hecho.** El caso del motor se agregó y la regresión quedó en **`6/6`** — ejecución **`428586`**, 0 nodos con error,
+0 filas sucias. Verifica el **estado real** (no el retorno del subflujo). Detalle completo de la unidad en
+[`caso-motor-regresion-ccb.md`](caso-motor-regresion-ccb.md).
+
+**El camino destapó dos hallazgos que no estaban en el plan:** (1) un **bug de producción** en la etapa de PDF —
+`Normalizar Criterios` (W3) descartaba `id_solicitud`, así que el microservicio no persistía el archivo y `pdf_url`
+quedaba vacío; ahora el PDF se persiste y se sirve en `/pdfs/{id_solicitud}.pdf`. (2) Los **routers de cron
+(W4A/W5A/W6) procesaban las filas de prueba** `SOL-PRUEBA-*` cuando un tick caía a mitad de una corrida; se añadió el
+guardián `Descartar filas de prueba`.
 
 ### R7 y R8 — Re-auditoría de cierre y sincronización · 23/09
 
