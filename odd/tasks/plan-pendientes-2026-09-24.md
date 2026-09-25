@@ -15,7 +15,7 @@ Fases 0–7 del plan de remediación cerradas, **32 commits locales pendientes d
 | A3 | ✅ **Rechazo de la tarjeta de aprobación en Teams** — **hecho 24/09**: la tarjeta se rechazó y la propuesta quedó en `REVISION_MANUAL` con motivo `aprobacion_rechazada` **sin consumir ronda** | — | La última rama sin verificar de la corrección con IA (ejecuciones `429585` y `429598`) | **+0,1 Testing** |
 | A4 | ✅ **Fila basura borrada y VERIFICADA** — **hecho 24/09** por el usuario; **verificado el 25/09** leyendo la tabla viva: `Cotizaciones_CCB` quedó con **2 filas**, **0 sin `id_solicitud`** y **0 casi vacías** (la fila `id 21` ya no está). En la misma lectura aparecieron **6 filas de prueba sin limpiar**, borradas el 25/09 (ver abajo) | — | R6 cerrada de verdad | Higiene de datos |
 | A5 | ✅ **Historia reescrita publicada** — **ejecutado por el usuario el 25/09 y verificado contra el servidor**. `origin/main` pasó de `59086a2` a **`1aa8a20`**; higiene local ejecutada (`refs/original` borrada, reflog expirado, `gc --prune=now`: 983 objetos sueltos → 0, `.git` 16 MB → 2,7 MB) | 1 comando | Entrega | — |
-| A6 | *(Opcional)* **Registrar la instancia** (Settings → Usage and plan) si se quiere administrar carpetas por API | 5 min | Automatización futura de carpetas | — |
+| A6 | **Registrar la instancia** (Settings → Usage and plan) — **dejó de ser opcional**: es lo que desbloquea mover los flujos por script en lugar de a mano (A2). **Verificado el 25/09**: el API de carpetas responde `Forbidden — folders unlock on the registered free Community tier (Settings → Usage and plan → register)` | 5 min | **Convierte A2 en un script** (además de la automatización futura de carpetas) | — |
 
 > **A3 cerrada (24/09).** La rama de rechazo se verificó **sin clic manual**: fila descartable `SOL-PRUEBA-A3` y decisión
 > disparada por HTTP contra `decidir-propuesta`. Ejecución `429585` → la cruda de Teams `{"data": {"approved": false}}` →
@@ -133,6 +133,18 @@ un correo real (`59086a2` → `59a69ac`) y quedó **sin publicar**; encima se ag
 > **La propuesta formal para Tecnología está redactada:** [PROPUESTA_TECNOLOGIA_2026-09-24.md](../../docs/PROPUESTA_TECNOLOGIA_2026-09-24.md).
 > Cubre este bloque completo (C1 poda, C2 `/metrics`) más el alojamiento del microservicio de PDF y, como opcional, el
 > MCP de instancia. Cada pedido va de caja cerrada y con su verificación del lado del proyecto.
+>
+> **Estado medido el 25/09 (para no pedir a ciegas):**
+> - **C2 sigue abierto:** `GET /metrics` desde internet responde **200 sin autenticación**, 25.902 bytes y **42 familias**
+>   de métricas del proceso. Es la evidencia fresca del pedido; el monitor no necesita cambios (la URL es un valor de
+>   `Configuracion_CCB`).
+> - **La instancia está viva y accesible:** `GET /healthz` → **200** (0,9 s). Ojo con el falso negativo: la herramienta
+>   `n8n_health_check` del MCP responde *"Unable to connect to n8n"* (ETIMEDOUT/ENETUNREACH) aunque el `curl` al mismo
+>   host funcione. **No usar ese mensaje como prueba de caída**; verificar con `curl`.
+> - **C1 (la edad del registro de ejecuciones) no se pudo remedir hoy** con las herramientas disponibles: la auditoría de
+>   instancia del MCP devolvió `403 Forbidden` en el audit nativo y su escaneo propio expiró por red, y el resultado fue
+>   un **`0 findings` engañoso con `0 workflows scanned`** — no es un "auditoría limpia", es una auditoría que no corrió.
+>   El valor del 24/09 (registro hasta el **26 de junio**, ~89 días) sigue siendo la referencia.
 
 | # | Tarea | Por qué | Impacto |
 |---|---|---|---|
@@ -174,8 +186,8 @@ Tecnología. Con C1 se cruza (90,1) y C2 lo consolida (90,3).
 |---|---|---|---|
 | A5 | Publicar la historia reescrita + higiene local | — | ✅ **cerrado el 25/09** (ver arriba) |
 | A4 | **Verificar de verdad** el borrado de la fila `id 21` de `Cotizaciones_CCB` | yo | ✅ **cerrado el 25/09** — tabla leída, 0 filas sin `id_solicitud`; y de paso se limpiaron 6 filas de prueba (ver arriba) |
-| A2 | Mover los flujos a las carpetas en la UI | tú | ☐ pendiente (5 min) |
-| A6 | Registrar la instancia (opcional) | tú | ☐ opcional |
+| A2 | Mover los flujos a las carpetas | tú | ☐ pendiente (5 min de arrastre con la checklist de la convención §3) **o por script si haces A6 primero** |
+| A6 | **Registrar la instancia** — desbloquea mover los flujos por script (A2) | tú | ☐ recomendado ahora (5 min) |
 | C1 | Poda de ejecuciones de instancia | Tecnología | ☐ **es lo único que cruza el 90** |
 | C2 | Cerrar o restringir `/metrics` | Tecnología | ☐ consolida en 90,3 |
 | — | Borrar el bundle `/home/adrian/ccb-backup/…` | yo | ☐ cuando la entrega se dé por cerrada |

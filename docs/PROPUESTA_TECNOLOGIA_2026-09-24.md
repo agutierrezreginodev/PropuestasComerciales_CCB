@@ -58,9 +58,13 @@ valor por defecto** en esta instancia.
 **Qué pedimos:** dejar de servir `/metrics` en internet abierto. Exponerlo **solo a la red interna** (regla en el proxy
 inverso o en el firewall, o escuchando en una interfaz interna).
 
-**Por qué.** Hoy ese endpoint responde **200 sin autenticación** desde internet y devuelve 25,9 KB con **43 familias de
+**Por qué.** Hoy ese endpoint responde **200 sin autenticación** desde internet y devuelve 25,9 KB con **42–43 familias de
 métricas** del proceso: rol de la instancia, handles activos, lag del event loop, contadores de ejecuciones, cantidad
 de flujos activos. No hay datos de clientes, pero es información operativa de la instancia completa.
+
+*Remedido el **25/09** — el pedido sigue vigente:* `GET /metrics` desde internet responde **200**, **25.902 bytes** y
+**42 familias**, sin credencial alguna. En la misma fecha, `GET /healthz` → **200**: la instancia está viva y alcanzable,
+así que no se trata de un servicio caído.
 
 Las instrucciones oficiales de n8n son explícitas:
 

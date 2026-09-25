@@ -97,8 +97,8 @@ por clave (`[SUB] CCB · Envío — …`, `[SUB] CCB · W4D — …`), y las eta
 | Punto | Realidad |
 |---|---|
 | Anidamiento | **Sí**: n8n soporta carpetas ilimitadas y anidadas |
-| Requisito | Instancia **registrada** (Community registrada o plan pago). En esta instancia las carpetas ya funcionan (los 12 flujos originales están en una) |
-| **Mover flujos por API** | **No se puede.** `POST`/`PUT /api/v1/workflows` rechaza `parentFolderId`; solo existe un endpoint interno que exige cookie de sesión del navegador. **El movimiento se hace en la UI.** |
+| Requisito | Instancia **registrada** (Community registrada o plan pago). En esta instancia las carpetas ya funcionan (los 12 flujos originales están en una). **Ojo: que las carpetas funcionen no significa que la instancia esté registrada** — el 25/09 el API de carpetas respondió `Forbidden` con ese motivo exacto. Lo que funciona sin registro es *crear* carpetas y arrastrar flujos **en la UI**; lo que exige registro es hacerlo **por API**. |
+| **Mover flujos por API** | **Hoy no se puede *en esta instancia*, pero sí en general.** El API público clásico (`POST`/`PUT /api/v1/workflows`) rechaza `parentFolderId`. El movimiento moderno **sí existe** por otras dos vías: la operación `moveToFolder` de `n8n_update_partial_workflow` y la acción `move` (`transferToFolderId`) de `n8n_manage_folders`. Ambas exigen **API key con scopes `folder:*`** *y* **instancia registrada**. Verificado el **25/09**: responden `Forbidden — folders unlock on the registered free Community tier (Settings → Usage and plan → register)`. **Con A6 (registrar la instancia) hecho, A2 deja de ser un arrastre manual y se puede scriptear.** |
 | API de carpetas | Existe (`/projects/{id}/folders`), pero exige una API key con scopes `folder:*` **y** licencia: por eso hoy responde 403. Sirve para *crear* carpetas por script, no para mover flujos |
 | Verificación por API | No se puede: `GET /workflows` no devuelve la carpeta del flujo. La verificación es visual en la UI |
 
@@ -138,6 +138,55 @@ porque los prefijos `[SUB]` y `[OPS]` ya ordenan la lista dentro de cada una.
 2. **Arrastrar** cada flujo sobre su carpeta (o usar el menú de la tarjeta del flujo, si la versión lo ofrece).
 3. Verificar de un vistazo que cada carpeta tenga la cantidad esperada: **12 · 15 · 2 · 1**.
 4. Si se quieren las subcarpetas de `02`, crearlas dentro y repetir el arrastre (el anidamiento está soportado).
+
+### Checklist de arrastre — los 30 flujos, uno por uno
+
+Lista literal para no tener que decidir nada en la UI. Total: **12 · 15 · 2 · 1 = 30**.
+
+**📁 01 · Pipeline CCB — 12**
+
+- `CCB · Catch-all — Errores no capturados`
+- `CCB · W1 — Extracción de información del cliente`
+- `CCB · W2A — Guardar criterios y cotizar`
+- `CCB · W2C — Recepción del formulario externo`
+- `CCB · W3 — Motor de criterios y precio`
+- `CCB · W4A — Router de aprobación`
+- `CCB · W4B — Aprobación por Teams`
+- `CCB · W4C — Consultar la propuesta para revisión`
+- `CCB · W4D — Procesar la decisión`
+- `CCB · W5A — Router de envío`
+- `CCB · W5B — Envío al cliente`
+- `CCB · W6 — Finalizador de cotizaciones`
+
+**📁 02 · Subflujos CCB — 15** *(con el refinamiento opcional de subcarpetas entre paréntesis)*
+
+- `[SUB] CCB · Config — Leer la configuración` *(Compartidos)*
+- `[SUB] CCB · Contexto — Leer el contexto de la propuesta` *(Compartidos)*
+- `[SUB] CCB · Error — Registrar y alertar` *(Compartidos)*
+- `[SUB] CCB · Motor — Invocar el motor y guardar` *(Compartidos)*
+- `[SUB] CCB · PDF — Generar el PDF` *(Compartidos)*
+- `[SUB] CCB · Envío — Cerrar el envío` *(Envío)*
+- `[SUB] CCB · Envío — Cerrar el error de envío` *(Envío)*
+- `[SUB] CCB · Envío — Enviar al cliente` *(Envío)*
+- `[SUB] CCB · W4D — Aprobar` *(W4D)*
+- `[SUB] CCB · W4D — Cancelar` *(W4D)*
+- `[SUB] CCB · W4D — Cierre de la corrección` *(W4D)*
+- `[SUB] CCB · W4D — Corrección con IA` *(W4D)*
+- `[SUB] CCB · W4D — Revisión manual` *(W4D)*
+- `[SUB] CCB · Regresión — Preparar filas` *(Regresión)*
+- `[SUB] CCB · Regresión — Verificar y limpiar` *(Regresión)*
+
+**📁 03 · Operativos CCB — 2**
+
+- `[OPS] CCB · Monitoreo — Métricas del pipeline`
+- `[OPS] CCB · Regresión — Prueba de regresión`
+
+**📁 99 · Retirados — 1**
+
+- `[RETIRADO] CCB · W2B — Formulario antiguo`
+
+> Los subflujos de `02` están ordenados **por grupo**, no por nombre, para que el refinamiento en subcarpetas sea un corte
+> contiguo de la lista. Los cinco de `Compartidos` son los únicos que llaman a más de una etapa del pipeline.
 
 ---
 
