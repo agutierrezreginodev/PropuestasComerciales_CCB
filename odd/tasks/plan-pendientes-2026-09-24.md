@@ -101,8 +101,12 @@ un correo real (`59086a2` → `59a69ac`) y quedó **sin publicar**; encima se ag
 > Se clasificaron en: **22** versiones anteriores del pipeline (se conservan), **5** ajenos al proyecto (no se tocaron: la
 > instancia es organizacional y parecen de otra área) y **4** de prueba. Se borraron **3** por ser basura clara
 > (`My workflow 20`, con 0 nodos; `My workflow 17`, un `errorTrigger` suelto; `TEST_STATE_2TPL`), con respaldo previo.
-> El respaldo completo de los 31 está en `/tmp/n8n-backup/legado-2026-09-24/` (1,4 MB) — **no viven en el snapshot del
-> repo**, que solo exporta los 30 del proyecto. Estado tras limpiar: **57 flujos** (29 activos + 28 inactivos).
+> Esos 31 **no viven en el snapshot del repo** (que solo exporta los 30 del proyecto) y su respaldo en
+> `/tmp/n8n-backup/legado-2026-09-24/` **se perdió con la limpieza de `/tmp`** — verificado el 28/09: esa ruta ya no
+> existe, así que entre el 24 y el 28/09 n8n fue su única copia. **Resuelto el 28/09**: los **27** flujos que no son del
+> proyecto (22 históricos + 5 ajenos; los 3 de prueba se habían borrado el 24/09) quedaron respaldados en
+> `/home/adrian/ccb-backup/legado-2026-09-28/` (1,3 MB, `MANIFEST.md` + `manifest.json` con sha256) vía
+> `scripts/export_legado.py`. Estado tras limpiar la instancia: **57 flujos** (29 activos + 28 inactivos).
 > Para A2, la estructura **quedó** (28/09) en `12 · 15 · 2 · 28`: 23 del proyecto en `99 · Retirados` (el retirado más
 > las 22 versiones históricas) y además los 5 ajenos que se decidió conservar ahí — detalle y conteo verificado en la
 > [checklist de A2](a2-carpetas-checklist.md).

@@ -115,6 +115,12 @@ nuevo. El prefijo `[SUB]` se retiró de W2A, W3, W4B y W5B, según la decisión 
 
 1. **Respaldo crudo** de los 30 flujos en `/tmp/n8n-backup/renombrado-2026-09-24/` (1,9 MB) con `MANIFEST.json`
    (id, nombre, activo, nodos y sha256 por flujo).
+
+> **Errata (28/09/2026):** los respaldos de esta unidad vivían en `/tmp/n8n-backup/…` y **ya no existen** — `/tmp` se
+> vació entre sesiones. Para los 30 flujos del proyecto no hay pérdida: su copia durable es el snapshot del repo
+> (`workflows/`) más el historial de git. Los que sí estaban sin copia eran los 27 flujos que no son del proyecto
+> (cuyo respaldo `/tmp/n8n-backup/legado-2026-09-24/` también se perdió): se archivaron el 28/09 en
+> `/home/adrian/ccb-backup/legado-2026-09-28/` con `scripts/export_legado.py`.
 2. **Script `scripts/renombrar_workflows.py`** con `--dry-run` (por defecto), `--apply` y `--only <id>`. Solo modifica
    `name` y `parameters.workflowId.cachedResultName`; filtra `settings` (`binaryMode` y `timeSavedMode` son de solo
    lectura) y omite `description` cuando es nula.

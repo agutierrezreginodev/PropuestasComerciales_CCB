@@ -132,6 +132,10 @@ sacarlos, pero **decidirlo contigo**, no borrarlos:
 - **Mover un flujo a una carpeta no cambia su ID ni sus webhooks**, así que las dos páginas (formulario y revisión) y los
   tres endpoints públicos siguen funcionando igual.
 - **Los 5 ajenos no se borran**: ya se limpió lo que era basura clara en su momento (`My workflow 20`, `My workflow 17` y
-  `TEST_STATE_2TPL`, con respaldo en `/tmp/n8n-backup/legado-2026-09-24/`).
-- **Los 22 de historia no tienen copia en el repo** (el snapshot solo exporta los 30 del proyecto). Su única copia es
-  `/tmp/n8n-backup/legado-2026-09-24/`, que es efímera: no los borres sin archivarlos antes en un sitio durable.
+  `TEST_STATE_2TPL`).
+- **Los 27 flujos que no son del proyecto (22 históricos + 5 ajenos) no tienen copia en el repo** (el snapshot solo
+  exporta los 30). Su respaldo anterior, `/tmp/n8n-backup/legado-2026-09-24/`, **se perdió cuando `/tmp` se limpió**
+  (verificado el 28/09: esa ruta ya no existe), así que entre el 24 y el 28/09 n8n era su única copia. **Resuelto el
+  28/09**: `/home/adrian/ccb-backup/legado-2026-09-28/` — 27 flujos, 1,3 MB, con `MANIFEST.md` y `manifest.json`
+  (sha256 por archivo), generado por `scripts/export_legado.py`. Ese respaldo **no se anonimiza** (lleva correos
+  reales): no commitear ni mover al repositorio.
