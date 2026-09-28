@@ -2,7 +2,7 @@
 
 **Para:** Tecnología (Infraestructura y Plataforma)
 **De:** equipo del proyecto CCB — Servicios de Información (Cámara de Comercio de Barranquilla)
-**Fecha:** 24 de septiembre de 2026
+**Fecha:** 24 de septiembre de 2026 · **evidencia actualizada el 28 de septiembre de 2026**
 **Instancia:** `automatizacion.camarabaq.org.co` (n8n autohospedado)
 
 ---
@@ -24,7 +24,9 @@ Ninguno requiere tocar la lógica de los flujos, las credenciales ni los webhook
 - Lo evaluamos contra la rúbrica *Arquitectura e Ingeniería de Automatización en n8n*: hoy está en **89,8/100**. El
   umbral de producción crítica es **90**, y **todo lo que depende de los flujos ya está hecho**: los puntos que
   faltan son de instancia.
-- **La instancia es compartida.** Su propio contador reporta **84 flujos activos**, mientras nuestro proyecto ve 29.
+- **La instancia es compartida.** Su propio contador de métricas reporta **84 flujos activos**, mientras nuestro
+  proyecto ve 29. Los dos números miden cosas distintas y no se contradicen: el contador de la instancia suma todos
+  sus proyectos, y el inventario que vemos por nuestra cuenta de API es el de nuestro alcance (57 flujos, 29 activos).
   Eso significa que dos de los pedidos (P1 y P2) **benefician a toda la instancia**, no solo a este proyecto.
 
 ---
@@ -45,9 +47,10 @@ Ninguno requiere tocar la lógica de los flujos, las credenciales ni los webhook
 binarios en un ciclo regular"*, y que por rendimiento primero **marca** los objetivos y después los elimina. Cada
 ejecución guarda el detalle nodo por nodo: sin poda, eso crece sin techo.
 
-**Dato medido hoy:** el registro de ejecuciones llega hasta el **26 de junio — 89 días de antigüedad**. Con el valor
-por defecto (336 horas = 14 días) no debería quedar nada de más de dos semanas, así que **la poda no está aplicando el
-valor por defecto** en esta instancia.
+**Dato medido, dos veces:** el registro de ejecuciones llega hasta el **26 de junio**. El 24/09 eran **89 días** de
+antigüedad y el **28/09 son 93 días**: creció en lugar de recortarse. Con el valor por defecto (336 horas = 14 días) no
+debería quedar nada de más de dos semanas, así que **la poda no está aplicando el valor por defecto** en esta
+instancia. Son **992 ejecuciones** en total.
 
 **Cómo lo verificamos nosotros:** consultamos por API la ejecución más antigua; debería pasar a ~14 (o 30) días.
 
