@@ -45,7 +45,7 @@ se imprimen ni se escriben en disco.
 
 Red de seguridad:
   * Antes de cualquier `PUT` se descarga cada flujo a
-    `/tmp/n8n-backup/caso-motor-2026-09-24/<id>.json` y se re-verifica leyéndolo
+    `~/ccb-backup/caso-motor-2026-09-24/<id>.json` y se re-verifica leyéndolo
     (16 nodos el principal, 11 el subflujo). Si el respaldo ya existe, se
     conserva: nunca se sobreescribe con el estado posterior.
   * Tras cada `PUT` se relee el flujo y se compara contra el resultado esperado
@@ -81,7 +81,8 @@ from renombrar_workflows import (  # noqa: E402
 )
 
 # Respaldo crudo previo a este script (red de seguridad).
-RESPALDO_DIR = "/tmp/n8n-backup/caso-motor-2026-09-24"
+RESPALDO_BASE = os.environ.get("CCB_BACKUP_DIR", os.path.join(os.path.expanduser("~"), "ccb-backup"))
+RESPALDO_DIR = os.path.join(RESPALDO_BASE, "caso-motor-2026-09-24")
 
 # Flujo principal y subflujo de verificación y limpieza.
 FLUJO_PRINCIPAL = {

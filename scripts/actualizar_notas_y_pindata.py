@@ -5,7 +5,7 @@
    de algun flujo del pipeline CCB. Se sustituye, solo dentro de `parameters.content`,
    cada aparicion literal de un nombre viejo por su nombre nuevo. El mapa viejo->nuevo
    se arma con `RENOMBRES` (de `scripts/renombrar_workflows.py`) y con el respaldo
-   `/tmp/n8n-backup/renombrado-2026-09-24/<id>.json` (campo `name`), que es el estado
+   `~/ccb-backup/renombrado-2026-09-24/<id>.json` (campo `name`), que es el estado
    **anterior** al renombrado.
 
 2. **Un item fijado** (`pinData`) en el flujo `2dY1kaT7I5a0eP2w`
@@ -26,7 +26,7 @@ imprimen ni se escriben en disco.
 
 Red de seguridad:
   * Antes de cualquier `PUT`, se descarga cada flujo a cambiar a
-    `/tmp/n8n-backup/notas-pindata-2026-09-24/<id>.json` (estado posterior al renombrado).
+    `~/ccb-backup/notas-pindata-2026-09-24/<id>.json` (estado posterior al renombrado).
   * Tras cada `PUT`, se relee el flujo y se comprueba (a) que el cambio esperado esta y
     (b) que el resto del flujo no cambio respecto al respaldo. Se ignoran los metadatos
     volatiles que cambian solos (`updatedAt`, `versionCounter`, `versionId`,
@@ -61,11 +61,14 @@ from renombrar_workflows import (  # noqa: E402
 # Tipo de nodo de nota fija.
 TIPO_STICKY = "n8n-nodes-base.stickyNote"
 
+# Base de los respaldos: persistente (nunca /tmp) y sobreescribible por entorno.
+RESPALDO_BASE = os.environ.get("CCB_BACKUP_DIR", os.path.join(os.path.expanduser("~"), "ccb-backup"))
+
 # Respaldo crudo previo al renombrado (estado viejo, para armar el mapa).
-RESPALDO_RENOMBRADO_DIR = "/tmp/n8n-backup/renombrado-2026-09-24"
+RESPALDO_RENOMBRADO_DIR = os.path.join(RESPALDO_BASE, "renombrado-2026-09-24")
 
 # Respaldo crudo posterior al renombrado (red de seguridad de este script).
-RESPALDO_DIR = "/tmp/n8n-backup/notas-pindata-2026-09-24"
+RESPALDO_DIR = os.path.join(RESPALDO_BASE, "notas-pindata-2026-09-24")
 
 # Flujo -> nombre de la nota fija cuyo texto hay que actualizar.
 NOTAS = {

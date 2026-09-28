@@ -45,7 +45,7 @@ se imprimen ni se escriben en disco.
 
 Red de seguridad:
   * Antes de cualquier `PUT` se descarga el flujo a
-    `/tmp/n8n-backup/b5-alerta-2026-09-24/2dY1kaT7I5a0eP2w.json` y se re-verifica
+    `~/ccb-backup/b5-alerta-2026-09-24/2dY1kaT7I5a0eP2w.json` y se re-verifica
     leyendolo (6 nodos). Si el respaldo ya existe se conserva: nunca se
     sobreescribe con el estado posterior.
   * Tras el `PUT` se relee el flujo y se comprueba (a) que `Outlook - Enviar
@@ -78,7 +78,8 @@ from renombrar_workflows import (  # noqa: E402
 )
 
 # Respaldo crudo previo a este script (red de seguridad).
-RESPALDO_DIR = "/tmp/n8n-backup/b5-alerta-2026-09-24"
+RESPALDO_BASE = os.environ.get("CCB_BACKUP_DIR", os.path.join(os.path.expanduser("~"), "ccb-backup"))
+RESPALDO_DIR = os.path.join(RESPALDO_BASE, "b5-alerta-2026-09-24")
 
 # Metadatos volatiles que cambian solos y no se comparan.
 CLAVES_VOLATILES = (

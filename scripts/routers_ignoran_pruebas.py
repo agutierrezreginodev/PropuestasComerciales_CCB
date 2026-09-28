@@ -50,7 +50,7 @@ se imprimen ni se escriben en disco.
 
 Red de seguridad:
   * Antes de cualquier `PUT` se descarga cada flujo a
-    `/tmp/n8n-backup/routers-pruebas-2026-09-24/<id>.json` y se re-verifica
+    `~/ccb-backup/routers-pruebas-2026-09-24/<id>.json` y se re-verifica
     leyéndolo (9 nodos en W4A, 12 en W5A, 11 en W6). Si el respaldo ya existe se
     conserva: nunca se sobreescribe con el estado posterior.
   * Tras cada `PUT` se relee el flujo y se comprueba (a) que el guardián existe,
@@ -83,7 +83,8 @@ from renombrar_workflows import (  # noqa: E402
 )
 
 # Respaldo crudo previo a este script (red de seguridad).
-RESPALDO_DIR = "/tmp/n8n-backup/routers-pruebas-2026-09-24"
+RESPALDO_BASE = os.environ.get("CCB_BACKUP_DIR", os.path.join(os.path.expanduser("~"), "ccb-backup"))
+RESPALDO_DIR = os.path.join(RESPALDO_BASE, "routers-pruebas-2026-09-24")
 
 # Metadatos volátiles que cambian solos y no se comparan.
 CLAVES_VOLATILES = (

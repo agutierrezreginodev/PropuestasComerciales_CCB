@@ -23,7 +23,7 @@ Reglas de la migracion:
   * Los nodos que apuntan a alguno de los 30 flujos pero que NO traen
     `cachedResultName` se dejan intactos: no se agrega el campo.
   * En `--apply`, tras el PUT se vuelve a leer el flujo y se compara contra el
-    respaldo en /tmp/n8n-backup/renombrado-2026-09-24/<id>.json para comprobar
+    respaldo en ~/ccb-backup/renombrado-2026-09-24/<id>.json para comprobar
     que ningun otro campo cambio.
 """
 from __future__ import annotations
@@ -78,7 +78,8 @@ TIPO_EXECUTE_WORKFLOW = "n8n-nodes-base.executeWorkflow"
 SETTINGS_SOLO_LECTURA = ("binaryMode", "timeSavedMode")
 
 # Respaldo crudo de los 30 flujos, hecho por el padre antes de esta migracion.
-RESPALDO_DIR = "/tmp/n8n-backup/renombrado-2026-09-24"
+RESPALDO_BASE = os.environ.get("CCB_BACKUP_DIR", os.path.join(os.path.expanduser("~"), "ccb-backup"))
+RESPALDO_DIR = os.path.join(RESPALDO_BASE, "renombrado-2026-09-24")
 
 
 def fetch(base: str, key: str, workflow_id: str) -> dict:

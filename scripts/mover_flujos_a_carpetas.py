@@ -128,7 +128,8 @@ CARPETA_PADRE_SUBCARPETAS = "02 · Subflujos CCB"
 SETTINGS_SOLO_LECTURA = ("binaryMode", "timeSavedMode")
 
 # Respaldo crudo por flujo antes de cada PUT (mismo criterio que el renombrado).
-RESPALDO_DIR = f"/tmp/n8n-backup/carpetas-{datetime.date.today().isoformat()}"
+RESPALDO_BASE = os.environ.get("CCB_BACKUP_DIR", os.path.join(os.path.expanduser("~"), "ccb-backup"))
+RESPALDO_DIR = os.path.join(RESPALDO_BASE, f"carpetas-{datetime.date.today().isoformat()}")
 
 
 def validar_tabla() -> list[str]:
