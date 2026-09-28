@@ -12,6 +12,15 @@ No hay afirmaciones tomadas de memoria.
 
 ---
 
+> **Nota de errata (28/09/2026)**
+>
+> - **Puntaje:** el **87,7 / 100** es la medición de la mañana del 23/09; el vigente es **89,8 / 100** (re-medido el 24/09
+>   tras el arreglo de la credencial del monitor), a **0,2** del umbral de 90.
+> - **Mover los 17 flujos nuevos a la carpeta** (`403` por scopes y/o registro, o arrastre en la UI): **A2 se cerró a mano**
+>   el 28/09 (12 + 15 + 2 + 28 = **57** flujos en carpetas); registrar la instancia **no** habilitó la API, que sigue en `403`.
+> - **Fila basura `id 21`** de `Cotizaciones_CCB`: **borrada el 24/09 y verificada el 25/09** (2 filas, 0 sin `id_solicitud`).
+> - Estado vigente: [PLAN_TRABAJO_FRAMEWORK.md](PLAN_TRABAJO_FRAMEWORK.md) y [plan de pendientes del 24/09](../odd/tasks/plan-pendientes-2026-09-24.md).
+
 ## 1. El recorrido del demo, paso a paso, hoy
 
 | # | Paso del demo | Estado | Qué cambió |

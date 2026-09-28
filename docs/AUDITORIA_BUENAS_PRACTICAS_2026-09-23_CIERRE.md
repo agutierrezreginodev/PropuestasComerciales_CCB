@@ -13,6 +13,14 @@ escala que los informes del 16/09, del 22/09 y de la mañana del 23/09, para que
 
 ---
 
+> **Nota de errata (28/09/2026)**
+>
+> - El **89,5 / 100** es el número propio de este cierre del 23/09 y se conserva como tal: el 0,5 era la distancia al
+>   umbral de 90 en esa fecha.
+> - La medición posterior del **24/09 es 89,8 / 100** (tras el arreglo de la credencial del monitor), así que la distancia
+>   actual al umbral es **0,2**.
+> - Estado vigente: [PLAN_TRABAJO_FRAMEWORK.md](PLAN_TRABAJO_FRAMEWORK.md) y [plan de pendientes del 24/09](../odd/tasks/plan-pendientes-2026-09-24.md).
+
 ## 1. Qué se movió y por qué
 
 | Dimensión | Mañana | Cierre | Qué la movió |

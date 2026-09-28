@@ -8,6 +8,13 @@
 
 ---
 
+> **Nota de errata (28/09/2026)**
+>
+> - **«16 commits pendientes, SIN PUSH»:** el repositorio **se publicó el 28/09/2026**: `main` y `origin/main` quedaron en
+>   `e560b1a` con un push fast-forward de 6 commits.
+> - **Regla de push** (no pushear sin pedido explícito, por SSH): la regla **sigue vigente**; solo cambia que ya ocurrió el 28/09.
+> - Estado vigente: [PLAN_TRABAJO_FRAMEWORK.md](PLAN_TRABAJO_FRAMEWORK.md) y [plan de pendientes del 24/09](../odd/tasks/plan-pendientes-2026-09-24.md).
+
 ## 1. Resultado de la re-auditoría (16/09 → 22/09)
 
 ### 1.1 Puntajes por flujo

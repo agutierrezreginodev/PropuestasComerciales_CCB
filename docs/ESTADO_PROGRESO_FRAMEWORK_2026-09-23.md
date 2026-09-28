@@ -9,6 +9,15 @@
 
 ---
 
+> **Nota de errata (28/09/2026)**
+>
+> - **«Promedio 89,5/100»:** es la medición del 23/09; la vigente es **89,8 / 100** (24/09, tras el arreglo de la credencial
+>   del monitor), a **0,2** del umbral de 90.
+> - **«Mover 14 flujos a la carpeta»** (`403` por scopes y/o registro, o arrastre en la UI): **A2 se cerró a mano** el 28/09
+>   (12 + 15 + 2 + 28 = **57** flujos en carpetas); registrar la instancia **no** habilitó la API, que sigue en `403`.
+> - **«Push a GitHub: 52 commits locales sin publicar»:** publicados el **28/09/2026** (`main` y `origin/main` en `e560b1a`).
+> - Estado vigente: [PLAN_TRABAJO_FRAMEWORK.md](PLAN_TRABAJO_FRAMEWORK.md) y [plan de pendientes del 24/09](../odd/tasks/plan-pendientes-2026-09-24.md).
+
 ## 1. Fases cerradas el 23/09
 
 | Fase | Estado | Qué se hizo |
