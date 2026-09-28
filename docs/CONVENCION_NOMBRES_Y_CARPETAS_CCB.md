@@ -98,9 +98,9 @@ por clave (`[SUB] CCB · Envío — …`, `[SUB] CCB · W4D — …`), y las eta
 |---|---|
 | Anidamiento | **Sí**: n8n soporta carpetas ilimitadas y anidadas |
 | Requisito | Instancia **registrada** (Community registrada o plan pago). En esta instancia las carpetas ya funcionan (los 12 flujos originales están en una). **Ojo: que las carpetas funcionen no significa que la instancia esté registrada** — el 25/09 el API de carpetas respondió `Forbidden` con ese motivo exacto. Lo que funciona sin registro es *crear* carpetas y arrastrar flujos **en la UI**; lo que exige registro es hacerlo **por API**. |
-| **Mover flujos por API** | **Hoy no se puede *en esta instancia*, pero sí en general.** El API público clásico (`POST`/`PUT /api/v1/workflows`) rechaza `parentFolderId`. El movimiento moderno **sí existe** por otras dos vías: la operación `moveToFolder` de `n8n_update_partial_workflow` y la acción `move` (`transferToFolderId`) de `n8n_manage_folders`. Ambas exigen **API key con scopes `folder:*`** *y* **instancia registrada**. Verificado el **25/09**: responden `Forbidden — folders unlock on the registered free Community tier (Settings → Usage and plan → register)`. **Con A6 (registrar la instancia) hecho, A2 deja de ser un arrastre manual y se puede scriptear.** |
+| **Mover flujos por API** | **Hoy no se puede *en esta instancia*, pero sí en general.** Mover un **flujo** a una carpeta se hace con `parentFolderId` (n8n **2.32+**): es lo que usan `parentFolderId` de `n8n_create_workflow` y la operación `moveToFolder` de `n8n_update_partial_workflow`, y por debajo es un `PUT /api/v1/workflows/{id}` con ese campo. **`n8n_manage_folders` no mueve flujos**: administra carpetas (crear, listar, renombrar, mover *carpeta*, borrar). Todo esto exige **API key con scopes `folder:*`** *y* **instancia registrada**. Verificado el **25/09**: `GET /projects/{id}/folders` → `403 Forbidden` y `GET /projects` → `403 — Your license does not allow for feat:projectRole:admin`. **Con A6 (registrar la instancia) hecho, A2 deja de ser un arrastre manual y se puede scriptear** — ver `scripts/mover_flujos_a_carpetas.py`. |
 | API de carpetas | Existe (`/projects/{id}/folders`), pero exige una API key con scopes `folder:*` **y** licencia: por eso hoy responde 403. Sirve para *crear* carpetas por script, no para mover flujos |
-| Verificación por API | No se puede: `GET /workflows` no devuelve la carpeta del flujo. La verificación es visual en la UI |
+| Verificación por API | **No se puede.** La carpeta de un flujo es **write-only**: la API la acepta al escribir pero **no la devuelve al leer** (`GET /workflows/{id}` no la expone y el listado no filtra por carpeta). Además, un movimiento de carpeta **no se puede revertir ni descartar por API**. La verificación es **visual en la UI**: 12 · 15 · 2 · 1 |
 
 ### La estructura propuesta
 
@@ -138,6 +138,13 @@ porque los prefijos `[SUB]` y `[OPS]` ya ordenan la lista dentro de cada una.
 2. **Arrastrar** cada flujo sobre su carpeta (o usar el menú de la tarjeta del flujo, si la versión lo ofrece).
 3. Verificar de un vistazo que cada carpeta tenga la cantidad esperada: **12 · 15 · 2 · 1**.
 4. Si se quieren las subcarpetas de `02`, crearlas dentro y repetir el arrastre (el anidamiento está soportado).
+
+> **Alternativa por script.** `scripts/mover_flujos_a_carpetas.py` hace lo mismo por API —crea las carpetas y mueve los
+> 30 flujos— con exactamente la misma tabla que la checklist de abajo (y sus subcarpetas opcionales). Requiere la
+> instancia **registrada** (A6) y una API key con scopes `folder:*`. Verificado el 25/09: su sonda de acceso informa
+> `403` y no ejecuta nada, pero su `--dry-run` **sí valida el plan completo contra la instancia** (0 ausentes, 0 con
+> nombre distinto, 27 flujos ajenos que no se tocan). Correr sin argumentos para la sonda, `--solo-plan` para la tabla
+> offline y `--dry-run` para la validación.
 
 ### Checklist de arrastre — los 30 flujos, uno por uno
 
