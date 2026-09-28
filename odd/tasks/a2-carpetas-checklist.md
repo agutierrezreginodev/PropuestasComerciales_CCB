@@ -1,5 +1,18 @@
 # A2 — Checklist para mover los flujos a carpetas (UI de n8n)
 
+> ## ✅ CERRADO — 28/09/2026
+> Todos los flujos están en sus carpetas. **Conteo real verificado en la UI: `01` 12 · `02` 15 · `03` 2 · `99` 28**
+> (el 25/09 `99` mostraba 15: faltaban 8 históricos y los 5 ajenos).
+>
+> - **El 24/09** se movieron 44 flujos (30 del proyecto + 14 históricos). Los **8 que faltaban estaban archivados** y por
+>   eso no aparecían al arrastrar: revisar la vista *Archived* antes de dar un arrastre por completo.
+> - **El 28/09 13:41** se movieron los 13 que quedaban: los 8 históricos más los 5 ajenos.
+> - **Decisión del 28/09:** los 5 flujos de otra área se conservan **dentro de `99 · Retirados`**, así que esa carpeta
+>   queda en **28** (23 del proyecto + 5 ajenos) y no en 23. Consecuencia asumida: el inventario completo de la
+>   instancia (12 + 15 + 2 + 28 = **57**) queda bajo la carpeta del proyecto.
+> - Las casillas de abajo quedan **sin tildar a propósito**: esta lista es el mapa flujo → carpeta, no un registro de
+>   ejecución.
+
 **Para qué sirve.** Lista exacta, leída de la instancia viva el 24/09, de qué flujo va en qué carpeta. La estructura y
 el porqué están en [CONVENCION_NOMBRES_Y_CARPETAS_CCB.md](../../docs/CONVENCION_NOMBRES_Y_CARPETAS_CCB.md) §3; esto es
 la versión operativa para arrastrar.
@@ -9,7 +22,8 @@ en `/api/v1/projects/<proyecto>/folders`. La operación `moveToFolder` existe (n
 una clave con esos scopes, esto se puede automatizar** — hoy no.
 
 **Verificación:** el API de n8n **no puede informar en qué carpeta está un flujo** (solo cuenta contenidos). La
-comprobación es visual: cada carpeta debe mostrar **12 · 15 · 2 · 23**. La lista de abajo sirve para ir tachando.
+comprobación es visual: cada carpeta debe mostrar **12 · 15 · 2 · 28** (con los 5 ajenos dentro de `99 · Retirados`).
+La lista de abajo sirve para ir tachando.
 
 ---
 
@@ -73,8 +87,8 @@ El retirado del proyecto y las 22 versiones anteriores del pipeline (historia; s
 - [ ] CCB - Criterios y Precio
 - [ ] CCB - Error Handler (Propuestas v3)
 - [ ] CCB - Error Workflow (Catch-all Alertas Técnicas)
-- [ ] CCB - Fase 1 - Trigger y Validacion Email *(hay dos con el mismo nombre)*
-- [ ] CCB - Fase 1 - Trigger y Validacion Email *(el otro)*
+- [ ] CCB - Fase 1 - Trigger y Validacion Email *(copia de 27 nodos)* · id `ektDPgkxk6TzyiuN`
+- [ ] CCB - Fase 1 - Trigger y Validacion Email *(copia de 19 nodos)* · id `I3CPjETbgjoIoD9c`
 - [ ] CCB - Fase 2
 - [ ] CCB - Fase 2 - Generacion Propuesta
 - [ ] CCB - Fase 2 - Generacion Propuesta Prueba
@@ -85,8 +99,9 @@ El retirado del proyecto y las 22 versiones anteriores del pipeline (historia; s
 - [ ] CCB - Workflow 1 - Extracción información del cliente copy
 - [ ] CCB Propuestas - Generación y Revisión
 - [ ] CCB Propuestas v3 (PDF) - Email Intake
-- [ ] CCB_PropuestasComerciales
-- [ ] CCB_PropuestasComerciales *(el otro)*
+- [ ] CCB_PropuestasComerciales *(copia de 71 nodos)* · id `op8kdJREsljR0jNv`
+- [ ] CCB_PropuestasComerciales *(copia de 70 nodos)* · id `iVNgsGVbfEG4HWla` *(esta fue la que quedó sin mover el
+  24/09 y se movió el 28/09)*
 - [ ] CCB_Propuestas_v2
 - [ ] CCB_Propuestas_v2_Bootstrap_W1
 - [ ] CCB_Propuestas_v2_Bootstrap_W2

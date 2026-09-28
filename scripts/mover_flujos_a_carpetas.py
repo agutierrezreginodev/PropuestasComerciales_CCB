@@ -458,7 +458,7 @@ def main() -> int:
         print(f"  AVISO: no se pudo releer la lista de carpetas (HTTP {status}).")
     print()
     print("Los movimientos se enviaron; n8n no permite comprobarlos por API.")
-    print("Confirmar en la UI que cada carpeta tenga: 12 · 15 · 2 · 1")
+    print("Confirmar en la UI que cada carpeta tenga: 12 · 15 · 2 · 1 (los 30 del proyecto)")
     if args.subcarpetas:
         print("  (y, con --subcarpetas, 5 · 3 · 5 · 2 dentro de 02 · Subflujos CCB)")
 

@@ -100,7 +100,7 @@ por clave (`[SUB] CCB · Envío — …`, `[SUB] CCB · W4D — …`), y las eta
 | Requisito | Instancia **registrada** (Community registrada o plan pago). En esta instancia las carpetas ya funcionan (los 12 flujos originales están en una). **Ojo: que las carpetas funcionen no significa que la instancia esté registrada** — el 25/09 el API de carpetas respondió `Forbidden` con ese motivo exacto. Lo que funciona sin registro es *crear* carpetas y arrastrar flujos **en la UI**; lo que exige registro es hacerlo **por API**. |
 | **Mover flujos por API** | **Hoy no se puede *en esta instancia*, pero sí en general.** Mover un **flujo** a una carpeta se hace con `parentFolderId` (n8n **2.32+**): es lo que usan `parentFolderId` de `n8n_create_workflow` y la operación `moveToFolder` de `n8n_update_partial_workflow`, y por debajo es un `PUT /api/v1/workflows/{id}` con ese campo. **`n8n_manage_folders` no mueve flujos**: administra carpetas (crear, listar, renombrar, mover *carpeta*, borrar). Todo esto exige **API key con scopes `folder:*`** *y* **instancia registrada**. Verificado el **25/09**: `GET /projects/{id}/folders` → `403 Forbidden` y `GET /projects` → `403 — Your license does not allow for feat:projectRole:admin`. **Con A6 (registrar la instancia) hecho, A2 deja de ser un arrastre manual y se puede scriptear** — ver `scripts/mover_flujos_a_carpetas.py`. |
 | API de carpetas | Existe (`/projects/{id}/folders`), pero exige una API key con scopes `folder:*` **y** licencia: por eso hoy responde 403. Sirve para *crear* carpetas por script, no para mover flujos |
-| Verificación por API | **No se puede.** La carpeta de un flujo es **write-only**: la API la acepta al escribir pero **no la devuelve al leer** (`GET /workflows/{id}` no la expone y el listado no filtra por carpeta). Además, un movimiento de carpeta **no se puede revertir ni descartar por API**. La verificación es **visual en la UI**: 12 · 15 · 2 · 1 |
+| Verificación por API | **No se puede.** La carpeta de un flujo es **write-only**: la API la acepta al escribir pero **no la devuelve al leer** (`GET /workflows/{id}` no la expone y el listado no filtra por carpeta). Además, un movimiento de carpeta **no se puede revertir ni descartar por API**. La verificación es **visual en la UI**: **12 · 15 · 2 · 28** (estado del 28/09/2026) |
 
 ### La estructura propuesta
 
@@ -121,7 +121,7 @@ por clave (`[SUB] CCB · Envío — …`, `[SUB] CCB · W4D — …`), y las eta
 ├── 📁 03 · Operativos CCB                        ← 2 flujos
 │     Monitoreo · Regresión
 │
-└── 📁 99 · Retirados                             ← 1 flujo
+└── 📁 99 · Retirados                             ← 28 (23 + 5 ajenos)
       [RETIRADO] CCB · W2B — Formulario antiguo
 ```
 
@@ -136,8 +136,19 @@ porque los prefijos `[SUB]` y `[OPS]` ya ordenan la lista dentro de cada una.
 
 1. En el proyecto, botón de **crear carpeta** → `01 · Pipeline CCB`. Repetir para `02 · Subflujos CCB`, `03 · Operativos CCB` y `99 · Retirados`.
 2. **Arrastrar** cada flujo sobre su carpeta (o usar el menú de la tarjeta del flujo, si la versión lo ofrece).
-3. Verificar de un vistazo que cada carpeta tenga la cantidad esperada: **12 · 15 · 2 · 1**.
+3. Verificar de un vistazo que cada carpeta tenga la cantidad esperada: **12 · 15 · 2 · 28** (conteo real del
+   28/09/2026; el detalle de por qué no es 23 está en el recuadro *Estado* de abajo).
 4. Si se quieren las subcarpetas de `02`, crearlas dentro y repetir el arrastre (el anidamiento está soportado).
+
+> ### Estado (28/09/2026): ✅ hecho
+> `01 · Pipeline CCB` 12 · `02 · Subflujos CCB` 15 · `03 · Operativos CCB` 2 · `99 · Retirados` **28** = **57** flujos.
+> La carpeta `99` tiene **23 flujos del proyecto** (el retirado más las 22 versiones históricas) **más los 5 flujos de
+> otra área**, que se decidió conservar ahí en lugar de sacarlos del proyecto.
+>
+> **Ojo con los archivados:** un flujo archivado **no aparece en la vista normal de carpetas**, así que un arrastre
+> puede dejarlo atrás sin que se note — pasó el 24/09 con 8 históricos, que quedaron sueltos hasta el 28/09. Conviene
+> revisar la vista *Archived* antes de dar un arrastre por completo; el campo `isArchived` de `GET /api/v1/workflows`
+> permite detectarlos por API.
 
 > **Alternativa por script.** `scripts/mover_flujos_a_carpetas.py` hace lo mismo por API —crea las carpetas y mueve los
 > 30 flujos— con exactamente la misma tabla que la checklist de abajo (y sus subcarpetas opcionales). Requiere la
@@ -148,7 +159,9 @@ porque los prefijos `[SUB]` y `[OPS]` ya ordenan la lista dentro de cada una.
 
 ### Checklist de arrastre — los 30 flujos, uno por uno
 
-Lista literal para no tener que decidir nada en la UI. Total: **12 · 15 · 2 · 1 = 30**.
+Lista literal para no tener que decidir nada en la UI. Total del proyecto: **12 · 15 · 2 · 23 = 52** (los 30 flujos de
+la versión actual más las 22 versiones históricas de `99 · Retirados`). Con los 5 flujos ajenos que se conservan ahí:
+**12 · 15 · 2 · 28 = 57**, el inventario completo de la instancia.
 
 **📁 01 · Pipeline CCB — 12**
 
