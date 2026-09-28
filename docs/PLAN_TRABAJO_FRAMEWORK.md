@@ -115,7 +115,7 @@ Este documento es el **tablero de ejecución**: tareas atómicas, con el nodo ex
 >
 > **F2-01 cerrado: 11 de 11 flujos activos con gatekeeping real de entrada; W2B queda fuera de alcance** (retirado, ver F0 y F2-05). De los 12 flujos que trackea este plan, 11 quedan cubiertos y 1 es N/A — mismo criterio de cierre "efectivo" ya usado para dar por cerrada la Fase 0.
 >
-> **Nota — cierre formal de Fase 2 pendiente de re-auditoría:** las 7 tareas de Fase 2 están todas hechas o N/A, pero la "Definición de hecho" de este documento exige además re-ejecutar el procedimiento de evaluación del informe de auditoría y anotar el puntaje nuevo en la tabla de "Seguimiento por flujo" — eso **no se hizo** en esta sesión. La tabla de seguimiento sigue mostrando los puntajes de línea de base (53,6 de promedio) sin actualizar, igual que quedó pendiente tras cerrar Fase 0 y Fase 1: ninguna de las tres fases cerradas hasta ahora tiene su puntaje re-evaluado. Cerrar Fase 2 "en los papeles" del todo requiere esa re-auditoría, que no es parte de esta tarea.
+> **Nota — cierre formal de Fase 2 (resuelto el 28/09/2026):** las 7 tareas de Fase 2 están todas hechas o N/A, pero la "Definición de hecho" de este documento exige además re-ejecutar el procedimiento de evaluación del informe de auditoría y anotar el puntaje nuevo en la tabla de "Seguimiento por flujo" — eso **no se hizo** en esta sesión. La tabla de seguimiento mostraba los puntajes de línea de base (53,6 de promedio) sin actualizar, igual que quedó pendiente tras cerrar Fase 0 y Fase 1. **Resuelto el 28/09/2026:** la tabla ya está actualizada con la re-auditoría de cierre (promedio 89,8), así que esta observación queda solo como registro histórico.
 
 ---
 
@@ -352,7 +352,7 @@ Estado de las cuatro métricas del framework:
 
 ## Seguimiento por flujo
 
-Se actualiza al cerrar cada fase, repitiendo el procedimiento de evaluación del informe. El detalle está en [`AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md`](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md) y su [cierre del mismo día](AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md): **promedio 89,5/100** (87,7 a la mañana), con **siete flujos en 90 o más** y a **0,5 puntos del umbral**.
+Se actualiza al cerrar cada fase, repitiendo el procedimiento de evaluación del informe. El detalle está en [`AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md`](AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md) y su [cierre del mismo día](AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md): **promedio 89,8/100** (87,7 a la mañana; remedido el 24/09), con **siete flujos en 90 o más** y a **0,2 puntos del umbral**.
 
 | Flujo | 16/09 | 22/09 | **23/09** | Objetivo | Fases |
 |---|---|---|---|---|
@@ -368,7 +368,7 @@ Se actualiza al cerrar cada fase, repitiendo el procedimiento de evaluación del
 | W5A — Router de envío | 60 | 72 | **91** | ≥90 | 1, 2, 3, 5, 6 |
 | W5B — Envío al cliente | 52 | 59 | **91** | ≥90 | 0, 1, 2, 3, 4, 5, 6 |
 | W6 — Finalizador de cotizaciones | 58 | 58 | ≥90 | 0, 1, 2, 3, 5 |
-| **Promedio** | **53,6** | **53,6** | **≥90** | |
+| **Promedio** | **53,6** | **67,3** | **89,8** | **≥90** | |
 
 ---
 

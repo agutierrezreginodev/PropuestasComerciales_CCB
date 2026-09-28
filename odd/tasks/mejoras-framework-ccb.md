@@ -18,7 +18,7 @@ y el estado global en [`docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-22.md`](../../doc
 | F3-02 (backoff exponencial real en W3) | **Diferido definitivamente.** n8n no soporta backoff nativo; reestructurar el camino crítico del motor (PDF sobre túnel ngrok) tiene relación riesgo/beneficio mala. Se cierra como desviación por límite de plataforma, con máximo nativo 5×5000 aplicado. |
 | F4-04 (consolidación de criterios duplicada) | **N/A.** Apunta a W2B, retirado y fuera de alcance desde 17/09. |
 | F7-03 (mover la aprobación humana antes del recálculo) | **Se implementa.** Cambia el comportamiento de negocio: ninguna ronda se consume sin autorización humana. |
-| Push a GitHub | No sin pedido explícito. Todo queda en commits locales. |
+| Push a GitHub | No sin pedido explícito. El repositorio se publicó el 28/09/2026 (`e560b1a`), pero la regla sigue: solo se empuja ante un pedido explícito. |
 | Regla de oro | Ningún cambio se da por bueno sin ejecución real. Al cerrar cada unidad se anota qué quedó verificado y qué no. |
 
 ## Unidades de trabajo

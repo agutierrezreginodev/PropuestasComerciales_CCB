@@ -57,7 +57,7 @@ Verificados contra la instancia viva por API de solo lectura.
 |---|---|---|---|
 | 1 | El texto dice "cinco flujos en 90 o más" y cita W5B en 91 | **Siete** (W3 90, W4A 91, W4B 90, W4D 94, W5A 91, W5B **92**, W6 91) | `docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md` §2 |
 | 2 | Claves de `Configuracion_CCB`: 10 y 7 según el doc | **12** (confirmado en la tabla `8ChPkhKrjag6Jkcs`) | `docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md:43`, `docs/PLAN_TRABAJO_FRAMEWORK.md:232` |
-| 3 | Commits locales sin push: 25 y 48 | **50** | `docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md:89`, `odd/tasks/plan-pendientes-2026-09-24.md:4` |
+| 3 | Commits locales sin push: 25 y 48 (histórico: **el repositorio se publicó el 28/09/2026**) | **50** | `docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md:89`, `odd/tasks/plan-pendientes-2026-09-24.md:4` |
 | 4 | "Testing (11,7 → 12,8)" contra la tabla, que dice 12,9 | **12,9** | `docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md` §1 |
 | 5 | "El flujo más grande tiene 19 nodos" sin declarar que excluye sticky notes | 19 sin sticky; **20** con sticky en W1, W2A, W4D y W5B (siguen cumpliendo ≤20) | Informe HTML y re-auditoría de cierre |
 | 6 | El informe se presenta como "generado desde la instancia viva" | El **inventario** es vivo; los **nombres** son la convención objetivo y la **evaluación está hardcodeada** en `scripts/generar_informe_html.py` | `docs/informe-pipeline-ccb.html`, `scripts/generar_informe_html.py` |
@@ -181,7 +181,7 @@ falsos positivos documentados en B4) y la regresión pasa `5/5` con tráfico rea
 **Cómo:** `scripts/actualizar_notas_y_pindata.py` con `--dry-run` (por defecto) y `--apply`. Construye el mapa
 viejo→nuevo desde `RENOMBRES` y el respaldo pre-renombrado, sustituye **solo** dentro de `parameters.content` de los
 nodos `stickyNote` del `nodes` de nivel superior (ordenando de más largo a más corto) y envía `pinData: {}` únicamente
-en el flujo del error. Respaldo previo del estado post-renombrado en `/tmp/n8n-backup/notas-pindata-2026-09-24/`.
+en el flujo del error. Respaldo previo del estado post-renombrado en `/tmp/n8n-backup/notas-pindata-2026-09-24/` (ruta ya inexistente: ver la **errata del 28/09** más arriba sobre `/tmp` y `CCB_BACKUP_DIR`).
 
 **Verificación:**
 
@@ -203,7 +203,7 @@ vivos. Los nombres viejos que quedan están donde deben: la tabla "Nombre actual
 el registro de la migración), la ficha histórica de la feature anterior y los documentos de auditoría fechados.
 
 **Los 8 desfases, corregidos:** `Configuracion_CCB` 10→**12** claves (ESTADO) y 7→**12** (PLAN); commits locales
-25→**52** (ESTADO) y 48→**52** (plan del día); el conteo de nodos declara que **excluye las notas fijas** (19 sin notas /
+25→**52** (ESTADO) y 48→**52** (plan del día) — **publicados el 28/09/2026**; el conteo de nodos declara que **excluye las notas fijas** (19 sin notas /
 20 con notas, criterio ≤20); la fila de *Limpieza (sin Pin Data)* queda marcada como reverificada el 24/09; y los 4
 errores del validador del subflujo de PDF quedan declarados como falsos positivos documentados. En los dos documentos de
 auditoría **fechados** se añadieron **notas de errata** (Testing 12,9; siete flujos ≥90 con W5B en 92) sin reescribir el
@@ -257,7 +257,7 @@ incluido el truco de sufijo `alguien@example.com.evil.io`. El export vuelve a sa
 
 ### Pendientes que esta unidad deja abiertos (requieren decisión)
 
-1. **Legado de la instancia:** hay **31 flujos inactivos** ajenos al proyecto (`CCB_Propuestas_v2*`, `CCB - Fase 1/2*`,
+1. **Legado de la instancia:** hay **28 flujos inactivos** en la instancia (27 ajenos al proyecto más el `W2B` retirado) (`CCB_Propuestas_v2*`, `CCB - Fase 1/2*`,
    duplicados `copy`, `My workflow 17/19/20`, `TEST_STATE_2TPL`, etc.). El informe cuenta solo los 30 del proyecto. Es
    lo que hay que resolver antes de ordenar carpetas (A2).
-2. **Push:** 53 commits locales sin publicar.
+2. **Push:** los **53** commits locales quedaron **publicados el 28/09/2026**.

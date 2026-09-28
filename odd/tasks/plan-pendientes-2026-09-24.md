@@ -1,7 +1,7 @@
 # Plan de trabajo — pendientes para el 2026-09-24
 
-**Punto de partida:** pipeline en **89,5/100** ([re-auditoría de cierre](../../docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md)),
-Fases 0–7 del plan de remediación cerradas, **32 commits locales pendientes de publicar** (divergencia por reescritura de historia — ver A5), 29 flujos activos.
+**Punto de partida:** pipeline en **89,8/100** ([re-auditoría de cierre](../../docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md)),
+Fases 0–7 del plan de remediación cerradas, **repositorio publicado** (`origin/main` = `e560b1a` al 25/09 — ver A5), 29 flujos activos.
 **Objetivo del día:** cruzar el **umbral de 90** y dejar el proyecto ordenado para la entrega (nombres, carpetas y push).
 
 ---
@@ -15,7 +15,7 @@ Fases 0–7 del plan de remediación cerradas, **32 commits locales pendientes d
 | A3 | ✅ **Rechazo de la tarjeta de aprobación en Teams** — **hecho 24/09**: la tarjeta se rechazó y la propuesta quedó en `REVISION_MANUAL` con motivo `aprobacion_rechazada` **sin consumir ronda** | — | La última rama sin verificar de la corrección con IA (ejecuciones `429585` y `429598`) | **+0,1 Testing** |
 | A4 | ✅ **Fila basura borrada y VERIFICADA** — **hecho 24/09** por el usuario; **verificado el 25/09** leyendo la tabla viva: `Cotizaciones_CCB` quedó con **2 filas**, **0 sin `id_solicitud`** y **0 casi vacías** (la fila `id 21` ya no está). En la misma lectura aparecieron **6 filas de prueba sin limpiar**, borradas el 25/09 (ver abajo) | — | R6 cerrada de verdad | Higiene de datos |
 | A5 | ✅ **Historia reescrita publicada** — **ejecutado por el usuario el 25/09 y verificado contra el servidor**. `origin/main` pasó de `59086a2` a **`1aa8a20`**; higiene local ejecutada (`refs/original` borrada, reflog expirado, `gc --prune=now`: 983 objetos sueltos → 0, `.git` 16 MB → 2,7 MB) | 1 comando | Entrega | — |
-| A6 | *(Opcional)* **Registrar la instancia** (Settings → Usage and plan) — **ya no es prerrequisito de A2** (A2 se cerró a mano en la UI el 28/09). Solo habilita gestionar carpetas por API (ver `scripts/mover_flujos_a_carpetas.py`) y **es la instancia del cliente**, así que se consulta con Tecnología. **Verificado el 25/09**: el API de carpetas responde `Forbidden — folders unlock on the registered free Community tier (Settings → Usage and plan → register)` | 5 min | Automatización futura de carpetas | — |
+| A6 | **Registrar la instancia** (Settings → Usage and plan) — **se hizo el 28/09** (n8n muestra *"You have registered your email to unlock additional features on your community plan"*). **No desbloqueó nada:** verificado el 28/09, `GET /api/v1/projects` sigue devolviendo `403 feat:projectRole:admin` (función **paga**, no del tier gratuito registrado) y `GET /api/v1/projects/{id}/folders` un `403` genérico. A2 se cerró **a mano en la UI** el 28/09, no por el registro. Gestionar carpetas por API exige además una API key con scopes `folder:*` (ver `scripts/mover_flujos_a_carpetas.py`) | 5 min | Automatización futura de carpetas (sigue sin ser posible) | — |
 
 > **A3 cerrada (24/09).** La rama de rechazo se verificó **sin clic manual**: fila descartable `SOL-PRUEBA-A3` y decisión
 > disparada por HTTP contra `decidir-propuesta`. Ejecución `429585` → la cruda de Teams `{"data": {"approved": false}}` →
@@ -150,13 +150,13 @@ un correo real (`59086a2` → `59a69ac`) y quedó **sin publicar**; encima se ag
 > - **C1 (la edad del registro de ejecuciones) no se pudo remedir hoy** con las herramientas disponibles: la auditoría de
 >   instancia del MCP devolvió `403 Forbidden` en el audit nativo y su escaneo propio expiró por red, y el resultado fue
 >   un **`0 findings` engañoso con `0 workflows scanned`** — no es un "auditoría limpia", es una auditoría que no corrió.
->   El valor del 24/09 (registro hasta el **26 de junio**, ~89 días) sigue siendo la referencia.
+>   **Remedido el 28/09:** el registro de ejecuciones más antiguo es del **26/06/2026**, es decir **93 días** (el 24/09 eran ~89), con **992 ejecuciones** en total.
 
 | # | Tarea | Por qué | Impacto |
 |---|---|---|---|
 | C1 | **Poda de ejecuciones a nivel de instancia** (`EXECUTIONS_DATA_PRUNE` / `MAX_AGE`) | La retención **por flujo** ya está aplicada (W4A, W5A, W6 y el monitor no guardan las ejecuciones exitosas), pero la poda global es de instancia | **+0,3 Observabilidad** |
 | C2 | **Cerrar o restringir `/metrics`** | Hoy está expuesto sin autenticación | **+0,2 Seguridad** |
-| C3 | *(Opcional)* **API key con scopes `folder:*`** | Solo si se quiere gestionar carpetas por script: mover un flujo a una carpeta **sí** es posible (`parentFolderId`, n8n 2.32+), pero exige la instancia registrada (A6) | — |
+| C3 | *(Opcional)* **API key con scopes `folder:*`** | Solo si se quiere gestionar carpetas por script: mover un flujo a una carpeta **sí** es posible (`parentFolderId`, n8n 2.32+), pero exige una API key con scopes `folder:*` **y** una licencia/instancia que habilite carpetas por API; **el registro del 28/09 no lo habilitó** (ambos endpoints siguen en `403`) | — |
 
 ---
 
@@ -193,7 +193,7 @@ Tecnología. Con C1 se cruza (90,1) y C2 lo consolida (90,3).
 | A5 | Publicar la historia reescrita + higiene local | — | ✅ **cerrado el 25/09** (ver arriba) |
 | A4 | **Verificar de verdad** el borrado de la fila `id 21` de `Cotizaciones_CCB` | yo | ✅ **cerrado el 25/09** — tabla leída, 0 filas sin `id_solicitud`; y de paso se limpiaron 6 filas de prueba (ver arriba) |
 | A2 | Mover los flujos a las carpetas | tú | ✅ **cerrado el 28/09** — 12 · 15 · 2 · 28 = 57; los 8 que faltaban estaban archivados |
-| A6 | *(Opcional)* Registrar la instancia — habilita gestionar carpetas por API | tú | ☐ ya no es prerrequisito de A2; se consulta con Tecnología |
+| A6 | **Registrar la instancia** — **hecho el 28/09**, pero **no habilita gestionar carpetas por API**: ambos endpoints siguen en `403` | tú | ✅ registrada (sin efecto sobre la API de carpetas) |
 | C1 | Poda de ejecuciones de instancia | Tecnología | ☐ **es lo único que cruza el 90** |
 | C2 | Cerrar o restringir `/metrics` | Tecnología | ☐ consolida en 90,3 |
 | — | Borrar el bundle `/home/adrian/ccb-backup/…` | yo | ☐ cuando la entrega se dé por cerrada |

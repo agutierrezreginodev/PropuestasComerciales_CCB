@@ -11,14 +11,18 @@ por qué se creó, cómo funciona y con qué otros flujos se relaciona.
 
 ## 1. Convenciones
 
-**Carpeta en n8n.** Los 12 flujos originales viven en la carpeta **`Servicios_Información_Cotizaciones_v2.0`**.
-Todos los flujos nuevos deben quedar en esa misma carpeta.
+**Carpeta en n8n.** Todos los flujos viven dentro de la carpeta **`Servicios_Información_Cotizaciones_v2.0`**, organizados en
+cuatro subcarpetas desde el **28/09/2026**: `01 · Pipeline CCB` (12), `02 · Subflujos CCB` (15), `03 · Operativos CCB` (2) y
+`99 · Retirados` (28, que incluye los 5 flujos de otra área conservados allí a propósito). Cualquier flujo nuevo del proyecto
+va en la subcarpeta que le corresponda según [CONVENCION_NOMBRES_Y_CARPETAS_CCB.md](CONVENCION_NOMBRES_Y_CARPETAS_CCB.md) §3.
 
-> ⚠️ **Pendiente operativo (23/09):** el API de n8n no permite mover workflows a una carpeta con la API key actual
-> (`/api/v1/projects/{id}/folders` → `403 Forbidden`: *"Folders need an API key with folder:\* scopes AND a licensed
-> instance… unlock on the registered free Community tier"*). Para moverlos por script hace falta **una API key con los
-> scopes de carpeta** y/o **registrar la instancia** (Settings → Usage and plan → register). Mientras tanto los flujos
-> nuevos están en el proyecto personal y se mueven a mano desde la UI (arrastrar a la carpeta): son **10 flujos**.
+> ✅ **Cerrado el 28/09/2026 (antes: pendiente operativo del 23/09):** el API de n8n no permite mover workflows a una
+> carpeta con la API key actual (`/api/v1/projects/{id}/folders` → `403 Forbidden`: *"Folders need an API key with
+> folder:\* scopes AND a licensed instance… unlock on the registered free Community tier"*). Para moverlos por script
+> hace falta **una API key con los scopes de carpeta**; el **registro de la instancia no lo habilita** (verificado el
+> 28/09: `GET /api/v1/projects` sigue en `403 feat:projectRole:admin`, una función **paga**, y
+> `GET /api/v1/projects/{id}/folders` en un `403` genérico). Los **15 subflujos y 2 flujos operativos** nuevos se
+> movieron **a mano desde la UI** (arrastrar a la carpeta) y A2 quedó cerrado ese mismo día: 12 · 15 · 2 · 28 = 57 flujos.
 
 **Nombres.** El framework exige que un subflujo se distinga a simple vista del flujo principal (tarea F1-06 del plan):
 

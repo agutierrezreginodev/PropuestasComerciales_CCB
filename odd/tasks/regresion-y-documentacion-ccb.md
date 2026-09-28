@@ -34,9 +34,9 @@ punta**, incluyendo el recorrido de negocio completo, no solo la ficha por flujo
 | **R2** | Verificar con tráfico real la ruta de error compartida (`[SUB] CCB - Registrar y Alertar Error`) | Una ejecución real que falle deja fila en `Errores_CCB` con `error_timestamp` y mensaje enmascarado, envía el correo de alerta y **no corta** el flujo que la invoca | ☑ 23/09 — ejecución `422821` |
 | **R3** | Construir `[OPS] CCB - Regresión del pipeline` | El flujo corre los caminos críticos con filas descartables, publica un semáforo por camino, borra sus filas y reporta por correo | ☑ 23/09 — flujo `GVE3iNQ80y5Q9FEw`, **4/4 casos ok** |
 | **R4** | Probar la rama de **rechazo/expiración** de la aprobación de IA (F7-03) | Rechazo real en Teams → motivo `aprobacion_rechazada`, revisión manual y **sin consumir ronda** | ☑ 24/09 — verificado por HTTP sin clic manual (ejecuciones `429585` y `429598`); `ronda_correccion` quedó en 0 |
-| **R5** | Documentar el flujo completo | `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`: el recorrido de negocio de punta a punta + el mapa técnico de los 27 flujos y las 6 tablas | ☑ 23/09 — publicado (10 secciones) |
+| **R5** | Documentar el flujo completo | `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`: el recorrido de negocio de punta a punta + el mapa técnico de los 29 flujos activos y las 6 tablas | ☑ 23/09 — publicado (10 secciones) |
 | **R6** | Limpiar la fila basura de `Cotizaciones_CCB` (`id 21`) | Borrada; **ninguna fila sin `id_solicitud`** y ninguna casi vacía (no "sin filas nulas": 7 columnas son `null` por diseño en ese servicio) | ☑ 25/09 — borrada el 24/09 por el usuario y **verificada el 25/09 leyendo la tabla viva**: 2 filas, 0 sin `id_solicitud`, 0 casi vacías. De paso se limpiaron **6 filas `SOL-PRUEBA-*`** que habían quedado de verificaciones anteriores |
-| **R7** | Re-auditoría final | Puntaje nuevo publicado con la evidencia de R1–R5 | ☑ 23/09 — **89,5/100** (a 0,5 del umbral) |
+| **R7** | Re-auditoría final | Puntaje nuevo publicado con la evidencia de R1–R5 | ☑ 23/09 — **89,5/100** (a 0,5 del umbral); medición posterior del 24/09: **89,8** (a 0,2) |
 | **R9** | v2 de la regresión: cubrir los caminos de envío y del motor | Dos casos más en el flujo de regresión | ☑ 24/09 — **6/6 casos ok** (ejecución `428586`): camino **envío** (5/5, 23/09) y camino **motor** (24/09) |
 | **R8** | Sincronizar entrega | Snapshot, README, tablero, estado y memoria al día; un commit por unidad de trabajo | ☑ 23/09 — 28 archivos, tablero y estado actualizados |
 
@@ -88,7 +88,7 @@ guardián `Descartar filas de prueba`.
 
 ### R7 y R8 — Re-auditoría de cierre y sincronización · 23/09
 
-`docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md`: **89,5/100** (mañana 87,7 → +1,8). Subieron **Testing**
+`docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md`: **89,5/100** (mañana 87,7 → +1,8; medición posterior del 24/09: **89,8**, a 0,2 del umbral). Subieron **Testing**
 (11,7 → 12,8: la suite de regresión, la ruta de error y los webhooks verificados en vivo, y el procedimiento de 5
 niveles) y **Documentación** (13,4 → 14,0: el pipeline de punta a punta, el comparativo y la ficha de la regresión).
 Cinco flujos en 90 o más (W4D 94; W4A, W5A, W5B y W6 en 91) y ninguno por debajo de 85.
@@ -104,7 +104,7 @@ Sincronización: 28 archivos de snapshot (27 activos + W2B retirado), README, ta
 `docs/FLUJO_COMPLETO_PIPELINE_CCB.md`, enlazado desde el README. Diez secciones: el recorrido en una página (diagrama),
 los actores, las cinco etapas paso a paso con lo que ve cada persona, las tres ramas de la decisión (con los tres
 guardarraíles de la IA), los estados de una propuesta, las tres capas de manejo de error y el diagnóstico en 4 pasos, las
-6 tablas y las 12 claves de configuración, el mapa de los 27 flujos, la operación del día a día (cómo cambiar un
+6 tablas y las 12 claves de configuración, el mapa de los 29 flujos, la operación del día a día (cómo cambiar un
 destinatario, apagar la IA, lanzar la regresión), las dependencias de terceros y los documentos relacionados.
 
 Incluye el hueco conocido declarado: si el correo de alerta falla, la ejecución queda en `success` y nadie se entera.

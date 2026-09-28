@@ -41,7 +41,7 @@ Cada archivo es el JSON completo del workflow (nodos, conexiones, configuración
 | `POeFkqQp8e4cGfY3` | [SUB] CCB · W4D — Cierre de la corrección | [`workflows/w4d-sub-cierre-correccion.json`](workflows/w4d-sub-cierre-correccion.json) |
 | `DF3emCmBBBB2HA3i` | [SUB] CCB · PDF — Generar el PDF | [`workflows/sub-generar-pdf-propuesta.json`](workflows/sub-generar-pdf-propuesta.json) |
 
-**Carpeta en n8n:** los 12 flujos originales viven en la carpeta `Servicios_Información_Cotizaciones_v2.0`; los flujos nuevos deben quedar en esa misma carpeta (ver [docs/FLUJOS_PIPELINE_CCB.md](docs/FLUJOS_PIPELINE_CCB.md), que además documenta cada uno: por qué se creó, cómo funciona y con qué flujos se relaciona).
+**Carpeta en n8n:** la organización en carpetas del proyecto quedó cerrada el **28/09/2026** (A2): `01 · Pipeline CCB` 12 · `02 · Subflujos CCB` 15 · `03 · Operativos CCB` 2 · `99 · Retirados` **28** = **57 flujos**. Los 8 históricos que faltaban quedaron **archivados** en n8n (un flujo archivado no aparece en la vista normal de carpetas) y los 5 flujos de otra área se conservaron a propósito en `99 · Retirados` (ver [docs/FLUJOS_PIPELINE_CCB.md](docs/FLUJOS_PIPELINE_CCB.md), que además documenta cada uno: por qué se creó, cómo funciona y con qué flujos se relaciona).
 
 **Convención de nombres:** `[SUB]` para subflujos invocados desde otro flujo, `[OPS]` para flujos operativos de plataforma, y sin prefijo para los flujos principales del pipeline.
 
@@ -91,8 +91,8 @@ Todo el detalle de casos de prueba (matriz completa de cobertura, evidencia de c
 Los 12 workflows se evaluaron contra el marco *Arquitectura e Ingeniería de Automatización en n8n* (rúbrica ponderada de 6 dimensiones sobre 100 puntos y lista de comprobación de 11 requisitos de despliegue).
 
 - **[Comparativo: el pipeline del demo vs. el actual](docs/COMPARATIVO_DEMO_VS_ACTUAL.md)** — el mismo recorrido con los mismos IDs, verificado contra la instancia viva, y la única diferencia visible en el comportamiento.
-- **[Re-auditoría de cierre (2026-09-23)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md)** — **89,5/100**: qué movió el puntaje con la regresión automatizada y las verificaciones reales, y los 0,5 puntos que faltan.
-- **[Re-auditoría (2026-09-23)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md)** — promedio **89,5/100** (16/09: 53,6 · 22/09: 67,3 · 23/09 mañana: 87,7), ficha por flujo contra las 6 dimensiones y lo que falta para cruzar el umbral de 90.
+- **[Re-auditoría de cierre (2026-09-23)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23_CIERRE.md)** — **89,5/100** al cierre de ese día: qué movió el puntaje con la regresión automatizada y las verificaciones reales. El promedio vigente es **89,8/100** (remedido el 24/09), a **0,2** puntos del umbral.
+- **[Re-auditoría (2026-09-23)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-23.md)** — promedio **89,5/100** (16/09: 53,6 · 22/09: 67,3 · 23/09 mañana: 87,7), ficha por flujo contra las 6 dimensiones y lo que faltaba para cruzar el umbral de 90.
 - **[Informe de auditoría (2026-09-16)](docs/AUDITORIA_BUENAS_PRACTICAS_2026-09-16.md)** — procedimiento reproducible paso a paso, resultado consolidado, desglose por dimensión y ficha por flujo con lo que cumple, lo que no y sus pendientes.
 - **[Plan de remediación](docs/PLAN_REMEDIACION.md)** — la estrategia: las 8 fases para pasar de 53,6 a ≥90/100, con ganancia estimada, esfuerzo y dependencias externas.
 - **[Estado de progreso (2026-09-23)](docs/ESTADO_PROGRESO_FRAMEWORK_2026-09-23.md)**
@@ -101,10 +101,10 @@ Los 12 workflows se evaluaron contra el marco *Arquitectura e Ingeniería de Aut
 - **[Plan de pendientes para el 2026-09-24](odd/tasks/plan-pendientes-2026-09-24.md)** — qué falta, quién lo hace, en qué orden y qué cruza el umbral de 90.
 - **[El pipeline CCB de punta a punta](docs/FLUJO_COMPLETO_PIPELINE_CCB.md)** — el recorrido completo: actores, etapas, ramas, estados, tablas, diagnóstico de errores y operación del día a día.
 - **[Flujo de trabajo de testing](docs/TESTING_PIPELINE_CCB.md)** — los cinco niveles de prueba, el protocolo de datos descartables, la evidencia a registrar y el checklist por cambio.
-- **[Flujos del pipeline: subflujos y flujos operativos](docs/FLUJOS_PIPELINE_CCB.md)** — por qué se creó cada flujo nuevo (10), cómo funciona, con qué flujos se relaciona, las convenciones de nombre y el mapa de dependencias. — qué fases se cerraron, artefactos nuevos, verificación real y pendientes.
+- **[Flujos del pipeline: subflujos y flujos operativos](docs/FLUJOS_PIPELINE_CCB.md)** — por qué se creó cada flujo nuevo (15 subflujos y 2 operativos), cómo funciona, con qué flujos se relaciona, las convenciones de nombre y el mapa de dependencias. — qué fases se cerraron, artefactos nuevos, verificación real y pendientes.
 - **[Plan de trabajo](docs/PLAN_TRABAJO_FRAMEWORK.md)** — el tablero de ejecución: 50 tareas atómicas con el nodo exacto sobre el que se actúa, cómo se verifica cada una y el seguimiento de puntaje por flujo.
 
-Resultado: promedio **53,6/100**, ningún flujo sobre el umbral de 90. Tres flujos en clasificación *Crítico* y nueve en *Requiere refactorización*. Los hallazgos son sistemáticos (autenticación de endpoints, validación de entradas, documentación, configuración centralizada), no defectos aislados. Ningún workflow fue modificado durante la auditoría.
+Resultado de la **línea base del 16/09**: promedio **53,6/100**, ningún flujo sobre el umbral de 90; la medición actual es **89,8/100**. Tres flujos en clasificación *Crítico* y nueve en *Requiere refactorización*. Los hallazgos son sistemáticos (autenticación de endpoints, validación de entradas, documentación, configuración centralizada), no defectos aislados. Ningún workflow fue modificado durante la auditoría.
 
 ## Anonimización
 
@@ -145,6 +145,6 @@ Ese historial reemplazó a la rama publicada el 16/09/2026, y las ramas que aún
 
 > ⚠️ Queda un residuo conocido: GitHub conserva los commits huérfanos y las referencias internas de los pull requests, así que los commits antiguos siguen siendo consultables por su identificador directo. Cerrar eso requiere solicitar a GitHub Support la purga de referencias y la recolección de basura del repositorio. Los datos involucrados son un correo interno y un nombre propio — no credenciales.
 
-**Última actualización:** 2026-09-23 (cierre) — Fase 5 (configuración centralizada), Fase 6 (timeouts, límites, PII, marcas de tiempo y monitoreo horario), F4-02 (contexto de propuesta compartido), F4-03 (W4-D partido en un router de 19 nodos + 5 subflujos), F7-01/F7-02 (guardarraíles de la corrección asistida por IA) y corrección de dos defectos en los avisos de error y de tope. Snapshot con SUB flujos y flujo operativo incluidos.
+**Última actualización:** 2026-09-28 — repositorio publicado (`origin/main` = `e560b1a`), A2 cerrado (los 57 flujos en `01 · Pipeline CCB` 12, `02 · Subflujos CCB` 15, `03 · Operativos CCB` 2 y `99 · Retirados` 28) y respaldo durable del legado en `/home/adrian/ccb-backup/legado-2026-09-28/`. **2026-09-23 (cierre):** Fase 5 (configuración centralizada), Fase 6 (timeouts, límites, PII, marcas de tiempo y monitoreo horario), F4-02 (contexto de propuesta compartido), F4-03 (W4-D partido en un router de 19 nodos + 5 subflujos), F7-01/F7-02 (guardarraíles de la corrección asistida por IA) y corrección de dos defectos en los avisos de error y de tope. Snapshot con SUB flujos y flujo operativo incluidos.
 
 **Actualización previa:** 2026-09-16 (mañana) — se re-exportaron Workflow 1 (fixes de extracción por IA y filtro de correo), Workflow 3 (mapeos de organización jurídica y ubicación geográfica, corrección de género en "todos"), el flujo catch-all (campo de tipo de error agregado), y el formulario legacy (Workflow 2); se agregaron los workflows nuevos del formulario de Información Georreferenciada (Workflow 2C y Workflow 2A); y se corrigió la exposición de datos personales descrita arriba.

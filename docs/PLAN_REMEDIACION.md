@@ -37,7 +37,7 @@ Nada de esto es refactorización: son correcciones puntuales sobre flujos activo
 | 0.2 | Autenticar la API de consulta | W4C | `Webhook - Consultar Propuesta` expone datos de cliente y valor, enumerable por `id_solicitud`. Header Auth o token de un solo uso ligado a la solicitud. |
 | 0.3 | Autenticar el webhook del formulario externo | W2C | `Webhook - Solicitud Georreferenciada` recibe PII sin filtro. Header Auth compartido con el front en Vercel. |
 | 0.4 | Proteger el formulario público contra abuso | W2B | Es público por decisión de negocio: no se cierra, se protege (CAPTCHA, honeypot o límite de tasa en el proxy). |
-| 0.5 | Revertir los 3 desvíos de "modo prueba" | W4B, W4D, W5B | Destinatario de Teams al aprobador real (W4B y W4D) y notificación interna al asesor real (W5B). Hoy las aprobaciones no llegan a quien debe aprobarlas. |
+| 0.5 | Revertir los 3 desvíos de "modo prueba" | W4B, W4D, W5B | Destinatario de Teams al aprobador real (W4B y W4D) y notificación interna al asesor real (W5B). **Sigue pendiente al 28/09**: las aprobaciones no llegan todavía a quien debe aprobarlas. Es el paso de restauración previo a producción real. |
 | 0.6 | Quitar el `pinData` de prueba | W3 | Payload fijado en el trigger de un flujo activo. |
 | 0.7 | Restringir CORS al origen conocido | W4C, W2C | Ambos se consumen desde un front conocido; hoy aceptan cualquier origen. |
 | 0.8 | Corregir la sticky note engañosa | W6 | Dice "Creado INACTIVO — pendiente de revisión antes de activar" y el flujo está activo. |
@@ -107,7 +107,7 @@ El acceso a **Variables de n8n** está bloqueado por permisos desde la auditorí
 | # | Acción | Detalle |
 |---|---|---|
 | 5.1 | Crear una Data Table `Configuracion_CCB` (clave/valor) con el correo de alertas, el correo y nombre del asesor, la URL del microservicio y el chat de aprobación | Fuente única de verdad, editable sin tocar los flujos |
-| 5.2 | Reemplazar el correo hardcodeado en los 10 flujos que lo tienen | Hoy un correo personal de desarrollo es el único destinatario de las alertas de producción |
+| 5.2 | Reemplazar el correo hardcodeado en los 10 flujos que lo tienen | **Hecho:** el valor quedó centralizado en la Data Table `Configuracion_CCB`. El destinatario sigue siendo un correo personal de desarrollo; cambiarlo es una decisión de negocio aparte (F0-05/F0-06) |
 | 5.3 | Sacar la URL del microservicio del código y los parámetros | W3, duplicada en dos nodos |
 | 5.4 | Parametrizar nombre y correo del asesor | W3, hoy en cinco nodos |
 | 5.5 | Migrar a Variables nativas **si y cuando** Tecnología las habilite | La Data Table es la solución operativa mientras tanto, no un parche descartable |
@@ -126,9 +126,9 @@ El acceso a **Variables de n8n** está bloqueado por permisos desde la auditorí
 
 | # | Acción | Detalle |
 |---|---|---|
-| 7.1 | Enrutar `confianza: "baja"` a revisión humana | Hoy el modelo devuelve el nivel de confianza y **se ignora**: una corrección dudosa se aplica igual |
+| 7.1 | Enrutar `confianza: "baja"` a revisión humana | Al 16/09 el modelo devuelve el nivel de confianza y **se ignora**: una corrección dudosa se aplica igual |
 | 7.2 | Kill switch para desactivar la corrección asistida por IA sin desactivar el flujo entero | Exigido explícitamente por el framework para flujos con agentes |
-| 7.3 | Mover la aprobación humana antes del recálculo y del incremento de ronda | Hoy llega una ronda tarde |
+| 7.3 | Mover la aprobación humana antes del recálculo y del incremento de ronda | Al 16/09 llega una ronda tarde |
 
 ---
 
@@ -136,7 +136,7 @@ El acceso a **Variables de n8n** está bloqueado por permisos desde la auditorí
 
 | Fase | Acumulado estimado | Clasificación |
 |---|---|---|
-| Hoy | 53,6 | Requiere refactorización |
+| 16/09 (línea base) | 53,6 | Requiere refactorización |
 | + Fase 0 | ~60 | Requiere refactorización — pero ya sin riesgo expuesto |
 | + Fase 1 | ~68 | Requiere refactorización |
 | + Fase 2 | ~75 | **Aprobado con observaciones** |
